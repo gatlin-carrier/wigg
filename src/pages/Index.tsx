@@ -1,81 +1,9 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { MediaCard } from "@/components/MediaCard";
-import { AddMediaForm } from "@/components/AddMediaForm";
-import { GameRecommendations } from "@/components/GameRecommendations";
 import { Clock, TrendingUp, Users } from "lucide-react";
-
-interface MediaEntry {
-  id: string;
-  title: string;
-  type: "TV Show" | "Movie" | "Book" | "Podcast" | "Game" | "Other";
-  timeToGetGood: {
-    hours: number;
-    minutes: number;
-  };
-  author: string;
-  timestamp: string;
-}
-
-const mockEntries: MediaEntry[] = [
-  {
-    id: "1",
-    title: "The Wire",
-    type: "TV Show",
-    timeToGetGood: { hours: 4, minutes: 30 },
-    author: "Sarah",
-    timestamp: "2 hours ago"
-  },
-  {
-    id: "2", 
-    title: "Dune",
-    type: "Book",
-    timeToGetGood: { hours: 2, minutes: 0 },
-    author: "Mike",
-    timestamp: "1 day ago"
-  },
-  {
-    id: "3",
-    title: "The Sopranos",
-    type: "TV Show", 
-    timeToGetGood: { hours: 1, minutes: 45 },
-    author: "Emma",
-    timestamp: "3 days ago"
-  }
-];
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
-  const [entries, setEntries] = useState<MediaEntry[]>(mockEntries);
-
-  const handleAddEntry = (formData: any) => {
-    const newEntry: MediaEntry = {
-      id: Date.now().toString(),
-      title: formData.title,
-      type: formData.type,
-      timeToGetGood: {
-        hours: formData.hours,
-        minutes: formData.minutes
-      },
-      author: formData.author,
-      timestamp: "Just now"
-    };
-    setEntries([newEntry, ...entries]);
-  };
-
-  const handleAddGameFromRecommendation = (gameData: { title: string; type: "Game" }) => {
-    const newEntry: MediaEntry = {
-      id: Date.now().toString(),
-      title: gameData.title,
-      type: gameData.type,
-      timeToGetGood: {
-        hours: 0,
-        minutes: 0
-      },
-      author: "You",
-      timestamp: "Just now"
-    };
-    setEntries([newEntry, ...entries]);
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
@@ -90,73 +18,135 @@ const Index = () => {
             <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
               Track and share how long it takes for movies, shows, books, and more to become worth your time.
             </p>
-            <Button variant="hero" size="lg" className="text-lg px-8 py-4 h-auto">
-              Start Tracking Media
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="text-lg px-8 py-4 h-auto"
+                onClick={() => navigate("/dashboard")}
+              >
+                Explore Dashboard
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="text-lg px-8 py-4 h-auto bg-white/10 text-white border-white/20 hover:bg-white/20"
+                onClick={() => navigate("/dashboard")}
+              >
+                Add Entry
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Stats Section */}
-      <div className="py-12 border-b border-border/50">
+      <div className="py-16 border-b border-border/50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="bg-gradient-primary bg-clip-text text-transparent">
-                <Clock className="h-8 w-8 mx-auto mb-3 text-primary" />
+                <Clock className="h-12 w-12 mx-auto mb-4 text-primary" />
               </div>
-              <h3 className="font-semibold text-lg mb-1">Save Time</h3>
+              <h3 className="font-semibold text-xl mb-2">Save Time</h3>
               <p className="text-muted-foreground">Know before you commit hours to new media</p>
             </div>
             <div className="text-center">
               <div className="bg-gradient-primary bg-clip-text text-transparent">
-                <TrendingUp className="h-8 w-8 mx-auto mb-3 text-primary" />
+                <TrendingUp className="h-12 w-12 mx-auto mb-4 text-primary" />
               </div>
-              <h3 className="font-semibold text-lg mb-1">Find Quality</h3>
+              <h3 className="font-semibold text-xl mb-2">Find Quality</h3>
               <p className="text-muted-foreground">Discover which shows are worth the investment</p>
             </div>
             <div className="text-center">
               <div className="bg-gradient-primary bg-clip-text text-transparent">
-                <Users className="h-8 w-8 mx-auto mb-3 text-primary" />
+                <Users className="h-12 w-12 mx-auto mb-4 text-primary" />
               </div>
-              <h3 className="font-semibold text-lg mb-1">Share Insights</h3>
+              <h3 className="font-semibold text-xl mb-2">Share Insights</h3>
               <p className="text-muted-foreground">Help others with your viewing experience</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          {/* Add Form */}
-          <div className="mb-12 flex justify-center">
-            <AddMediaForm onSubmit={handleAddEntry} />
-          </div>
-
-          {/* Game Recommendations */}
-          <div className="mb-12">
-            <GameRecommendations onAddGame={handleAddGameFromRecommendation} />
-          </div>
-
-          {/* Entries Feed */}
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">Recent Entries</h2>
-              <p className="text-muted-foreground">See what the community is saying</p>
-            </div>
+      {/* Features Section */}
+      <div className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              How It Works
+            </h2>
+            <p className="text-xl text-muted-foreground mb-12">
+              Simple, community-driven insights about when media becomes engaging
+            </p>
             
-            <div className="grid gap-6">
-              {entries.map((entry) => (
-                <MediaCard key={entry.id} entry={entry} />
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto">
+                  1
+                </div>
+                <h3 className="font-semibold">Browse</h3>
+                <p className="text-sm text-muted-foreground">
+                  Explore popular games, movies, TV shows, and books
+                </p>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto">
+                  2
+                </div>
+                <h3 className="font-semibold">Track</h3>
+                <p className="text-sm text-muted-foreground">
+                  Log how long it takes for content to get good
+                </p>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto">
+                  3
+                </div>
+                <h3 className="font-semibold">Share</h3>
+                <p className="text-sm text-muted-foreground">
+                  Help others by sharing your experience
+                </p>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto">
+                  4
+                </div>
+                <h3 className="font-semibold">Discover</h3>
+                <p className="text-sm text-muted-foreground">
+                  Find your next favorite based on community insights
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* CTA Section */}
+      <div className="py-16 bg-gradient-subtle">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Ready to discover when it gets good?
+          </h2>
+          <p className="text-xl text-muted-foreground mb-8">
+            Join the community and start tracking media that's worth your time
+          </p>
+          <Button 
+            variant="default" 
+            size="lg" 
+            className="text-lg px-8 py-4 h-auto"
+            onClick={() => navigate("/dashboard")}
+          >
+            Get Started Now
+          </Button>
+        </div>
+      </div>
+
       {/* Footer */}
-      <footer className="border-t border-border/50 py-8 mt-16">
+      <footer className="border-t border-border/50 py-8">
         <div className="container mx-auto px-4 text-center">
           <h3 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
             WIGG
