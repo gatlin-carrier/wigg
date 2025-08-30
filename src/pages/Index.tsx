@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MediaCard } from "@/components/MediaCard";
 import { AddMediaForm } from "@/components/AddMediaForm";
+import { GameRecommendations } from "@/components/GameRecommendations";
 import { Clock, TrendingUp, Users } from "lucide-react";
 
 interface MediaEntry {
@@ -56,6 +57,21 @@ const Index = () => {
         minutes: formData.minutes
       },
       author: formData.author,
+      timestamp: "Just now"
+    };
+    setEntries([newEntry, ...entries]);
+  };
+
+  const handleAddGameFromRecommendation = (gameData: { title: string; type: "Game" }) => {
+    const newEntry: MediaEntry = {
+      id: Date.now().toString(),
+      title: gameData.title,
+      type: gameData.type,
+      timeToGetGood: {
+        hours: 0,
+        minutes: 0
+      },
+      author: "You",
       timestamp: "Just now"
     };
     setEntries([newEntry, ...entries]);
@@ -116,6 +132,11 @@ const Index = () => {
           {/* Add Form */}
           <div className="mb-12 flex justify-center">
             <AddMediaForm onSubmit={handleAddEntry} />
+          </div>
+
+          {/* Game Recommendations */}
+          <div className="mb-12">
+            <GameRecommendations onAddGame={handleAddGameFromRecommendation} />
           </div>
 
           {/* Entries Feed */}
