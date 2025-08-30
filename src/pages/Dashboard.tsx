@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { MediaCard } from "@/components/MediaCard";
-import { AddMediaForm } from "@/components/AddMediaForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { WiggPointForm } from "@/components/WiggPointForm";
+import { WiggPointsList } from "@/components/WiggPointsList";
 import { GameRecommendations } from "@/components/GameRecommendations";
 import { MovieRecommendations } from "@/components/MovieRecommendations";
 import { TVShowRecommendations } from "@/components/TVShowRecommendations";
 import { BookRecommendations } from "@/components/BookRecommendations";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus, List } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 interface MediaEntry {
   id: string;
@@ -50,36 +52,15 @@ const mockEntries: MediaEntry[] = [
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [entries, setEntries] = useState<MediaEntry[]>(mockEntries);
-
-  const handleAddEntry = (formData: any) => {
-    const newEntry: MediaEntry = {
-      id: Date.now().toString(),
-      title: formData.title,
-      type: formData.type,
-      timeToGetGood: {
-        hours: formData.hours,
-        minutes: formData.minutes
-      },
-      author: formData.author,
-      timestamp: "Just now"
-    };
-    setEntries([newEntry, ...entries]);
-  };
+  const { user } = useAuth();
+  const [selectedMedia, setSelectedMedia] = useState<{ title: string; type: "Game" | "Movie" | "TV Show" | "Book" } | null>(null);
 
   const handleAddFromRecommendation = (mediaData: { title: string; type: "Game" | "Movie" | "TV Show" | "Book" }) => {
-    const newEntry: MediaEntry = {
-      id: Date.now().toString(),
-      title: mediaData.title,
-      type: mediaData.type,
-      timeToGetGood: {
-        hours: 0,
-        minutes: 0
-      },
-      author: "You",
-      timestamp: "Just now"
-    };
-    setEntries([newEntry, ...entries]);
+    setSelectedMedia(mediaData);
+  };
+
+  const handleWiggPointSuccess = () => {
+    setSelectedMedia(null);
   };
 
   return (
@@ -111,31 +92,59 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto space-y-12">
-          {/* Add Form */}
-          <div className="flex justify-center">
-            <AddMediaForm onSubmit={handleAddEntry} />
-          </div>
+        <div className="max-w-6xl mx-auto">
+          <Tabs defaultValue="browse" className="space-y-8">
+            <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
+              <TabsTrigger value="browse" className="flex items-center gap-2">
+                <List className="h-4 w-4" />
+                Browse
+              </TabsTrigger>
+              <TabsTrigger value="add" className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Add WIGG
+              </TabsTrigger>
+              <TabsTrigger value="discover">Discover</TabsTrigger>
+            </TabsList>
 
-          {/* Recommendations Sections */}
-          <GameRecommendations onAddGame={handleAddFromRecommendation} />
-          <MovieRecommendations onAddMovie={handleAddFromRecommendation} />
-          <TVShowRecommendations onAddTVShow={handleAddFromRecommendation} />
-          <BookRecommendations onAddBook={handleAddFromRecommendation} />
+            <TabsContent value="browse" className="space-y-8">
+              <div className="text-center space-y-2">
+                <h2 className="text-3xl font-bold">Community WIGG Points</h2>
+                <p className="text-muted-foreground">
+                  See when media gets good according to the community
+                </p>
+              </div>
+              <WiggPointsList />
+            </TabsContent>
 
-          {/* Recent Entries */}
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">Recent Entries</h2>
-              <p className="text-muted-foreground">See what the community is saying</p>
-            </div>
-            
-            <div className="grid gap-6">
-              {entries.map((entry) => (
-                <MediaCard key={entry.id} entry={entry} />
-              ))}
-            </div>
-          </div>
+            <TabsContent value="add" className="space-y-8">
+              <div className="text-center space-y-2">
+                <h2 className="text-3xl font-bold">Add a WIGG Point</h2>
+                <p className="text-muted-foreground">
+                  Help others discover when media gets good
+                </p>
+              </div>
+              <WiggPointForm 
+                initialData={selectedMedia}
+                onSuccess={handleWiggPointSuccess}
+              />
+            </TabsContent>
+
+            <TabsContent value="discover" className="space-y-8">
+              <div className="text-center space-y-2">
+                <h2 className="text-3xl font-bold">Discover New Media</h2>
+                <p className="text-muted-foreground">
+                  Find your next favorite show, game, book, or movie
+                </p>
+              </div>
+              
+              <div className="space-y-12">
+                <GameRecommendations onAddGame={handleAddFromRecommendation} />
+                <MovieRecommendations onAddMovie={handleAddFromRecommendation} />
+                <TVShowRecommendations onAddTVShow={handleAddFromRecommendation} />
+                <BookRecommendations onAddBook={handleAddFromRecommendation} />
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 
