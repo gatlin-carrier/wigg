@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Clock, TrendingUp, Users } from "lucide-react";
+import { ArrowRight, Clock, TrendingUp, Users, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   return (
     <div className="min-h-screen bg-background">
@@ -26,15 +28,29 @@ const Index = () => {
                 onClick={() => navigate("/dashboard")}
               >
                 Explore Dashboard
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="text-lg px-8 py-4 h-auto bg-white/10 text-white border-white/20 hover:bg-white/20"
-                onClick={() => navigate("/dashboard")}
-              >
-                Add Entry
-              </Button>
+              {user ? (
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="text-lg px-8 py-4 h-auto bg-white/10 text-white border-white/20 hover:bg-white/20"
+                  onClick={signOut}
+                >
+                  <User className="mr-2 h-5 w-5" />
+                  Sign Out
+                </Button>
+              ) : (
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="text-lg px-8 py-4 h-auto bg-white/10 text-white border-white/20 hover:bg-white/20"
+                  onClick={() => navigate("/auth")}
+                >
+                  <User className="mr-2 h-5 w-5" />
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
         </div>
