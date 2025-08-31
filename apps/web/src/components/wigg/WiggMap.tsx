@@ -36,6 +36,30 @@ export function WiggMap({
   const y = (v: number) => height - 8 - v * (height - 16);
   const x = (pos: number) => (pos / consensus.duration) * width;
 
+  // Find peaks in the curve for static dots
+  const peaks = useMemo(() => {
+    if (!centers.length) return [];
+    const threshold = 0.3; // Only show dots for significant peaks
+    const peakPositions: Array<{x: number, y: number, pos: number}> = [];
+    
+    for (let i = 1; i < centers.length - 1; i++) {
+      const val = values[i];
+      const leftVal = values[i - 1];
+      const rightVal = values[i + 1];
+      
+      // Check if this is a local maximum above threshold
+      if (val > threshold && val >= leftVal && val >= rightVal) {
+        peakPositions.push({
+          x: x(centers[i]),
+          y: y(val),
+          pos: centers[i]
+        });
+      }
+    }
+    
+    return peakPositions;
+  }, [centers, values, x, y]);
+
   const areaPath = useMemo(() => {
     if (!centers.length) return '';
     let d = `M 0 ${y(0)} `;
@@ -61,10 +85,21 @@ export function WiggMap({
   function handleMove(e: React.MouseEvent<SVGSVGElement>) {
     const rect = svgRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const px = clamp(e.clientX - rect.left, 0, width);
+    let px = clamp(e.clientX - rect.left, 0, width);
+    
+    // Snap to nearby peak circles if close enough
+    const snapDistance = 20; // pixels
+    
+    for (const peak of peaks) {
+      if (Math.abs(px - peak.x) <= snapDistance) {
+        px = peak.x;
+        break;
+      }
+    }
+    
     setCursorX(px);
-    const pos = (px / width) * consensus.duration;
-    onPeek?.(pos);
+    const finalPos = (px / width) * consensus.duration;
+    onPeek?.(finalPos);
   }
   function handleLeave() { setCursorX(null); }
   function handleClick(e: React.MouseEvent<SVGSVGElement>) {
@@ -92,18 +127,18 @@ export function WiggMap({
         width={width}
         height={height}
         role="img"
-        aria-label="WiggMap density over time"
+        aria-label="WiggMap visualization"
         onMouseMove={handleMove}
         onMouseLeave={handleLeave}
         onClick={handleClick}
         className="overflow-visible"
       >
-        <title>WiggMap density over time</title>
         {srDesc && <desc>{srDesc}</desc>}
 
         {showGrid && [0.25,0.5,0.75].map((t) => (
           <line key={t} x1={0} x2={width} y1={y(t)} y2={y(t)} className="stroke-zinc-300/30" strokeWidth={1}/>
         ))}
+
 
         {consensus.windows.map((w, i) => {
           const x1 = x(w.start), x2 = x(w.end);
@@ -125,32 +160,86 @@ export function WiggMap({
 
         <path d={areaPath} className="fill-current" fillOpacity={0.25} stroke="currentColor" strokeWidth={1} />
 
+        {/* Static circles at peak positions */}
+        {peaks.map((peak, i) => (
+          <circle
+            key={i}
+            cx={peak.x}
+            cy={peak.y}
+            r={4}
+            className="fill-current"
+            fillOpacity={0.8}
+            stroke="currentColor"
+            strokeWidth={1}
+            strokeOpacity={0.6}
+          />
+        ))}
+
         {showMiniBar && (
           <rect x={0} y={height-3} width={width} height={2} rx={1} className="fill-current opacity-40" />
         )}
 
-        <line x1={markerX} x2={markerX} y1={8} y2={height-8} className="stroke-current" strokeWidth={1}/>
-        <circle cx={markerX} cy={8} r={3} className="fill-current" />
 
         {cursorX !== null && (
-          <>
-            <line x1={cursorX} x2={cursorX} y1={8} y2={height-8} className="stroke-current opacity-40" strokeDasharray="2 2" />
-            <rect x={cursorX+6} y={8} width={64} height={16} rx={4} className="fill-black/70" />
-            <text x={cursorX+38} y={20} textAnchor="middle" className="fill-white text-[10px]">
-              {(() => {
-                const pos = (cursorX/width)*consensus.duration;
-                // local bin strength
-                const idx = centers.reduce((best, c, i) => Math.abs(c - pos) < Math.abs(centers[best] - pos) ? i : best, 0);
-                const strength = values[idx] ?? 0;
-                return `${fmt(pos)}  ${strength.toFixed(2)}`;
-              })()}
-            </text>
-          </>
+          (() => {
+            const pos = (cursorX/width) * consensus.duration;
+            // interpolate local value along bins for smoother dot placement
+            const i = Math.max(0, Math.min(centers.length - 1, Math.floor(pos / (dx || 1))))
+            const leftC = centers[i] ?? 0;
+            const rightC = centers[i+1] ?? leftC;
+            const t = rightC !== leftC ? Math.max(0, Math.min(1, (pos - leftC) / (rightC - leftC))) : 0;
+            const v = (values[i] ?? 0) * (1 - t) + (values[i+1] ?? values[i] ?? 0) * t;
+            const cy = y(v);
+            const labelX = Math.min(width - 4, cursorX + 8);
+            const placeBelow = cy < 18; // if near top, place label below the dot
+            const labelY = placeBelow
+              ? Math.min(height - 8, cy + 8)
+              : Math.max(8, cy - 18);
+            return (
+              <>
+                {/* vertical playhead line from top to bottom */}
+                <line x1={cursorX} x2={cursorX} y1={0} y2={height} stroke="currentColor" strokeOpacity={0.7} strokeWidth={2} />
+                {/* scrobble dot on the curve, same color as line */}
+                <circle cx={cursorX} cy={cy} r={3.5} className="fill-current" />
+                {/* harmonious colored numbers with better contrast */}
+                <text
+                  x={labelX}
+                  y={labelY}
+                  textAnchor="start"
+                  dominantBaseline="hanging"
+                  className="text-[10px] font-medium"
+                  style={{ fill: '#f1f5f9' }}
+                >
+                  <tspan style={{ fill: '#f1f5f9' }}>{fmt(pos)} </tspan>
+                  <tspan fontSize={9} style={{ fill: '#cbd5e1' }} fillOpacity={0.9}>
+                    {(v ?? 0).toFixed(2)}
+                  </tspan>
+                </text>
+              </>
+            );
+          })()
         )}
       </svg>
-      <div className="mt-1 flex items-center justify-between text-[10px] text-zinc-500">
-        <span>0{posKindLabel ? ` ${posKindLabel}` : ''}</span>
-        <span>{fmt(consensus.duration)}{posKindLabel ? ` ${posKindLabel}` : ''}</span>
+      <div className="relative mt-1 text-[10px] text-zinc-400" style={{ width }}>
+        {[0, 0.25, 0.5, 0.75, 1].map((t) => {
+          const timeStr = fmt(t * consensus.duration);
+          // Remove 'min' suffix and keep just the time
+          const cleanTime = timeStr.replace(/\s*min\s*$/, '').trim();
+          const xPos = t * width;
+          
+          return (
+            <span 
+              key={t} 
+              className="absolute transform -translate-x-1/2"
+              style={{ 
+                left: t === 0 ? '0px' : t === 1 ? `${width}px` : `${xPos}px`,
+                transform: t === 0 ? 'translateX(0)' : t === 1 ? 'translateX(-100%)' : 'translateX(-50%)'
+              }}
+            >
+              {cleanTime}
+            </span>
+          );
+        })}
       </div>
     </div>
   );

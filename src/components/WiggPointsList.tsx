@@ -62,8 +62,13 @@ export const WiggPointsList = ({
           profiles:profiles(username),
           vote_score:votes(value).sum(),
           user_vote:votes!left(value)
-        `)
-        .eq('votes.user_id', user?.id || '');
+        `);
+
+      // Only filter the left-joined user_vote relation when we have a user id.
+      // Use the alias path so we don't accidentally filter the aggregate vote_score.
+      if (user?.id) {
+        query = query.eq('user_vote.user_id', user.id);
+      }
 
       // Apply filters
       if (userId) {

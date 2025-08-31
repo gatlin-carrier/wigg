@@ -1,33 +1,22 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Plus, ChevronLeft, ChevronRight } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { usePopularGames } from "@/integrations/games/hooks";
 import useEmblaCarousel from 'embla-carousel-react';
-
-interface Game {
-  id: number;
-  name: string;
-  cover: string | null;
-  rating: number | null;
-  releaseDate: number | null;
-  summary: string;
-  genres: string;
-}
+import MediaTile from "@/components/media/MediaTile";
 
 interface GameRecommendationsProps {
   onAddGame: (gameData: { title: string; type: "Game" }) => void;
 }
 
 export const GameRecommendations = ({ onAddGame }: GameRecommendationsProps) => {
-  const [games, setGames] = useState<Game[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: games = [], isFetching, isError, error, refetch } = usePopularGames();
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     loop: false, 
     align: 'start',
     slidesToScroll: 1,
+    dragFree: true,
     breakpoints: {
       '(min-width: 768px)': { slidesToScroll: 2 },
       '(min-width: 1024px)': { slidesToScroll: 3 }
@@ -42,27 +31,7 @@ export const GameRecommendations = ({ onAddGame }: GameRecommendationsProps) => 
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
-  useEffect(() => {
-    fetchPopularGames();
-  }, []);
-
-  const fetchPopularGames = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase.functions.invoke('fetch-popular-games');
-      
-      if (error) throw error;
-      
-      setGames(data.games || []);
-    } catch (err) {
-      console.error('Error fetching games:', err);
-      setError('Failed to load game recommendations');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
+  if (isFetching && !games.length) {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -85,16 +54,16 @@ export const GameRecommendations = ({ onAddGame }: GameRecommendationsProps) => 
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-foreground">Popular Games</h2>
         </div>
         <Card className="p-6 bg-gradient-card border-0 shadow-soft text-center">
-          <p className="text-muted-foreground">{error}</p>
+          <p className="text-muted-foreground">{String((error as any)?.message ?? 'Failed to load game recommendations')}</p>
           <Button 
-            onClick={fetchPopularGames} 
+            onClick={() => refetch()} 
             variant="outline" 
             className="mt-3"
           >
@@ -131,63 +100,16 @@ export const GameRecommendations = ({ onAddGame }: GameRecommendationsProps) => 
       
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex gap-4">
-          {games.map((game) => (
-            <div key={game.id} className="flex-none w-80">
-              <Card className="p-4 bg-gradient-card border-0 shadow-soft hover:shadow-medium transition-all duration-300 group h-full">
-                {game.cover && (
-                  <div className="aspect-video mb-3 overflow-hidden rounded-lg bg-muted">
-                    <img 
-                      src={game.cover} 
-                      alt={game.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                )}
-                
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-medium text-foreground leading-tight line-clamp-2">
-                      {game.name}
-                    </h3>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="shrink-0 h-8 w-8 p-0"
-                      onClick={() => onAddGame({ title: game.name, type: "Game" })}
-                    >
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    {game.rating && (
-                      <div className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-current text-yellow-500" />
-                        <span>{game.rating}/100</span>
-                      </div>
-                    )}
-                    {game.releaseDate && (
-                      <span>{game.releaseDate}</span>
-                    )}
-                  </div>
-                  
-                  {game.genres && (
-                    <div className="flex flex-wrap gap-1">
-                      {game.genres.split(', ').slice(0, 2).map((genre) => (
-                        <Badge key={genre} variant="secondary" className="text-xs">
-                          {genre}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {game.summary && (
-                    <p className="text-xs text-muted-foreground line-clamp-2">
-                      {game.summary}
-                    </p>
-                  )}
-                </div>
-              </Card>
+          {games.map((game: any) => (
+            <div key={game.id} className="flex-none w-36 sm:w-40 md:w-44 lg:w-48">
+              <MediaTile
+                title={game.name}
+                imageUrl={game.cover}
+                year={game.releaseDate}
+                ratingLabel={game.rating ? `${game.rating}/100` : undefined}
+                tags={game.genres ? String(game.genres).split(', ').slice(0, 2) : []}
+                onAdd={() => onAddGame({ title: game.name, type: 'Game' })}
+              />
             </div>
           ))}
         </div>

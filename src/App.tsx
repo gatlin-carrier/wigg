@@ -5,6 +5,9 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import TmdbDemo from "./pages/TmdbDemo";
+import WiggDemo from "./pages/WiggDemo";
+import Feed from "./pages/Feed";
 
 const App = () => (
   <TooltipProvider>
@@ -14,6 +17,9 @@ const App = () => (
         <Route path="/" element={<Index />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/auth" element={<Auth />} />
+        <Route path="/wigg-demo" element={<WiggDemo />} />
+        <Route path="/tmdb" element={<TmdbDemo />} />
+        <Route path="/feed" element={<Feed />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

@@ -84,6 +84,7 @@ export const MovieRecommendations = ({ onAddMovie }: MovieRecommendationsProps) 
     loop: false, 
     align: 'start',
     slidesToScroll: 1,
+    dragFree: true,
     breakpoints: {
       '(min-width: 768px)': { slidesToScroll: 2 },
       '(min-width: 1024px)': { slidesToScroll: 3 }

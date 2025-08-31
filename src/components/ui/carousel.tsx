@@ -58,6 +58,7 @@ const Carousel = React.forwardRef<
   ) => {
     const [carouselRef, api] = useEmblaCarousel(
       {
+        dragFree: true,
         ...opts,
         axis: orientation === "horizontal" ? "x" : "y",
       },

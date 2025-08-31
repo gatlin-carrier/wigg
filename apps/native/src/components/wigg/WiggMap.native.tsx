@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { View, LayoutChangeEvent } from 'react-native';
-import Svg, { Path, Rect, Line, Circle, Text as SvgText } from 'react-native-svg';
+import Svg, { Path, Rect, Line, Circle, Text as SvgText, TSpan } from 'react-native-svg';
 import { computeBins, pickPrimaryIndex, defaultFormat, clamp } from '@shared/wigg/curve';
 import type { WiggMapProps } from '@shared/wigg/types';
 
@@ -82,6 +82,24 @@ export function WiggMapNative({
       onResponderRelease={handleRelease}
     >
       <Svg width="100%" height={height}>
+        {/* x-axis ticks along bottom: 0, 25%, 50%, 75%, 100% */}
+        {width > 0 && [0, 0.25, 0.5, 0.75, 1].map((t, idx) => {
+          const px = x(t * consensus.duration);
+          const anchor = t === 0 ? 'start' : t === 1 ? 'end' : 'middle';
+          return (
+            <SvgText
+              key={idx}
+              x={px}
+              y={height - 6}
+              fontSize={10}
+              textAnchor={anchor as any}
+              fill="currentColor"
+              fillOpacity={0.6}
+            >
+              {fmt(t * consensus.duration)}
+            </SvgText>
+          );
+        })}
         {consensus.windows.map((w, i) => {
           const x1 = x(w.start), x2 = x(w.end);
           const isP = !!w.isPrimary;
@@ -101,21 +119,35 @@ export function WiggMapNative({
         <Line x1={markerX} x2={markerX} y1={8} y2={height-8} stroke="currentColor" strokeWidth={1} />
         <Circle cx={markerX} cy={8} r={3} fill="currentColor" />
 
-        {cursorX !== null && (
-          <>
-            <Line x1={cursorX} x2={cursorX} y1={8} y2={height-8} stroke="currentColor" strokeDasharray="2 2" opacity={0.4}/>
-            <Rect x={cursorX+6} y={8} width={64} height={16} rx={4} fill="black" opacity={0.7}/>
-            <SvgText x={cursorX+38} y={20} fill="white" fontSize={10} textAnchor="middle">
-              {(() => {
-                const pos = (cursorX/width)*consensus.duration;
-                // local bin strength
-                const idx = centers.reduce((best, c, i) => Math.abs(c - pos) < Math.abs(centers[best] - pos) ? i : best, 0);
-                const strength = values[idx] ?? 0;
-                return `${fmt(pos)}  ${strength.toFixed(2)}`;
-              })()}
-            </SvgText>
-          </>
-        )}
+        {cursorX !== null && (() => {
+          const pos = (cursorX/width) * consensus.duration;
+          // interpolate local value along bins
+          const dxLocal = (centers[1] ?? centers[0] ?? 0) - (centers[0] ?? 0);
+          const i = Math.max(0, Math.min(centers.length - 1, Math.floor(pos / (dxLocal || 1))))
+          const leftC = centers[i] ?? 0;
+          const rightC = centers[i+1] ?? leftC;
+          const t = rightC !== leftC ? Math.max(0, Math.min(1, (pos - leftC) / (rightC - leftC))) : 0;
+          const v = (values[i] ?? 0) * (1 - t) + (values[i+1] ?? values[i] ?? 0) * t;
+          const cy = y(v);
+          const labelX = Math.min(width - 4, cursorX + 8);
+          const placeBelow = cy < 18;
+          const labelY = placeBelow ? Math.min(height - 8, cy + 8) : Math.max(8, cy - 14);
+          return (
+            <>
+              {/* vertical scrobble line from top to bottom */}
+              {/* fallback white line to ensure visibility on dark backgrounds */}
+              <Line x1={cursorX} x2={cursorX} y1={0} y2={height} stroke="white" strokeWidth={1.5} opacity={0.12} />
+              <Line x1={cursorX} x2={cursorX} y1={0} y2={height} stroke="currentColor" strokeWidth={1} opacity={0.35} />
+              {/* scrobble dot on the curve */}
+              <Circle cx={cursorX} cy={cy} r={3.5} fill="currentColor" stroke="white" strokeOpacity={0.15} />
+              {/* inline tooltip text, subtle */}
+              <SvgText x={labelX} y={labelY} fill="currentColor" fillOpacity={0.9} fontSize={10} textAnchor="start" alignmentBaseline="hanging">
+                <TSpan fillOpacity={0.9}>{fmt(pos)} </TSpan>
+                <TSpan fontSize={9} fill="currentColor" fillOpacity={0.8}>{(v ?? 0).toFixed(2)}</TSpan>
+              </SvgText>
+            </>
+          );
+        })()}
       </Svg>
     </View>
   );

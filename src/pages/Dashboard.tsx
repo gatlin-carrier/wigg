@@ -4,10 +4,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WiggPointForm } from "@/components/WiggPointForm";
 import { WiggPointsList } from "@/components/WiggPointsList";
 import { GameRecommendations } from "@/components/GameRecommendations";
-import { MovieRecommendations } from "@/components/MovieRecommendations";
-import { TVShowRecommendations } from "@/components/TVShowRecommendations";
+// Removed placeholder popular movies in favor of TMDB feed
+// import { MovieRecommendations } from "@/components/MovieRecommendations";
+// import { TVShowRecommendations } from "@/components/TVShowRecommendations";
 import { BookRecommendations } from "@/components/BookRecommendations";
 import { ArrowLeft, Plus, List } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
+import TmdbPopular from "@/components/tmdb/TmdbPopular";
+import TmdbPopularTv from "@/components/tmdb/TmdbPopularTv";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -68,24 +72,27 @@ const Dashboard = () => {
       {/* Header */}
       <div className="border-b border-border/50 py-6">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate("/")}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                WIGG Dashboard
-              </h1>
-              <p className="text-muted-foreground">
-                Discover when media gets good and track your own entries
-              </p>
+          <div className="flex items-center gap-4 justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/")}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Home
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                  WIGG Dashboard
+                </h1>
+                <p className="text-muted-foreground">
+                  Discover when media gets good and track your own entries
+                </p>
+              </div>
             </div>
+            <ThemeToggle />
           </div>
         </div>
       </div>
@@ -138,9 +145,10 @@ const Dashboard = () => {
               </div>
               
               <div className="space-y-12">
+                <TmdbPopular kind="trending" period="day" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Movie' })} />
+                <TmdbPopularTv kind="popular" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'TV Show' })} />
                 <GameRecommendations onAddGame={handleAddFromRecommendation} />
-                <MovieRecommendations onAddMovie={handleAddFromRecommendation} />
-                <TVShowRecommendations onAddTVShow={handleAddFromRecommendation} />
+                {/* Placeholder removed: Popular TV Shows carousel */}
                 <BookRecommendations onAddBook={handleAddFromRecommendation} />
               </div>
             </TabsContent>

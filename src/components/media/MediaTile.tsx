@@ -1,0 +1,57 @@
+import React from 'react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Plus, Star } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+type Props = {
+  title: string;
+  imageUrl?: string | null;
+  year?: number | string;
+  ratingLabel?: string; // e.g., "8.2/10" or "82/100"
+  tags?: string[]; // small badges, up to 2-3
+  onAdd?: () => void;
+  className?: string;
+};
+
+export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, className }: Props) {
+  return (
+    <Card className={cn('p-4 bg-card hover:bg-muted/40 border-0 shadow-soft hover:shadow-medium transition-colors duration-200 group h-full', className)}>
+      {imageUrl && (
+        <div className="aspect-[2/3] mb-3 overflow-hidden rounded-lg bg-muted">
+          <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+        </div>
+      )}
+      <div className="space-y-2">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-medium text-foreground leading-tight line-clamp-2 min-h-[2lh]">{title}</h3>
+          {onAdd && (
+            <Button size="sm" variant="outline" className="shrink-0 h-8 w-8 p-0" onClick={onAdd} aria-label={`Add ${title}`}>
+              <Plus className="h-3 w-3" />
+            </Button>
+          )}
+        </div>
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          {ratingLabel && (
+            <span className="inline-flex items-center gap-1">
+              <Star className="h-3 w-3 fill-current text-yellow-500" />
+              <span>{ratingLabel}</span>
+            </span>
+          )}
+          {year && <span>{year}</span>}
+        </div>
+        {!!(tags && tags.length) && (
+          <div className="flex flex-wrap gap-1">
+            {tags.slice(0, 2).map((t) => (
+              <span key={t} className="inline-flex items-center rounded bg-secondary px-1.5 py-0.5 text-[10px] text-secondary-foreground">
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+}
+
+export default MediaTile;
