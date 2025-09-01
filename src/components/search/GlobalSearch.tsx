@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import MediaTile from '@/components/media/MediaTile';
 import { useTmdbSearch } from '@/integrations/tmdb/hooks';
 import { useOpenLibrarySearch } from '@/integrations/openlibrary/searchHooks';
+import { useNavigate } from 'react-router-dom';
 
 function useDebounced<T>(value: T, delay = 300) {
   const [v, setV] = useState(value as any);
@@ -23,6 +24,7 @@ export default function GlobalSearch({ onPick }: Props) {
   const [query, setQuery] = useState('');
   const q = useDebounced(query, 350);
   const domain = useMemo(() => detectDomain(q), [q]);
+  const navigate = useNavigate();
 
   const tmdbMode = domain === 'tv' ? 'multi' as const : 'multi' as const;
   const { data: tmdb } = useTmdbSearch(q, tmdbMode);
@@ -66,6 +68,7 @@ export default function GlobalSearch({ onPick }: Props) {
               {bookItems.map((b: any) => (
                 <MediaTile key={b.id} title={b.title} imageUrl={b.cover_url} year={b.year} tags={b.genre ? [b.genre] : []}
                   onAdd={() => onPick?.({ title: b.title, type: 'Book', poster: b.cover_url })}
+                  onClick={() => navigate(`/media/openlibrary/${encodeURIComponent(b.id)}`)}
                 />
               ))}
             </div>
@@ -75,4 +78,3 @@ export default function GlobalSearch({ onPick }: Props) {
     </div>
   );
 }
-

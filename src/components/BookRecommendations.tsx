@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 import { useOpenLibraryTrending } from "@/integrations/openlibrary/hooks";
 import MediaTile from "@/components/media/MediaTile";
+import { useNavigate } from "react-router-dom";
 
 interface BookRecommendationsProps {
   onAddBook: (bookData: { title: string; type: "Book" }) => void;
@@ -12,6 +13,7 @@ interface BookRecommendationsProps {
 
 export const BookRecommendations = ({ onAddBook }: BookRecommendationsProps) => {
   const { data: books = [], isFetching, isError, error } = useOpenLibraryTrending('weekly');
+  const navigate = useNavigate();
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     loop: false, 
     align: 'start',
@@ -101,6 +103,7 @@ export const BookRecommendations = ({ onAddBook }: BookRecommendationsProps) => 
                 year={book.year}
                 tags={book.genre ? [book.genre] : []}
                 onAdd={() => onAddBook({ title: book.title, type: 'Book' })}
+                onClick={() => navigate(`/media/openlibrary/${encodeURIComponent(book.id)}`)}
               />
             </div>
           ))}

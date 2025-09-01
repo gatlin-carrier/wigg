@@ -60,3 +60,28 @@ export function normalizeWork(w: OLWork): TrendingBook {
     genre: (w.subject && w.subject[0]) || undefined,
   };
 }
+
+// Fetch detailed data for an OpenLibrary work
+export async function fetchWorkDetails(keyOrId: string) {
+  // keyOrId can be like "/works/OL12345W" or just "OL12345W"
+  const key = keyOrId.startsWith('/works/') ? keyOrId : `/works/${keyOrId}`;
+  const res = await fetch(`${OL_BASE}${key}.json`);
+  if (!res.ok) throw new Error(`OpenLibrary ${res.status}`);
+  const work = await res.json();
+
+  // Attempt to normalize some convenient fields
+  const covers: number[] = Array.isArray(work.covers) ? work.covers : [];
+  const first_publish_date: string | undefined = work.first_publish_date || work.first_publish_year || undefined;
+  let description: string | undefined;
+  if (typeof work.description === 'string') description = work.description;
+  else if (work.description && typeof work.description.value === 'string') description = work.description.value;
+
+  return {
+    ...work,
+    key,
+    cover_url: getCoverUrl(covers[0], 'L'),
+    first_publish_date,
+    description,
+    subjects: work.subjects || work.subject || [],
+  } as any;
+}

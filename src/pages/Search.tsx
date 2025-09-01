@@ -192,7 +192,14 @@ export default function SearchPage() {
       {books && books.length > 0 && (
         <CollapsibleSection id="books" title="Books" count={books.length}>
           {books.slice(0,40).map((b) => (
-            <MediaTile key={`book-${b.id}`} title={b.title} imageUrl={b.cover_url} year={b.year} tags={b.genre ? [b.genre] : []} />
+            <MediaTile 
+              key={`book-${b.id}`} 
+              title={b.title} 
+              imageUrl={b.cover_url} 
+              year={b.year} 
+              tags={b.genre ? [b.genre] : []}
+              onClick={() => navigate(`/media/openlibrary/${encodeURIComponent(b.id)}`)}
+            />
           ))}
         </CollapsibleSection>
       )}

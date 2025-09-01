@@ -1,12 +1,13 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Star, Calendar, Clock, ExternalLink, Plus } from 'lucide-react';
+import { Star, Calendar, Clock, ExternalLink, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { getMovieDetails, getImageUrl } from '@/integrations/tmdb/client';
+import { fetchWorkDetails } from '@/integrations/openlibrary/client';
 import { useTmdbMovieGenres } from '@/integrations/tmdb/hooks';
 import { WiggMap } from '@/components/wigg/WiggMap';
 import { cn } from '@/lib/utils';
@@ -14,7 +15,6 @@ import { supabase } from '@/integrations/supabase/client';
 
 export default function MediaDetails() {
   const { source, id } = useParams<{ source: string; id: string }>();
-  const navigate = useNavigate();
   
   const { data: movieGenres = {} } = useTmdbMovieGenres();
   
@@ -32,6 +32,9 @@ export default function MediaDetails() {
         // Support either { game: {...} } or raw object shape
         const payload: any = data ?? null;
         return (payload?.game ?? payload) as any;
+      }
+      if (source === 'openlibrary' && id) {
+        return await fetchWorkDetails(id);
       }
       throw new Error('Unsupported media source');
     },
@@ -68,10 +71,6 @@ export default function MediaDetails() {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
           <Card className="p-8 text-center">
             <h2 className="text-xl font-semibold mb-2">Media Not Found</h2>
             <p className="text-muted-foreground">Unable to load media details. Please try again.</p>
@@ -82,15 +81,44 @@ export default function MediaDetails() {
   }
 
   const isTmdb = source === 'tmdb';
-  const backdropUrl = isTmdb ? getImageUrl((movie as any).backdrop_path, 'original') : ((movie as any)?.background ?? undefined);
-  const posterUrl = isTmdb ? getImageUrl((movie as any).poster_path, 'w500') : ((movie as any)?.cover ?? undefined);
-  const title = isTmdb ? (movie as any).title : ((movie as any)?.name ?? (movie as any)?.title ?? 'Untitled');
-  const genres = isTmdb ? ((movie as any).genres?.map((g: any) => g.name) || []) : (((movie as any)?.genres as string[] | undefined) ?? []);
-  const year = isTmdb ? (movie as any).release_date?.slice(0, 4) : String((movie as any)?.releaseDate ?? '').slice(0, 4);
+  const isBook = source === 'openlibrary';
+  const backdropUrl = isTmdb
+    ? getImageUrl((movie as any).backdrop_path, 'original')
+    : isBook
+      ? ((movie as any)?.cover_url ?? undefined)
+      : ((movie as any)?.background ?? undefined);
+  const posterUrl = isTmdb
+    ? getImageUrl((movie as any).poster_path, 'w500')
+    : isBook
+      ? ((movie as any)?.cover_url ?? undefined)
+      : ((movie as any)?.cover ?? undefined);
+  const title = isTmdb
+    ? (movie as any).title
+    : isBook
+      ? ((movie as any)?.title ?? 'Untitled')
+      : ((movie as any)?.name ?? (movie as any)?.title ?? 'Untitled');
+  const genres = isTmdb
+    ? ((movie as any).genres?.map((g: any) => g.name) || [])
+    : isBook
+      ? ((movie as any)?.subjects ?? [])
+      : (((movie as any)?.genres as string[] | undefined) ?? []);
+  const year = isTmdb
+    ? (movie as any).release_date?.slice(0, 4)
+    : isBook
+      ? String((movie as any)?.first_publish_date ?? '').slice(0, 4)
+      : String((movie as any)?.releaseDate ?? '').slice(0, 4);
   const rating = isTmdb ? (movie as any).vote_average : (movie as any)?.rating;
-  const overview = isTmdb ? (movie as any).overview : ((movie as any)?.summary ?? 'No overview available.');
+  const overview = isTmdb
+    ? (movie as any).overview
+    : isBook
+      ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
+      : ((movie as any)?.summary ?? 'No overview available.');
   const runtime = isTmdb ? (movie as any).runtime : undefined;
-  const externalUrl = isTmdb ? `https://www.themoviedb.org/movie/${(movie as any).id}` : (movie as any)?.url;
+  const externalUrl = isTmdb
+    ? `https://www.themoviedb.org/movie/${(movie as any).id}`
+    : isBook
+      ? (`https://openlibrary.org${(movie as any)?.key ?? ''}`)
+      : (movie as any)?.url;
 
   return (
     <div className="min-h-screen bg-background">
@@ -107,11 +135,6 @@ export default function MediaDetails() {
       )}
       
       <div className="container mx-auto px-4 py-8 relative">
-        <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Poster */}
           <div className="lg:col-span-1">
