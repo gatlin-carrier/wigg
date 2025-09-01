@@ -3,6 +3,7 @@ import { ArrowRight, Clock, TrendingUp, Users, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import ThemeToggle from "@/components/ThemeToggle";
+import HeaderSearch from "@/components/search/HeaderSearch";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -14,7 +15,8 @@ const Index = () => {
       <div className="bg-gradient-hero relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative container mx-auto px-4 py-16 md:py-24">
-          <div className="absolute right-4 top-4 z-10">
+          <div className="absolute right-4 top-4 z-10 flex items-center gap-3">
+            <HeaderSearch />
             <ThemeToggle />
           </div>
           <div className="text-center max-w-3xl mx-auto">

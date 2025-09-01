@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import TmdbDemo from "./pages/TmdbDemo";
 import WiggDemo from "./pages/WiggDemo";
 import Feed from "./pages/Feed";
+import SearchPage from "./pages/Search";
 
 const App = () => (
   <TooltipProvider>
@@ -19,6 +20,7 @@ const App = () => (
         <Route path="/auth" element={<Auth />} />
         <Route path="/wigg-demo" element={<WiggDemo />} />
         <Route path="/tmdb" element={<TmdbDemo />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/feed" element={<Feed />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

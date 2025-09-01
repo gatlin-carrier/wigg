@@ -10,8 +10,10 @@ import { GameRecommendations } from "@/components/GameRecommendations";
 import { BookRecommendations } from "@/components/BookRecommendations";
 import { ArrowLeft, Plus, List } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import Feed from "./Feed";
 import TmdbPopular from "@/components/tmdb/TmdbPopular";
 import TmdbPopularTv from "@/components/tmdb/TmdbPopularTv";
+import HeaderSearch from "@/components/search/HeaderSearch";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -67,6 +69,8 @@ const Dashboard = () => {
     setSelectedMedia(null);
   };
 
+  const [tab, setTab] = useState<'feed'|'browse'|'add'>('browse');
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -92,16 +96,20 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-3">
+              <HeaderSearch />
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-6 space-y-8">
         <div className="max-w-6xl mx-auto">
-          <Tabs defaultValue="browse" className="space-y-8">
+          <Tabs value={tab} onValueChange={(v:any)=>setTab(v)} className="space-y-8">
             <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
+              <TabsTrigger value="feed">Feed</TabsTrigger>
               <TabsTrigger value="browse" className="flex items-center gap-2">
                 <List className="h-4 w-4" />
                 Browse
@@ -110,17 +118,35 @@ const Dashboard = () => {
                 <Plus className="h-4 w-4" />
                 Add WIGG
               </TabsTrigger>
-              <TabsTrigger value="discover">Discover</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="browse" className="space-y-8">
-              <div className="text-center space-y-2">
-                <h2 className="text-3xl font-bold">Community WIGG Points</h2>
-                <p className="text-muted-foreground">
-                  See when media gets good according to the community
-                </p>
+            <TabsContent value="browse" className="space-y-12">
+              {/* Discover rails */}
+              <div className="space-y-4">
+                <div className="text-center space-y-2">
+                  <h2 className="text-3xl font-bold">Discover New Media</h2>
+                  <p className="text-muted-foreground">
+                    Find your next favorite show, game, book, or movie
+                  </p>
+                </div>
+                <div className="space-y-12">
+                  <TmdbPopular kind="trending" period="day" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Movie' })} />
+                  <TmdbPopularTv kind="popular" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'TV Show' })} />
+                  <GameRecommendations onAddGame={handleAddFromRecommendation} />
+                  <BookRecommendations onAddBook={handleAddFromRecommendation} />
+                </div>
               </div>
-              <WiggPointsList />
+
+              {/* Community list */}
+              <div className="space-y-4">
+                <div className="text-center space-y-2">
+                  <h2 className="text-3xl font-bold">Community WIGG Points</h2>
+                  <p className="text-muted-foreground">
+                    See when media gets good according to the community
+                  </p>
+                </div>
+                <WiggPointsList />
+              </div>
             </TabsContent>
 
             <TabsContent value="add" className="space-y-8">
@@ -136,21 +162,14 @@ const Dashboard = () => {
               />
             </TabsContent>
 
-            <TabsContent value="discover" className="space-y-8">
+            {/* Removed separate Discover tab; content merged into Browse */}
+
+            <TabsContent value="feed" className="space-y-8">
               <div className="text-center space-y-2">
-                <h2 className="text-3xl font-bold">Discover New Media</h2>
-                <p className="text-muted-foreground">
-                  Find your next favorite show, game, book, or movie
-                </p>
+                <h2 className="text-3xl font-bold">Community Feed</h2>
+                <p className="text-muted-foreground">Recent WIGG points from other users (prototype)</p>
               </div>
-              
-              <div className="space-y-12">
-                <TmdbPopular kind="trending" period="day" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Movie' })} />
-                <TmdbPopularTv kind="popular" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'TV Show' })} />
-                <GameRecommendations onAddGame={handleAddFromRecommendation} />
-                {/* Placeholder removed: Popular TV Shows carousel */}
-                <BookRecommendations onAddBook={handleAddFromRecommendation} />
-              </div>
+              <Feed />
             </TabsContent>
           </Tabs>
         </div>
