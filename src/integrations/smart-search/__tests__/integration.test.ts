@@ -233,7 +233,7 @@ describe('Spec Test Cases', () => {
       const mockResults = [{
         id: `tmdb:${expectedType}:123`,
         title: query.split(' ')[0], // First word as title
-        type: expectedType,
+        type: expectedType as any,
         year: 2020,
         rating: 8.0,
         popularity: 1000,

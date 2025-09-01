@@ -12,6 +12,7 @@ import WiggDemo from "./pages/WiggDemo";
 import Feed from "./pages/Feed";
 import SearchPage from "./pages/Search";
 import TestNavigation from "./pages/TestNavigation";
+import MediaDetails from "./pages/MediaDetails";
 
 const App = () => (
   <TooltipProvider>
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/search" element={<SearchPage />} />
             <Route path="/feed" element={<Feed />} />
             <Route path="/test-nav" element={<TestNavigation />} />
+            <Route path="/media/:source/:id" element={<MediaDetails />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

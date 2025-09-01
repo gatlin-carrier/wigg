@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTmdbPopularTv, useTmdbTrendingTv, useTmdbTvGenres } from '@/integrations/tmdb/hooks';
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export function TmdbPopularTv({ kind = 'popular', period = 'day', onAdd }: Props) {
+  const navigate = useNavigate();
   const { data, isFetching, isError, error } = kind === 'trending' ? useTmdbTrendingTv(period) : useTmdbPopularTv();
   const items = data?.results ?? [];
   const { data: genreMap = {} } = useTmdbTvGenres();
@@ -71,6 +73,7 @@ export function TmdbPopularTv({ kind = 'popular', period = 'day', onAdd }: Props
                   ratingLabel={typeof rating === 'number' ? `${rating.toFixed(1)}/10` : undefined}
                   tags={tags}
                   onAdd={() => onAdd?.({ title, type: 'TV Show' })}
+                  onClick={() => navigate(`/media/tmdb/${r.id}`)}
                 />
               </div>
             );

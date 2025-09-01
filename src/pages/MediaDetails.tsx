@@ -1,0 +1,206 @@
+import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, Star, Calendar, Clock, ExternalLink, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { getMovieDetails, getImageUrl } from '@/integrations/tmdb/client';
+import { useTmdbMovieGenres } from '@/integrations/tmdb/hooks';
+import { cn } from '@/lib/utils';
+
+export default function MediaDetails() {
+  const { source, id } = useParams<{ source: string; id: string }>();
+  const navigate = useNavigate();
+  
+  const { data: movieGenres = {} } = useTmdbMovieGenres();
+  
+  const { data: movie, isLoading, error } = useQuery({
+    queryKey: ['media-details', source, id],
+    queryFn: async () => {
+      if (source === 'tmdb' && id) {
+        return await getMovieDetails(parseInt(id));
+      }
+      throw new Error('Unsupported media source');
+    },
+    enabled: !!source && !!id,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 w-32 bg-muted rounded" />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-1">
+                <div className="aspect-[2/3] bg-muted rounded-lg" />
+              </div>
+              <div className="lg:col-span-2 space-y-4">
+                <div className="h-8 bg-muted rounded w-3/4" />
+                <div className="h-4 bg-muted rounded w-1/2" />
+                <div className="space-y-2">
+                  <div className="h-4 bg-muted rounded" />
+                  <div className="h-4 bg-muted rounded" />
+                  <div className="h-4 bg-muted rounded w-3/4" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !movie) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+          <Card className="p-8 text-center">
+            <h2 className="text-xl font-semibold mb-2">Media Not Found</h2>
+            <p className="text-muted-foreground">Unable to load media details. Please try again.</p>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  const backdropUrl = getImageUrl(movie.backdrop_path, 'original');
+  const posterUrl = getImageUrl(movie.poster_path, 'w500');
+  const genres = (movie as any).genres?.map((g: any) => g.name) || [];
+  const year = movie.release_date?.slice(0, 4);
+  const runtime = (movie as any).runtime;
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Backdrop */}
+      {backdropUrl && (
+        <div className="relative h-96 overflow-hidden">
+          <img 
+            src={backdropUrl} 
+            alt={movie.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
+        </div>
+      )}
+      
+      <div className="container mx-auto px-4 py-8 relative">
+        <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Poster */}
+          <div className="lg:col-span-1">
+            <Card className="p-0 overflow-hidden">
+              {posterUrl ? (
+                <img 
+                  src={posterUrl} 
+                  alt={movie.title}
+                  className="w-full aspect-[2/3] object-cover"
+                />
+              ) : (
+                <div className="w-full aspect-[2/3] bg-muted flex items-center justify-center">
+                  <span className="text-muted-foreground">No poster available</span>
+                </div>
+              )}
+            </Card>
+            
+            <div className="mt-4 space-y-2">
+              <Button className="w-full" size="lg">
+                <Plus className="h-4 w-4 mr-2" />
+                Add WIGG Point
+              </Button>
+              <Button variant="outline" className="w-full" size="lg">
+                <ExternalLink className="h-4 w-4 mr-2" />
+                View on TMDB
+              </Button>
+            </div>
+          </div>
+
+          {/* Details */}
+          <div className="lg:col-span-2 space-y-6">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
+              {(movie as any).tagline && (
+                <p className="text-lg text-muted-foreground italic mb-4">{(movie as any).tagline}</p>
+              )}
+              
+              <div className="flex flex-wrap items-center gap-4 mb-6">
+                {movie.vote_average && (
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                    <span className="font-medium">{(movie.vote_average as number).toFixed(1)}/10</span>
+                  </div>
+                )}
+                {year && (
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <span>{year}</span>
+                  </div>
+                )}
+                {runtime && (
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <span>{runtime} min</span>
+                  </div>
+                )}
+              </div>
+
+              {genres.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {genres.map((genre: string) => (
+                    <Badge key={genre} variant="secondary">{genre}</Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Separator />
+
+            <div>
+              <h2 className="text-xl font-semibold mb-3">Overview</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                {movie.overview || 'No overview available.'}
+              </p>
+            </div>
+
+            {(movie as any).production_companies?.length > 0 && (
+              <>
+                <Separator />
+                <div>
+                  <h2 className="text-xl font-semibold mb-3">Production</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {(movie as any).production_companies.map((company: any) => (
+                      <Badge key={company.id} variant="outline">{company.name}</Badge>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+
+            <Separator />
+
+            <div>
+              <h2 className="text-xl font-semibold mb-3">WIGG Points</h2>
+              <Card className="p-6 text-center border-dashed">
+                <p className="text-muted-foreground mb-3">No WIGG points yet for this media</p>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add the first WIGG point
+                </Button>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

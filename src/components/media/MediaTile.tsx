@@ -11,12 +11,20 @@ type Props = {
   ratingLabel?: string; // e.g., "8.2/10" or "82/100"
   tags?: string[]; // small badges, up to 2-3
   onAdd?: () => void;
+  onClick?: () => void;
   className?: string;
 };
 
-export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, className }: Props) {
+export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onClick, className }: Props) {
   return (
-    <Card className={cn('p-4 bg-card hover:bg-muted/40 border-0 shadow-soft hover:shadow-medium transition-colors duration-200 group h-full', className)}>
+    <Card 
+      className={cn(
+        'p-4 bg-card hover:bg-muted/40 border-0 shadow-soft hover:shadow-medium transition-colors duration-200 group h-full',
+        onClick && 'cursor-pointer',
+        className
+      )}
+      onClick={onClick}
+    >
       {imageUrl && (
         <div className="aspect-[2/3] mb-3 overflow-hidden rounded-lg bg-muted">
           <img src={imageUrl} alt={title} className="w-full h-full object-cover" />

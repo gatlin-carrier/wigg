@@ -67,7 +67,7 @@ export default function SearchPage() {
 
   const tv = (tmdb?.results || []).filter((r) => (r.media_type === 'tv'));
   const movies = (tmdb?.results || []).filter((r) => (r.media_type === 'movie'));
-  const anime = (tmdb?.results || []).filter((r) => isAnime(r, movieGenres, tvGenres));
+  const anime = (tmdb?.results || []).filter((r) => isAnime(r as any, movieGenres, tvGenres));
 
   const chips: Array<{ id: string; label: string; count: number }> = [
     { id: 'tv', label: 'TV', count: tv.length },

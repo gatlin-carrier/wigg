@@ -9,7 +9,8 @@ import type {
   SearchTelemetry 
 } from './types';
 import { generateQueryPlans, extractEpisodeInfo, extractChapterInfo } from './planning';
-import { executeQueryPlans, normalizeProviderResults, deduplicateResults } from './providers';
+import { executeQueryPlans, normalizeProviderResults } from './providers';
+import { deduplicateResults } from './resolution';
 import { resolveSearch } from './resolution';
 import { predictMediaType } from './planning';
 

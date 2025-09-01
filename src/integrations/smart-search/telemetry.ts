@@ -239,7 +239,7 @@ export class TelemetryService {
   }
   
   // Flush telemetry to analytics service
-  private async flush(): void {
+  private async flush(): Promise<void> {
     if (this.buffer.length === 0) return;
     
     const data = [...this.buffer];
