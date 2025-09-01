@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { getMovieDetails, getImageUrl } from '@/integrations/tmdb/client';
 import { useTmdbMovieGenres } from '@/integrations/tmdb/hooks';
+import { WiggMap } from '@/components/wigg/WiggMap';
 import { cn } from '@/lib/utils';
 
 export default function MediaDetails() {
@@ -189,7 +190,25 @@ export default function MediaDetails() {
             <Separator />
 
             <div>
-              <h2 className="text-xl font-semibold mb-3">WIGG Points</h2>
+              <h2 className="text-xl font-semibold mb-3">WIGG Chart</h2>
+              <Card className="p-4 mb-4">
+                <WiggMap
+                  consensus={{
+                    posKind: 'sec',
+                    duration: runtime || 7200, // Use movie runtime or default 2 hours
+                    medianPos: (runtime || 7200) / 2, // Default to middle
+                    windows: []
+                  }}
+                  points={[]}
+                  width={600}
+                  height={80}
+                  className="text-primary"
+                />
+                <p className="text-xs text-muted-foreground mt-2 text-center">
+                  Interactive timeline showing key moments and emotional peaks
+                </p>
+              </Card>
+              
               <Card className="p-6 text-center border-dashed">
                 <p className="text-muted-foreground mb-3">No WIGG points yet for this media</p>
                 <Button>
