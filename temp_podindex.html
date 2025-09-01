@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8"> <!-- Important: rapi-doc uses utf8 characters -->
+        <title>API Docs | PodcastIndex.org</title>
+        <link rel="icon" type="image/png" href="favicon.svg">
+        <!-- can use CDN version: https://unpkg.com/rapidoc/dist/rapidoc-min.js -->
+        <script src="rapidoc-min.js"></script>
+        <script src="scripts.js"></script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+    <!--Additional configuration options: https://rapidocweb.com/api.html -->
+    <!--suppress HtmlUnknownTag -->
+    <rapi-doc
+        id="doc-root"
+
+        spec-url="pi_api.json"
+
+        render-style="read"
+
+        allow-spec-url-load="false"
+        allow-spec-file-load="false"
+        allow-server-selection="false"
+        sort-endpoints-by="method"
+        schema-expand-level="2"
+        schema-description-expanded="true"
+        default-schema-tab="schema"
+        info-description-headings-in-navbar="true"
+        nav-item-spacing="compact"
+
+        theme="light"
+        primary-color="#e90000"
+        header-color="#444444"
+        nav-bg-color="#4b4b4b"
+        text-color="#F9F9F9"
+    >
+
+
+        <div slot="logo">
+            <!--suppress HtmlUnknownAnchorTarget -->
+            <a href="#overview"><img src="logo.svg" alt="Logo"/></a>
+        </div>
+        <div slot="header" class="pi-header">
+            <!--suppress HtmlUnknownAnchorTarget -->
+            <a href="#overview" class="home-logo"><img src="logo.svg" alt="Logo"/></a>
+            <span
+                class="theme-toggle pi-button"
+                data-theme="light"
+                onclick="toggleTheme()"
+            ></span>
+        </div>
+        <div slot="footer" class="pi-footer">
+            <span
+                class="pi-button"
+                onclick="revertSettings()"
+            >Revert Settings</span>
+        </div>
+    </rapi-doc>
+    <noscript>
+        <h1>API Docs | PodcastIndex.org</h1>
+        <p>The documentation requires JavaScript to be enabled.</p>
+        <p>Download the documentation in openapi spec in <a href="pi_api.json">json</a> or <a href="pi_api.yaml">yaml</a> format.</p>
+        <p>Additional information in the <a href="https://github.com/Podcastindex-org/docs-api">docs api git repo</a></p>
+        <p>Podcast Index main site: <a href="https://podcastindex.org/">https://podcastindex.org/</a></p>
+    </noscript>
+    </body>
+</html>
+
+
