@@ -53,6 +53,10 @@ export async function getPopularTv(page = 1) {
   return tmdbGet<TmdbSearchResponse<TmdbMovie>>('/tv/popular', { page, language: 'en-US' });
 }
 
+export async function getTvDetails(id: number) {
+  return tmdbGet<any>(`/tv/${id}`, { language: 'en-US' });
+}
+
 // Genre lists (use to map genre_ids -> names)
 export async function getMovieGenres() {
   return tmdbGet<{ genres: { id: number; name: string }[] }>(`/genre/movie/list`, { language: 'en-US' });
@@ -60,4 +64,27 @@ export async function getMovieGenres() {
 
 export async function getTvGenres() {
   return tmdbGet<{ genres: { id: number; name: string }[] }>(`/genre/tv/list`, { language: 'en-US' });
+}
+
+// Anime discovery (heuristic): Animation genre + original language Japanese
+export async function discoverAnimeTv(page = 1, language: 'ja-JP' | 'en-US' = 'ja-JP') {
+  return tmdbGet<TmdbSearchResponse<any>>('/discover/tv', {
+    page,
+    sort_by: 'popularity.desc',
+    with_genres: 16, // Animation
+    with_original_language: 'ja',
+    language,
+    include_adult: false,
+  });
+}
+
+export async function discoverAnimeMovies(page = 1, language: 'ja-JP' | 'en-US' = 'ja-JP') {
+  return tmdbGet<TmdbSearchResponse<any>>('/discover/movie', {
+    page,
+    sort_by: 'popularity.desc',
+    with_genres: 16, // Animation
+    with_original_language: 'ja',
+    language,
+    include_adult: false,
+  });
 }

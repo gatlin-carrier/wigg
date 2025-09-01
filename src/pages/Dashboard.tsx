@@ -9,6 +9,7 @@ import { Plus, List } from "lucide-react";
 import Feed from "./Feed";
 import TmdbPopular from "@/components/tmdb/TmdbPopular";
 import TmdbPopularTv from "@/components/tmdb/TmdbPopularTv";
+import TmdbAnime from "@/components/tmdb/TmdbAnime";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
@@ -162,6 +163,8 @@ const Dashboard = () => {
                   {!userPreferences.includes("TV Show") && (
                     <TmdbPopularTv kind="popular" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'TV Show' })} />
                   )}
+                  {/* Anime rail (Animation + Japanese) */}
+                  <TmdbAnime onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: it.type })} />
                   {!userPreferences.includes("Game") && (
                     <GameRecommendations onAddGame={handleAddFromRecommendation} />
                   )}

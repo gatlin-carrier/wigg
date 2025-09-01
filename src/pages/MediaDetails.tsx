@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { getMovieDetails, getImageUrl } from '@/integrations/tmdb/client';
+import { getMovieDetails, getTvDetails, getImageUrl } from '@/integrations/tmdb/client';
 import { fetchWorkDetails } from '@/integrations/openlibrary/client';
 import { useTmdbMovieGenres } from '@/integrations/tmdb/hooks';
 import { WiggMap } from '@/components/wigg/WiggMap';
@@ -23,8 +23,11 @@ export default function MediaDetails() {
   const { data: movie, isLoading, error } = useQuery({
     queryKey: ['media-details', source, id],
     queryFn: async () => {
-      if (source === 'tmdb' && id) {
+      if ((source === 'tmdb' || source === 'tmdb-movie') && id) {
         return await getMovieDetails(parseInt(id));
+      }
+      if (source === 'tmdb-tv' && id) {
+        return await getTvDetails(parseInt(id));
       }
       if (source === 'game' && id) {
         const { data, error } = await supabase.functions.invoke('fetch-game-details', {
@@ -44,23 +47,24 @@ export default function MediaDetails() {
   });
 
   // Media type flags and hero image candidates computed before any returns
-  const isTmdb = source === 'tmdb';
+  const isTmdbMovie = source === 'tmdb' || source === 'tmdb-movie';
+  const isTmdbTv = source === 'tmdb-tv';
   const isGame = source === 'game';
   const isBook = source === 'openlibrary';
 
-  const hasLargeBackdrop = isTmdb
+  const hasLargeBackdrop = (isTmdbMovie || isTmdbTv)
     ? Boolean((movie as any)?.backdrop_path)
     : isGame
       ? Boolean((movie as any)?.background)
       : false;
 
   const backdropUrl = hasLargeBackdrop
-    ? (isTmdb
+    ? ((isTmdbMovie || isTmdbTv)
         ? getImageUrl((movie as any)?.backdrop_path, 'original')
         : (movie as any)?.background ?? undefined)
     : undefined;
 
-  const posterUrl = isTmdb
+  const posterUrl = (isTmdbMovie || isTmdbTv)
     ? getImageUrl((movie as any)?.poster_path, 'w500')
     : isBook
       ? ((movie as any)?.cover_url ?? undefined)
@@ -134,30 +138,40 @@ export default function MediaDetails() {
   }
 
   // Now that data is loaded, compute display fields
-  const title = isTmdb
+  const title = isTmdbMovie
     ? (movie as any).title
+    : isTmdbTv
+      ? ((movie as any)?.name ?? 'Untitled')
     : isBook
       ? ((movie as any)?.title ?? 'Untitled')
       : ((movie as any)?.name ?? (movie as any)?.title ?? 'Untitled');
-  const genres = isTmdb
+  const genres = (isTmdbMovie || isTmdbTv)
     ? ((movie as any).genres?.map((g: any) => g.name) || [])
     : isBook
       ? ((movie as any)?.subjects ?? [])
       : (((movie as any)?.genres as string[] | undefined) ?? []);
-  const year = isTmdb
+  const year = isTmdbMovie
     ? (movie as any).release_date?.slice(0, 4)
+    : isTmdbTv
+      ? ((movie as any)?.first_air_date || '').slice(0, 4)
     : isBook
       ? String((movie as any)?.first_publish_date ?? '').slice(0, 4)
       : String((movie as any)?.releaseDate ?? '').slice(0, 4);
-  const rating = isTmdb ? (movie as any).vote_average : (movie as any)?.rating;
-  const overview = isTmdb
+  const rating = (isTmdbMovie || isTmdbTv) ? (movie as any).vote_average : (movie as any)?.rating;
+  const overview = (isTmdbMovie || isTmdbTv)
     ? (movie as any).overview
     : isBook
       ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
       : ((movie as any)?.summary ?? 'No overview available.');
-  const runtime = isTmdb ? (movie as any).runtime : undefined;
-  const externalUrl = isTmdb
+  const runtime = isTmdbMovie
+    ? (movie as any).runtime
+    : isTmdbTv
+      ? (Array.isArray((movie as any)?.episode_run_time) && (movie as any).episode_run_time[0]) || (movie as any)?.last_episode_to_air?.runtime || undefined
+      : undefined;
+  const externalUrl = isTmdbMovie
     ? `https://www.themoviedb.org/movie/${(movie as any).id}`
+    : isTmdbTv
+      ? `https://www.themoviedb.org/tv/${(movie as any).id}`
     : isBook
       ? (`https://openlibrary.org${(movie as any)?.key ?? ''}`)
       : (movie as any)?.url;
@@ -227,7 +241,7 @@ export default function MediaDetails() {
                 <Button asChild variant="outline" className="w-full" size="lg">
                   <a href={externalUrl} target="_blank" rel="noreferrer">
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    {isTmdb ? 'View on TMDB' : 'View Website'}
+                    {(isTmdbMovie || isTmdbTv) ? 'View on TMDB' : 'View Website'}
                   </a>
                 </Button>
               )}
@@ -238,7 +252,7 @@ export default function MediaDetails() {
           <div className="lg:col-span-2 space-y-6">
             <div>
               <h1 className="text-4xl font-bold mb-2">{title}</h1>
-              {isTmdb && (movie as any).tagline && (
+              {(isTmdbMovie || isTmdbTv) && (movie as any).tagline && (
                 <p className="text-lg text-muted-foreground italic mb-4">{(movie as any).tagline}</p>
               )}
               
@@ -279,7 +293,7 @@ export default function MediaDetails() {
               <p className="text-muted-foreground leading-relaxed">{overview}</p>
             </div>
 
-            {isTmdb && (movie as any).production_companies?.length > 0 && (
+            {isTmdbMovie && (movie as any).production_companies?.length > 0 && (
               <>
                 <Separator />
                 <div>

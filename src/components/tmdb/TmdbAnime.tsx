@@ -2,22 +2,21 @@ import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useTmdbPopularTv, useTmdbTrendingTv, useTmdbTvGenres } from '@/integrations/tmdb/hooks';
+import { useTmdbAnime, useTmdbMovieGenres, useTmdbTvGenres } from '@/integrations/tmdb/hooks';
 import { getImageUrl } from '@/integrations/tmdb/client';
 import useEmblaCarousel from 'embla-carousel-react';
 import MediaTile from '@/components/media/MediaTile';
 
 type Props = {
-  kind?: 'trending' | 'popular';
-  period?: 'day' | 'week';
-  onAdd?: (item: { title: string; type: 'TV Show' }) => void;
+  onAdd?: (item: { title: string; type: 'Movie' | 'TV Show' }) => void;
 };
 
-export function TmdbPopularTv({ kind = 'popular', period = 'day', onAdd }: Props) {
+export function TmdbAnime({ onAdd }: Props) {
   const navigate = useNavigate();
-  const { data, isFetching, isError, error } = kind === 'trending' ? useTmdbTrendingTv(period) : useTmdbPopularTv();
+  const { data, isFetching, isError, error } = useTmdbAnime();
   const items = data?.results ?? [];
-  const { data: genreMap = {} } = useTmdbTvGenres();
+  const { data: movieGenreMap = {} } = useTmdbMovieGenres();
+  const { data: tvGenreMap = {} } = useTmdbTvGenres();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start', slidesToScroll: 1, dragFree: true });
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -25,9 +24,7 @@ export function TmdbPopularTv({ kind = 'popular', period = 'day', onAdd }: Props
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold">
-          {kind === 'trending' ? `Trending TV (${period})` : 'Popular TV Shows'}
-        </h3>
+        <h3 className="text-xl font-semibold">Popular Anime</h3>
         <div className="hidden sm:flex gap-2">
           <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={scrollPrev} aria-label="Prev">
             <ChevronLeft className="h-4 w-4" />
@@ -46,7 +43,7 @@ export function TmdbPopularTv({ kind = 'popular', period = 'day', onAdd }: Props
 
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex gap-3">
-          {(isFetching && !items.length ? Array.from({ length: 10 }) : items.slice(0, 24)).map((it: any, idx: number) => {
+          {(isFetching && !items.length ? Array.from({ length: 10 }) : items).map((it: any, idx: number) => {
             if (isFetching && !items.length) {
               return (
                 <div key={idx} className="flex-none w-36 sm:w-40 md:w-44 lg:w-48">
@@ -58,22 +55,30 @@ export function TmdbPopularTv({ kind = 'popular', period = 'day', onAdd }: Props
               );
             }
             const r = it;
-            const title = (r as any).name ?? (r as any).title ?? 'Untitled';
-            const year = ((r as any).first_air_date || (r as any).release_date || '').slice(0, 4);
-            const poster = getImageUrl((r as any).poster_path, 'w342');
+            const isTv = r.__kind === 'tv' || (!!(r as any).first_air_date && !(r as any).title);
+            const titleEn = (r as any).__title_en || (isTv ? (r as any).name : (r as any).title) || 'Untitled';
+            const titleJa = (r as any).__title_ja || (isTv ? (r as any).original_name : (r as any).original_title) || '';
+            const displayTitle = titleJa && titleJa !== titleEn ? `${titleEn} (${titleJa})` : titleEn;
+            const dateStr = isTv ? (r as any).first_air_date : (r as any).release_date;
+            const year = (dateStr || '').slice(0, 4);
+            const posterPath = (r as any).poster_path;
+            const poster = getImageUrl(posterPath, 'w342');
             const rating = (r as any).vote_average;
             const genreIds: number[] = (r as any).genre_ids || [];
-            const tags = genreIds.map((id) => genreMap[id]).filter(Boolean).slice(0, 2);
+            const tags = genreIds
+              .map((id) => (isTv ? tvGenreMap[id] : movieGenreMap[id]))
+              .filter(Boolean)
+              .slice(0, 2);
             return (
-              <div key={`tv-${r.id}`} className="flex-none w-36 sm:w-40 md:w-44 lg:w-48">
+              <div key={`anime-${r.__kind}-${r.id}`} className="flex-none w-36 sm:w-40 md:w-44 lg:w-48">
                 <MediaTile
-                  title={title}
+                  title={displayTitle}
                   imageUrl={poster}
                   year={year}
                   ratingLabel={typeof rating === 'number' ? `${rating.toFixed(1)}/10` : undefined}
                   tags={tags}
-                  onAdd={() => onAdd?.({ title, type: 'TV Show' })}
-                  onClick={() => navigate(`/media/tmdb-tv/${r.id}`)}
+                  onAdd={() => onAdd?.({ title: displayTitle, type: isTv ? 'TV Show' : 'Movie' })}
+                  onClick={() => navigate(isTv ? `/media/tmdb-tv/${r.id}` : `/media/tmdb/${r.id}`)}
                 />
               </div>
             );
@@ -84,4 +89,4 @@ export function TmdbPopularTv({ kind = 'popular', period = 'day', onAdd }: Props
   );
 }
 
-export default TmdbPopularTv;
+export default TmdbAnime;
