@@ -23,6 +23,7 @@ export default function GlobalHeader() {
   
   // Determine if we should show navigation buttons based on current route
   const isHomePage = location.pathname === '/';
+  const isDashboardPage = location.pathname === '/dashboard';
   const canGoBack = window.history.length > 1;
   
   const handleBack = () => {
@@ -50,7 +51,7 @@ export default function GlobalHeader() {
           <div className="flex items-center gap-4">
             {/* Navigation Buttons */}
             <div className="flex items-center gap-2">
-              {showBackButton && !isHomePage && (
+              {showBackButton && !isHomePage && !isDashboardPage && (
                 <Button
                   variant="outline"
                   size="sm"
@@ -63,7 +64,7 @@ export default function GlobalHeader() {
                 </Button>
               )}
               
-              {showHomeButton && !isHomePage && (
+              {showHomeButton && !isHomePage && !isDashboardPage && (
                 <Button
                   variant="outline"
                   size="sm"
