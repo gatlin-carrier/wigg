@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Film, Tv, Gamepad2, Book, Mic } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -15,7 +16,7 @@ const Auth = () => {
   const { toast } = useToast();
   
   const [signInData, setSignInData] = useState({ email: "", password: "" });
-  const [signUpData, setSignUpData] = useState({ email: "", password: "", username: "" });
+  const [signUpData, setSignUpData] = useState({ email: "", password: "", username: "", preferences: [] as string[] });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -39,7 +40,13 @@ const Auth = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    const { error } = await signUp(signUpData.email, signUpData.password, signUpData.username);
+    // Store preferences in username meta data for now
+    const metadata = { 
+      username: signUpData.username,
+      preferred_media_types: signUpData.preferences.length > 0 ? signUpData.preferences : ["Movie", "TV Show", "Game", "Book", "Podcast"]
+    };
+    
+    const { error } = await signUp(signUpData.email, signUpData.password, signUpData.username, metadata);
     
     if (error) {
       toast({
@@ -55,6 +62,23 @@ const Auth = () => {
     }
     
     setIsLoading(false);
+  };
+
+  const mediaTypes = [
+    { id: "Movie", label: "Movies", icon: Film },
+    { id: "TV Show", label: "TV Shows", icon: Tv },
+    { id: "Game", label: "Games", icon: Gamepad2 },
+    { id: "Book", label: "Books", icon: Book },
+    { id: "Podcast", label: "Podcasts", icon: Mic },
+  ];
+
+  const togglePreference = (mediaType: string) => {
+    setSignUpData(prev => ({
+      ...prev,
+      preferences: prev.preferences.includes(mediaType)
+        ? prev.preferences.filter(p => p !== mediaType)
+        : [...prev.preferences, mediaType]
+    }));
   };
 
   if (loading) {
@@ -184,6 +208,37 @@ const Auth = () => {
                         required
                       />
                     </div>
+                    
+                    <div className="space-y-3">
+                      <Label>What type of media interests you most? (optional)</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Select your preferences to get better recommendations
+                      </p>
+                      <div className="grid grid-cols-2 gap-3">
+                        {mediaTypes.map((type) => {
+                          const Icon = type.icon;
+                          return (
+                            <div
+                              key={type.id}
+                              className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer transition-colors ${
+                                signUpData.preferences.includes(type.id)
+                                  ? "border-primary bg-primary/5"
+                                  : "border-border hover:bg-muted/50"
+                              }`}
+                              onClick={() => togglePreference(type.id)}
+                            >
+                              <Checkbox
+                                checked={signUpData.preferences.includes(type.id)}
+                                onChange={() => togglePreference(type.id)}
+                              />
+                              <Icon className="h-4 w-4" />
+                              <span className="text-sm">{type.label}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Create Account

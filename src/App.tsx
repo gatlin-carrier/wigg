@@ -13,6 +13,7 @@ import Feed from "./pages/Feed";
 import SearchPage from "./pages/Search";
 import TestNavigation from "./pages/TestNavigation";
 import MediaDetails from "./pages/MediaDetails";
+import Profile from "./pages/Profile";
 
 const App = () => (
   <TooltipProvider>
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/feed" element={<Feed />} />
             <Route path="/test-nav" element={<TestNavigation />} />
             <Route path="/media/:source/:id" element={<MediaDetails />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

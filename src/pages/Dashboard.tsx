@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WiggPointForm } from "@/components/WiggPointForm";
@@ -10,6 +10,7 @@ import Feed from "./Feed";
 import TmdbPopular from "@/components/tmdb/TmdbPopular";
 import TmdbPopularTv from "@/components/tmdb/TmdbPopularTv";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
 
 interface MediaEntry {
@@ -53,6 +54,38 @@ const mockEntries: MediaEntry[] = [
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const [userPreferences, setUserPreferences] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      loadUserPreferences();
+    }
+  }, [user]);
+
+  const loadUserPreferences = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('preferred_media_types')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data?.preferred_media_types) {
+        setUserPreferences(data.preferred_media_types);
+      } else {
+        // Default preferences if none set
+        setUserPreferences(["Movie", "TV Show", "Game", "Book", "Podcast"]);
+      }
+    } catch (error) {
+      console.error('Error loading user preferences:', error);
+      // Default preferences on error
+      setUserPreferences(["Movie", "TV Show", "Game", "Book", "Podcast"]);
+    }
+  };
   const [selectedMedia, setSelectedMedia] = useState<{ title: string; type: "Game" | "Movie" | "TV Show" | "Book" } | null>(null);
   
   // Configure global header for this page

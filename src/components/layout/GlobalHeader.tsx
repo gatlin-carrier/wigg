@@ -1,15 +1,17 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Home } from 'lucide-react';
+import { ArrowLeft, Home, User } from 'lucide-react';
 import HeaderSearch from '@/components/search/HeaderSearch';
 import ThemeToggle from '@/components/ThemeToggle';
 import { useHeader } from '@/contexts/HeaderContext';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function GlobalHeader() {
   const navigate = useNavigate();
   const location = useLocation();
   const { config } = useHeader();
+  const { user } = useAuth();
   
   const { 
     title, 
@@ -96,6 +98,20 @@ export default function GlobalHeader() {
           <div className="flex items-center gap-3">
             <HeaderSearch />
             {rightContent}
+            
+            {/* Profile button - only show when logged in */}
+            {user && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/profile')}
+                className="flex items-center gap-1"
+              >
+                <User className="h-4 w-4" />
+                <span className="hidden sm:inline">Profile</span>
+              </Button>
+            )}
+            
             <ThemeToggle />
           </div>
         </div>

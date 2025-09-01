@@ -240,6 +240,7 @@ export type Database = {
           created_at: string
           id: string
           patience: number
+          preferred_media_types: string[] | null
           sensitivity_flags: string[]
           trust_score: number
           username: string | null
@@ -248,6 +249,7 @@ export type Database = {
           created_at?: string
           id: string
           patience?: number
+          preferred_media_types?: string[] | null
           sensitivity_flags?: string[]
           trust_score?: number
           username?: string | null
@@ -256,6 +258,7 @@ export type Database = {
           created_at?: string
           id?: string
           patience?: number
+          preferred_media_types?: string[] | null
           sensitivity_flags?: string[]
           trust_score?: number
           username?: string | null
