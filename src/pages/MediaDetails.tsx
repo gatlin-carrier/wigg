@@ -204,9 +204,6 @@ export default function MediaDetails() {
                   height={80}
                   className="text-primary"
                 />
-                <p className="text-xs text-muted-foreground mt-2 text-center">
-                  Interactive timeline showing key moments and emotional peaks
-                </p>
               </Card>
               
               <Card className="p-6 text-center border-dashed">
