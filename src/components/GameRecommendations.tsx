@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePopularGames } from "@/integrations/games/hooks";
 import useEmblaCarousel from 'embla-carousel-react';
 import MediaTile from "@/components/media/MediaTile";
+import { useNavigate } from "react-router-dom";
 
 interface GameRecommendationsProps {
   onAddGame: (gameData: { title: string; type: "Game" }) => void;
@@ -12,6 +13,7 @@ interface GameRecommendationsProps {
 
 export const GameRecommendations = ({ onAddGame }: GameRecommendationsProps) => {
   const { data: games = [], isFetching, isError, error, refetch } = usePopularGames();
+  const navigate = useNavigate();
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     loop: false, 
     align: 'start',
@@ -109,6 +111,7 @@ export const GameRecommendations = ({ onAddGame }: GameRecommendationsProps) => 
                 ratingLabel={game.rating ? `${game.rating}/100` : undefined}
                 tags={game.genres ? String(game.genres).split(', ').slice(0, 2) : []}
                 onAdd={() => onAddGame({ title: game.name, type: 'Game' })}
+                onClick={() => navigate(`/media/game/${game.id}`)}
               />
             </div>
           ))}

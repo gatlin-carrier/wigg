@@ -10,6 +10,7 @@ import { getMovieDetails, getImageUrl } from '@/integrations/tmdb/client';
 import { useTmdbMovieGenres } from '@/integrations/tmdb/hooks';
 import { WiggMap } from '@/components/wigg/WiggMap';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function MediaDetails() {
   const { source, id } = useParams<{ source: string; id: string }>();
@@ -22,6 +23,15 @@ export default function MediaDetails() {
     queryFn: async () => {
       if (source === 'tmdb' && id) {
         return await getMovieDetails(parseInt(id));
+      }
+      if (source === 'game' && id) {
+        const { data, error } = await supabase.functions.invoke('fetch-game-details', {
+          body: { id: Number(id) },
+        });
+        if (error) throw error;
+        // Support either { game: {...} } or raw object shape
+        const payload: any = data ?? null;
+        return (payload?.game ?? payload) as any;
       }
       throw new Error('Unsupported media source');
     },
@@ -71,20 +81,25 @@ export default function MediaDetails() {
     );
   }
 
-  const backdropUrl = getImageUrl(movie.backdrop_path, 'original');
-  const posterUrl = getImageUrl(movie.poster_path, 'w500');
-  const genres = (movie as any).genres?.map((g: any) => g.name) || [];
-  const year = movie.release_date?.slice(0, 4);
-  const runtime = (movie as any).runtime;
+  const isTmdb = source === 'tmdb';
+  const backdropUrl = isTmdb ? getImageUrl((movie as any).backdrop_path, 'original') : ((movie as any)?.background ?? undefined);
+  const posterUrl = isTmdb ? getImageUrl((movie as any).poster_path, 'w500') : ((movie as any)?.cover ?? undefined);
+  const title = isTmdb ? (movie as any).title : ((movie as any)?.name ?? (movie as any)?.title ?? 'Untitled');
+  const genres = isTmdb ? ((movie as any).genres?.map((g: any) => g.name) || []) : (((movie as any)?.genres as string[] | undefined) ?? []);
+  const year = isTmdb ? (movie as any).release_date?.slice(0, 4) : String((movie as any)?.releaseDate ?? '').slice(0, 4);
+  const rating = isTmdb ? (movie as any).vote_average : (movie as any)?.rating;
+  const overview = isTmdb ? (movie as any).overview : ((movie as any)?.summary ?? 'No overview available.');
+  const runtime = isTmdb ? (movie as any).runtime : undefined;
+  const externalUrl = isTmdb ? `https://www.themoviedb.org/movie/${(movie as any).id}` : (movie as any)?.url;
 
   return (
     <div className="min-h-screen bg-background">
       {/* Backdrop */}
       {backdropUrl && (
         <div className="relative h-96 overflow-hidden">
-          <img 
-            src={backdropUrl} 
-            alt={movie.title}
+          <img
+            src={backdropUrl}
+            alt={title}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
@@ -102,9 +117,9 @@ export default function MediaDetails() {
           <div className="lg:col-span-1">
             <Card className="p-0 overflow-hidden">
               {posterUrl ? (
-                <img 
-                  src={posterUrl} 
-                  alt={movie.title}
+                <img
+                  src={posterUrl}
+                  alt={title}
                   className="w-full aspect-[2/3] object-cover"
                 />
               ) : (
@@ -119,26 +134,30 @@ export default function MediaDetails() {
                 <Plus className="h-4 w-4 mr-2" />
                 Add WIGG Point
               </Button>
-              <Button variant="outline" className="w-full" size="lg">
-                <ExternalLink className="h-4 w-4 mr-2" />
-                View on TMDB
-              </Button>
+              {externalUrl && (
+                <Button asChild variant="outline" className="w-full" size="lg">
+                  <a href={externalUrl} target="_blank" rel="noreferrer">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    {isTmdb ? 'View on TMDB' : 'View Website'}
+                  </a>
+                </Button>
+              )}
             </div>
           </div>
 
           {/* Details */}
           <div className="lg:col-span-2 space-y-6">
             <div>
-              <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
-              {(movie as any).tagline && (
+              <h1 className="text-4xl font-bold mb-2">{title}</h1>
+              {isTmdb && (movie as any).tagline && (
                 <p className="text-lg text-muted-foreground italic mb-4">{(movie as any).tagline}</p>
               )}
               
               <div className="flex flex-wrap items-center gap-4 mb-6">
-                {movie.vote_average && (
+                {rating && (
                   <div className="flex items-center gap-1">
                     <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                    <span className="font-medium">{(movie.vote_average as number).toFixed(1)}/10</span>
+                    <span className="font-medium">{(Number(rating) as number).toFixed(1)}/10</span>
                   </div>
                 )}
                 {year && (
@@ -168,12 +187,10 @@ export default function MediaDetails() {
 
             <div>
               <h2 className="text-xl font-semibold mb-3">Overview</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                {movie.overview || 'No overview available.'}
-              </p>
+              <p className="text-muted-foreground leading-relaxed">{overview}</p>
             </div>
 
-            {(movie as any).production_companies?.length > 0 && (
+            {isTmdb && (movie as any).production_companies?.length > 0 && (
               <>
                 <Separator />
                 <div>

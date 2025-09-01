@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Plus, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Props = {
@@ -31,13 +30,8 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
         </div>
       )}
       <div className="space-y-2">
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start gap-2">
           <h3 className="font-medium text-foreground leading-tight line-clamp-2 min-h-[2lh]">{title}</h3>
-          {onAdd && (
-            <Button size="sm" variant="outline" className="shrink-0 h-8 w-8 p-0" onClick={onAdd} aria-label={`Add ${title}`}>
-              <Plus className="h-3 w-3" />
-            </Button>
-          )}
         </div>
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           {ratingLabel && (

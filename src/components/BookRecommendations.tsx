@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 import { useOpenLibraryTrending } from "@/integrations/openlibrary/hooks";
 import MediaTile from "@/components/media/MediaTile";

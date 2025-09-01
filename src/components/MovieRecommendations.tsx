@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 
 interface Movie {
@@ -170,18 +170,10 @@ export const MovieRecommendations = ({ onAddMovie }: MovieRecommendationsProps) 
                 )}
                 
                 <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-start gap-2">
                     <h3 className="font-medium text-foreground leading-tight line-clamp-2">
                       {movie.title}
                     </h3>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="shrink-0 h-8 w-8 p-0"
-                      onClick={() => onAddMovie({ title: movie.title, type: "Movie" })}
-                    >
-                      <Plus className="h-3 w-3" />
-                    </Button>
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
