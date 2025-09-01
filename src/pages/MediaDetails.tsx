@@ -81,6 +81,7 @@ export default function MediaDetails() {
   }
 
   const isTmdb = source === 'tmdb';
+  const isGame = source === 'game';
   const isBook = source === 'openlibrary';
   const backdropUrl = isTmdb
     ? getImageUrl((movie as any).backdrop_path, 'original')
@@ -125,11 +126,33 @@ export default function MediaDetails() {
       {/* Backdrop */}
       {backdropUrl && (
         <div className="relative h-96 overflow-hidden">
-          <img
-            src={backdropUrl}
-            alt={title}
-            className="w-full h-full object-cover"
-          />
+          {/* Use responsive sources for IGDB game backgrounds */}
+          {isGame ? (
+            <picture>
+              {/* Mobile: 720p to save bandwidth */}
+              <source
+                media="(max-width: 640px)"
+                srcSet={resizeIgdbImage(backdropUrl, 't_720p') || backdropUrl}
+              />
+              {/* Tablets/Small desktops: 1080p */}
+              <source
+                media="(max-width: 1280px)"
+                srcSet={resizeIgdbImage(backdropUrl, 't_1080p') || backdropUrl}
+              />
+              <img
+                src={resizeIgdbImage(backdropUrl, 't_original') || backdropUrl}
+                alt={title}
+                className="w-full h-full object-cover"
+                decoding="async"
+              />
+            </picture>
+          ) : (
+            <img
+              src={backdropUrl}
+              alt={title}
+              className="w-full h-full object-cover"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
         </div>
       )}
@@ -259,4 +282,19 @@ export default function MediaDetails() {
       </div>
     </div>
   );
+}
+
+// For IGDB images, swap any size token (e.g., t_thumb, t_1080p) with the desired one.
+function resizeIgdbImage(url?: string, targetSize?: 't_720p' | 't_1080p' | 't_original' | 't_cover_big') {
+  if (!url) return undefined;
+  try {
+    const u = new URL(url, window.location.origin);
+    // Only rewrite IGDB-hosted images
+    if (!u.hostname.includes('images.igdb.com')) return url;
+    const replaced = u.pathname.replace(/\/t_[^/]+\//, `/${targetSize ?? 't_original'}/`);
+    return `${u.protocol}//${u.host}${replaced}`;
+  } catch {
+    // Fallback: simple string replace pattern
+    return url.replace(/\/t_[^/]+\//, `/${targetSize ?? 't_original'}/`);
+  }
 }

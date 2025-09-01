@@ -31,9 +31,11 @@ async function getAccessToken(clientId: string, clientSecret: string): Promise<s
   return tokenData.access_token as string;
 }
 
-function toHttpsSized(url?: string | null, replaceFrom: string, replaceTo: string): string | null {
+function toHttpsResized(url?: string | null, targetSize: string): string | null {
   if (!url) return null;
-  return `https:${url.replace(replaceFrom, replaceTo)}`;
+  const full = url.startsWith("http") ? url : `https:${url}`;
+  // Replace any IGDB size token (e.g., t_thumb, t_screenshot_med, t_1080p) with targetSize
+  return full.replace(/\/t_[^/]+\//, `/${targetSize}/`);
 }
 
 serve(async (req) => {
@@ -107,11 +109,14 @@ serve(async (req) => {
     const details: GameDetails = {
       id: g.id,
       name: g.name,
-      cover: toHttpsSized(g?.cover?.url ?? null, "t_thumb", "t_cover_big"),
+      cover: toHttpsResized(g?.cover?.url ?? null, "t_cover_big"),
       background:
-        toHttpsSized(artworkUrl, "t_thumb", "t_1080p") ||
-        toHttpsSized(screenshotUrl, "t_screenshot_med", "t_1080p") ||
-        toHttpsSized(screenshotUrl, "t_thumb", "t_1080p"),
+        // Prefer full-resolution backgrounds when available
+        toHttpsResized(artworkUrl, "t_original") ||
+        toHttpsResized(screenshotUrl, "t_original") ||
+        // Fallback to 1080p if original isn't available
+        toHttpsResized(artworkUrl, "t_1080p") ||
+        toHttpsResized(screenshotUrl, "t_1080p"),
       rating: typeof g.aggregated_rating === "number"
         ? g.aggregated_rating
         : (typeof g.rating === "number" ? g.rating : null),
@@ -137,4 +142,3 @@ serve(async (req) => {
     });
   }
 });
-
