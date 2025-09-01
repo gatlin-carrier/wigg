@@ -15,6 +15,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 export default function MediaDetails() {
   const { source, id } = useParams<{ source: string; id: string }>();
+  const [heroColor, setHeroColor] = React.useState<string | undefined>(undefined);
+  const [bgError, setBgError] = React.useState<boolean>(false);
   
   const { data: movieGenres = {} } = useTmdbMovieGenres();
   
@@ -40,6 +42,57 @@ export default function MediaDetails() {
     },
     enabled: !!source && !!id,
   });
+
+  // Media type flags and hero image candidates computed before any returns
+  const isTmdb = source === 'tmdb';
+  const isGame = source === 'game';
+  const isBook = source === 'openlibrary';
+
+  const hasLargeBackdrop = isTmdb
+    ? Boolean((movie as any)?.backdrop_path)
+    : isGame
+      ? Boolean((movie as any)?.background)
+      : false;
+
+  const backdropUrl = hasLargeBackdrop
+    ? (isTmdb
+        ? getImageUrl((movie as any)?.backdrop_path, 'original')
+        : (movie as any)?.background ?? undefined)
+    : undefined;
+
+  const posterUrl = isTmdb
+    ? getImageUrl((movie as any)?.poster_path, 'w500')
+    : isBook
+      ? ((movie as any)?.cover_url ?? undefined)
+      : ((movie as any)?.cover ?? undefined);
+
+  // Keep hooks order stable: effects must be above any early returns
+  React.useEffect(() => {
+    setBgError(false);
+  }, [backdropUrl]);
+
+  React.useEffect(() => {
+    if (backdropUrl && !bgError) {
+      setHeroColor(undefined);
+      return;
+    }
+    const candidate = posterUrl || undefined;
+    let cancelled = false;
+    if (!candidate) {
+      setHeroColor(undefined);
+      return;
+    }
+    extractDominantColor(candidate)
+      .then((rgb) => {
+        if (!cancelled) setHeroColor(rgb);
+      })
+      .catch(() => {
+        if (!cancelled) setHeroColor(undefined);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [backdropUrl, posterUrl, bgError]);
 
   if (isLoading) {
     return (
@@ -80,19 +133,7 @@ export default function MediaDetails() {
     );
   }
 
-  const isTmdb = source === 'tmdb';
-  const isGame = source === 'game';
-  const isBook = source === 'openlibrary';
-  const backdropUrl = isTmdb
-    ? getImageUrl((movie as any).backdrop_path, 'original')
-    : isBook
-      ? ((movie as any)?.cover_url ?? undefined)
-      : ((movie as any)?.background ?? undefined);
-  const posterUrl = isTmdb
-    ? getImageUrl((movie as any).poster_path, 'w500')
-    : isBook
-      ? ((movie as any)?.cover_url ?? undefined)
-      : ((movie as any)?.cover ?? undefined);
+  // Now that data is loaded, compute display fields
   const title = isTmdb
     ? (movie as any).title
     : isBook
@@ -121,41 +162,43 @@ export default function MediaDetails() {
       ? (`https://openlibrary.org${(movie as any)?.key ?? ''}`)
       : (movie as any)?.url;
 
+  
+
   return (
     <div className="min-h-screen bg-background">
       {/* Backdrop */}
-      {backdropUrl && (
-        <div className="relative h-96 overflow-hidden">
-          {/* Use responsive sources for IGDB game backgrounds */}
-          {isGame ? (
-            <picture>
-              {/* Mobile: 720p to save bandwidth */}
-              <source
-                media="(max-width: 640px)"
-                srcSet={resizeIgdbImage(backdropUrl, 't_720p') || backdropUrl}
-              />
-              {/* Tablets/Small desktops: 1080p */}
-              <source
-                media="(max-width: 1280px)"
-                srcSet={resizeIgdbImage(backdropUrl, 't_1080p') || backdropUrl}
-              />
-              <img
-                src={resizeIgdbImage(backdropUrl, 't_original') || backdropUrl}
-                alt={title}
-                className="w-full h-full object-cover"
-                decoding="async"
-              />
-            </picture>
-          ) : (
-            <img
-              src={backdropUrl}
-              alt={title}
-              className="w-full h-full object-cover"
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
-        </div>
-      )}
+      <div className="relative h-96 overflow-hidden">
+        {backdropUrl && !bgError ? (
+          // Display image backdrop when available
+          <>
+            {isGame ? (
+              <picture>
+                <source media="(max-width: 640px)" srcSet={resizeIgdbImage(backdropUrl, 't_720p') || backdropUrl} />
+                <source media="(max-width: 1280px)" srcSet={resizeIgdbImage(backdropUrl, 't_1080p') || backdropUrl} />
+                <img
+                  src={resizeIgdbImage(backdropUrl, 't_original') || backdropUrl}
+                  alt={title}
+                  className="w-full h-full object-cover"
+                  decoding="async"
+                  onError={() => setBgError(true)}
+                />
+              </picture>
+            ) : (
+              <img src={backdropUrl} alt={title} className="w-full h-full object-cover" onError={() => setBgError(true)} />
+            )}
+          </>
+        ) : (
+          // Fallback: use dominant color from any available image, or default purple
+          <div
+            className="w-full h-full"
+            style={{
+              backgroundColor: heroColor || 'hsl(var(--primary))',
+              transition: 'background-color 200ms ease-out',
+            }}
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
+      </div>
       
       <div className="container mx-auto px-4 py-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -297,4 +340,48 @@ function resizeIgdbImage(url?: string, targetSize?: 't_720p' | 't_1080p' | 't_or
     // Fallback: simple string replace pattern
     return url.replace(/\/t_[^/]+\//, `/${targetSize ?? 't_original'}/`);
   }
+}
+
+// Extract a basic dominant color (average) from an image URL.
+async function extractDominantColor(url: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.decoding = 'async';
+      img.loading = 'eager';
+      img.src = url;
+      img.onload = () => {
+        try {
+          const size = 32;
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) throw new Error('Canvas context unavailable');
+          ctx.drawImage(img, 0, 0, size, size);
+          const data = ctx.getImageData(0, 0, size, size).data;
+          let r = 0, g = 0, b = 0, count = 0;
+          for (let i = 0; i < data.length; i += 4) {
+            const alpha = data[i + 3];
+            if (alpha < 8) continue; // skip near-transparent
+            r += data[i];
+            g += data[i + 1];
+            b += data[i + 2];
+            count++;
+          }
+          if (count === 0) throw new Error('No opaque pixels');
+          r = Math.round(r / count);
+          g = Math.round(g / count);
+          b = Math.round(b / count);
+          resolve(`rgb(${r}, ${g}, ${b})`);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      img.onerror = () => reject(new Error('Image load failed'));
+    } catch (e) {
+      reject(e);
+    }
+  });
 }

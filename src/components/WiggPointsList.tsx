@@ -60,7 +60,7 @@ export const WiggPointsList = ({
           user_id,
           media:media!inner(title, type),
           profiles:profiles(username),
-          vote_score:votes(value).sum(),
+          vote_score:votes(sum(value)),
           user_vote:votes!left(value)
         `);
 
@@ -92,7 +92,7 @@ export const WiggPointsList = ({
           query = query.order('created_at', { ascending: true });
           break;
         case "highest_rated":
-          query = query.order('vote_score', { ascending: false });
+          // Ordering by an aggregate alias isn't supported server-side here; sort client-side below
           break;
         case "position_asc":
           query = query.order('pos_value', { ascending: true });
@@ -109,7 +109,7 @@ export const WiggPointsList = ({
       if (error) throw error;
 
       // Transform the data
-      const transformedPoints: WiggPoint[] = (data || []).map((point: any) => ({
+      let transformedPoints: WiggPoint[] = (data || []).map((point: any) => ({
         id: point.id,
         media_title: point.media?.title || "Unknown",
         type: point.media?.type || "Unknown",
@@ -121,9 +121,13 @@ export const WiggPointsList = ({
         created_at: point.created_at,
         username: point.profiles?.username,
         user_id: point.user_id,
-        vote_score: point.vote_score || 0,
+        vote_score: point.vote_score?.sum ?? 0,
         user_vote: point.user_vote?.[0]?.value
       }));
+
+      if (sortBy === "highest_rated") {
+        transformedPoints = transformedPoints.sort((a, b) => b.vote_score - a.vote_score);
+      }
 
       setPoints(transformedPoints);
 
