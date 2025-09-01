@@ -1,6 +1,7 @@
 import React from 'react';
 import { WiggPointCard } from '@/components/WiggPointCard';
 import { Card, CardContent } from '@/components/ui/card';
+import { usePageHeader } from '@/contexts/HeaderContext';
 
 type WiggPoint = Parameters<typeof WiggPointCard>[0]['point'];
 
@@ -78,12 +79,16 @@ const DUMMY: WiggPoint[] = [
 ];
 
 export default function Feed() {
+  // Configure global header for this page
+  usePageHeader({
+    title: "Community Feed",
+    subtitle: "Prototype with sample WIGG points from other users",
+    showBackButton: true,
+    showHomeButton: true,
+  });
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Community Feed</h1>
-        <p className="text-sm text-muted-foreground">Prototype with sample WIGG points from other users.</p>
-      </div>
       <div className="space-y-6">
         {DUMMY.map((p) => (
           <WiggPointCard key={p.id} point={p} />

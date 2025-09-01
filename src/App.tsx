@@ -1,6 +1,8 @@
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import GlobalHeader from "@/components/layout/GlobalHeader";
+import { HeaderProvider } from "@/contexts/HeaderContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
@@ -9,21 +11,28 @@ import TmdbDemo from "./pages/TmdbDemo";
 import WiggDemo from "./pages/WiggDemo";
 import Feed from "./pages/Feed";
 import SearchPage from "./pages/Search";
+import TestNavigation from "./pages/TestNavigation";
 
 const App = () => (
   <TooltipProvider>
     <Sonner />
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/wigg-demo" element={<WiggDemo />} />
-        <Route path="/tmdb" element={<TmdbDemo />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/feed" element={<Feed />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <HeaderProvider>
+        <div className="min-h-screen bg-background">
+          <GlobalHeader />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/wigg-demo" element={<WiggDemo />} />
+            <Route path="/tmdb" element={<TmdbDemo />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/feed" element={<Feed />} />
+            <Route path="/test-nav" element={<TestNavigation />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      </HeaderProvider>
     </BrowserRouter>
   </TooltipProvider>
 );

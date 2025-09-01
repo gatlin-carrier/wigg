@@ -4,18 +4,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WiggPointForm } from "@/components/WiggPointForm";
 import { WiggPointsList } from "@/components/WiggPointsList";
 import { GameRecommendations } from "@/components/GameRecommendations";
-// Removed placeholder popular movies in favor of TMDB feed
-// import { MovieRecommendations } from "@/components/MovieRecommendations";
-// import { TVShowRecommendations } from "@/components/TVShowRecommendations";
 import { BookRecommendations } from "@/components/BookRecommendations";
-import { ArrowLeft, Plus, List } from "lucide-react";
-import ThemeToggle from "@/components/ThemeToggle";
+import { Plus, List } from "lucide-react";
 import Feed from "./Feed";
 import TmdbPopular from "@/components/tmdb/TmdbPopular";
 import TmdbPopularTv from "@/components/tmdb/TmdbPopularTv";
-import HeaderSearch from "@/components/search/HeaderSearch";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { usePageHeader } from "@/contexts/HeaderContext";
 
 interface MediaEntry {
   id: string;
@@ -57,9 +52,16 @@ const mockEntries: MediaEntry[] = [
 ];
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [selectedMedia, setSelectedMedia] = useState<{ title: string; type: "Game" | "Movie" | "TV Show" | "Book" } | null>(null);
+  
+  // Configure global header for this page
+  usePageHeader({
+    title: "WIGG Dashboard",
+    subtitle: "Discover when media gets good and track your own entries",
+    showBackButton: true,
+    showHomeButton: true,
+  });
 
   const handleAddFromRecommendation = (mediaData: { title: string; type: "Game" | "Movie" | "TV Show" | "Book" }) => {
     setSelectedMedia(mediaData);
@@ -72,39 +74,7 @@ const Dashboard = () => {
   const [tab, setTab] = useState<'feed'|'browse'|'add'>('browse');
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-border/50 py-6">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-4 justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate("/")}
-                className="flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Home
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  WIGG Dashboard
-                </h1>
-                <p className="text-muted-foreground">
-                  Discover when media gets good and track your own entries
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <HeaderSearch />
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
+    <>
       <div className="container mx-auto px-4 py-6 space-y-8">
         <div className="max-w-6xl mx-auto">
           <Tabs value={tab} onValueChange={(v:any)=>setTab(v)} className="space-y-8">
@@ -186,7 +156,7 @@ const Dashboard = () => {
           </p>
         </div>
       </footer>
-    </div>
+    </>
   );
 };
 
