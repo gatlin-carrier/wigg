@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { getMovieDetails, getTvDetails, getImageUrl } from '@/integrations/tmdb/client';
+import { fetchAnimeDetails, fetchMangaDetails } from '@/integrations/anilist/client';
 import { fetchWorkDetails } from '@/integrations/openlibrary/client';
 import { useTmdbMovieGenres } from '@/integrations/tmdb/hooks';
 import { WiggMap } from '@/components/wigg/WiggMap';
@@ -28,6 +29,12 @@ export default function MediaDetails() {
       }
       if (source === 'tmdb-tv' && id) {
         return await getTvDetails(parseInt(id));
+      }
+      if (source === 'anilist' && id) {
+        return await fetchAnimeDetails(parseInt(id));
+      }
+      if (source === 'anilist-manga' && id) {
+        return await fetchMangaDetails(parseInt(id));
       }
       if (source === 'game' && id) {
         const { data, error } = await supabase.functions.invoke('fetch-game-details', {
@@ -51,24 +58,31 @@ export default function MediaDetails() {
   const isTmdbTv = source === 'tmdb-tv';
   const isGame = source === 'game';
   const isBook = source === 'openlibrary';
+  const isAnilist = source === 'anilist' || source === 'anilist-manga';
 
   const hasLargeBackdrop = (isTmdbMovie || isTmdbTv)
     ? Boolean((movie as any)?.backdrop_path)
     : isGame
       ? Boolean((movie as any)?.background)
-      : false;
+      : isAnilist
+        ? Boolean((movie as any)?.bannerImage)
+        : false;
 
   const backdropUrl = hasLargeBackdrop
     ? ((isTmdbMovie || isTmdbTv)
         ? getImageUrl((movie as any)?.backdrop_path, 'original')
-        : (movie as any)?.background ?? undefined)
+        : isAnilist
+          ? ((movie as any)?.bannerImage ?? undefined)
+          : (movie as any)?.background ?? undefined)
     : undefined;
 
   const posterUrl = (isTmdbMovie || isTmdbTv)
     ? getImageUrl((movie as any)?.poster_path, 'w500')
     : isBook
       ? ((movie as any)?.cover_url ?? undefined)
-      : ((movie as any)?.cover ?? undefined);
+      : isAnilist
+        ? ((movie as any)?.coverImage?.extraLarge ?? (movie as any)?.coverImage?.large ?? undefined)
+        : ((movie as any)?.cover ?? undefined);
 
   // Keep hooks order stable: effects must be above any early returns
   React.useEffect(() => {
@@ -142,6 +156,8 @@ export default function MediaDetails() {
     ? (movie as any).title
     : isTmdbTv
       ? ((movie as any)?.name ?? 'Untitled')
+    : isAnilist
+      ? (((movie as any)?.title?.english ?? (movie as any)?.title?.romaji) ?? 'Untitled')
     : isBook
       ? ((movie as any)?.title ?? 'Untitled')
       : ((movie as any)?.name ?? (movie as any)?.title ?? 'Untitled');
@@ -149,32 +165,46 @@ export default function MediaDetails() {
     ? ((movie as any).genres?.map((g: any) => g.name) || [])
     : isBook
       ? ((movie as any)?.subjects ?? [])
-      : (((movie as any)?.genres as string[] | undefined) ?? []);
+      : isAnilist
+        ? (((movie as any)?.genres as string[] | undefined) ?? [])
+        : (((movie as any)?.genres as string[] | undefined) ?? []);
   const year = isTmdbMovie
     ? (movie as any).release_date?.slice(0, 4)
     : isTmdbTv
       ? ((movie as any)?.first_air_date || '').slice(0, 4)
+    : isAnilist
+      ? (String((movie as any)?.seasonYear ?? (movie as any)?.startDate?.year ?? '')).slice(0, 4)
     : isBook
       ? String((movie as any)?.first_publish_date ?? '').slice(0, 4)
       : String((movie as any)?.releaseDate ?? '').slice(0, 4);
-  const rating = (isTmdbMovie || isTmdbTv) ? (movie as any).vote_average : (movie as any)?.rating;
+  const rating = (isTmdbMovie || isTmdbTv)
+    ? (movie as any).vote_average
+    : isAnilist
+      ? (typeof (movie as any)?.averageScore === 'number' ? (movie as any).averageScore / 10 : undefined)
+      : (movie as any)?.rating;
   const overview = (isTmdbMovie || isTmdbTv)
     ? (movie as any).overview
     : isBook
       ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
-      : ((movie as any)?.summary ?? 'No overview available.');
+      : isAnilist
+        ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
+        : ((movie as any)?.summary ?? 'No overview available.');
   const runtime = isTmdbMovie
     ? (movie as any).runtime
     : isTmdbTv
       ? (Array.isArray((movie as any)?.episode_run_time) && (movie as any).episode_run_time[0]) || (movie as any)?.last_episode_to_air?.runtime || undefined
-      : undefined;
+      : isAnilist
+        ? (movie as any)?.duration || undefined
+        : undefined;
   const externalUrl = isTmdbMovie
     ? `https://www.themoviedb.org/movie/${(movie as any).id}`
     : isTmdbTv
       ? `https://www.themoviedb.org/tv/${(movie as any).id}`
     : isBook
       ? (`https://openlibrary.org${(movie as any)?.key ?? ''}`)
-      : (movie as any)?.url;
+      : isAnilist
+        ? ((movie as any)?.siteUrl ?? `https://anilist.co/anime/${id}`)
+        : (movie as any)?.url;
 
   
 

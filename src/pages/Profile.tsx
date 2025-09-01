@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
-import { Film, Tv, Gamepad2, Book, Mic, User, Save, ChevronUp, ChevronDown } from "lucide-react";
+import { Film, Tv, Gamepad2, Book, Mic, User, Save, ChevronUp, ChevronDown, BookOpen, Sparkles, Newspaper } from "lucide-react";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -16,7 +16,8 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState({
     username: "",
-    preferred_media_types: [] as Array<{type: string, priority: number}>
+    preferred_media_types: [] as Array<{type: string, priority: number}>,
+    hidden_media_types: [] as string[],
   });
 
   usePageHeader({
@@ -29,6 +30,9 @@ const Profile = () => {
   const mediaTypes = [
     { id: "Movie", label: "Movies", icon: Film },
     { id: "TV Show", label: "TV Shows", icon: Tv },
+    { id: "Anime", label: "Anime", icon: Sparkles },
+    { id: "Manga", label: "Manga", icon: BookOpen },
+    { id: "Webtoons", label: "Webtoons", icon: Newspaper },
     { id: "Game", label: "Games", icon: Gamepad2 },
     { id: "Book", label: "Books", icon: Book },
     { id: "Podcast", label: "Podcasts", icon: Mic },
@@ -46,7 +50,7 @@ const Profile = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, preferred_media_types')
+        .select('username, preferred_media_types, hidden_media_types')
         .eq('id', user.id)
         .maybeSingle();
 
@@ -59,7 +63,8 @@ const Profile = () => {
           : [];
         setProfile({
           username: data.username || "",
-          preferred_media_types: preferences
+          preferred_media_types: preferences,
+          hidden_media_types: Array.isArray((data as any).hidden_media_types) ? (data as any).hidden_media_types as string[] : [],
         });
       }
     } catch (error) {
@@ -99,6 +104,18 @@ const Profile = () => {
     }));
   };
 
+  const toggleHidden = (mediaType: string) => {
+    setProfile(prev => {
+      const isHidden = prev.hidden_media_types.includes(mediaType);
+      return {
+        ...prev,
+        hidden_media_types: isHidden
+          ? prev.hidden_media_types.filter(t => t !== mediaType)
+          : [...prev.hidden_media_types, mediaType]
+      };
+    });
+  };
+
   const moveUp = (mediaType: string) => {
     const currentItem = profile.preferred_media_types.find(p => p.type === mediaType);
     if (!currentItem || currentItem.priority === 1) return;
@@ -132,7 +149,8 @@ const Profile = () => {
         .upsert({
           id: user.id,
           username: profile.username,
-          preferred_media_types: profile.preferred_media_types
+          preferred_media_types: profile.preferred_media_types,
+          hidden_media_types: profile.hidden_media_types
         });
 
       if (error) throw error;
@@ -277,6 +295,33 @@ const Profile = () => {
                     );
                   })}
               </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label>Hidden Media Types</Label>
+            <p className="text-sm text-muted-foreground">
+              Choose which media types to hide across browse sections.
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {mediaTypes.map((type) => {
+                const Icon = type.icon;
+                const checked = profile.hidden_media_types.includes(type.id);
+                return (
+                  <div
+                    key={`hide-${type.id}`}
+                    className="flex items-center space-x-2 p-3 border border-border hover:bg-muted/50 rounded-md cursor-pointer transition-colors"
+                    onClick={() => toggleHidden(type.id)}
+                  >
+                    <Checkbox
+                      checked={checked}
+                      onChange={() => toggleHidden(type.id)}
+                    />
+                    <Icon className="h-4 w-4" />
+                    <span className="text-sm">{type.label}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

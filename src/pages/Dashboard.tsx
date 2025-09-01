@@ -9,7 +9,9 @@ import { Plus, List } from "lucide-react";
 import Feed from "./Feed";
 import TmdbPopular from "@/components/tmdb/TmdbPopular";
 import TmdbPopularTv from "@/components/tmdb/TmdbPopularTv";
-import TmdbAnime from "@/components/tmdb/TmdbAnime";
+import AnilistAnime from "@/components/anilist/AnilistAnime";
+import AnilistManga from "@/components/anilist/AnilistManga";
+import AnilistWebtoons from "@/components/anilist/AnilistWebtoons";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
@@ -56,6 +58,7 @@ const mockEntries: MediaEntry[] = [
 const Dashboard = () => {
   const { user } = useAuth();
   const [userPreferences, setUserPreferences] = useState<string[]>([]);
+  const [hiddenTypes, setHiddenTypes] = useState<string[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -69,7 +72,7 @@ const Dashboard = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('preferred_media_types')
+        .select('preferred_media_types, hidden_media_types')
         .eq('id', user.id)
         .maybeSingle();
 
@@ -82,15 +85,18 @@ const Dashboard = () => {
               .sort((a, b) => a.priority - b.priority)
               .map(p => p.type)
           : [];
-        setUserPreferences(preferences.length > 0 ? preferences : ["Movie", "TV Show", "Game", "Book", "Podcast"]);
+        setUserPreferences(preferences.length > 0 ? preferences : ["Movie", "TV Show", "Anime", "Manga", "Webtoons", "Game", "Book", "Podcast"]);
+        setHiddenTypes(Array.isArray((data as any).hidden_media_types) ? (data as any).hidden_media_types as string[] : []);
       } else {
         // Default preferences if none set
-        setUserPreferences(["Movie", "TV Show", "Game", "Book", "Podcast"]);
+        setUserPreferences(["Movie", "TV Show", "Anime", "Manga", "Webtoons", "Game", "Book", "Podcast"]);
+        setHiddenTypes([]);
       }
     } catch (error) {
       console.error('Error loading user preferences:', error);
       // Default preferences on error
-      setUserPreferences(["Movie", "TV Show", "Game", "Book", "Podcast"]);
+      setUserPreferences(["Movie", "TV Show", "Anime", "Manga", "Webtoons", "Game", "Book", "Podcast"]);
+      setHiddenTypes([]);
     }
   };
   const [selectedMedia, setSelectedMedia] = useState<{ title: string; type: "Game" | "Movie" | "TV Show" | "Book" } | null>(null);
@@ -142,33 +148,47 @@ const Dashboard = () => {
                 <div className="space-y-12">
                   {/* Render sections based on user preferences priority */}
                   {userPreferences.map((mediaType) => {
+                    if (hiddenTypes.includes(mediaType)) return null;
                     switch (mediaType) {
                       case "Movie":
                         return <TmdbPopular key="movies" kind="trending" period="day" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Movie' })} />;
                       case "TV Show":
                         return <TmdbPopularTv key="tv" kind="popular" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'TV Show' })} />;
+                      case "Anime":
+                        return <AnilistAnime key="anime" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: it.type })} />;
+                      case "Manga":
+                        return <AnilistManga key="manga" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Book' })} />;
                       case "Game":
                         return <GameRecommendations key="games" onAddGame={handleAddFromRecommendation} />;
                       case "Book":
                         return <BookRecommendations key="books" onAddBook={handleAddFromRecommendation} />;
+                      case "Webtoons":
+                        return <AnilistWebtoons key="webtoons" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Book' })} />;
                       default:
                         return null;
                     }
                   })}
                   
                   {/* Show any missing sections that weren't in user preferences */}
-                  {!userPreferences.includes("Movie") && (
+                  {!userPreferences.includes("Movie") && !hiddenTypes.includes("Movie") && (
                     <TmdbPopular kind="trending" period="day" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Movie' })} />
                   )}
-                  {!userPreferences.includes("TV Show") && (
+                  {!userPreferences.includes("TV Show") && !hiddenTypes.includes("TV Show") && (
                     <TmdbPopularTv kind="popular" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'TV Show' })} />
                   )}
-                  {/* Anime rail (Animation + Japanese) */}
-                  <TmdbAnime onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: it.type })} />
-                  {!userPreferences.includes("Game") && (
+                  {!userPreferences.includes("Anime") && !hiddenTypes.includes("Anime") && (
+                    <AnilistAnime onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: it.type })} />
+                  )}
+                  {!userPreferences.includes("Manga") && !hiddenTypes.includes("Manga") && (
+                    <AnilistManga onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Book' })} />
+                  )}
+                  {!userPreferences.includes("Webtoons") && !hiddenTypes.includes("Webtoons") && (
+                    <AnilistWebtoons onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Book' })} />
+                  )}
+                  {!userPreferences.includes("Game") && !hiddenTypes.includes("Game") && (
                     <GameRecommendations onAddGame={handleAddFromRecommendation} />
                   )}
-                  {!userPreferences.includes("Book") && (
+                  {!userPreferences.includes("Book") && !hiddenTypes.includes("Book") && (
                     <BookRecommendations onAddBook={handleAddFromRecommendation} />
                   )}
                 </div>
