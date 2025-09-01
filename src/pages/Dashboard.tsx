@@ -75,7 +75,13 @@ const Dashboard = () => {
       if (error) throw error;
 
       if (data?.preferred_media_types) {
-        setUserPreferences(data.preferred_media_types);
+        // Handle JSONB format from database - extract just the types for ordering
+        const preferences = Array.isArray(data.preferred_media_types) 
+          ? (data.preferred_media_types as Array<{type: string, priority: number}>)
+              .sort((a, b) => a.priority - b.priority)
+              .map(p => p.type)
+          : [];
+        setUserPreferences(preferences.length > 0 ? preferences : ["Movie", "TV Show", "Game", "Book", "Podcast"]);
       } else {
         // Default preferences if none set
         setUserPreferences(["Movie", "TV Show", "Game", "Book", "Podcast"]);
@@ -133,10 +139,35 @@ const Dashboard = () => {
                   </p>
                 </div>
                 <div className="space-y-12">
-                  <TmdbPopular kind="trending" period="day" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Movie' })} />
-                  <TmdbPopularTv kind="popular" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'TV Show' })} />
-                  <GameRecommendations onAddGame={handleAddFromRecommendation} />
-                  <BookRecommendations onAddBook={handleAddFromRecommendation} />
+                  {/* Render sections based on user preferences priority */}
+                  {userPreferences.map((mediaType) => {
+                    switch (mediaType) {
+                      case "Movie":
+                        return <TmdbPopular key="movies" kind="trending" period="day" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Movie' })} />;
+                      case "TV Show":
+                        return <TmdbPopularTv key="tv" kind="popular" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'TV Show' })} />;
+                      case "Game":
+                        return <GameRecommendations key="games" onAddGame={handleAddFromRecommendation} />;
+                      case "Book":
+                        return <BookRecommendations key="books" onAddBook={handleAddFromRecommendation} />;
+                      default:
+                        return null;
+                    }
+                  })}
+                  
+                  {/* Show any missing sections that weren't in user preferences */}
+                  {!userPreferences.includes("Movie") && (
+                    <TmdbPopular kind="trending" period="day" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Movie' })} />
+                  )}
+                  {!userPreferences.includes("TV Show") && (
+                    <TmdbPopularTv kind="popular" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'TV Show' })} />
+                  )}
+                  {!userPreferences.includes("Game") && (
+                    <GameRecommendations onAddGame={handleAddFromRecommendation} />
+                  )}
+                  {!userPreferences.includes("Book") && (
+                    <BookRecommendations onAddBook={handleAddFromRecommendation} />
+                  )}
                 </div>
               </div>
 

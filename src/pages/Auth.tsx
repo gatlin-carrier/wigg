@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Loader2, Film, Tv, Gamepad2, Book, Mic } from "lucide-react";
+import { ArrowLeft, Loader2, Film, Tv, Gamepad2, Book, Mic, ChevronUp, ChevronDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,7 +16,12 @@ const Auth = () => {
   const { toast } = useToast();
   
   const [signInData, setSignInData] = useState({ email: "", password: "" });
-  const [signUpData, setSignUpData] = useState({ email: "", password: "", username: "", preferences: [] as string[] });
+  const [signUpData, setSignUpData] = useState({ 
+    email: "", 
+    password: "", 
+    username: "", 
+    preferences: [] as Array<{type: string, priority: number}>
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -41,9 +46,16 @@ const Auth = () => {
     setIsLoading(true);
     
     // Store preferences in username meta data for now
+    const defaultPrefs = [
+      {type: "Movie", priority: 1},
+      {type: "TV Show", priority: 2},
+      {type: "Game", priority: 3},
+      {type: "Book", priority: 4},
+      {type: "Podcast", priority: 5}
+    ];
     const metadata = { 
       username: signUpData.username,
-      preferred_media_types: signUpData.preferences.length > 0 ? signUpData.preferences : ["Movie", "TV Show", "Game", "Book", "Podcast"]
+      preferred_media_types: signUpData.preferences.length > 0 ? signUpData.preferences : defaultPrefs
     };
     
     const { error } = await signUp(signUpData.email, signUpData.password, signUpData.username, metadata);
@@ -73,12 +85,53 @@ const Auth = () => {
   ];
 
   const togglePreference = (mediaType: string) => {
+    setSignUpData(prev => {
+      const exists = prev.preferences.find(p => p.type === mediaType);
+      if (exists) {
+        return {
+          ...prev,
+          preferences: prev.preferences.filter(p => p.type !== mediaType)
+        };
+      } else {
+        const newPriority = Math.max(0, ...prev.preferences.map(p => p.priority)) + 1;
+        return {
+          ...prev,
+          preferences: [...prev.preferences, { type: mediaType, priority: newPriority }]
+        };
+      }
+    });
+  };
+
+  const updatePriority = (mediaType: string, newPriority: number) => {
     setSignUpData(prev => ({
       ...prev,
-      preferences: prev.preferences.includes(mediaType)
-        ? prev.preferences.filter(p => p !== mediaType)
-        : [...prev.preferences, mediaType]
+      preferences: prev.preferences.map(p => 
+        p.type === mediaType ? { ...p, priority: newPriority } : p
+      )
     }));
+  };
+
+  const moveUp = (mediaType: string) => {
+    const currentItem = signUpData.preferences.find(p => p.type === mediaType);
+    if (!currentItem || currentItem.priority === 1) return;
+    
+    const itemAbove = signUpData.preferences.find(p => p.priority === currentItem.priority - 1);
+    if (itemAbove) {
+      updatePriority(currentItem.type, currentItem.priority - 1);
+      updatePriority(itemAbove.type, itemAbove.priority + 1);
+    }
+  };
+
+  const moveDown = (mediaType: string) => {
+    const currentItem = signUpData.preferences.find(p => p.type === mediaType);
+    const maxPriority = Math.max(...signUpData.preferences.map(p => p.priority));
+    if (!currentItem || currentItem.priority === maxPriority) return;
+    
+    const itemBelow = signUpData.preferences.find(p => p.priority === currentItem.priority + 1);
+    if (itemBelow) {
+      updatePriority(currentItem.type, currentItem.priority + 1);
+      updatePriority(itemBelow.type, itemBelow.priority - 1);
+    }
   };
 
   if (loading) {
@@ -214,28 +267,75 @@ const Auth = () => {
                       <p className="text-sm text-muted-foreground">
                         Select your preferences to get better recommendations
                       </p>
-                      <div className="grid grid-cols-2 gap-3">
-                        {mediaTypes.map((type) => {
-                          const Icon = type.icon;
-                          return (
-                            <div
-                              key={type.id}
-                              className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer transition-colors ${
-                                signUpData.preferences.includes(type.id)
-                                  ? "border-primary bg-primary/5"
-                                  : "border-border hover:bg-muted/50"
-                              }`}
-                              onClick={() => togglePreference(type.id)}
-                            >
-                              <Checkbox
-                                checked={signUpData.preferences.includes(type.id)}
-                                onChange={() => togglePreference(type.id)}
-                              />
-                              <Icon className="h-4 w-4" />
-                              <span className="text-sm">{type.label}</span>
-                            </div>
-                          );
-                        })}
+                      <div className="space-y-3">
+                        {/* Selected preferences with priority controls */}
+                        {signUpData.preferences
+                          .sort((a, b) => a.priority - b.priority)
+                          .map((pref) => {
+                            const mediaType = mediaTypes.find(type => type.id === pref.type);
+                            if (!mediaType) return null;
+                            const Icon = mediaType.icon;
+                            
+                            return (
+                              <div
+                                key={pref.type}
+                                className="flex items-center justify-between p-3 border border-primary bg-primary/5 rounded-md"
+                              >
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    checked={true}
+                                    onChange={() => togglePreference(pref.type)}
+                                  />
+                                  <Icon className="h-4 w-4" />
+                                  <span className="text-sm">{mediaType.label}</span>
+                                  <span className="text-xs text-muted-foreground">Priority {pref.priority}</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => moveUp(pref.type)}
+                                    disabled={pref.priority === 1}
+                                    className="h-6 w-6 p-0"
+                                  >
+                                    <ChevronUp className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => moveDown(pref.type)}
+                                    disabled={pref.priority === Math.max(...signUpData.preferences.map(p => p.priority))}
+                                    className="h-6 w-6 p-0"
+                                  >
+                                    <ChevronDown className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        
+                        {/* Available preferences to add */}
+                        <div className="grid grid-cols-2 gap-3">
+                          {mediaTypes
+                            .filter(type => !signUpData.preferences.find(p => p.type === type.id))
+                            .map((type) => {
+                              const Icon = type.icon;
+                              return (
+                                <div
+                                  key={type.id}
+                                  className="flex items-center space-x-2 p-3 border border-border hover:bg-muted/50 rounded-md cursor-pointer transition-colors"
+                                  onClick={() => togglePreference(type.id)}
+                                >
+                                  <Checkbox
+                                    checked={false}
+                                    onChange={() => togglePreference(type.id)}
+                                  />
+                                  <Icon className="h-4 w-4" />
+                                  <span className="text-sm">{type.label}</span>
+                                </div>
+                              );
+                            })}
+                        </div>
                       </div>
                     </div>
                     
