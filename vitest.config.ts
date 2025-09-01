@@ -18,6 +18,8 @@ export default defineConfig({
       'packages/**/__tests__/**/*.test.ts',
       'packages/**/__tests__/**/*.test.tsx',
       'apps/**/__tests__/**/*.test.tsx',
+      'src/**/__tests__/**/*.test.ts',
+      'src/**/__tests__/**/*.test.tsx',
     ],
   },
 });
