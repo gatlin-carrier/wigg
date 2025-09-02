@@ -1,4 +1,4 @@
-import type { ExecutionContext } from './types';
+import type { ExecutionContext } from './types.ts';
 
 const SPOTIFY_API = 'https://api.spotify.com/v1';
 
@@ -11,14 +11,6 @@ function requireToken(ctx?: ExecutionContext): string {
 export async function spMeShows(limit = 20, offset = 0, ctx?: ExecutionContext) {
   const token = requireToken(ctx);
   const url = `${SPOTIFY_API}/me/shows?limit=${limit}&offset=${offset}`;
-  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-  if (!res.ok) throw new Error(`Spotify ${res.status}: ${await res.text()}`);
-  return res.json();
-}
-
-export async function spMeEpisodes(limit = 20, offset = 0, ctx?: ExecutionContext) {
-  const token = requireToken(ctx);
-  const url = `${SPOTIFY_API}/me/episodes?limit=${limit}&offset=${offset}`;
   const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`Spotify ${res.status}: ${await res.text()}`);
   return res.json();

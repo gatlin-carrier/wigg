@@ -1,13 +1,11 @@
-import type { ExecutionContext, PIShowRes, PIEpisodesRes } from './types';
+import type { ExecutionContext, PIShowRes, PIEpisodesRes } from './types.ts';
 
 const PI_BASE = 'https://api.podcastindex.org/api/1.0';
 
 async function sha1Async(input: string): Promise<string> {
-  // Use Web Crypto API (Node 18+/modern runtimes). This function must run server-side.
   const enc = new TextEncoder();
-  // @ts-ignore
-  const subtle = (globalThis.crypto && globalThis.crypto.subtle) ? globalThis.crypto.subtle : undefined;
-  if (!subtle) throw new Error('WebCrypto unavailable: run on server/edge with SubtleCrypto');
+  const subtle = globalThis.crypto?.subtle;
+  if (!subtle) throw new Error('WebCrypto unavailable');
   const digest = await subtle.digest('SHA-1', enc.encode(input));
   const bytes = new Uint8Array(digest);
   return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -48,6 +46,3 @@ export async function piEpisodesByFeedId(feedId: number | string, max = 20, ctx?
   return piGet<PIEpisodesRes>('/episodes/byfeedid', { id: feedId, max }, ctx);
 }
 
-export async function piChaptersByGuid(guid: string, ctx?: ExecutionContext): Promise<any> {
-  return piGet<any>('/chapters/byguid', { guid }, ctx);
-}

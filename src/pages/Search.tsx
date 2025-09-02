@@ -7,6 +7,7 @@ import { useOpenLibrarySearch } from '@/integrations/openlibrary/searchHooks';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { usePageHeader } from '@/contexts/HeaderContext';
+import { usePodcastSearch } from '@/integrations/podcast-search/hooks';
 
 function isAnime(item: { genre_ids?: number[]; original_language?: string; origin_country?: string[] }, movieGenres: Record<number,string>, tvGenres: Record<number,string>) {
   const ids: number[] = item.genre_ids || [];
@@ -64,6 +65,7 @@ export default function SearchPage() {
   const { data: books } = useOpenLibrarySearch(q);
   const { data: movieGenres = {} } = useTmdbMovieGenres();
   const { data: tvGenres = {} } = useTmdbTvGenres();
+  const { data: podcast } = usePodcastSearch(q);
 
   const tv = (tmdb?.results || []).filter((r) => (r.media_type === 'tv'));
   const movies = (tmdb?.results || []).filter((r) => (r.media_type === 'movie'));
@@ -74,6 +76,7 @@ export default function SearchPage() {
     { id: 'anime', label: 'Anime', count: anime.length },
     { id: 'movies', label: 'Movies', count: movies.length },
     { id: 'books', label: 'Books', count: (books || []).length },
+    { id: 'podcasts', label: 'Podcasts', count: podcast?.resolved ? 1 : 0 },
   ].filter(c => c.count > 0);
 
   // Collapsible section component
@@ -201,6 +204,23 @@ export default function SearchPage() {
               onClick={() => navigate(`/media/openlibrary/${encodeURIComponent(b.id)}`)}
             />
           ))}
+        </CollapsibleSection>
+      )}
+
+      {/* Podcasts (top resolved + up to 3 alternatives as tiles) */}
+      {podcast?.resolved && (
+        <CollapsibleSection id="podcasts" title="Podcasts" count={1 + (podcast.resolved.alternatives?.length || 0)}>
+          {(() => {
+            const tiles: Array<{ key: string; title: string; imageUrl?: string; subtitle?: string }> = [];
+            const main = podcast.resolved.show;
+            tiles.push({ key: main.id, title: main.title, imageUrl: main.artwork?.url, subtitle: main.publisher });
+            (podcast.resolved.alternatives || []).forEach((alt, i) => {
+              tiles.push({ key: `alt-${i}-${alt.appleId ?? i}`, title: alt.title, imageUrl: undefined, subtitle: alt.publisher });
+            });
+            return tiles.map(t => (
+              <MediaTile key={t.key} title={t.title} imageUrl={t.imageUrl} tags={t.subtitle ? [t.subtitle] : []} />
+            ));
+          })()}
         </CollapsibleSection>
       )}
     </div>

@@ -40,7 +40,7 @@ export function TmdbPopular({ kind = 'trending', period = 'day', onAdd }: Props)
 
       {isError && (
         <div className="text-sm text-red-500">
-          {(error as any)?.message || 'Unable to load TMDB'}. Ensure VITE_TMDB_API_KEY is set in .env.
+          {(error as any)?.message || 'Unable to load TMDB'}. Set VITE_TMDB_API_KEY in .env or deploy the 'tmdb' Edge Function.
         </div>
       )}
 

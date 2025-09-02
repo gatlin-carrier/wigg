@@ -1,4 +1,4 @@
-import type { AppleSearchRes } from './types';
+import type { AppleSearchRes } from './types.ts';
 
 const APPLE_SEARCH_BASE = 'https://itunes.apple.com';
 
@@ -21,7 +21,6 @@ export async function searchApple(term: string, country: string, limit = 5): Pro
 }
 
 export async function lookupApple(collectionId: number | string, country?: string): Promise<AppleSearchRes> {
-  // 'lookup' for show details; 'entity=podcast' included for clarity
   return appleGet<AppleSearchRes>('/lookup', { id: collectionId, entity: 'podcast', country });
 }
 

@@ -2,19 +2,27 @@ import type { TmdbSearchResponse, TmdbMovie } from './types';
 
 const TMDB_API_BASE = 'https://api.themoviedb.org/3';
 
-function buildQuery(params: Record<string, any> = {}) {
+async function tmdbGet<T>(path: string, params: Record<string, any> = {}): Promise<T> {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY as string | undefined;
-  if (!apiKey) throw new Error('Missing VITE_TMDB_API_KEY');
-  const u = new URLSearchParams();
-  u.set('api_key', apiKey);
-  for (const [k, v] of Object.entries(params)) if (v !== undefined && v !== null && v !== '') u.set(k, String(v));
-  return u.toString();
-}
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+  const supabaseAnon = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
+  const useProxy = !apiKey;
 
-async function tmdbGet<T>(path: string, params?: Record<string, any>): Promise<T> {
-  const qs = buildQuery(params);
-  const url = `${TMDB_API_BASE}${path}?${qs}`;
-  const res = await fetch(url);
+  const u = new URLSearchParams();
+  // Only include api_key when calling TMDB directly from the browser
+  if (!useProxy) u.set('api_key', apiKey as string);
+  for (const [k, v] of Object.entries(params)) if (v !== undefined && v !== null && v !== '') u.set(k, String(v));
+  const qs = u.toString();
+
+  const url = useProxy
+    ? `${supabaseUrl}/functions/v1/tmdb${path}?${qs}`
+    : `${TMDB_API_BASE}${path}?${qs}`;
+
+  const headers: HeadersInit = useProxy && supabaseAnon
+    ? { apikey: supabaseAnon, Authorization: `Bearer ${supabaseAnon}` }
+    : {};
+
+  const res = await fetch(url, { headers });
   if (!res.ok) throw new Error(`TMDB ${res.status}: ${await res.text()}`);
   return res.json() as Promise<T>;
 }
