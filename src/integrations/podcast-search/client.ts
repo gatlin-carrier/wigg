@@ -32,3 +32,10 @@ export function detectPodcastIntent(q: string): boolean {
   return pat.test(q || '');
 }
 
+export async function fetchTrendingPodcasts(max = 24) {
+  const { data, error } = await supabase.functions.invoke('podcast-trending', {
+    body: { max },
+  });
+  if (error) throw error;
+  return data as { feeds?: Array<{ id: number; title: string; author?: string; image?: string; itunesId?: number }>; status?: string };
+}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback, useMemo } from 'react';
 
 interface HeaderConfig {
   title?: string;
@@ -22,19 +22,39 @@ export function HeaderProvider({ children }: { children: ReactNode }) {
     showHomeButton: true,
   });
 
-  const setHeaderConfig = (newConfig: HeaderConfig) => {
-    setConfig(prev => ({ ...prev, ...newConfig }));
-  };
-
-  const resetHeader = () => {
-    setConfig({
-      showBackButton: true,
-      showHomeButton: true,
+  const setHeaderConfig = useCallback((newConfig: HeaderConfig) => {
+    setConfig(prev => {
+      const next = { ...prev, ...newConfig };
+      // Shallow skip if nothing changed
+      if (
+        prev.title === next.title &&
+        prev.subtitle === next.subtitle &&
+        prev.showBackButton === next.showBackButton &&
+        prev.showHomeButton === next.showHomeButton &&
+        prev.rightContent === next.rightContent
+      ) return prev;
+      return next;
     });
-  };
+  }, []);
+
+  const resetHeader = useCallback(() => {
+    setConfig(prev => {
+      const next = { showBackButton: true, showHomeButton: true } as HeaderConfig;
+      if (
+        prev.title === undefined &&
+        prev.subtitle === undefined &&
+        prev.showBackButton === next.showBackButton &&
+        prev.showHomeButton === next.showHomeButton &&
+        prev.rightContent === undefined
+      ) return prev;
+      return next;
+    });
+  }, []);
+
+  const value = useMemo(() => ({ config, setHeaderConfig, resetHeader }), [config, setHeaderConfig, resetHeader]);
 
   return (
-    <HeaderContext.Provider value={{ config, setHeaderConfig, resetHeader }}>
+    <HeaderContext.Provider value={value}>
       {children}
     </HeaderContext.Provider>
   );
@@ -57,5 +77,5 @@ export function usePageHeader(config: HeaderConfig) {
     return () => {
       resetHeader();
     };
-  }, [setHeaderConfig, resetHeader, config.title, config.subtitle, config.showBackButton, config.showHomeButton]);
+  }, [setHeaderConfig, resetHeader, config.title, config.subtitle, config.showBackButton, config.showHomeButton, config.rightContent]);
 }

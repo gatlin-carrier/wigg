@@ -12,6 +12,7 @@ import TmdbPopularTv from "@/components/tmdb/TmdbPopularTv";
 import AnilistAnime from "@/components/anilist/AnilistAnime";
 import AnilistManga from "@/components/anilist/AnilistManga";
 import AnilistWebtoons from "@/components/anilist/AnilistWebtoons";
+import PodcastTrending from "@/components/podcast/PodcastTrending";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
@@ -162,6 +163,8 @@ const Dashboard = () => {
                         return <GameRecommendations key="games" onAddGame={handleAddFromRecommendation} />;
                       case "Book":
                         return <BookRecommendations key="books" onAddBook={handleAddFromRecommendation} />;
+                      case "Podcast":
+                        return <PodcastTrending key="podcasts" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Podcast' })} />;
                       case "Webtoons":
                         return <AnilistWebtoons key="webtoons" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Book' })} />;
                       default:
@@ -187,6 +190,9 @@ const Dashboard = () => {
                   )}
                   {!userPreferences.includes("Game") && !hiddenTypes.includes("Game") && (
                     <GameRecommendations onAddGame={handleAddFromRecommendation} />
+                  )}
+                  {!userPreferences.includes("Podcast") && !hiddenTypes.includes("Podcast") && (
+                    <PodcastTrending onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Podcast' })} />
                   )}
                   {!userPreferences.includes("Book") && !hiddenTypes.includes("Book") && (
                     <BookRecommendations onAddBook={handleAddFromRecommendation} />

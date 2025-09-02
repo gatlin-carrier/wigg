@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Input } from '@/components/ui/input';
 import MediaTile from '@/components/media/MediaTile';
 import { useTmdbSearch, useTmdbMovieGenres, useTmdbTvGenres } from '@/integrations/tmdb/hooks';
 import { useOpenLibrarySearch } from '@/integrations/openlibrary/searchHooks';
@@ -8,6 +7,10 @@ import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { usePageHeader } from '@/contexts/HeaderContext';
 import { usePodcastSearch } from '@/integrations/podcast-search/hooks';
+import { useGameSearch } from '@/integrations/games/hooks';
+import { useAnilistMangaSearch } from '@/integrations/anilist/hooks';
+import { useSmartSearch } from '@/integrations/smart-search/hooks';
+import type { SmartSearchInput, EntityCard } from '@/integrations/smart-search/types';
 
 function isAnime(item: { genre_ids?: number[]; original_language?: string; origin_country?: string[] }, movieGenres: Record<number,string>, tvGenres: Record<number,string>) {
   const ids: number[] = item.genre_ids || [];
@@ -53,19 +56,17 @@ export default function SearchPage() {
     });
   };
 
-  function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const input = form.elements.namedItem('q') as HTMLInputElement;
-    const next = input.value.trim();
-    navigate(`/search?q=${encodeURIComponent(next)}`);
-  }
 
   const { data: tmdb } = useTmdbSearch(q, 'multi');
   const { data: books } = useOpenLibrarySearch(q);
   const { data: movieGenres = {} } = useTmdbMovieGenres();
   const { data: tvGenres = {} } = useTmdbTvGenres();
   const { data: podcast } = usePodcastSearch(q);
+  const { data: games = [] } = useGameSearch(q);
+  const { data: mangaResults = [] } = useAnilistMangaSearch(q);
+  const locale = typeof navigator !== 'undefined' ? (navigator.language || 'en-US') : 'en-US';
+  const ssInput: SmartSearchInput = { user_query: q, locale, market: (locale.split('-')[1] || 'US').toUpperCase(), user_profile: { last_vertical: 'tv' }, cost_budget: { max_providers: 3, allow_fallbacks: true } };
+  const { data: smartResolved } = useSmartSearch(ssInput, q.trim().length > 0);
 
   const tv = (tmdb?.results || []).filter((r) => (r.media_type === 'tv'));
   const movies = (tmdb?.results || []).filter((r) => (r.media_type === 'movie'));
@@ -76,8 +77,39 @@ export default function SearchPage() {
     { id: 'anime', label: 'Anime', count: anime.length },
     { id: 'movies', label: 'Movies', count: movies.length },
     { id: 'books', label: 'Books', count: (books || []).length },
+    { id: 'games', label: 'Games', count: games.length },
+    { id: 'manga', label: 'Manga', count: mangaResults.length },
     { id: 'podcasts', label: 'Podcasts', count: podcast?.resolved ? 1 : 0 },
   ].filter(c => c.count > 0);
+
+  const totalCount = tv.length + anime.length + movies.length + (books?.length || 0) + games.length + mangaResults.length + (podcast?.resolved ? 1 : 0);
+
+  function entityToUrl(e: EntityCard): string | undefined {
+    const p: any = e.providers || {};
+    switch (e.type) {
+      case 'tv':
+        if (p.tmdb?.id) return `/media/tmdb-tv/${p.tmdb.id}`;
+        break;
+      case 'movie':
+        if (p.tmdb?.id) return `/media/tmdb/${p.tmdb.id}`;
+        break;
+      case 'book':
+        if (p.openlibrary?.id || p.openlibrary?.key) return `/media/openlibrary/${encodeURIComponent(p.openlibrary.id || p.openlibrary.key)}`;
+        break;
+      case 'anime':
+        if (p.anilist?.id) return `/media/anilist/${p.anilist.id}`;
+        break;
+      case 'manga':
+        if (p.anilist?.id) return `/media/anilist-manga/${p.anilist.id}`;
+        break;
+      case 'game':
+        if (p.igdb?.id) return `/media/game/${p.igdb.id}`;
+        break;
+      case 'podcast':
+        return undefined;
+    }
+    return undefined;
+  }
 
   // Collapsible section component
   const CollapsibleSection = ({ 
@@ -122,11 +154,6 @@ export default function SearchPage() {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-6xl">
-      <div className="flex justify-end mb-4">
-        <form onSubmit={onSubmit} className="w-full max-w-md">
-          <Input name="q" defaultValue={q} placeholder="Search movies, TV, books…" />
-        </form>
-      </div>
 
       {chips.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-6">
@@ -205,6 +232,63 @@ export default function SearchPage() {
             />
           ))}
         </CollapsibleSection>
+      )}
+
+      {/* Games */}
+      {games.length > 0 && (
+        <CollapsibleSection id="games" title="Games" count={games.length}>
+          {games.slice(0,40).map((g: any) => (
+            <MediaTile
+              key={`game-${g.id}`}
+              title={g.name}
+              imageUrl={g.cover}
+              year={g.releaseDate}
+              ratingLabel={typeof g.rating === 'number' ? `${g.rating}/100` : undefined}
+              onClick={() => navigate(`/media/game/${g.id}`)}
+            />
+          ))}
+        </CollapsibleSection>
+      )}
+
+      {/* Manga */}
+      {mangaResults.length > 0 && (
+        <CollapsibleSection id="manga" title="Manga" count={mangaResults.length}>
+          {mangaResults.slice(0,40).map((m: any) => {
+            const title = m?.title?.english || m?.title?.romaji || m?.title?.native || 'Untitled';
+            const cover = m?.coverImage?.extraLarge || m?.coverImage?.large || undefined;
+            const year = m?.startDate?.year || undefined;
+            const rating = typeof m?.averageScore === 'number' ? `${(m.averageScore / 10).toFixed(1)}/10` : undefined;
+            const tags: string[] = Array.isArray(m?.genres) ? (m.genres as string[]).slice(0, 2) : [];
+            return (
+              <MediaTile
+                key={`manga-${m.id}`}
+                title={title}
+                imageUrl={cover}
+                year={year}
+                ratingLabel={rating}
+                tags={tags}
+                onClick={() => navigate(`/media/anilist-manga/${m.id}`)}
+              />
+            );
+          })}
+        </CollapsibleSection>
+      )}
+
+      {/* Did you mean (fuzzy suggestions via Smart Search) */}
+      {totalCount === 0 && smartResolved && (
+        <div className="space-y-2">
+          <div className="text-sm text-gray-600">Did you mean:</div>
+          <div className="flex flex-col gap-2">
+            {[smartResolved.primary, ...smartResolved.alternatives].slice(0,3).map((e) => {
+              const url = entityToUrl(e);
+              return (
+                <button key={e.title_id} className="text-left text-blue-600 hover:underline" onClick={() => url ? navigate(url) : undefined}>
+                  {e.display_title}{e.year_start ? ` (${e.year_start})` : ''} — {e.type}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       )}
 
       {/* Podcasts (top resolved + up to 3 alternatives as tiles) */}

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { getMovieDetails, getTvDetails, getImageUrl } from '@/integrations/tmdb/client';
 import { fetchAnimeDetails, fetchMangaDetails } from '@/integrations/anilist/client';
 import { fetchWorkDetails } from '@/integrations/openlibrary/client';
@@ -18,6 +19,7 @@ export default function MediaDetails() {
   const { source, id } = useParams<{ source: string; id: string }>();
   const [heroColor, setHeroColor] = React.useState<string | undefined>(undefined);
   const [bgError, setBgError] = React.useState<boolean>(false);
+  const [enlargedImage, setEnlargedImage] = React.useState<{ url: string; alt: string } | null>(null);
   
   const { data: movieGenres = {} } = useTmdbMovieGenres();
   
@@ -216,7 +218,10 @@ export default function MediaDetails() {
           // Display image backdrop when available
           <>
             {isGame ? (
-              <picture>
+              <picture 
+                className="cursor-pointer"
+                onClick={() => setEnlargedImage({ url: resizeIgdbImage(backdropUrl, 't_original') || backdropUrl, alt: title })}
+              >
                 <source media="(max-width: 640px)" srcSet={resizeIgdbImage(backdropUrl, 't_720p') || backdropUrl} />
                 <source media="(max-width: 1280px)" srcSet={resizeIgdbImage(backdropUrl, 't_1080p') || backdropUrl} />
                 <img
@@ -228,7 +233,13 @@ export default function MediaDetails() {
                 />
               </picture>
             ) : (
-              <img src={backdropUrl} alt={title} className="w-full h-full object-cover" onError={() => setBgError(true)} />
+              <img 
+                src={backdropUrl} 
+                alt={title} 
+                className="w-full h-full object-cover cursor-pointer" 
+                onError={() => setBgError(true)}
+                onClick={() => setEnlargedImage({ url: backdropUrl, alt: title })}
+              />
             )}
           </>
         ) : (
@@ -253,7 +264,8 @@ export default function MediaDetails() {
                 <img
                   src={posterUrl}
                   alt={title}
-                  className="w-full aspect-[2/3] object-cover"
+                  className="w-full aspect-[2/3] object-cover cursor-pointer"
+                  onClick={() => setEnlargedImage({ url: posterUrl, alt: title })}
                 />
               ) : (
                 <div className="w-full aspect-[2/3] bg-muted flex items-center justify-center">
@@ -367,6 +379,19 @@ export default function MediaDetails() {
           </div>
         </div>
       </div>
+
+      {/* Image Enlargement Modal */}
+      <Dialog open={!!enlargedImage} onOpenChange={(open) => !open && setEnlargedImage(null)}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] w-fit h-fit p-0 border-0 bg-transparent shadow-none">
+          {enlargedImage && (
+            <img
+              src={enlargedImage.url}
+              alt={enlargedImage.alt}
+              className="max-w-full max-h-[95vh] object-contain"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchTrendingAnime, fetchPopularAnime, fetchAnimeDetails, fetchPopularManga, fetchMangaDetails, fetchPopularWebtoons, fetchPopularWebtoonsAll } from './client';
+import { fetchTrendingAnime, fetchPopularAnime, fetchAnimeDetails, fetchPopularManga, fetchMangaDetails, fetchPopularWebtoons, fetchPopularWebtoonsAll, searchManga } from './client';
+import { useEffect, useState } from 'react';
 
 export function useAnilistAnime(kind: 'trending' | 'popular' = 'trending') {
   return useQuery({
@@ -26,6 +27,25 @@ export function useAnilistManga(kind: 'popular' = 'popular') {
     queryKey: ['anilist', 'manga', kind, 1],
     queryFn: async () => fetchPopularManga(1, 24),
     staleTime: 1000 * 60 * 10,
+  });
+}
+
+function useDebounced<T>(value: T, delay = 350): T {
+  const [v, setV] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setV(value), delay);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+  return v;
+}
+
+export function useAnilistMangaSearch(q: string) {
+  const query = useDebounced((q || '').trim(), 350);
+  return useQuery({
+    queryKey: ['anilist', 'manga', 'search', query],
+    enabled: query.length > 0,
+    queryFn: async () => searchManga(query, 1, 24),
+    staleTime: 1000 * 60 * 5,
   });
 }
 

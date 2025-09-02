@@ -151,6 +151,28 @@ export async function fetchMangaDetails(id: number) {
   return data.Media;
 }
 
+export async function searchManga(queryStr: string, page = 1, perPage = 24) {
+  const query = `
+    query SearchManga($search:String!, $page:Int, $perPage:Int){
+      Page(page:$page, perPage:$perPage){
+        media(type: MANGA, search: $search, sort: POPULARITY_DESC, isAdult:false){
+          id
+          title { romaji english native }
+          coverImage { large extraLarge }
+          startDate { year }
+          genres
+          averageScore
+          popularity
+          siteUrl
+        }
+      }
+    }
+  `;
+  type Resp = { Page: { media: any[] } };
+  const data = await anilistQuery<Resp>(query, { search: queryStr, page, perPage });
+  return data.Page.media;
+}
+
 export async function fetchPopularWebtoons(page = 1, perPage = 24, country: 'KR' | 'CN' | 'TW' | 'JP' = 'KR') {
   const query = `
     query PopularWebtoons($page:Int, $perPage:Int, $country:CountryCode){

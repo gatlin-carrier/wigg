@@ -1,9 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { searchPodcasts, detectPodcastIntent } from './client';
+import { searchPodcasts, detectPodcastIntent, fetchTrendingPodcasts } from './client';
 
 function toMarket(locale: string): string {
   const parts = (locale || 'en-US').split('-');
   return (parts[1] || 'US').toUpperCase();
+}
+
+export function useTrendingPodcasts(max = 24) {
+  return useQuery({
+    queryKey: ['podcasts', 'trending', max],
+    queryFn: async () => fetchTrendingPodcasts(max),
+    staleTime: 1000 * 60 * 10,
+  });
 }
 
 export function usePodcastSearch(q: string, opts?: { enabled?: boolean; spotifyAccessToken?: string; spotifyConnected?: boolean }) {
@@ -23,4 +31,3 @@ export function usePodcastSearch(q: string, opts?: { enabled?: boolean; spotifyA
     }
   });
 }
-

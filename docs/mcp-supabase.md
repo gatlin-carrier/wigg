@@ -52,8 +52,21 @@ Podcast search (uses Podcast Index + Apple + optional Spotify):
 Smart search (existing function):
 - Ensure `TMDB_API_KEY` is set:
   - `supabase secrets set TMDB_API_KEY=... --project-ref anmadaditlpkedmaeibx`
+- Optional providers:
+  - AniList: no secrets required (public GraphQL)
+  - Podcast Index:
+    - `supabase secrets set PI_API_KEY=... PI_API_SECRET=... PODCAST_USER_AGENT="WIGG/SmartSearch (+https://wigg.app)" --project-ref anmadaditlpkedmaeibx`
+  - IGDB (games via Twitch):
+    - `supabase secrets set IGDB_CLIENT_ID=... IGDB_API_KEY=... --project-ref anmadaditlpkedmaeibx`
 - Deploy if needed:
   - `supabase functions deploy smart-search --project-ref anmadaditlpkedmaeibx`
+
+Podcasts trending (browse row):
+- Uses Podcast Index trending endpoint (server-side).
+- Set secrets if not already set:
+  - `supabase secrets set PI_API_KEY=... PI_API_SECRET=... PODCAST_USER_AGENT="WIGG/PodcastBrowse (+https://wigg.app)" --project-ref anmadaditlpkedmaeibx`
+- Deploy:
+  - `supabase functions deploy podcast-trending --project-ref anmadaditlpkedmaeibx`
 
 ### Client Usage
 
