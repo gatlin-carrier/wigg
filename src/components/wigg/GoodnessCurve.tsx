@@ -40,29 +40,35 @@ export function GoodnessCurve({
         </CardDescription>
       </CardHeader>
       <CardContent className="h-56">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ left: 8, right: 16, top: 8, bottom: 8 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-            <YAxis domain={[0, 3]} tick={{ fontSize: 12 }} />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="score"
-              strokeWidth={3}
-              dot={{ r: 2 }}
-            />
-            <Line
-              type="monotone"
-              dataKey={() => threshold}
-              strokeWidth={2}
-              strokeDasharray="6 4"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        {data.length === 0 ? (
+          <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
+            No community data available yet
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={data}
+              margin={{ left: 8, right: 16, top: 8, bottom: 8 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+              <YAxis domain={[0, 3]} tick={{ fontSize: 12 }} />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="score"
+                strokeWidth={3}
+                dot={{ r: 2 }}
+              />
+              <Line
+                type="monotone"
+                dataKey={() => threshold}
+                strokeWidth={2}
+                strokeDasharray="6 4"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </CardContent>
     </Card>
   );

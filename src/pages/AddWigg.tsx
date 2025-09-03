@@ -12,53 +12,18 @@ import { type SpoilerLevel } from "@/components/wigg/WhyTagSelector";
 import { YouTubePlayer, type MediaPlayerControls } from "@/components/wigg/MediaPlayer";
 import { MomentsPanel } from "@/components/wigg/MomentsPanel";
 import { SwipeRating, type SwipeValue } from "@/components/wigg/SwipeRating";
-import { RatingMetaphor } from "@/components/wigg/RatingMetaphor";
 import { RealTimeVisualization } from "@/components/wigg/RealTimeVisualization";
 import { WhyTagSelector } from "@/components/wigg/WhyTagSelector";
 import { useWiggSession } from "@/hooks/useWiggSession";
 import { useWiggPersistence } from "@/hooks/useWiggPersistence";
+import { useMediaUnits } from "@/hooks/useMediaUnits";
 
 
-const SAMPLE_UNITS_TV = Array.from({ length: 8 }).map((_, i) => ({
-  id: `ep-${i + 1}`,
-  title: `S1E${i + 1}: ${[
-    "Pilot",
-    "Arrival", 
-    "The Trial",
-    "Echoes",
-    "Breakwater",
-    "The Turn",
-    "Uprising",
-    "Finale",
-  ][i]}`,
-  ordinal: i + 1,
-  subtype: "episode" as const,
-  runtimeSec: 42 * 60,
-}));
-
-const SAMPLE_UNITS_BOOK = Array.from({ length: 10 }).map((_, i) => ({
-  id: `ch-${i + 1}`,
-  title: `Ch. ${i + 1}: ${[
-    "A Door Ajar",
-    "Letters",
-    "Lanterns", 
-    "The Gate",
-    "Embers",
-    "Witness",
-    "The Long Night",
-    "Ashfall",
-    "The Oath",
-    "Dawn",
-  ][i]}`,
-  ordinal: i + 1,
-  subtype: "chapter" as const,
-  pages: 18 + Math.round(Math.random() * 12),
-}));
 
 function AddWiggContent() {
   const location = useLocation();
   const { mode } = useParams<{ mode?: string }>();
-  const [activeTab, setActiveTab] = useState(mode === "retro" ? "retro" : "live");
+  const [activeTab, setActiveTab] = useState(mode === "live" ? "live" : "retro");
   const [playerControls, setPlayerControls] = useState<MediaPlayerControls | null>(null);
   const [mediaType, setMediaType] = useState<MediaType>("anime");
   
@@ -66,7 +31,6 @@ function AddWiggContent() {
   const [whyTrayOpen, setWhyTrayOpen] = useState(false);
   const [whyTags, setWhyTags] = useState<string[]>([]);
   const [whySpoiler, setWhySpoiler] = useState<SpoilerLevel>("none");
-  const [visualMetaphor, setVisualMetaphor] = useState<"mountain" | "wave" | "flame" | "classic">("mountain");
   const [currentRatings, setCurrentRatings] = useState<SwipeValue[]>([]);
   
   const {
@@ -86,6 +50,7 @@ function AddWiggContent() {
   } = useWiggSession();
 
   const { saveMoment, saveMediaToDatabase } = useWiggPersistence();
+  const { units: apiUnits, isLoading: unitsLoading, error: unitsError } = useMediaUnits(selectedMedia);
 
   useEffect(() => {
     // Check if media was passed from MediaDetails page
@@ -104,16 +69,11 @@ function AddWiggContent() {
   }, [location.state, selectedMedia, setSelectedMedia]);
 
   useEffect(() => {
-    if (selectedMedia) {
-      // Set sample units based on media type
-      if (selectedMedia.type === "book" || selectedMedia.type === "manga") {
-        setUnits(SAMPLE_UNITS_BOOK);
-      } else {
-        setUnits(SAMPLE_UNITS_TV);
-      }
+    if (selectedMedia && apiUnits.length > 0) {
+      setUnits(apiUnits);
       setMediaType(selectedMedia.type);
     }
-  }, [selectedMedia, setUnits]);
+  }, [selectedMedia, apiUnits, setUnits]);
 
   const handleMediaSelect = async (media: MediaSearchResult) => {
     try {
@@ -284,34 +244,6 @@ function AddWiggContent() {
           {!isComplete ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-6">
-                <Card className="rounded-2xl shadow-sm">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-base">Rating Experience</CardTitle>
-                    <CardDescription className="text-xs">
-                      Choose your preferred visual style for rating
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-4">
-                      {(["mountain", "wave", "flame", "classic"] as const).map((variant) => (
-                        <button
-                          key={variant}
-                          onClick={() => setVisualMetaphor(variant)}
-                          className={`p-3 rounded-lg border ${
-                            visualMetaphor === variant ? 'border-primary bg-primary/5' : 'border-border'
-                          }`}
-                        >
-                          <RatingMetaphor
-                            variant={variant}
-                            value={2}
-                            isActive={visualMetaphor === variant}
-                          />
-                          <div className="text-xs mt-2 capitalize">{variant}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
 
                 <Card className="rounded-2xl shadow-sm">
                   <CardHeader className="pb-4">

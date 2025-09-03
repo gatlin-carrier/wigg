@@ -151,6 +151,60 @@ export async function fetchMangaDetails(id: number) {
   return data.Media;
 }
 
+export async function fetchAnimeEpisodes(animeId: number) {
+  const query = `
+    query AnimeEpisodes($id:Int){
+      Media(id:$id, type: ANIME){
+        id
+        episodes
+        streamingEpisodes {
+          title
+          thumbnail
+          url
+          site
+        }
+      }
+    }
+  `;
+  type Resp = { Media: any };
+  const data = await anilistQuery<Resp>(query, { id: animeId });
+  
+  // Generate episodes based on total count if streaming episodes not available
+  const totalEpisodes = data.Media.episodes || 12;
+  const streamingEps = data.Media.streamingEpisodes || [];
+  
+  return Array.from({ length: totalEpisodes }).map((_, i) => {
+    const episodeNumber = i + 1;
+    const streamingEp = streamingEps.find((ep: any) => ep.title?.includes(`${episodeNumber}`));
+    
+    return {
+      id: `anilist-ep-${animeId}-${episodeNumber}`,
+      title: streamingEp?.title || `Episode ${episodeNumber}`,
+      ordinal: episodeNumber,
+      subtype: "episode" as const,
+      runtimeSec: 24 * 60, // Standard anime episode length
+      thumbnail: streamingEp?.thumbnail,
+    };
+  });
+}
+
+export async function fetchMangaChapters(mangaId: number) {
+  const mangaDetails = await fetchMangaDetails(mangaId);
+  const totalChapters = mangaDetails.chapters || 10;
+  
+  // Generate chapters based on total count (AniList doesn't provide individual chapter titles)
+  return Array.from({ length: Math.min(totalChapters, 50) }).map((_, i) => {
+    const chapterNumber = i + 1;
+    return {
+      id: `anilist-ch-${mangaId}-${chapterNumber}`,
+      title: `Chapter ${chapterNumber}`,
+      ordinal: chapterNumber,
+      subtype: "chapter" as const,
+      pages: 18 + Math.round(Math.random() * 12), // Estimated pages
+    };
+  });
+}
+
 export async function searchManga(queryStr: string, page = 1, perPage = 24) {
   const query = `
     query SearchManga($search:String!, $page:Int, $perPage:Int){

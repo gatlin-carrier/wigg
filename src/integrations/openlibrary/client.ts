@@ -85,3 +85,96 @@ export async function fetchWorkDetails(keyOrId: string) {
     subjects: work.subjects || work.subject || [],
   } as any;
 }
+
+export async function fetchBookTableOfContents(keyOrId: string) {
+  try {
+    const workDetails = await fetchWorkDetails(keyOrId);
+    
+    // Try to extract table of contents from description or other fields
+    const tableOfContents: string[] = [];
+    
+    // Check if work has explicit table_of_contents field
+    if (workDetails.table_of_contents) {
+      if (Array.isArray(workDetails.table_of_contents)) {
+        tableOfContents.push(...workDetails.table_of_contents.map((item: any) => 
+          typeof item === 'string' ? item : item.title || item.name || 'Chapter'
+        ));
+      }
+    }
+    
+    // If no explicit TOC, generate intelligent chapter names
+    if (tableOfContents.length === 0) {
+      const estimatedChapters = estimateChapterCount(workDetails);
+      for (let i = 1; i <= estimatedChapters; i++) {
+        tableOfContents.push(`Chapter ${i}`);
+      }
+    }
+    
+    return tableOfContents.slice(0, 50); // Limit to reasonable number
+  } catch (error) {
+    console.error('Error fetching table of contents:', error);
+    return [];
+  }
+}
+
+function estimateChapterCount(workDetails: any): number {
+  // Extract chapter count hints from various fields
+  const description = workDetails.description || '';
+  const subjects = workDetails.subjects || [];
+  
+  // Look for chapter mentions in description
+  const chapterMatch = description.match(/(\d+)\s*chapters?/i);
+  if (chapterMatch) {
+    return Math.min(parseInt(chapterMatch[1]), 50);
+  }
+  
+  // Look for part mentions
+  const partMatch = description.match(/(\d+)\s*parts?/i);
+  if (partMatch) {
+    return Math.min(parseInt(partMatch[1]), 25);
+  }
+  
+  // Check subjects for hints about book structure
+  const hasMultipleParts = subjects.some((s: string) => 
+    s.toLowerCase().includes('multi') || s.toLowerCase().includes('series')
+  );
+  
+  // Default estimates based on book type
+  if (subjects.some((s: string) => s.toLowerCase().includes('textbook'))) {
+    return 15; // Textbooks typically have more chapters
+  }
+  if (subjects.some((s: string) => s.toLowerCase().includes('novel'))) {
+    return 12; // Novels typically have 8-15 chapters
+  }
+  if (hasMultipleParts) {
+    return 8; // Multi-part books
+  }
+  
+  return 10; // Default fallback
+}
+
+export async function generateBookChapters(bookData: TrendingBook) {
+  const tableOfContents = bookData.id.startsWith('/works/') 
+    ? await fetchBookTableOfContents(bookData.id)
+    : [];
+  
+  if (tableOfContents.length > 0) {
+    return tableOfContents.map((title, index) => ({
+      id: `ol-ch-${bookData.id}-${index + 1}`,
+      title: title.length > 50 ? `${title.slice(0, 47)}...` : title,
+      ordinal: index + 1,
+      subtype: "chapter" as const,
+      pages: 15 + Math.round(Math.random() * 10), // Estimated pages per chapter
+    }));
+  }
+  
+  // Fallback to generic chapters with better naming
+  const chapterCount = estimateChapterCount({ description: bookData.genre });
+  return Array.from({ length: chapterCount }).map((_, i) => ({
+    id: `ol-ch-${bookData.id}-${i + 1}`,
+    title: `Chapter ${i + 1}`,
+    ordinal: i + 1,
+    subtype: "chapter" as const,
+    pages: 15 + Math.round(Math.random() * 10),
+  }));
+}

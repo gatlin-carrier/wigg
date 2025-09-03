@@ -18,7 +18,7 @@ import { WhyTagSelector, type SpoilerLevel } from "./WhyTagSelector";
 import { type Unit } from "./SwipeRating";
 import { type MediaPlayerControls } from "./MediaPlayer";
 
-export type MediaType = "tv" | "anime" | "book" | "manga" | "podcast";
+export type MediaType = "tv" | "anime" | "book" | "manga" | "webtoon" | "podcast";
 
 export type Moment = {
   id: string;

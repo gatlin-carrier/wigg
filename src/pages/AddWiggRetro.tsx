@@ -16,47 +16,11 @@ import { GoodnessCurve, type GoodnessCurveData } from "@/components/wigg/Goodnes
 import { MomentsPanel } from "@/components/wigg/MomentsPanel";
 import { MomentCapture, type MediaType } from "@/components/wigg/MomentCapture";
 import { WhyTagSelector, type SpoilerLevel } from "@/components/wigg/WhyTagSelector";
-import { RatingMetaphor } from "@/components/wigg/RatingMetaphor";
 import { RealTimeVisualization } from "@/components/wigg/RealTimeVisualization";
 import { useWiggSession } from "@/hooks/useWiggSession";
 import { useWiggPersistence } from "@/hooks/useWiggPersistence";
+import { useMediaUnits } from "@/hooks/useMediaUnits";
 
-// Sample data - will be replaced with real episode/chapter data
-const SAMPLE_UNITS_TV = Array.from({ length: 8 }).map((_, i) => ({
-  id: `ep-${i + 1}`,
-  title: `S1E${i + 1}: ${[
-    "Pilot",
-    "Arrival",
-    "The Trial", 
-    "Echoes",
-    "Breakwater",
-    "The Turn",
-    "Uprising",
-    "Finale",
-  ][i]}`,
-  ordinal: i + 1,
-  subtype: "episode" as const,
-  runtimeSec: 42 * 60,
-}));
-
-const SAMPLE_UNITS_BOOK = Array.from({ length: 10 }).map((_, i) => ({
-  id: `ch-${i + 1}`,
-  title: `Ch. ${i + 1}: ${[
-    "A Door Ajar",
-    "Letters",
-    "Lanterns",
-    "The Gate", 
-    "Embers",
-    "Witness",
-    "The Long Night",
-    "Ashfall",
-    "The Oath",
-    "Dawn",
-  ][i]}`,
-  ordinal: i + 1,
-  subtype: "chapter" as const,
-  pages: 18 + Math.round(Math.random() * 12),
-}));
 
 function AddWiggRetroContent() {
   const location = useLocation();
@@ -65,7 +29,6 @@ function AddWiggRetroContent() {
   const [whyTags, setWhyTags] = useState<string[]>([]);
   const [whySpoiler, setWhySpoiler] = useState<SpoilerLevel>("none");
   const [goodnessCurveData, setGoodnessCurveData] = useState<GoodnessCurveData[]>([]);
-  const [visualMetaphor, setVisualMetaphor] = useState<"mountain" | "wave" | "flame" | "classic">("mountain");
   const [currentRatings, setCurrentRatings] = useState<SwipeValue[]>([]);
 
   const {
@@ -85,6 +48,7 @@ function AddWiggRetroContent() {
   } = useWiggSession();
 
   const { saveWiggRating, saveMoment, saveMediaToDatabase } = useWiggPersistence();
+  const { units: apiUnits, isLoading: unitsLoading, error: unitsError } = useMediaUnits(selectedMedia);
 
   useEffect(() => {
     // Check if media was passed from MediaDetails page
@@ -104,23 +68,19 @@ function AddWiggRetroContent() {
   }, [location.state, selectedMedia, setSelectedMedia]);
 
   useEffect(() => {
-    if (selectedMedia) {
-      if (selectedMedia.type === "book" || selectedMedia.type === "manga") {
-        setUnits(SAMPLE_UNITS_BOOK);
-      } else {
-        setUnits(SAMPLE_UNITS_TV);
-      }
+    if (selectedMedia && apiUnits.length > 0) {
+      setUnits(apiUnits);
       setMediaType(selectedMedia.type);
       
       // Generate sample goodness curve data
-      const curveData = units.map((unit, i) => ({
+      const curveData = apiUnits.map((unit, i) => ({
         unit: unit.ordinal,
         label: `${unit.subtype === "episode" ? "E" : "Ch"}${unit.ordinal}`,
         score: Math.max(0, Math.min(3, 0.4 + 0.3 * i + (i > 3 ? Math.random() * 0.6 : Math.random() * 0.3))),
       }));
       setGoodnessCurveData(curveData);
     }
-  }, [selectedMedia, setUnits, units]);
+  }, [selectedMedia, apiUnits, setUnits]);
 
   const handleMediaSelect = async (media: MediaSearchResult) => {
     try {
@@ -224,7 +184,15 @@ function AddWiggRetroContent() {
                     <div className="absolute inset-0 -z-10 translate-y-4 scale-95 blur-sm opacity-50">
                       <div className="w-full h-72 rounded-2xl bg-muted" />
                     </div>
-                    {currentUnit ? (
+                    {unitsLoading ? (
+                      <div className="h-72 rounded-2xl border border-dashed grid place-items-center text-sm text-muted-foreground">
+                        Loading episodes...
+                      </div>
+                    ) : unitsError ? (
+                      <div className="h-72 rounded-2xl border border-dashed grid place-items-center text-sm text-destructive">
+                        Error loading episodes: {unitsError.message}
+                      </div>
+                    ) : currentUnit ? (
                       <SwipeRating unit={currentUnit} onSwiped={handleSwipe} />
                     ) : (
                       <div className="h-72 rounded-2xl border border-dashed grid place-items-center text-sm text-muted-foreground">
@@ -241,31 +209,6 @@ function AddWiggRetroContent() {
         </div>
 
         <div className="space-y-4">
-          {/* Visual Metaphor Selector */}
-          <Card className="rounded-2xl shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">Visual Style</CardTitle>
-              <CardDescription className="text-xs">
-                Choose how you want to visualize your ratings
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-2 mb-4">
-                {(["mountain", "wave", "flame", "classic"] as const).map((variant) => (
-                  <button
-                    key={variant}
-                    onClick={() => setVisualMetaphor(variant)}
-                    className={`p-2 rounded-lg border transition-colors ${
-                      visualMetaphor === variant ? "border-primary bg-primary/10" : "border-border"
-                    }`}
-                  >
-                    <RatingMetaphor variant={variant} value={2} />
-                    <div className="text-xs mt-1 capitalize">{variant}</div>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Real-time Personal Graph */}
           <Card className="rounded-2xl shadow-sm">
@@ -299,7 +242,7 @@ function AddWiggRetroContent() {
           </Card>
 
           {/* Community Consensus Graph */}
-          <GoodnessCurve data={goodnessCurveData} />
+          <GoodnessCurve data={goodnessCurveData || []} />
           
           <Card className="rounded-2xl shadow-sm">
             <CardHeader className="pb-2">

@@ -36,18 +36,36 @@ export function RealTimeVisualization({
   };
 
   const renderCurveVisualization = () => {
-    if (currentRatings.length === 0) return null;
+    if (currentRatings.length === 0) {
+      return (
+        <div className="w-full h-20 bg-gradient-to-r from-background to-muted rounded-lg border flex items-center justify-center">
+          <span className="text-xs text-muted-foreground">Start rating to see your curve</span>
+        </div>
+      );
+    }
 
     const maxHeight = 60;
-    const points = currentRatings.map((rating, index) => {
-      const x = (index / (currentRatings.length - 1)) * 100;
+    const validRatings = currentRatings.filter(r => typeof r === 'number' && !isNaN(r));
+    
+    if (validRatings.length === 0) {
+      return (
+        <div className="w-full h-20 bg-gradient-to-r from-background to-muted rounded-lg border flex items-center justify-center">
+          <span className="text-xs text-muted-foreground">Invalid rating data</span>
+        </div>
+      );
+    }
+
+    const points = validRatings.map((rating, index) => {
+      const x = validRatings.length === 1 ? 50 : (index / (validRatings.length - 1)) * 100;
       const y = maxHeight - (rating / 3) * maxHeight;
       return `${x},${y}`;
-    }).join(' ');
+    }).filter(point => point && !point.includes('NaN') && !point.includes('undefined'));
 
-    const pathD = currentRatings.length > 1 
-      ? `M${points.split(' ').map(p => p.split(',').join(',')).join(' L')}`
-      : `M50,${maxHeight - (currentRatings[0] / 3) * maxHeight}`;
+    const pathD = points.length > 1 
+      ? `M${points.join(' L')}`
+      : points.length === 1 
+      ? `M${points[0]} L${points[0]}`
+      : "M0,30 L0,30";
 
     return (
       <div className="relative w-full h-20 bg-gradient-to-r from-background to-muted rounded-lg border overflow-hidden">
@@ -80,18 +98,26 @@ export function RealTimeVisualization({
           />
           
           {/* Rating points */}
-          {currentRatings.map((rating, index) => (
-            <motion.circle
-              key={index}
-              cx={(index / (currentRatings.length - 1)) * 100}
-              cy={maxHeight - (rating / 3) * maxHeight}
-              r="2"
-              fill={getRatingColor(rating)}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-            />
-          ))}
+          {validRatings.map((rating, index) => {
+            const cx = validRatings.length === 1 ? 50 : (index / (validRatings.length - 1)) * 100;
+            const cy = maxHeight - (rating / 3) * maxHeight;
+            
+            // Ensure values are valid numbers
+            if (isNaN(cx) || isNaN(cy)) return null;
+            
+            return (
+              <motion.circle
+                key={index}
+                cx={cx}
+                cy={cy}
+                r="2"
+                fill={getRatingColor(rating)}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: index * 0.1 }}
+              />
+            );
+          })}
         </svg>
         
         {/* Latest rating indicator */}

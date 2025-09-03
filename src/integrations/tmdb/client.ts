@@ -65,6 +65,30 @@ export async function getTvDetails(id: number) {
   return tmdbGet<any>(`/tv/${id}`, { language: 'en-US' });
 }
 
+export async function getTvSeasons(tvId: number) {
+  const details = await getTvDetails(tvId);
+  return details.seasons || [];
+}
+
+export async function getTvSeasonDetails(tvId: number, seasonNumber: number) {
+  return tmdbGet<any>(`/tv/${tvId}/season/${seasonNumber}`, { language: 'en-US' });
+}
+
+export async function getTvEpisodes(tvId: number, seasonNumber = 1) {
+  const seasonData = await getTvSeasonDetails(tvId, seasonNumber);
+  return seasonData.episodes?.map((ep: any, index: number) => ({
+    id: `tmdb-ep-${tvId}-s${seasonNumber}e${ep.episode_number}`,
+    title: `S${seasonNumber}E${ep.episode_number}: ${ep.name || `Episode ${ep.episode_number}`}`,
+    ordinal: index + 1,
+    subtype: "episode" as const,
+    runtimeSec: ep.runtime ? ep.runtime * 60 : 42 * 60,
+    description: ep.overview,
+    airDate: ep.air_date,
+    episodeNumber: ep.episode_number,
+    seasonNumber: seasonNumber,
+  })) || [];
+}
+
 // Genre lists (use to map genre_ids -> names)
 export async function getMovieGenres() {
   return tmdbGet<{ genres: { id: number; name: string }[] }>(`/genre/movie/list`, { language: 'en-US' });

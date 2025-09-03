@@ -11,42 +11,8 @@ import { YouTubePlayer, type MediaPlayerControls } from "@/components/wigg/Media
 import { MomentsPanel } from "@/components/wigg/MomentsPanel";
 import { useWiggSession } from "@/hooks/useWiggSession";
 import { useWiggPersistence } from "@/hooks/useWiggPersistence";
+import { useMediaUnits } from "@/hooks/useMediaUnits";
 
-const SAMPLE_UNITS_TV = Array.from({ length: 8 }).map((_, i) => ({
-  id: `ep-${i + 1}`,
-  title: `S1E${i + 1}: ${[
-    "Pilot",
-    "Arrival", 
-    "The Trial",
-    "Echoes",
-    "Breakwater",
-    "The Turn",
-    "Uprising",
-    "Finale",
-  ][i]}`,
-  ordinal: i + 1,
-  subtype: "episode" as const,
-  runtimeSec: 42 * 60,
-}));
-
-const SAMPLE_UNITS_BOOK = Array.from({ length: 10 }).map((_, i) => ({
-  id: `ch-${i + 1}`,
-  title: `Ch. ${i + 1}: ${[
-    "A Door Ajar",
-    "Letters",
-    "Lanterns", 
-    "The Gate",
-    "Embers",
-    "Witness",
-    "The Long Night",
-    "Ashfall",
-    "The Oath",
-    "Dawn",
-  ][i]}`,
-  ordinal: i + 1,
-  subtype: "chapter" as const,
-  pages: 18 + Math.round(Math.random() * 12),
-}));
 
 function AddWiggLiveContent() {
   const location = useLocation();
@@ -67,6 +33,7 @@ function AddWiggLiveContent() {
   } = useWiggSession();
 
   const { saveMoment, saveMediaToDatabase } = useWiggPersistence();
+  const { units: apiUnits, isLoading: unitsLoading, error: unitsError } = useMediaUnits(selectedMedia);
 
   useEffect(() => {
     // Check if media was passed from MediaDetails page
@@ -86,16 +53,11 @@ function AddWiggLiveContent() {
   }, [location.state, selectedMedia, setSelectedMedia]);
 
   useEffect(() => {
-    if (selectedMedia) {
-      // Set sample units based on media type
-      if (selectedMedia.type === "book" || selectedMedia.type === "manga") {
-        setUnits(SAMPLE_UNITS_BOOK);
-      } else {
-        setUnits(SAMPLE_UNITS_TV);
-      }
+    if (selectedMedia && apiUnits.length > 0) {
+      setUnits(apiUnits);
       setMediaType(selectedMedia.type);
     }
-  }, [selectedMedia, setUnits]);
+  }, [selectedMedia, apiUnits, setUnits]);
 
   const handleMediaSelect = async (media: MediaSearchResult) => {
     try {

@@ -39,3 +39,28 @@ export async function fetchTrendingPodcasts(max = 24) {
   if (error) throw error;
   return data as { feeds?: Array<{ id: number; title: string; author?: string; image?: string; itunesId?: number }>; status?: string };
 }
+
+export async function fetchPodcastEpisodes(showId: string) {
+  // Use the existing search to get episodes from a show
+  const searchResult = await searchPodcasts({
+    user_query: showId,
+    locale: "en-US",
+    market: "US",
+    cost_budget: { max_providers: 1, allow_fallbacks: false }
+  });
+
+  if (!searchResult.resolved?.episodes) {
+    return [];
+  }
+
+  return searchResult.resolved.episodes.map((ep, index) => ({
+    id: `podcast-ep-${showId}-${ep.id}`,
+    title: ep.title || `Episode ${index + 1}`,
+    ordinal: index + 1,
+    subtype: "episode" as const,
+    runtimeSec: ep.durationSec || 30 * 60, // Default 30 min
+    description: undefined,
+    pubDate: ep.pubDate,
+    enclosureUrl: ep.enclosureUrl,
+  }));
+}
