@@ -42,7 +42,7 @@ export function MediaSearch({ onMediaSelect, className = "" }: MediaSearchProps)
   const getSearchResults = (): MediaSearchResult[] => {
     switch (activeTab) {
       case "manga":
-        return mangaSearch.data?.media?.map((item: any) => ({
+        return mangaSearch.data?.map((item: any) => ({
           id: item.id.toString(),
           title: item.title?.english || item.title?.romaji || "Unknown Title",
           year: item.startDate?.year,
@@ -54,16 +54,15 @@ export function MediaSearch({ onMediaSelect, className = "" }: MediaSearchProps)
         })) || [];
       
       case "podcast":
-        return podcastSearch.data?.feeds?.map((feed: any) => ({
-          id: feed.id.toString(),
-          title: feed.title,
-          year: new Date(feed.newestItemPubdate * 1000).getFullYear(),
+        return podcastSearch.data?.resolved?.show ? [{
+          id: podcastSearch.data.resolved.show.id,
+          title: podcastSearch.data.resolved.show.title,
+          year: undefined,
           type: "podcast" as MediaType,
-          coverImage: feed.image,
-          description: feed.description,
-          episodeCount: feed.episodeCount,
-          externalIds: { podcast_guid: feed.podcastGuid },
-        })) || [];
+          coverImage: podcastSearch.data.resolved.show.artwork?.url,
+          description: undefined,
+          externalIds: { podcast_guid: podcastSearch.data.resolved.show.id },
+        }] : [];
       
       default:
         return [];

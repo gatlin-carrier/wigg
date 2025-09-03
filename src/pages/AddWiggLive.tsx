@@ -77,9 +77,9 @@ function AddWiggLiveContent() {
         title: passedMedia.title,
         type: passedMedia.type as MediaType,
         year: passedMedia.year,
-        posterUrl: passedMedia.posterUrl,
-        source: passedMedia.source,
-        externalId: passedMedia.id,
+        coverImage: passedMedia.posterUrl,
+        
+        externalIds: { external_id: passedMedia.id },
         runtime: passedMedia.runtime
       };
       setSelectedMedia(mediaSearchResult);

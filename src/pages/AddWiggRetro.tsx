@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,8 @@ import { GoodnessCurve, type GoodnessCurveData } from "@/components/wigg/Goodnes
 import { MomentsPanel } from "@/components/wigg/MomentsPanel";
 import { MomentCapture, type MediaType } from "@/components/wigg/MomentCapture";
 import { WhyTagSelector, type SpoilerLevel } from "@/components/wigg/WhyTagSelector";
+import { RatingMetaphor } from "@/components/wigg/RatingMetaphor";
+import { RealTimeVisualization } from "@/components/wigg/RealTimeVisualization";
 import { useWiggSession } from "@/hooks/useWiggSession";
 import { useWiggPersistence } from "@/hooks/useWiggPersistence";
 
@@ -62,6 +65,8 @@ function AddWiggRetroContent() {
   const [whyTags, setWhyTags] = useState<string[]>([]);
   const [whySpoiler, setWhySpoiler] = useState<SpoilerLevel>("none");
   const [goodnessCurveData, setGoodnessCurveData] = useState<GoodnessCurveData[]>([]);
+  const [visualMetaphor, setVisualMetaphor] = useState<"mountain" | "wave" | "flame" | "classic">("mountain");
+  const [currentRatings, setCurrentRatings] = useState<SwipeValue[]>([]);
 
   const {
     selectedMedia,
@@ -90,9 +95,9 @@ function AddWiggRetroContent() {
         title: passedMedia.title,
         type: passedMedia.type as MediaType,
         year: passedMedia.year,
-        posterUrl: passedMedia.posterUrl,
-        source: passedMedia.source,
-        externalId: passedMedia.id,
+        coverImage: passedMedia.posterUrl,
+        
+        externalIds: { external_id: passedMedia.id },
         runtime: passedMedia.runtime
       };
       setSelectedMedia(mediaSearchResult);
@@ -131,6 +136,9 @@ function AddWiggRetroContent() {
   const handleSwipe = async (direction: SwipeDirection, value: SwipeValue) => {
     if (!selectedMedia || !currentUnit) return;
 
+    // Update real-time ratings
+    setCurrentRatings(prev => [...prev, value]);
+    
     recordSwipe(value);
     setWhyTrayOpen(true);
     
@@ -207,7 +215,7 @@ function AddWiggRetroContent() {
                 Rate this {mediaType === "book" || mediaType === "manga" ? "chapter" : "episode"}
               </CardTitle>
               <CardDescription className="text-xs">
-                Swipe or Keyboard: ←A (Skip) • ↑S (Okay) • →D (Good) • ↓F (Peak)
+                Swipe or Keyboard: ←A (Filler) • ↑S (Warming Up) • →D (Getting Good) • ↓F (Peak Perfection)
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -234,13 +242,71 @@ function AddWiggRetroContent() {
         </div>
 
         <div className="space-y-4">
+          {/* Visual Metaphor Selector */}
+          <Card className="rounded-2xl shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Visual Style</CardTitle>
+              <CardDescription className="text-xs">
+                Choose how you want to visualize your ratings
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                {(["mountain", "wave", "flame", "classic"] as const).map((variant) => (
+                  <button
+                    key={variant}
+                    onClick={() => setVisualMetaphor(variant)}
+                    className={`p-2 rounded-lg border transition-colors ${
+                      visualMetaphor === variant ? "border-primary bg-primary/10" : "border-border"
+                    }`}
+                  >
+                    <RatingMetaphor variant={variant} value={2} />
+                    <div className="text-xs mt-1 capitalize">{variant}</div>
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Real-time Personal Graph */}
+          <Card className="rounded-2xl shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Your Live Progress</CardTitle>
+              <CardDescription className="text-xs">
+                Real-time view of your ratings as you go
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <RealTimeVisualization 
+                  sessionStats={sessionStats} 
+                  currentRatings={currentRatings}
+                  variant="curve"
+                />
+                <div className="grid grid-cols-3 gap-2">
+                  {(["curve", "bars", "pulse"] as const).map((variant) => (
+                    <div key={variant} className="text-center">
+                      <RealTimeVisualization 
+                        sessionStats={sessionStats} 
+                        currentRatings={currentRatings}
+                        variant={variant}
+                      />
+                      <div className="text-xs mt-1 capitalize text-muted-foreground">{variant}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Community Consensus Graph */}
           <GoodnessCurve data={goodnessCurveData} />
           
           <Card className="rounded-2xl shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base">Your progress</CardTitle>
+              <CardTitle className="text-base">Progress Control</CardTitle>
               <CardDescription className="text-xs">
-                Slide to reveal non-spoiler summaries up to what you've reached.
+                Set how far you've progressed to see non-spoiler summaries
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -273,6 +339,13 @@ function AddWiggRetroContent() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
+              <div className="flex flex-wrap gap-1 mb-3">
+                <Badge variant="outline" className="text-xs">💤 Filler: Slow pacing, no plot progress</Badge>
+                <Badge variant="outline" className="text-xs">🌱 Warming: Building up, getting interesting</Badge>
+                <Badge variant="outline" className="text-xs">⚡ Good: Engaging, solid content</Badge>
+                <Badge variant="outline" className="text-xs">🔥 Peak: Unforgettable, pure excellence</Badge>
+              </div>
+              
               <WhyTagSelector
                 selectedTags={whyTags}
                 onTagsChange={setWhyTags}
