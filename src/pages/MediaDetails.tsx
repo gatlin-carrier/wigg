@@ -277,48 +277,26 @@ export default function MediaDetails() {
             </Card>
             
             <div className="mt-4 space-y-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="w-full" size="lg">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add WIGG Point
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  <DropdownMenuItem onClick={() => navigate('/add-wigg/live', { 
-                    state: { 
-                      media: {
-                        source,
-                        id,
-                        title,
-                        type: isTmdbMovie ? 'movie' : isTmdbTv ? 'tv' : isGame ? 'game' : isBook ? 'book' : isAnilist ? (source === 'anilist-manga' ? 'manga' : 'anime') : 'movie',
-                        posterUrl,
-                        year,
-                        runtime
-                      }
+              <Button 
+                className="w-full" 
+                size="lg"
+                onClick={() => navigate('/add-wigg', { 
+                  state: { 
+                    media: {
+                      source,
+                      id,
+                      title,
+                      type: isTmdbMovie ? 'movie' : isTmdbTv ? 'tv' : isGame ? 'game' : isBook ? 'book' : isAnilist ? (source === 'anilist-manga' ? 'manga' : 'anime') : 'movie',
+                      posterUrl,
+                      year,
+                      runtime
                     }
-                  })}>
-                    <Play className="h-4 w-4 mr-2" />
-                    Live Capture Mode
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/add-wigg/retro', { 
-                    state: { 
-                      media: {
-                        source,
-                        id,
-                        title,
-                        type: isTmdbMovie ? 'movie' : isTmdbTv ? 'tv' : isGame ? 'game' : isBook ? 'book' : isAnilist ? (source === 'anilist-manga' ? 'manga' : 'anime') : 'movie',
-                        posterUrl,
-                        year,
-                        runtime
-                      }
-                    }
-                  })}>
-                    <RotateCcw className="h-4 w-4 mr-2" />
-                    Retrospective Rating
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  }
+                })}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Rate This Media
+              </Button>
               {externalUrl && (
                 <Button asChild variant="outline" className="w-full" size="lg">
                   <a href={externalUrl} target="_blank" rel="noreferrer">
