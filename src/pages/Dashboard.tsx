@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WiggPointForm } from "@/components/WiggPointForm";
 import { WiggPointsList } from "@/components/WiggPointsList";
@@ -219,10 +220,55 @@ const Dashboard = () => {
                   Help others discover when media gets good
                 </p>
               </div>
-              <WiggPointForm 
-                initialData={selectedMedia}
-                onSuccess={handleWiggPointSuccess}
-              />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <Card className="p-6">
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <h3 className="text-xl font-semibold mb-2">Live Capture</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Mark moments in real-time while watching, reading, or listening
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={() => window.location.href = '/add-wigg/live'}
+                      className="w-full"
+                      size="lg"
+                    >
+                      Start Live Session
+                    </Button>
+                  </div>
+                </Card>
+
+                <Card className="p-6">
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <h3 className="text-xl font-semibold mb-2">Retrospective Rating</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Rate episodes or chapters after you've finished them
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={() => window.location.href = '/add-wigg/retro'}
+                      className="w-full"
+                      size="lg"
+                      variant="outline"
+                    >
+                      Rate Episodes/Chapters
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+
+              <div className="text-center">
+                <div className="text-sm text-muted-foreground mb-4">
+                  Or use the classic single-point form:
+                </div>
+                <WiggPointForm 
+                  initialData={selectedMedia}
+                  onSuccess={handleWiggPointSuccess}
+                />
+              </div>
             </TabsContent>
 
             {/* Removed separate Discover tab; content merged into Browse */}

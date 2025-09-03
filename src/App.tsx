@@ -14,6 +14,8 @@ import SearchPage from "./pages/Search";
 import TestNavigation from "./pages/TestNavigation";
 import MediaDetails from "./pages/MediaDetails";
 import Profile from "./pages/Profile";
+import AddWiggLive from "./pages/AddWiggLive";
+import AddWiggRetro from "./pages/AddWiggRetro";
 
 const App = () => (
   <TooltipProvider>
@@ -27,6 +29,9 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/wigg-demo" element={<WiggDemo />} />
+            <Route path="/add-wigg" element={<AddWiggRetro />} />
+            <Route path="/add-wigg/live" element={<AddWiggLive />} />
+            <Route path="/add-wigg/retro" element={<AddWiggRetro />} />
             <Route path="/tmdb" element={<TmdbDemo />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/feed" element={<Feed />} />

@@ -1,12 +1,13 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Star, Calendar, Clock, ExternalLink, Plus } from 'lucide-react';
+import { Star, Calendar, Clock, ExternalLink, Plus, Play, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { getMovieDetails, getTvDetails, getImageUrl } from '@/integrations/tmdb/client';
 import { fetchAnimeDetails, fetchMangaDetails } from '@/integrations/anilist/client';
 import { fetchWorkDetails } from '@/integrations/openlibrary/client';
@@ -17,6 +18,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 export default function MediaDetails() {
   const { source, id } = useParams<{ source: string; id: string }>();
+  const navigate = useNavigate();
   const [heroColor, setHeroColor] = React.useState<string | undefined>(undefined);
   const [bgError, setBgError] = React.useState<boolean>(false);
   const [enlargedImage, setEnlargedImage] = React.useState<{ url: string; alt: string } | null>(null);
@@ -275,10 +277,48 @@ export default function MediaDetails() {
             </Card>
             
             <div className="mt-4 space-y-2">
-              <Button className="w-full" size="lg">
-                <Plus className="h-4 w-4 mr-2" />
-                Add WIGG Point
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="w-full" size="lg">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add WIGG Point
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuItem onClick={() => navigate('/add-wigg/live', { 
+                    state: { 
+                      media: {
+                        source,
+                        id,
+                        title,
+                        type: isTmdbMovie ? 'movie' : isTmdbTv ? 'tv' : isGame ? 'game' : isBook ? 'book' : isAnilist ? (source === 'anilist-manga' ? 'manga' : 'anime') : 'movie',
+                        posterUrl,
+                        year,
+                        runtime
+                      }
+                    }
+                  })}>
+                    <Play className="h-4 w-4 mr-2" />
+                    Live Capture Mode
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/add-wigg/retro', { 
+                    state: { 
+                      media: {
+                        source,
+                        id,
+                        title,
+                        type: isTmdbMovie ? 'movie' : isTmdbTv ? 'tv' : isGame ? 'game' : isBook ? 'book' : isAnilist ? (source === 'anilist-manga' ? 'manga' : 'anime') : 'movie',
+                        posterUrl,
+                        year,
+                        runtime
+                      }
+                    }
+                  })}>
+                    <RotateCcw className="h-4 w-4 mr-2" />
+                    Retrospective Rating
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               {externalUrl && (
                 <Button asChild variant="outline" className="w-full" size="lg">
                   <a href={externalUrl} target="_blank" rel="noreferrer">
