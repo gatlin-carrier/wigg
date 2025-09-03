@@ -97,8 +97,7 @@ function AddWiggRetroContent() {
         year: passedMedia.year,
         coverImage: passedMedia.posterUrl,
         
-        externalIds: { external_id: passedMedia.id },
-        runtime: passedMedia.runtime
+        externalIds: { tmdb_id: passedMedia.id }
       };
       setSelectedMedia(mediaSearchResult);
     }

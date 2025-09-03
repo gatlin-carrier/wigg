@@ -133,10 +133,10 @@ export default function Feed() {
 
       // Apply filters
       if (mediaTypeFilter !== "all") {
-        query = query.eq('media.type', mediaTypeFilter);
+        query = query.eq('media.type', mediaTypeFilter as "movie" | "tv" | "anime" | "game" | "book" | "podcast");
       }
       if (spoilerFilter !== "all") {
-        query = query.eq('spoiler', spoilerFilter);
+        query = query.eq('spoiler', spoilerFilter as "0" | "1" | "2");
       }
 
       const { data, error } = await query;

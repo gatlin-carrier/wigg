@@ -58,11 +58,11 @@ const Profile = () => {
 
       if (data) {
         // Handle the JSONB format from database
-        const preferences = Array.isArray(data.preferred_media_types) 
-          ? (data.preferred_media_types as Array<{type: string, priority: number}>)
+        const preferences = Array.isArray((data as any).preferred_media_types) 
+          ? ((data as any).preferred_media_types as Array<{type: string, priority: number}>)
           : [];
         setProfile({
-          username: data.username || "",
+          username: (data as any).username || "",
           preferred_media_types: preferences,
           hidden_media_types: Array.isArray((data as any).hidden_media_types) ? (data as any).hidden_media_types as string[] : [],
         });

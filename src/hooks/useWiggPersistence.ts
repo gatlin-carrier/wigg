@@ -131,11 +131,22 @@ export function useWiggPersistence() {
         return existingMedia.id;
       }
 
+      // Map MediaType to database format
+      let dbType: "movie" | "tv" | "anime" | "game" | "book" | "podcast";
+      
+      if (media.type === "manga") {
+        dbType = "book";
+      } else if (media.type === "tv") {
+        dbType = "tv";
+      } else {
+        dbType = media.type as "movie" | "tv" | "anime" | "game" | "book" | "podcast";
+      }
+
       // Create new media entry
       const { data: newMedia, error } = await supabase
         .from("media")
         .insert({
-          type: media.type,
+          type: dbType,
           title: media.title,
           year: media.year,
           duration_sec: media.duration,

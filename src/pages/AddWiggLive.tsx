@@ -79,8 +79,7 @@ function AddWiggLiveContent() {
         year: passedMedia.year,
         coverImage: passedMedia.posterUrl,
         
-        externalIds: { external_id: passedMedia.id },
-        runtime: passedMedia.runtime
+        externalIds: { tmdb_id: passedMedia.id }
       };
       setSelectedMedia(mediaSearchResult);
     }
@@ -108,7 +107,7 @@ function AddWiggLiveContent() {
     }
   };
 
-  const handleAddMoment = async (moment: Moment) => {
+  const handleAddMoment = async (moment: any) => {
     if (!selectedMedia) return;
     
     addMoment(moment);

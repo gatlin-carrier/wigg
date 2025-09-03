@@ -80,10 +80,10 @@ const Dashboard = () => {
 
       if (error) throw error;
 
-      if (data?.preferred_media_types) {
+      if (data) {
         // Handle JSONB format from database - extract just the types for ordering
-        const preferences = Array.isArray(data.preferred_media_types) 
-          ? (data.preferred_media_types as Array<{type: string, priority: number}>)
+        const preferences = Array.isArray((data as any).preferred_media_types) 
+          ? ((data as any).preferred_media_types as Array<{type: string, priority: number}>)
               .sort((a, b) => a.priority - b.priority)
               .map(p => p.type)
           : [];
@@ -101,7 +101,7 @@ const Dashboard = () => {
       setHiddenTypes([]);
     }
   };
-  const [selectedMedia, setSelectedMedia] = useState<{ title: string; type: "Game" | "Movie" | "TV Show" | "Book" } | null>(null);
+  const [selectedMedia, setSelectedMedia] = useState<{ title: string; type: string } | null>(null);
   
   // Configure global header for this page
   usePageHeader({
@@ -111,7 +111,7 @@ const Dashboard = () => {
     showHomeButton: true,
   });
 
-  const handleAddFromRecommendation = (mediaData: { title: string; type: "Game" | "Movie" | "TV Show" | "Book" }) => {
+  const handleAddFromRecommendation = (mediaData: { title: string; type: string }) => {
     setSelectedMedia(mediaData);
   };
 
@@ -165,7 +165,7 @@ const Dashboard = () => {
                       case "Book":
                         return <BookRecommendations key="books" onAddBook={handleAddFromRecommendation} />;
                       case "Podcast":
-                        return <PodcastTrending key="podcasts" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Podcast' })} />;
+                        return <PodcastTrending key="podcasts" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Book' })} />;
                       case "Webtoons":
                         return <AnilistWebtoons key="webtoons" onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Book' })} />;
                       default:
@@ -193,7 +193,7 @@ const Dashboard = () => {
                     <GameRecommendations onAddGame={handleAddFromRecommendation} />
                   )}
                   {!userPreferences.includes("Podcast") && !hiddenTypes.includes("Podcast") && (
-                    <PodcastTrending onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Podcast' })} />
+                    <PodcastTrending onAdd={(it) => handleAddFromRecommendation({ title: it.title, type: 'Book' })} />
                   )}
                   {!userPreferences.includes("Book") && !hiddenTypes.includes("Book") && (
                     <BookRecommendations onAddBook={handleAddFromRecommendation} />
@@ -265,7 +265,7 @@ const Dashboard = () => {
                   Or use the classic single-point form:
                 </div>
                 <WiggPointForm 
-                  initialData={selectedMedia}
+                  initialData={selectedMedia as any}
                   onSuccess={handleWiggPointSuccess}
                 />
               </div>
