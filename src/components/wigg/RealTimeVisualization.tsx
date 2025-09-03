@@ -55,16 +55,24 @@ export function RealTimeVisualization({
       );
     }
 
-    const points = validRatings.map((rating, index) => {
+    const pointsData = validRatings.map((rating, index) => {
       const x = validRatings.length === 1 ? 50 : (index / (validRatings.length - 1)) * 100;
       const y = maxHeight - (rating / 3) * maxHeight;
-      return `${x},${y}`;
-    }).filter(point => point && !point.includes('NaN') && !point.includes('undefined'));
+      
+      // Only return point if both x and y are valid numbers
+      if (isNaN(x) || isNaN(y) || !isFinite(x) || !isFinite(y)) {
+        return null;
+      }
+      
+      return { x, y, rating, originalIndex: index };
+    }).filter(point => point !== null);
 
-    const pathD = points.length > 1 
-      ? `M${points.join(' L')}`
-      : points.length === 1 
-      ? `M${points[0]} L${points[0]}`
+    const pathPoints = pointsData.map(point => `${point.x},${point.y}`);
+    
+    const pathD = pathPoints.length > 1 
+      ? `M${pathPoints.join(' L')}`
+      : pathPoints.length === 1 
+      ? `M${pathPoints[0]} L${pathPoints[0]}`
       : "M0,30 L0,30";
 
     return (
@@ -98,26 +106,18 @@ export function RealTimeVisualization({
           />
           
           {/* Rating points */}
-          {validRatings.map((rating, index) => {
-            const cx = validRatings.length === 1 ? 50 : (index / (validRatings.length - 1)) * 100;
-            const cy = maxHeight - (rating / 3) * maxHeight;
-            
-            // Ensure values are valid numbers
-            if (isNaN(cx) || isNaN(cy)) return null;
-            
-            return (
-              <motion.circle
-                key={index}
-                cx={cx}
-                cy={cy}
-                r="2"
-                fill={getRatingColor(rating)}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-              />
-            );
-          })}
+          {pointsData.map((point, index) => (
+            <motion.circle
+              key={point.originalIndex}
+              cx={point.x}
+              cy={point.y}
+              r="2"
+              fill={getRatingColor(point.rating)}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+            />
+          ))}
         </svg>
         
         {/* Latest rating indicator */}

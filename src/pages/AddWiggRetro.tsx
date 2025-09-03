@@ -86,6 +86,7 @@ function AddWiggRetroContent() {
     try {
       const mediaId = await saveMediaToDatabase(media);
       setSelectedMedia({ ...media, id: mediaId });
+      setCurrentRatings([]);
       resetSession();
     } catch (error) {
       console.error("Failed to save media:", error);
@@ -159,7 +160,7 @@ function AddWiggRetroContent() {
           >
             Change Media
           </Button>
-          <Button variant="secondary" onClick={resetSession}>
+          <Button variant="secondary" onClick={() => { setCurrentRatings([]); resetSession(); }}>
             <RefreshCw className="h-4 w-4 mr-1" />
             Reset
           </Button>
