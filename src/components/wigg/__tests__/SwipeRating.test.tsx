@@ -57,15 +57,57 @@ describe('SwipeRating', () => {
     expect(swipeCard).toBeInTheDocument();
   });
 
-  it('displays swipe instructions', () => {
+  it('displays keyboard shortcuts', () => {
     const onSwiped = vi.fn();
     const { getByText } = render(
       <SwipeRating unit={mockUnit} onSwiped={onSwiped} />
     );
 
-    expect(getByText('← Skip')).toBeInTheDocument();
-    expect(getByText('↑ Okay')).toBeInTheDocument();
-    expect(getByText('→ Good')).toBeInTheDocument();
-    expect(getByText('↓ Peak')).toBeInTheDocument();
+    expect(getByText('Arrows: ← ↑ → ↓')).toBeInTheDocument();
+    expect(getByText('Keys: A S D F')).toBeInTheDocument();
+    expect(getByText('Skip')).toBeInTheDocument();
+    expect(getByText('Okay')).toBeInTheDocument();
+    expect(getByText('Good')).toBeInTheDocument();
+    expect(getByText('Peak')).toBeInTheDocument();
+  });
+
+  it('handles arrow key shortcuts', () => {
+    const onSwiped = vi.fn();
+    render(<SwipeRating unit={mockUnit} onSwiped={onSwiped} />);
+
+    // Test arrow keys
+    fireEvent.keyDown(window, { code: 'ArrowRight' });
+    expect(onSwiped).toHaveBeenCalledWith('right', 2);
+
+    fireEvent.keyDown(window, { code: 'ArrowUp' });
+    expect(onSwiped).toHaveBeenCalledWith('up', 1);
+  });
+
+  it('handles ASDF key shortcuts', () => {
+    const onSwiped = vi.fn();
+    render(<SwipeRating unit={mockUnit} onSwiped={onSwiped} />);
+
+    // Test ASDF keys
+    fireEvent.keyDown(window, { code: 'KeyA' });
+    expect(onSwiped).toHaveBeenCalledWith('left', 0);
+
+    fireEvent.keyDown(window, { code: 'KeyF' });
+    expect(onSwiped).toHaveBeenCalledWith('down', 3);
+  });
+
+  it('ignores keyboard when user is typing in inputs', () => {
+    const onSwiped = vi.fn();
+    const { container } = render(
+      <div>
+        <input data-testid="test-input" />
+        <SwipeRating unit={mockUnit} onSwiped={onSwiped} />
+      </div>
+    );
+
+    const input = container.querySelector('[data-testid="test-input"]') as HTMLInputElement;
+    input.focus();
+
+    fireEvent.keyDown(input, { code: 'KeyA' });
+    expect(onSwiped).not.toHaveBeenCalled();
   });
 });

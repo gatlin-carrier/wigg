@@ -245,7 +245,7 @@ const Dashboard = () => {
                     <div className="text-center">
                       <h3 className="text-xl font-semibold mb-2">Retrospective Rating</h3>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Rate episodes or chapters after you've finished them
+                        Rate episodes/chapters with swipe gestures or keyboard shortcuts (↑↓←→ or ASDF)
                       </p>
                     </div>
                     <Button 

@@ -139,9 +139,7 @@ function AddWiggRetroContent() {
 
     // Save rating to database
     await saveWiggRating({
-      unitId: currentUnit.id,
       mediaId: selectedMedia.id,
-      episodeId: currentUnit.subtype === "episode" ? currentUnit.id : undefined,
       value,
       position: currentUnit.ordinal,
       positionType: currentUnit.subtype === "episode" ? "episode" : "page",
@@ -209,7 +207,7 @@ function AddWiggRetroContent() {
                 Rate this {mediaType === "book" || mediaType === "manga" ? "chapter" : "episode"}
               </CardTitle>
               <CardDescription className="text-xs">
-                Swipe: Left (Skip) • Up (Okay) • Right (Good) • Down (Peak)
+                Swipe or Keyboard: ←A (Skip) • ↑S (Okay) • →D (Good) • ↓F (Peak)
               </CardDescription>
             </CardHeader>
             <CardContent>

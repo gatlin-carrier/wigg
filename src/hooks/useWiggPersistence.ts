@@ -7,9 +7,7 @@ import { type SwipeValue } from "@/components/wigg/SwipeRating";
 import { type MediaSearchResult } from "@/components/media/MediaSearch";
 
 interface WiggRating {
-  unitId: string;
   mediaId: string;
-  episodeId?: string;
   value: SwipeValue;
   position: number;
   positionType: "sec" | "page" | "episode";
@@ -32,18 +30,17 @@ export function useWiggPersistence() {
     try {
       setIsSaving(true);
 
-      // Convert swipe value to normalized score (0-1)
-      const normalizedScore = rating.value / 3;
-
+      // For retrospective ratings, we don't need to store episodes
+      // Just store the position (episode/chapter number) as pos_value
       const { error } = await supabase.from("wigg_points").insert({
         media_id: rating.mediaId,
-        episode_id: rating.episodeId || null,
+        episode_id: null, // Not using episodes for retrospective ratings
         user_id: user.id,
-        pos_kind: rating.positionType,
+        pos_kind: rating.positionType === "episode" ? "sec" : rating.positionType as any,
         pos_value: rating.position,
-        tags: [`rating_${rating.value}`], // Store original swipe value as tag
+        tags: [`rating_${rating.value}`],
         reason_short: `Rated ${["Skip", "Okay", "Good", "Peak"][rating.value]}`,
-        spoiler: "0", // Ratings are generally non-spoiler
+        spoiler: "0",
       });
 
       if (error) throw error;
