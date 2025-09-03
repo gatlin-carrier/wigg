@@ -17,6 +17,7 @@ import { MomentsPanel } from "@/components/wigg/MomentsPanel";
 import { MomentCapture, type MediaType } from "@/components/wigg/MomentCapture";
 import { WhyTagSelector, type SpoilerLevel } from "@/components/wigg/WhyTagSelector";
 import { RealTimeVisualization } from "@/components/wigg/RealTimeVisualization";
+import { TimeBasedRating } from "@/components/wigg/TimeBasedRating";
 import { useWiggSession } from "@/hooks/useWiggSession";
 import { useWiggPersistence } from "@/hooks/useWiggPersistence";
 import { useMediaUnits } from "@/hooks/useMediaUnits";
@@ -68,9 +69,12 @@ function AddWiggRetroContent() {
   }, [location.state, selectedMedia, setSelectedMedia]);
 
   useEffect(() => {
+    if (selectedMedia) {
+      setMediaType(selectedMedia.type as MediaType);
+    }
+    
     if (selectedMedia && apiUnits.length > 0) {
       setUnits(apiUnits);
-      setMediaType(selectedMedia.type);
       
       // Generate sample goodness curve data
       const curveData = apiUnits.map((unit, i) => ({
@@ -119,11 +123,25 @@ function AddWiggRetroContent() {
     // Additional metadata could be saved here if needed
   };
 
+  const handleTimeBasedRating = async (hours: number, minutes: number, rating: SwipeValue, comment?: string) => {
+    if (!selectedMedia) return;
+
+    await saveWiggRating({
+      mediaId: selectedMedia.id,
+      value: rating,
+      position: hours * 60 + minutes, // Store total minutes
+      positionType: "minute",
+    });
+
+    // Update local state for visualization
+    setCurrentRatings(prev => [...prev, rating]);
+  };
+
   const currentUnit = units[currentUnitIndex] || null;
 
   if (!selectedMedia) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="w-full px-2 py-2 sm:p-4 md:p-6 overflow-x-hidden">
         <div className="flex items-center gap-3 mb-6">
           <FlameKindling className="h-6 w-6" />
           <div>
@@ -140,79 +158,93 @@ function AddWiggRetroContent() {
   }
 
   return (
-    <div className="p-4 md:p-6 lg:p-8">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <FlameKindling className="h-6 w-6" />
-          <div>
-            <h1 className="text-xl md:text-2xl font-bold">
+    <div className="w-full min-h-screen px-2 py-2 sm:p-4 md:p-6 overflow-x-hidden max-w-none">
+      <div className="flex flex-col gap-3 mb-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <FlameKindling className="h-6 w-6 flex-shrink-0" />
+          <div className="min-w-0 flex-1">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold truncate">
               {selectedMedia.title}
             </h1>
             <p className="text-xs text-muted-foreground">
-              Retrospective rating • {sessionStats.n} units rated
+              Retrospective rating • {sessionStats.n} units rated • Type: {mediaType}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <Button
             variant="outline"
             onClick={() => setSelectedMedia(null)}
+            className="w-full sm:w-auto"
           >
             Change Media
           </Button>
-          <Button variant="secondary" onClick={() => { setCurrentRatings([]); resetSession(); }}>
+          <Button 
+            variant="secondary" 
+            onClick={() => { setCurrentRatings([]); resetSession(); }}
+            className="w-full sm:w-auto"
+          >
             <RefreshCw className="h-4 w-4 mr-1" />
             Reset
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <Card className="rounded-2xl shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">
-                Rate this {mediaType === "book" || mediaType === "manga" ? "chapter" : "episode"}
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Swipe or Keyboard: ←A (Filler) • ↑S (Warming Up) • →D (Getting Good) • ↓F (Peak Perfection)
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[22rem] flex items-center justify-center">
-                <div className="w-full max-w-md">
-                  <div className="relative">
-                    <div className="absolute inset-0 -z-10 translate-y-4 scale-95 blur-sm opacity-50">
-                      <div className="w-full h-72 rounded-2xl bg-muted" />
+      <div className="w-full space-y-4 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
+        <div className="w-full space-y-4">
+          {(mediaType === "movie" || mediaType === "game") ? (
+            <TimeBasedRating
+              mediaType={mediaType as "movie" | "game"}
+              mediaTitle={selectedMedia.title}
+              onRatingSubmit={handleTimeBasedRating}
+            />
+          ) : (
+            <Card className="rounded-2xl shadow-sm w-full">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">
+                  Rate this {mediaType === "book" || mediaType === "manga" ? "chapter" : "episode"}
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  <span className="hidden sm:inline">Swipe or Keyboard: ←A (Filler) • ↑S (Warming Up) • →D (Getting Good) • ↓F (Peak Perfection)</span>
+                  <span className="sm:hidden">Swipe or use A/S/D/F keys</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[22rem] flex items-center justify-center px-2">
+                  <div className="w-full max-w-sm sm:max-w-md">
+                    <div className="relative">
+                      <div className="absolute inset-0 -z-10 translate-y-4 scale-95 blur-sm opacity-50">
+                        <div className="w-full h-72 rounded-2xl bg-muted" />
+                      </div>
+                      {unitsLoading ? (
+                        <div className="h-72 rounded-2xl border border-dashed grid place-items-center text-sm text-muted-foreground">
+                          Loading episodes...
+                        </div>
+                      ) : unitsError ? (
+                        <div className="h-72 rounded-2xl border border-dashed grid place-items-center text-sm text-destructive">
+                          Error loading episodes: {unitsError.message}
+                        </div>
+                      ) : currentUnit ? (
+                        <SwipeRating unit={currentUnit} onSwiped={handleSwipe} />
+                      ) : (
+                        <div className="h-72 rounded-2xl border border-dashed grid place-items-center text-sm text-muted-foreground">
+                          Stack complete! 🎉
+                        </div>
+                      )}
                     </div>
-                    {unitsLoading ? (
-                      <div className="h-72 rounded-2xl border border-dashed grid place-items-center text-sm text-muted-foreground">
-                        Loading episodes...
-                      </div>
-                    ) : unitsError ? (
-                      <div className="h-72 rounded-2xl border border-dashed grid place-items-center text-sm text-destructive">
-                        Error loading episodes: {unitsError.message}
-                      </div>
-                    ) : currentUnit ? (
-                      <SwipeRating unit={currentUnit} onSwiped={handleSwipe} />
-                    ) : (
-                      <div className="h-72 rounded-2xl border border-dashed grid place-items-center text-sm text-muted-foreground">
-                        Stack complete! 🎉
-                      </div>
-                    )}
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           <SessionRecap stats={sessionStats} />
         </div>
 
-        <div className="space-y-4">
+        <div className="w-full space-y-4">
 
           {/* Real-time Personal Graph */}
-          <Card className="rounded-2xl shadow-sm">
+          <Card className="rounded-2xl shadow-sm w-full">
             <CardHeader className="pb-2">
               <CardTitle className="text-base">Your Live Progress</CardTitle>
               <CardDescription className="text-xs">
@@ -245,7 +277,7 @@ function AddWiggRetroContent() {
           {/* Community Consensus Graph */}
           <GoodnessCurve data={goodnessCurveData || []} />
           
-          <Card className="rounded-2xl shadow-sm">
+          <Card className="rounded-2xl shadow-sm w-full">
             <CardHeader className="pb-2">
               <CardTitle className="text-base">Progress Control</CardTitle>
               <CardDescription className="text-xs">
@@ -273,8 +305,8 @@ function AddWiggRetroContent() {
 
       {/* Why Tray for post-swipe feedback */}
       {whyTrayOpen && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[min(900px,96vw)] z-40">
-          <Card className="rounded-2xl shadow-lg">
+        <div className="fixed bottom-4 left-4 right-4 z-40 max-w-4xl mx-auto">
+          <Card className="rounded-2xl shadow-lg w-full">
             <CardHeader className="pb-2">
               <CardTitle className="text-base">Why did you rate it that way?</CardTitle>
               <CardDescription className="text-xs">
@@ -282,11 +314,11 @@ function AddWiggRetroContent() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex flex-wrap gap-1 mb-3">
-                <Badge variant="outline" className="text-xs">💤 Filler: Slow pacing, no plot progress</Badge>
-                <Badge variant="outline" className="text-xs">🌱 Warming: Building up, getting interesting</Badge>
-                <Badge variant="outline" className="text-xs">⚡ Good: Engaging, solid content</Badge>
-                <Badge variant="outline" className="text-xs">🔥 Peak: Unforgettable, pure excellence</Badge>
+              <div className="flex flex-wrap gap-1 mb-3 text-xs">
+                <Badge variant="outline" className="text-xs flex-shrink-0">💤 Filler: Slow pacing</Badge>
+                <Badge variant="outline" className="text-xs flex-shrink-0">🌱 Warming: Building up</Badge>
+                <Badge variant="outline" className="text-xs flex-shrink-0">⚡ Good: Engaging</Badge>
+                <Badge variant="outline" className="text-xs flex-shrink-0">🔥 Peak: Excellence</Badge>
               </div>
               
               <WhyTagSelector

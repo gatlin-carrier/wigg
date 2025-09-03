@@ -14,6 +14,7 @@ import { MomentsPanel } from "@/components/wigg/MomentsPanel";
 import { SwipeRating, type SwipeValue } from "@/components/wigg/SwipeRating";
 import { RealTimeVisualization } from "@/components/wigg/RealTimeVisualization";
 import { WhyTagSelector } from "@/components/wigg/WhyTagSelector";
+import { TimeBasedRating } from "@/components/wigg/TimeBasedRating";
 import { useWiggSession } from "@/hooks/useWiggSession";
 import { useWiggPersistence } from "@/hooks/useWiggPersistence";
 import { useMediaUnits } from "@/hooks/useMediaUnits";
@@ -105,6 +106,21 @@ function AddWiggContent() {
     nextUnit();
   };
 
+  const handleTimeBasedRating = async (hours: number, minutes: number, rating: SwipeValue, comment?: string) => {
+    if (!selectedMedia) return;
+
+    await saveMoment({
+      id: `time-${Date.now()}`,
+      unitId: `${hours}h${minutes}m`,
+      timestamp: hours * 3600 + minutes * 60,
+      tags: comment ? [comment] : [],
+      spoilerLevel: "none",
+      description: `Gets good at ${hours}h ${minutes}m - Rating: ${rating}`,
+    }, selectedMedia);
+
+    setCurrentRatings(prev => [...prev, rating]);
+  };
+
   const currentUnit = units[currentUnitIndex] || null;
   const isComplete = currentUnitIndex >= units.length;
 
@@ -136,7 +152,7 @@ function AddWiggContent() {
               {selectedMedia.title}
             </h1>
             <p className="text-xs text-muted-foreground">
-              {activeTab === "live" ? "Live capture mode" : "Retrospective rating"} • {moments.length} moments marked
+              {activeTab === "live" ? "Live capture mode" : "Retrospective rating"} • {moments.length} moments marked • Type: {mediaType}
             </p>
           </div>
         </div>
@@ -244,30 +260,37 @@ function AddWiggContent() {
           {!isComplete ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-6">
-
-                <Card className="rounded-2xl shadow-sm">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-base">Current Progress</CardTitle>
-                    <CardDescription className="text-xs">
-                      Rate each {currentUnit?.subtype || "unit"} as you progress
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center mb-4">
-                      <div className="text-lg font-semibold mb-1">
-                        {currentUnit ? `${currentUnit.subtype.toUpperCase()} ${currentUnit.ordinal}` : "Starting..."}
+                {(mediaType === "movie" || mediaType === "game") ? (
+                  <TimeBasedRating
+                    mediaType={mediaType as "movie" | "game"}
+                    mediaTitle={selectedMedia.title}
+                    onRatingSubmit={handleTimeBasedRating}
+                  />
+                ) : (
+                  <Card className="rounded-2xl shadow-sm">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-base">Current Progress</CardTitle>
+                      <CardDescription className="text-xs">
+                        Rate each {currentUnit?.subtype || "unit"} as you progress
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center mb-4">
+                        <div className="text-lg font-semibold mb-1">
+                          {currentUnit ? `${currentUnit.subtype.toUpperCase()} ${currentUnit.ordinal}` : "Starting..."}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {currentUnit?.title || "Ready to begin"}
+                        </div>
                       </div>
-                      <div className="text-sm text-muted-foreground">
-                        {currentUnit?.title || "Ready to begin"}
-                      </div>
-                    </div>
-                    
-                    <SwipeRating
-                      onSwiped={(direction, value) => handleSwipeRating(value)}
-                      unit={currentUnit}
-                    />
-                  </CardContent>
-                </Card>
+                      
+                      <SwipeRating
+                        onSwiped={(direction, value) => handleSwipeRating(value)}
+                        unit={currentUnit}
+                      />
+                    </CardContent>
+                  </Card>
+                )}
               </div>
 
               <div className="space-y-6">

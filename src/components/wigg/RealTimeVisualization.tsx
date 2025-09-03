@@ -77,7 +77,7 @@ export function RealTimeVisualization({
 
     return (
       <div className="relative w-full h-20 bg-gradient-to-r from-background to-muted rounded-lg border overflow-hidden">
-        <svg viewBox="0 0 100 60" className="absolute inset-0 w-full h-full">
+        <svg viewBox="0 0 100 60" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
           {/* Grid lines */}
           {[0, 1, 2, 3].map(level => (
             <line
