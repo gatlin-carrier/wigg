@@ -182,7 +182,7 @@ export default function SearchPage() {
             const year = (r.first_air_date || '').slice(0, 4);
             const rating = typeof r.vote_average === 'number' ? `${r.vote_average.toFixed(1)}/10` : undefined;
             return (
-              <MediaTile key={`tv-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} />
+              <MediaTile key={`tv-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} onClick={() => navigate(`/media/tmdb-tv/${r.id}`)} />
             );
           })}
         </CollapsibleSection>
@@ -197,7 +197,7 @@ export default function SearchPage() {
             const year = (r.release_date || r.first_air_date || '').slice(0, 4);
             const rating = typeof r.vote_average === 'number' ? `${r.vote_average.toFixed(1)}/10` : undefined;
             return (
-              <MediaTile key={`anime-${r.media_type}-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} />
+              <MediaTile key={`anime-${r.media_type}-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} onClick={() => navigate(`/media/tmdb${r.media_type === 'tv' ? '-tv' : ''}/${r.id}`)} />
             );
           })}
         </CollapsibleSection>
@@ -212,7 +212,7 @@ export default function SearchPage() {
             const year = (r.release_date || '').slice(0, 4);
             const rating = typeof r.vote_average === 'number' ? `${r.vote_average.toFixed(1)}/10` : undefined;
             return (
-              <MediaTile key={`movie-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} />
+              <MediaTile key={`movie-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} onClick={() => navigate(`/media/tmdb/${r.id}`)} />
             );
           })}
         </CollapsibleSection>

@@ -190,10 +190,14 @@ export function MediaSearch({ onMediaSelect, className = "" }: MediaSearchProps)
             ) : results.length > 0 ? (
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {results.map((media) => (
-                  <div
+                  <button
                     key={media.id}
-                    className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer"
-                    onClick={() => onMediaSelect(media)}
+                    className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer w-full text-left bg-red-100 border-red-500"
+                    onClick={(e) => {
+                      console.log('MediaSearch click handler called', media);
+                      e.preventDefault();
+                      onMediaSelect(media);
+                    }}
                   >
                     {media.coverImage && (
                       <img
@@ -217,7 +221,7 @@ export function MediaSearch({ onMediaSelect, className = "" }: MediaSearchProps)
                         )}
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             ) : (

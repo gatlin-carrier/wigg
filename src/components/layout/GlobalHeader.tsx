@@ -80,17 +80,24 @@ export default function GlobalHeader() {
             
             {/* Page Title */}
             {(title || subtitle) && (
-              <div className="min-w-0">
-                {title && (
-                  <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent truncate">
-                    {title}
-                  </h1>
-                )}
-                {subtitle && (
-                  <p className="text-sm text-muted-foreground truncate">
-                    {subtitle}
-                  </p>
-                )}
+              <div className="flex items-center gap-3 min-w-0">
+                <img 
+                  src="/favicon.png" 
+                  alt="WIGG Logo" 
+                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                />
+                <div className="min-w-0">
+                  {title && (
+                    <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent truncate">
+                      {title}
+                    </h1>
+                  )}
+                  {subtitle && (
+                    <p className="text-sm text-muted-foreground truncate">
+                      {subtitle}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </div>

@@ -121,6 +121,24 @@ function AddWiggContent() {
     setCurrentRatings(prev => [...prev, rating]);
   };
 
+  const handleSceneRating = async (scene: any, rating: SwipeValue) => {
+    if (!selectedMedia) return;
+
+    const hours = Math.floor(scene.timestampSeconds / 3600);
+    const minutes = Math.floor((scene.timestampSeconds % 3600) / 60);
+
+    await saveMoment({
+      id: `scene-${Date.now()}`,
+      unitId: scene.id,
+      timestamp: scene.timestampSeconds,
+      tags: [scene.sceneName],
+      spoilerLevel: "none",
+      description: `${scene.sceneName} (${hours}h ${minutes}m) - Rating: ${rating}`,
+    }, selectedMedia);
+
+    setCurrentRatings(prev => [...prev, rating]);
+  };
+
   const currentUnit = units[currentUnitIndex] || null;
   const isComplete = currentUnitIndex >= units.length;
 
@@ -264,7 +282,10 @@ function AddWiggContent() {
                   <TimeBasedRating
                     mediaType={mediaType as "movie" | "game"}
                     mediaTitle={selectedMedia.title}
+                    mediaId={selectedMedia.id}
+                    runtime={selectedMedia.duration}
                     onRatingSubmit={handleTimeBasedRating}
+                    onSceneRatingSubmit={handleSceneRating}
                   />
                 ) : (
                   <Card className="rounded-2xl shadow-sm">

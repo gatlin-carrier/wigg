@@ -9,7 +9,11 @@
       "WebFetch(domain:www.themoviedb.org)",
       "WebFetch(domain:developer.themoviedb.org)",
       "WebSearch",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "WebFetch(domain:chapterdb.plex.tv)",
+      "Bash(npx supabase migration:*)",
+      "Bash(npx supabase:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": [],
