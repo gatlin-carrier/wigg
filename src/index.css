@@ -114,6 +114,12 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground pt-16 sm:pt-0;
+  }
+}
+
+@layer utilities {
+  .mobile-safe-bottom {
+    @apply pb-16 sm:pb-8;
   }
 }

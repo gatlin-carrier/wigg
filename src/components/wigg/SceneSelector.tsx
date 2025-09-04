@@ -40,7 +40,7 @@ export function SceneSelector({
   onEditPlaytime,
   className = ""
 }: SceneSelectorProps) {
-  const [mode, setMode] = useState<"scenes" | "manual" | "add">("scenes");
+  const [mode, setMode] = useState<"scenes" | "manual" | "add">("manual");
   const [selectedScene, setSelectedScene] = useState<MovieScene | null>(null);
   const [rating, setRating] = useState<SwipeValue | null>(null);
   

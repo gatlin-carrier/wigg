@@ -8,7 +8,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
-import { Film, Tv, Gamepad2, Book, Mic, User, Save, ChevronUp, ChevronDown, BookOpen, Sparkles, Newspaper } from "lucide-react";
+import { Film, Tv, Gamepad2, Book, Mic, User, Save, ChevronUp, ChevronDown, BookOpen, Sparkles, Newspaper, Settings } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -21,7 +22,7 @@ const Profile = () => {
   });
 
   usePageHeader({
-    title: "Profile",
+    title: "Settings",
     subtitle: "Manage your account preferences",
     showBackButton: true,
     showHomeButton: true,
@@ -184,12 +185,12 @@ const Profile = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="container mx-auto px-4 py-8 max-w-2xl mobile-safe-bottom">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Profile Settings
+            <Settings className="h-5 w-5" />
+            Settings
           </CardTitle>
           <CardDescription>
             Update your account information and media preferences
@@ -322,6 +323,19 @@ const Profile = () => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label>Appearance</Label>
+            <p className="text-sm text-muted-foreground">
+              Choose your preferred theme
+            </p>
+            <div className="flex items-center justify-between p-3 border rounded-md">
+              <div className="flex items-center gap-2">
+                <span className="text-sm">Theme</span>
+              </div>
+              <ThemeToggle />
             </div>
           </div>
 

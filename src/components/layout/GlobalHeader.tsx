@@ -44,7 +44,7 @@ export default function GlobalHeader() {
   }
   
   return (
-    <header className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <header className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 fixed sm:sticky top-0 left-0 right-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Left: Navigation and Title */}
@@ -60,7 +60,7 @@ export default function GlobalHeader() {
                   title="Go back"
                 >
                   <ArrowLeft className="h-4 w-4" />
-                  Back
+                  <span className="hidden sm:inline">Back</span>
                 </Button>
               )}
               
@@ -69,7 +69,7 @@ export default function GlobalHeader() {
                   variant="outline"
                   size="sm"
                   onClick={handleHome}
-                  className="flex items-center gap-2"
+                  className="hidden sm:flex items-center gap-2"
                   title="Go to dashboard"
                 >
                   <Home className="h-4 w-4" />
@@ -79,14 +79,20 @@ export default function GlobalHeader() {
             </div>
             
             {/* Page Title */}
-            {(title || subtitle) && (
-              <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <button 
+                onClick={handleHome}
+                className="w-8 h-8 rounded-full object-cover flex-shrink-0 hover:opacity-80 transition-opacity"
+                title="Go to dashboard"
+              >
                 <img 
                   src="/favicon.png" 
                   alt="WIGG Logo" 
-                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                  className="w-full h-full rounded-full object-cover"
                 />
-                <div className="min-w-0">
+              </button>
+              {(title || subtitle) && (
+                <div className="hidden sm:block min-w-0">
                   {title && (
                     <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent truncate">
                       {title}
@@ -98,8 +104,8 @@ export default function GlobalHeader() {
                     </p>
                   )}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
           
           {/* Right: Search, Custom Content, and Theme Toggle */}
@@ -120,7 +126,9 @@ export default function GlobalHeader() {
               </Button>
             )}
             
-            <ThemeToggle />
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </div>

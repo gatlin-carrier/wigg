@@ -174,7 +174,7 @@ function AddWiggContent() {
 
   if (!selectedMedia) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl mobile-safe-bottom">
         <div className="flex items-center gap-3 mb-6">
           <FlameKindling className="h-6 w-6" />
           <div>
@@ -191,29 +191,37 @@ function AddWiggContent() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="flex items-center justify-between mb-6">
+    <div className="container mx-auto px-4 py-8 max-w-6xl mobile-safe-bottom">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
-          <FlameKindling className="h-6 w-6" />
+          <FlameKindling className="h-5 w-5 sm:h-6 sm:w-6" />
           <div>
-            <h1 className="text-xl md:text-2xl font-bold">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold">
               {selectedMedia.title}
             </h1>
             <p className="text-xs text-muted-foreground">
-              {activeTab === "live" ? "Live capture mode" : "Retrospective rating"} • {moments.length} moments marked • Type: {mediaType}
+              <span>{activeTab === "live" ? "Live capture mode" : "Retrospective rating"}</span>
+              <span className="hidden sm:inline"> • {moments.length} moments marked</span>
+              <span className="hidden sm:inline"> • Type: {mediaType}</span>
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             variant="outline"
             onClick={() => setSelectedMedia(null)}
+            className="flex-1 sm:flex-none"
           >
-            Change Media
+            <span className="hidden sm:inline">Change Media</span>
+            <span className="sm:hidden">Change</span>
           </Button>
-          <Button variant="secondary" onClick={resetSession}>
-            <RefreshCw className="h-4 w-4 mr-1" />
-            Reset
+          <Button 
+            variant="secondary" 
+            onClick={resetSession}
+            className="flex-1 sm:flex-none"
+          >
+            <RefreshCw className="h-4 w-4 sm:mr-1" />
+            <span className="hidden sm:inline">Reset</span>
           </Button>
         </div>
       </div>
@@ -456,7 +464,7 @@ export default function AddWigg() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl mobile-safe-bottom">
         <div className="flex items-center justify-center py-12">
           <div className="text-sm text-muted-foreground">Loading...</div>
         </div>
@@ -466,7 +474,7 @@ export default function AddWigg() {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl mobile-safe-bottom">
         <Card>
           <CardContent className="p-6 text-center">
             <p className="text-sm text-muted-foreground mb-4">
