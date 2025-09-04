@@ -11,6 +11,7 @@ interface TimeBasedRatingProps {
   runtime?: number; // Runtime in minutes
   onRatingSubmit: (hours: number, minutes: number, rating: SwipeValue, comment?: string) => void;
   onSceneRatingSubmit: (scene: MovieScene, rating: SwipeValue) => void;
+  onEditPlaytime?: () => void;
   className?: string;
 }
 
@@ -21,6 +22,7 @@ export function TimeBasedRating({
   runtime,
   onRatingSubmit,
   onSceneRatingSubmit,
+  onEditPlaytime,
   className = "" 
 }: TimeBasedRatingProps) {
   const [submitted, setSubmitted] = useState(false);
@@ -86,6 +88,7 @@ export function TimeBasedRating({
       onSceneSelect={handleSceneSelect}
       onManualTimeSubmit={handleManualTimeSubmit}
       onAddScene={handleAddScene}
+      onEditPlaytime={onEditPlaytime}
       className={className}
     />
   );

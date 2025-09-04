@@ -15,6 +15,9 @@ import { SwipeRating, type SwipeValue } from "@/components/wigg/SwipeRating";
 import { RealTimeVisualization } from "@/components/wigg/RealTimeVisualization";
 import { WhyTagSelector } from "@/components/wigg/WhyTagSelector";
 import { TimeBasedRating } from "@/components/wigg/TimeBasedRating";
+import { GameCompletionTime } from "@/components/wigg/GameCompletionTime";
+import { useUserGameData, useSetGameCompletionTime } from "@/hooks/useUserGameData";
+import { useQueryClient } from "@tanstack/react-query";
 import { useWiggSession } from "@/hooks/useWiggSession";
 import { useWiggPersistence } from "@/hooks/useWiggPersistence";
 import { useMediaUnits } from "@/hooks/useMediaUnits";
@@ -27,12 +30,15 @@ function AddWiggContent() {
   const [activeTab, setActiveTab] = useState(mode === "live" ? "live" : "retro");
   const [playerControls, setPlayerControls] = useState<MediaPlayerControls | null>(null);
   const [mediaType, setMediaType] = useState<MediaType>("anime");
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   
   // Retro mode specific state
   const [whyTrayOpen, setWhyTrayOpen] = useState(false);
   const [whyTags, setWhyTags] = useState<string[]>([]);
   const [whySpoiler, setWhySpoiler] = useState<SpoilerLevel>("none");
   const [currentRatings, setCurrentRatings] = useState<SwipeValue[]>([]);
+  const [showGameTimeInput, setShowGameTimeInput] = useState(false);
   
   const {
     selectedMedia,
@@ -52,6 +58,10 @@ function AddWiggContent() {
 
   const { saveMoment, saveMediaToDatabase } = useWiggPersistence();
   const { units: apiUnits, isLoading: unitsLoading, error: unitsError } = useMediaUnits(selectedMedia);
+  
+  // Game-specific hooks
+  const { data: userGameData } = useUserGameData(selectedMedia?.id || '');
+  const setGameCompletionTime = useSetGameCompletionTime();
 
   useEffect(() => {
     // Check if media was passed from MediaDetails page
@@ -65,7 +75,8 @@ function AddWiggContent() {
         coverImage: passedMedia.posterUrl,
         externalIds: { tmdb_id: passedMedia.id }
       };
-      setSelectedMedia(mediaSearchResult);
+      // Save media to database to get the proper UUID
+      handleMediaSelect(mediaSearchResult);
     }
   }, [location.state, selectedMedia, setSelectedMedia]);
 
@@ -137,6 +148,25 @@ function AddWiggContent() {
     }, selectedMedia);
 
     setCurrentRatings(prev => [...prev, rating]);
+  };
+
+  const handleGameCompletionTimeSet = async (completionTimeHours: number) => {
+    if (!selectedMedia) return;
+    
+    try {
+      await setGameCompletionTime.mutateAsync({
+        mediaId: selectedMedia.id.toString(),
+        completionTimeHours
+      });
+      setShowGameTimeInput(false);
+    } catch (error) {
+      console.error('Failed to set game completion time:', error);
+    }
+  };
+
+  const handleEditPlaytime = () => {
+    console.log('Edit playtime clicked');
+    setShowGameTimeInput(true);
   };
 
   const currentUnit = units[currentUnitIndex] || null;
@@ -278,9 +308,26 @@ function AddWiggContent() {
           {!isComplete ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-6">
-                {(mediaType === "movie" || mediaType === "game") ? (
+                {mediaType === "game" ? (
+                  !userGameData || showGameTimeInput ? (
+                    <GameCompletionTime
+                      gameTitle={selectedMedia.title}
+                      onCompletionTimeSet={handleGameCompletionTimeSet}
+                    />
+                  ) : (
+                    <TimeBasedRating
+                      mediaType="game"
+                      mediaTitle={selectedMedia.title}
+                      mediaId={selectedMedia.id}
+                      runtime={userGameData.completionTimeHours}
+                      onRatingSubmit={handleTimeBasedRating}
+                      onSceneRatingSubmit={handleSceneRating}
+                      onEditPlaytime={handleEditPlaytime}
+                    />
+                  )
+                ) : mediaType === "movie" ? (
                   <TimeBasedRating
-                    mediaType={mediaType as "movie" | "game"}
+                    mediaType="movie"
                     mediaTitle={selectedMedia.title}
                     mediaId={selectedMedia.id}
                     runtime={selectedMedia.duration}

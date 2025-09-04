@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Clock, Film, Users, Plus, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Clock, Film, Users, Plus, ThumbsUp, ThumbsDown, Pencil } from "lucide-react";
 import { type SwipeValue } from "./SwipeRating";
 
 export interface MovieScene {
@@ -25,6 +25,7 @@ interface SceneSelectorProps {
   onSceneSelect: (scene: MovieScene, rating: SwipeValue) => void;
   onManualTimeSubmit: (hours: number, minutes: number, rating: SwipeValue, comment?: string) => void;
   onAddScene: (timestampSeconds: number, sceneName: string, description?: string) => void;
+  onEditPlaytime?: () => void;
   className?: string;
 }
 
@@ -36,6 +37,7 @@ export function SceneSelector({
   onSceneSelect,
   onManualTimeSubmit,
   onAddScene,
+  onEditPlaytime,
   className = ""
 }: SceneSelectorProps) {
   const [mode, setMode] = useState<"scenes" | "manual" | "add">("scenes");
@@ -129,6 +131,32 @@ export function SceneSelector({
         <CardDescription className="text-xs">
           Select a scene/chapter or enter a specific time
         </CardDescription>
+        {mediaType === "movie" && runtime && (
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="text-xs">
+              <Clock className="h-3 w-3 mr-1" />
+              Runtime: {Math.floor(runtime / 60)}h {runtime % 60}m ({runtime} min)
+            </Badge>
+          </div>
+        )}
+        {mediaType === "game" && runtime && (
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="text-xs">
+              <Clock className="h-3 w-3 mr-1" />
+              Your completion: {runtime === Infinity ? "∞" : `${Math.floor(runtime)}h ${Math.round((runtime % 1) * 60)}m`}
+            </Badge>
+            {onEditPlaytime && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onEditPlaytime}
+                className="h-6 w-6 p-0"
+              >
+                <Pencil className="h-3 w-3" />
+              </Button>
+            )}
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Mode Selector */}
@@ -191,6 +219,11 @@ export function SceneSelector({
                         <div className="flex items-center gap-2">
                           <Badge variant="outline" className="text-xs">
                             {formatTime(scene.timestampSeconds)}
+                            {runtime && (
+                              <span className="ml-1 text-muted-foreground">
+                                ({Math.round((scene.timestampSeconds / (runtime * (mediaType === "movie" ? 60 : 3600))) * 100)}%)
+                              </span>
+                            )}
                           </Badge>
                           <Badge variant="outline" className={`text-xs ${sourceInfo.color}`}>
                             <SourceIcon className="h-3 w-3 mr-1" />

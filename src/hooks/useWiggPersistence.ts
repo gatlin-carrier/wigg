@@ -118,19 +118,6 @@ export function useWiggPersistence() {
 
   const saveMediaToDatabase = async (media: MediaSearchResult): Promise<string> => {
     try {
-      // First, check if media already exists
-      const { data: existingMedia } = await supabase
-        .from("media")
-        .select("id")
-        .eq("external_ids->>'anilist_id'", media.externalIds?.anilist_id?.toString())
-        .eq("external_ids->>'tmdb_id'", media.externalIds?.tmdb_id?.toString())
-        .eq("external_ids->>'podcast_guid'", media.externalIds?.podcast_guid)
-        .single();
-
-      if (existingMedia) {
-        return existingMedia.id;
-      }
-
       // Map MediaType to database format
       let dbType: "movie" | "tv" | "anime" | "game" | "book" | "podcast";
       
@@ -142,27 +129,19 @@ export function useWiggPersistence() {
         dbType = media.type as "movie" | "tv" | "anime" | "game" | "book" | "podcast";
       }
 
-      // Create new media entry
-      const { data: newMedia, error } = await supabase
-        .from("media")
-        .insert({
-          type: dbType,
-          title: media.title,
-          year: media.year,
-          duration_sec: media.duration,
-          pages: media.chapterCount,
-          external_ids: media.externalIds,
-          metadata: {
-            coverImage: media.coverImage,
-            description: media.description,
-            episodeCount: media.episodeCount,
-          },
-        })
-        .select("id")
-        .single();
+      // Use the upsert_media function which has proper permissions
+      const { data: mediaId, error } = await supabase
+        .rpc("upsert_media", {
+          p_type: dbType,
+          p_title: media.title,
+          p_year: media.year,
+          p_duration_sec: media.duration,
+          p_pages: media.chapterCount,
+          p_external_ids: media.externalIds || {}
+        });
 
       if (error) throw error;
-      return newMedia.id;
+      return mediaId;
     } catch (error) {
       console.error("Error saving media:", error);
       throw error;
