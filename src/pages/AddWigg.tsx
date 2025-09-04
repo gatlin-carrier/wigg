@@ -39,6 +39,7 @@ function AddWiggContent() {
   const [whySpoiler, setWhySpoiler] = useState<SpoilerLevel>("none");
   const [currentRatings, setCurrentRatings] = useState<SwipeValue[]>([]);
   const [showGameTimeInput, setShowGameTimeInput] = useState(false);
+  const [customTags, setCustomTags] = useState<string[]>([]);
   
   const {
     selectedMedia,
@@ -123,10 +124,11 @@ function AddWiggContent() {
     await saveMoment({
       id: `time-${Date.now()}`,
       unitId: `${hours}h${minutes}m`,
-      timestamp: hours * 3600 + minutes * 60,
-      tags: comment ? [comment] : [],
+      anchorType: "timestamp",
+      anchorValue: hours * 3600 + minutes * 60,
+      whyTags: comment ? [comment] : [],
       spoilerLevel: "none",
-      description: `Gets good at ${hours}h ${minutes}m - Rating: ${rating}`,
+      notes: `Gets good at ${hours}h ${minutes}m - Rating: ${rating}`,
     }, selectedMedia);
 
     setCurrentRatings(prev => [...prev, rating]);
@@ -141,10 +143,11 @@ function AddWiggContent() {
     await saveMoment({
       id: `scene-${Date.now()}`,
       unitId: scene.id,
-      timestamp: scene.timestampSeconds,
-      tags: [scene.sceneName],
+      anchorType: "timestamp",
+      anchorValue: scene.timestampSeconds,
+      whyTags: [scene.sceneName],
       spoilerLevel: "none",
-      description: `${scene.sceneName} (${hours}h ${minutes}m) - Rating: ${rating}`,
+      notes: `${scene.sceneName} (${hours}h ${minutes}m) - Rating: ${rating}`,
     }, selectedMedia);
 
     setCurrentRatings(prev => [...prev, rating]);
@@ -192,6 +195,26 @@ function AddWiggContent() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl mobile-safe-bottom">
+      {/* Session Stats Rail */}
+      <div className="grid grid-cols-4 gap-2 mb-4">
+        <div className="flex items-center justify-center gap-1 bg-transparent text-red-500 px-2 py-2 rounded-lg text-xs border-2 border-red-200">
+          <span>😴</span>
+          <span className="font-semibold">{sessionStats.skip}</span>
+        </div>
+        <div className="flex items-center justify-center gap-1 bg-transparent text-yellow-500 px-2 py-2 rounded-lg text-xs border-2 border-yellow-200">
+          <span>🌱</span>
+          <span className="font-semibold">{sessionStats.ok}</span>
+        </div>
+        <div className="flex items-center justify-center gap-1 bg-transparent text-green-500 px-2 py-2 rounded-lg text-xs border-2 border-green-200">
+          <span>⚡</span>
+          <span className="font-semibold">{sessionStats.good}</span>
+        </div>
+        <div className="flex items-center justify-center gap-1 bg-transparent text-purple-500 px-2 py-2 rounded-lg text-xs border-2 border-purple-200">
+          <span>🔥</span>
+          <span className="font-semibold">{sessionStats.peak}</span>
+        </div>
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
           <FlameKindling className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -386,34 +409,6 @@ function AddWiggContent() {
                   </CardContent>
                 </Card>
 
-                <Card className="rounded-2xl shadow-sm">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-base">Session Stats</CardTitle>
-                    <CardDescription className="text-xs">
-                      Your rating distribution so far
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className="text-center">
-                        <div className="text-lg font-semibold text-red-500">{sessionStats.skip}</div>
-                        <div className="text-muted-foreground">Filler</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-semibold text-yellow-500">{sessionStats.ok}</div>
-                        <div className="text-muted-foreground">Warming Up</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-semibold text-green-500">{sessionStats.good}</div>
-                        <div className="text-muted-foreground">Getting Good</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-semibold text-purple-500">{sessionStats.peak}</div>
-                        <div className="text-muted-foreground">Peak Perfection</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
             </div>
           ) : (
@@ -445,6 +440,8 @@ function AddWiggContent() {
             onTagsChange={setWhyTags}
             spoilerLevel={whySpoiler}
             onSpoilerChange={setWhySpoiler}
+            customTags={customTags}
+            onCustomTagsChange={setCustomTags}
           />
         </TabsContent>
       </Tabs>
