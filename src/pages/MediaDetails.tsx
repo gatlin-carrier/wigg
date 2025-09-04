@@ -295,7 +295,7 @@ export default function MediaDetails() {
                 })}
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Rate This Media
+                WIGG it
               </Button>
               {externalUrl && (
                 <Button asChild variant="outline" className="w-full" size="lg">

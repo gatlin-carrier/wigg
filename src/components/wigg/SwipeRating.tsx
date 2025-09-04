@@ -46,10 +46,10 @@ export function SwipeRating({ unit, onSwiped, className = "" }: SwipeRatingProps
 
     if (direction) {
       const valueMap: Record<SwipeDirection, SwipeValue> = {
-        left: 0,   // Skip
-        up: 1,     // Okay
-        right: 2,  // Good
-        down: 3,   // Peak
+        left: 0,   // zzz
+        up: 1,     // good
+        right: 2,  // better
+        down: 3,   // peak
       };
       onSwiped(direction, valueMap[direction]);
     }
@@ -63,26 +63,26 @@ export function SwipeRating({ unit, onSwiped, className = "" }: SwipeRatingProps
 
     const keyMap: Record<string, SwipeDirection> = {
       // Arrow keys
-      'ArrowLeft': 'left',    // Skip
-      'ArrowUp': 'up',        // Okay  
-      'ArrowRight': 'right',  // Good
-      'ArrowDown': 'down',    // Peak
+      'ArrowLeft': 'left',    // zzz
+      'ArrowUp': 'up',        // good  
+      'ArrowRight': 'right',  // better
+      'ArrowDown': 'down',    // peak
       
       // ASDF keys (same mapping)
-      'KeyA': 'left',         // Skip
-      'KeyS': 'up',           // Okay
-      'KeyD': 'right',        // Good
-      'KeyF': 'down',         // Peak
+      'KeyA': 'left',         // zzz
+      'KeyS': 'up',           // good
+      'KeyD': 'right',        // better
+      'KeyF': 'down',         // peak
     };
 
     const direction = keyMap[event.code];
     if (direction) {
       event.preventDefault();
       const valueMap: Record<SwipeDirection, SwipeValue> = {
-        left: 0,   // Skip
-        up: 1,     // Okay
-        right: 2,  // Good
-        down: 3,   // Peak
+        left: 0,   // zzz
+        up: 1,     // good
+        right: 2,  // better
+        down: 3,   // peak
       };
       onSwiped(direction, valueMap[direction]);
     }
@@ -144,19 +144,19 @@ export function SwipeRating({ unit, onSwiped, className = "" }: SwipeRatingProps
         <div className="flex items-center justify-between text-xs px-2 opacity-80">
           <div className="text-center">
             <div>← A</div>
-            <div>Skip</div>
+            <div>zzz</div>
           </div>
           <div className="text-center">
             <div>↑ S</div>
-            <div>Okay</div>
+            <div>good</div>
           </div>
           <div className="text-center">
             <div>→ D</div>
-            <div>Good</div>
+            <div>better</div>
           </div>
           <div className="text-center">
             <div>↓ F</div>
-            <div>Peak</div>
+            <div>peak</div>
           </div>
         </div>
       </div>

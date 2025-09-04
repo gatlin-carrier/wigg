@@ -205,7 +205,7 @@ function AddWiggRetroContent() {
                   Rate this {mediaType === "book" || mediaType === "manga" ? "chapter" : "episode"}
                 </CardTitle>
                 <CardDescription className="text-xs">
-                  <span className="hidden sm:inline">Swipe or Keyboard: ←A (Filler) • ↑S (Warming Up) • →D (Getting Good) • ↓F (Peak Perfection)</span>
+                  <span className="hidden sm:inline">Swipe or Keyboard: ←A (zzz) • ↑S (good) • →D (better) • ↓F (peak)</span>
                   <span className="sm:hidden">Swipe or use A/S/D/F keys</span>
                 </CardDescription>
               </CardHeader>
@@ -315,10 +315,10 @@ function AddWiggRetroContent() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex flex-wrap gap-1 mb-3 text-xs">
-                <Badge variant="outline" className="text-xs flex-shrink-0">💤 Filler: Slow pacing</Badge>
-                <Badge variant="outline" className="text-xs flex-shrink-0">🌱 Warming: Building up</Badge>
-                <Badge variant="outline" className="text-xs flex-shrink-0">⚡ Good: Engaging</Badge>
-                <Badge variant="outline" className="text-xs flex-shrink-0">🔥 Peak: Excellence</Badge>
+                <Badge variant="outline" className="text-xs flex-shrink-0">💤 zzz: Slow pacing</Badge>
+                <Badge variant="outline" className="text-xs flex-shrink-0">🌱 good: Building up</Badge>
+                <Badge variant="outline" className="text-xs flex-shrink-0">⚡ better: Engaging</Badge>
+                <Badge variant="outline" className="text-xs flex-shrink-0">🔥 peak: Excellence</Badge>
               </div>
               
               <WhyTagSelector

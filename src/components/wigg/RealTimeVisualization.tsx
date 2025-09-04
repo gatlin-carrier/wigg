@@ -27,10 +27,10 @@ export function RealTimeVisualization({
 
   const getRatingLabel = (rating: SwipeValue) => {
     switch (rating) {
-      case 0: return "Filler";
-      case 1: return "Warming Up";
-      case 2: return "Getting Good";
-      case 3: return "Peak";
+      case 0: return "zzz";
+      case 1: return "good";
+      case 2: return "better";
+      case 3: return "peak";
       default: return "";
     }
   };
@@ -77,7 +77,7 @@ export function RealTimeVisualization({
 
     return (
       <div className="relative w-full h-20 bg-gradient-to-r from-background to-muted rounded-lg border overflow-hidden">
-        <svg viewBox="0 0 100 60" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+        <svg viewBox="0 0 100 60" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
           {/* Grid lines */}
           {[0, 1, 2, 3].map(level => (
             <line
@@ -143,10 +143,10 @@ export function RealTimeVisualization({
     if (maxCount === 0) return null;
 
     const bars = [
-      { label: "Filler", count: sessionStats.skip, color: getRatingColor(0) },
-      { label: "Warming", count: sessionStats.ok, color: getRatingColor(1) },
-      { label: "Good", count: sessionStats.good, color: getRatingColor(2) },
-      { label: "Peak", count: sessionStats.peak, color: getRatingColor(3) },
+      { label: "zzz", count: sessionStats.skip, color: getRatingColor(0) },
+      { label: "good", count: sessionStats.ok, color: getRatingColor(1) },
+      { label: "better", count: sessionStats.good, color: getRatingColor(2) },
+      { label: "peak", count: sessionStats.peak, color: getRatingColor(3) },
     ];
 
     return (

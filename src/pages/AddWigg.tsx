@@ -3,7 +3,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FlameKindling, RefreshCw, Play, RotateCcw } from "lucide-react";
+import { FlameKindling, RefreshCw, Play, RotateCcw, ChevronDown, ChevronUp, Info } from "lucide-react";
 import { usePageHeader } from "@/contexts/HeaderContext";
 import { useAuth } from "@/hooks/useAuth";
 import { MediaSearch, type MediaSearchResult } from "@/components/media/MediaSearch";
@@ -40,6 +40,7 @@ function AddWiggContent() {
   const [currentRatings, setCurrentRatings] = useState<SwipeValue[]>([]);
   const [showGameTimeInput, setShowGameTimeInput] = useState(false);
   const [customTags, setCustomTags] = useState<string[]>([]);
+  const [showVisualization, setShowVisualization] = useState(false);
   
   const {
     selectedMedia,
@@ -175,6 +176,16 @@ function AddWiggContent() {
   const currentUnit = units[currentUnitIndex] || null;
   const isComplete = currentUnitIndex >= units.length;
 
+  // Update page header when media/unit changes
+  const currentUnitSubtitle = currentUnit ? `${currentUnit.subtype.charAt(0).toUpperCase() + currentUnit.subtype.slice(1)} ${currentUnit.ordinal}${currentUnit.title ? `: ${currentUnit.title}` : ''}` : undefined;
+  
+  usePageHeader({
+    title: selectedMedia?.title || "Rate Your Media",
+    subtitle: selectedMedia ? currentUnitSubtitle : "Live capture or retrospective rating modes",
+    showBackButton: true,
+    showHomeButton: true,
+  });
+
   if (!selectedMedia) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl mobile-safe-bottom">
@@ -195,59 +206,7 @@ function AddWiggContent() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl mobile-safe-bottom">
-      {/* Session Stats Rail */}
-      <div className="grid grid-cols-4 gap-2 mb-4">
-        <div className="flex items-center justify-center gap-1 bg-transparent text-red-500 px-2 py-2 rounded-lg text-xs border-2 border-red-200">
-          <span>😴</span>
-          <span className="font-semibold">{sessionStats.skip}</span>
-        </div>
-        <div className="flex items-center justify-center gap-1 bg-transparent text-yellow-500 px-2 py-2 rounded-lg text-xs border-2 border-yellow-200">
-          <span>🌱</span>
-          <span className="font-semibold">{sessionStats.ok}</span>
-        </div>
-        <div className="flex items-center justify-center gap-1 bg-transparent text-green-500 px-2 py-2 rounded-lg text-xs border-2 border-green-200">
-          <span>⚡</span>
-          <span className="font-semibold">{sessionStats.good}</span>
-        </div>
-        <div className="flex items-center justify-center gap-1 bg-transparent text-purple-500 px-2 py-2 rounded-lg text-xs border-2 border-purple-200">
-          <span>🔥</span>
-          <span className="font-semibold">{sessionStats.peak}</span>
-        </div>
-      </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div className="flex items-center gap-3">
-          <FlameKindling className="h-5 w-5 sm:h-6 sm:w-6" />
-          <div>
-            <h1 className="text-lg sm:text-xl md:text-2xl font-bold">
-              {selectedMedia.title}
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              <span>{activeTab === "live" ? "Live capture mode" : "Retrospective rating"}</span>
-              <span className="hidden sm:inline"> • {moments.length} moments marked</span>
-              <span className="hidden sm:inline"> • Type: {mediaType}</span>
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Button
-            variant="outline"
-            onClick={() => setSelectedMedia(null)}
-            className="flex-1 sm:flex-none"
-          >
-            <span className="hidden sm:inline">Change Media</span>
-            <span className="sm:hidden">Change</span>
-          </Button>
-          <Button 
-            variant="secondary" 
-            onClick={resetSession}
-            className="flex-1 sm:flex-none"
-          >
-            <RefreshCw className="h-4 w-4 sm:mr-1" />
-            <span className="hidden sm:inline">Reset</span>
-          </Button>
-        </div>
-      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2 mb-6">
@@ -337,10 +296,9 @@ function AddWiggContent() {
 
         <TabsContent value="retro" className="space-y-6">
           {!isComplete ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-6">
-                {mediaType === "game" ? (
-                  !userGameData || showGameTimeInput ? (
+            <div className="space-y-6">
+              {mediaType === "game" ? (
+                !userGameData || showGameTimeInput ? (
                     <GameCompletionTime
                       gameTitle={selectedMedia.title}
                       onCompletionTimeSet={handleGameCompletionTimeSet}
@@ -354,6 +312,7 @@ function AddWiggContent() {
                       onRatingSubmit={handleTimeBasedRating}
                       onSceneRatingSubmit={handleSceneRating}
                       onEditPlaytime={handleEditPlaytime}
+                      onReset={resetSession}
                     />
                   )
                 ) : mediaType === "movie" ? (
@@ -364,52 +323,72 @@ function AddWiggContent() {
                     runtime={selectedMedia.duration}
                     onRatingSubmit={handleTimeBasedRating}
                     onSceneRatingSubmit={handleSceneRating}
+                    onReset={resetSession}
                   />
                 ) : (
-                  <Card className="rounded-2xl shadow-sm">
-                    <CardHeader className="pb-4">
-                      <CardTitle className="text-base">Current Progress</CardTitle>
-                      <CardDescription className="text-xs">
-                        Rate each {currentUnit?.subtype || "unit"} as you progress
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center mb-4">
-                        <div className="text-lg font-semibold mb-1">
-                          {currentUnit ? `${currentUnit.subtype.toUpperCase()} ${currentUnit.ordinal}` : "Starting..."}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {currentUnit?.title || "Ready to begin"}
-                        </div>
+                  <div className="space-y-4">
+                    {/* Compact Progress Indicator */}
+                    <div className="text-center py-4 border rounded-lg">
+                      <div className="text-sm font-semibold mb-1">
+                        {currentUnit ? `${currentUnit.subtype.toUpperCase()} ${currentUnit.ordinal}` : "Starting..."}
                       </div>
-                      
-                      <SwipeRating
-                        onSwiped={(direction, value) => handleSwipeRating(value)}
-                        unit={currentUnit}
-                      />
-                    </CardContent>
-                  </Card>
+                      <div className="text-xs text-muted-foreground">
+                        {currentUnit?.title || "Ready to begin"}
+                      </div>
+                    </div>
+                    
+                    {/* Compact Rating Buttons */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-center">
+                        <Info 
+                          className="h-4 w-4 text-muted-foreground cursor-help" 
+                          title="Swipe gestures: ← ↑ → ↓ or keys A S D F"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => handleSwipeRating(0)}
+                          className="flex flex-col items-center gap-1 h-16 text-xs"
+                        >
+                          <span className="text-lg">😴</span>
+                          <span>zzz</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => handleSwipeRating(1)}
+                          className="flex flex-col items-center gap-1 h-16 text-xs"
+                        >
+                          <span className="text-lg">🌱</span>
+                          <span>good</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => handleSwipeRating(2)}
+                          className="flex flex-col items-center gap-1 h-16 text-xs"
+                        >
+                          <span className="text-lg">⚡</span>
+                          <span>better</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => handleSwipeRating(3)}
+                          className="flex flex-col items-center gap-1 h-16 text-xs"
+                        >
+                          <span className="text-lg">🔥</span>
+                          <span>peak</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </div>
-
-              <div className="space-y-6">
-                <Card className="rounded-2xl shadow-sm">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-base">Real-Time Visualization</CardTitle>
-                    <CardDescription className="text-xs">
-                      Watch your rating curve develop as you progress
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <RealTimeVisualization
-                      sessionStats={sessionStats}
-                      currentRatings={currentRatings}
-                      variant="curve"
-                    />
-                  </CardContent>
-                </Card>
-
-              </div>
+              
+              {/* Rating Visualization */}
+              <RealTimeVisualization
+                sessionStats={sessionStats}
+                currentRatings={currentRatings}
+                variant="curve"
+              />
             </div>
           ) : (
             <Card className="rounded-2xl shadow-sm text-center p-8">
@@ -429,20 +408,31 @@ function AddWiggContent() {
             </Card>
           )}
 
-          <MomentCapture
-            mediaType={mediaType}
-            unit={currentUnit}
-            onAddMoment={handleAddMoment}
-          />
-
-          <WhyTagSelector
-            selectedTags={whyTags}
-            onTagsChange={setWhyTags}
-            spoilerLevel={whySpoiler}
-            onSpoilerChange={setWhySpoiler}
-            customTags={customTags}
-            onCustomTagsChange={setCustomTags}
-          />
+          {/* Combined Context Section */}
+          <Card className="rounded-2xl shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-base">Add Context (Optional)</CardTitle>
+              <CardDescription className="text-xs">
+                Mark interesting moments and add details about why this part was good/bad
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <MomentCapture
+                mediaType={mediaType}
+                unit={currentUnit}
+                onAddMoment={handleAddMoment}
+              />
+              
+              <WhyTagSelector
+                selectedTags={whyTags}
+                onTagsChange={setWhyTags}
+                spoilerLevel={whySpoiler}
+                onSpoilerChange={setWhySpoiler}
+                customTags={customTags}
+                onCustomTagsChange={setCustomTags}
+              />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
@@ -451,13 +441,6 @@ function AddWiggContent() {
 
 export default function AddWigg() {
   const { user, loading } = useAuth();
-
-  usePageHeader({
-    title: "Rate Your Media",
-    subtitle: "Live capture or retrospective rating modes",
-    showBackButton: true,
-    showHomeButton: true,
-  });
 
   if (loading) {
     return (

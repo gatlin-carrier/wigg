@@ -12,6 +12,7 @@ interface TimeBasedRatingProps {
   onRatingSubmit: (hours: number, minutes: number, rating: SwipeValue, comment?: string) => void;
   onSceneRatingSubmit: (scene: MovieScene, rating: SwipeValue) => void;
   onEditPlaytime?: () => void;
+  onReset?: () => void;
   className?: string;
 }
 
@@ -23,6 +24,7 @@ export function TimeBasedRating({
   onRatingSubmit,
   onSceneRatingSubmit,
   onEditPlaytime,
+  onReset,
   className = "" 
 }: TimeBasedRatingProps) {
   const [submitted, setSubmitted] = useState(false);

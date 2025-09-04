@@ -39,7 +39,7 @@ export function useWiggPersistence() {
         pos_kind: rating.positionType === "episode" ? "sec" : rating.positionType as any,
         pos_value: rating.position,
         tags: [`rating_${rating.value}`],
-        reason_short: `Rated ${["Skip", "Okay", "Good", "Peak"][rating.value]}`,
+        reason_short: `Rated ${["zzz", "good", "better", "peak"][rating.value]}`,
         spoiler: "0",
       });
 

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Clock, Film, Users, Plus, ThumbsUp, ThumbsDown, Pencil } from "lucide-react";
+import { Clock, Film, Users, Plus, ThumbsUp, ThumbsDown, Pencil, RefreshCw } from "lucide-react";
 import { type SwipeValue } from "./SwipeRating";
 
 export interface MovieScene {
@@ -26,6 +26,7 @@ interface SceneSelectorProps {
   onManualTimeSubmit: (hours: number, minutes: number, rating: SwipeValue, comment?: string) => void;
   onAddScene: (timestampSeconds: number, sceneName: string, description?: string) => void;
   onEditPlaytime?: () => void;
+  onReset?: () => void;
   className?: string;
 }
 
@@ -38,6 +39,7 @@ export function SceneSelector({
   onManualTimeSubmit,
   onAddScene,
   onEditPlaytime,
+  onReset,
   className = ""
 }: SceneSelectorProps) {
   const [mode, setMode] = useState<"scenes" | "manual" | "add">("manual");
@@ -87,10 +89,10 @@ export function SceneSelector({
 
   const getRatingData = (value: SwipeValue) => {
     switch (value) {
-      case 0: return { label: "Never Gets Good", color: "#94A3B8", emoji: "😴" };
-      case 1: return { label: "Eventually Gets Good", color: "#F59E0B", emoji: "🌱" };
-      case 2: return { label: "Gets Really Good", color: "#3B82F6", emoji: "⚡" };
-      case 3: return { label: "Peak Experience", color: "#EF4444", emoji: "🔥" };
+      case 0: return { label: "zzz", color: "#94A3B8", emoji: "😴" };
+      case 1: return { label: "good", color: "#F59E0B", emoji: "🌱" };
+      case 2: return { label: "better", color: "#3B82F6", emoji: "⚡" };
+      case 3: return { label: "peak", color: "#EF4444", emoji: "🔥" };
     }
   };
 
@@ -395,25 +397,49 @@ export function SceneSelector({
 
         {/* Submit Button */}
         {mode === "scenes" && (
-          <Button 
-            onClick={handleSceneSubmit}
-            disabled={!selectedScene || rating === null}
-            className="w-full"
-            size="lg"
-          >
-            Rate Selected Scene
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleSceneSubmit}
+              disabled={!selectedScene || rating === null}
+              className="flex-1"
+              size="lg"
+            >
+              Rate Selected Scene
+            </Button>
+            {onReset && (
+              <Button 
+                variant="outline"
+                onClick={onReset}
+                className="px-3"
+                size="lg"
+              >
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         )}
 
         {mode === "manual" && (
-          <Button 
-            onClick={handleManualSubmit}
-            disabled={rating === null || (hours === 0 && minutes === 0)}
-            className="w-full"
-            size="lg"
-          >
-            Submit Time-Based Rating
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleManualSubmit}
+              disabled={rating === null || (hours === 0 && minutes === 0)}
+              className="flex-1"
+              size="lg"
+            >
+              Submit Time-Based Rating
+            </Button>
+            {onReset && (
+              <Button 
+                variant="outline"
+                onClick={onReset}
+                className="px-3"
+                size="lg"
+              >
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         )}
       </CardContent>
     </Card>

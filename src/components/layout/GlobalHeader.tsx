@@ -92,14 +92,14 @@ export default function GlobalHeader() {
                 />
               </button>
               {(title || subtitle) && (
-                <div className="hidden sm:block min-w-0">
+                <div className="min-w-0">
                   {title && (
-                    <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent truncate">
+                    <h1 className="text-lg sm:text-xl font-bold bg-gradient-primary bg-clip-text text-transparent truncate">
                       {title}
                     </h1>
                   )}
                   {subtitle && (
-                    <p className="text-sm text-muted-foreground truncate">
+                    <p className="text-xs sm:text-sm text-muted-foreground truncate">
                       {subtitle}
                     </p>
                   )}
@@ -136,12 +136,3 @@ export default function GlobalHeader() {
   );
 }
 
-// Hook to configure header for each page
-export function usePageHeader(config: {
-  title?: string;
-  subtitle?: string;
-  showBackButton?: boolean;
-  showHomeButton?: boolean;
-}) {
-  return config;
-}
