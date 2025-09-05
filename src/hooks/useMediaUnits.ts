@@ -47,7 +47,14 @@ export function useMediaUnits(media: MediaSearchResult | null): UseMediaUnitsRes
           case "tv":
           case "anime": {
             if (media.externalIds?.tmdb_id) {
-              return await getTvEpisodes(media.externalIds.tmdb_id, 1);
+              console.log('Fetching TV episodes for TMDB ID:', media.externalIds.tmdb_id);
+              try {
+                return await getTvEpisodes(media.externalIds.tmdb_id, 1);
+              } catch (error) {
+                console.error('Failed to fetch TV episodes from TMDB:', error);
+                console.log('Falling back to generic episodes for:', media.title);
+                // Fall through to generic episodes
+              }
             } else if (media.externalIds?.anilist_id) {
               return await fetchAnimeEpisodes(media.externalIds.anilist_id);
             }

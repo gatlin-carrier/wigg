@@ -1012,8 +1012,8 @@ export const PacingBarcode = memo(function PacingBarcode({
   const computedAriaLabel = ariaLabel || 
     `Pacing visualization for ${titleId}${t2gEstimatePct ? `. Gets good around ${Math.round(t2gEstimatePct)}%` : ''}`;
 
-  // Performance monitoring display (development only)
-  const showPerformanceMetrics = process.env.NODE_ENV === 'development' && performanceMetrics.current.renderTime > 0;
+  // Performance monitoring display (disabled)
+  const showPerformanceMetrics = false;
 
   // Error boundary fallback
   if (hasError) {

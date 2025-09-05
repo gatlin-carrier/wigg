@@ -148,28 +148,28 @@ const graphTypeOptions: GraphTypeOption[] = [
   {
     type: 'curve',
     label: 'Curve',
-    description: 'Smooth line graph showing rating trends over time',
+    description: 'Smooth line showing trends',
     icon: TrendingUp,
     preview: CurvePreview,
   },
   {
     type: 'bars',
     label: 'Bar Chart',
-    description: 'Bar chart showing distribution of rating categories',
+    description: 'Bar chart distribution',
     icon: BarChart,
     preview: BarsPreview,
   },
   {
     type: 'pulse',
     label: 'Pulse',
-    description: 'Animated radial display showing average rating',
+    description: 'Radial average display',
     icon: Radio,
     preview: PulsePreview,
   },
   {
     type: 'barcode',
     label: 'Barcode',
-    description: 'Compact barcode visualization for dense data',
+    description: 'Compact dense visualization',
     icon: Scan,
     preview: BarcodePreview,
   },
@@ -193,9 +193,9 @@ export function GraphTypeSelector({ value, onChange, disabled, className, showPr
           >
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <selectedOption.icon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-              <div className="flex flex-col items-start min-w-0 flex-1">
-                <span className="font-medium text-sm sm:text-base">{selectedOption.label}</span>
-                <span className="text-xs text-muted-foreground line-clamp-2 text-left">
+              <div className="flex flex-col items-start min-w-0 flex-1 overflow-hidden">
+                <span className="font-medium text-sm sm:text-base truncate w-full">{selectedOption.label}</span>
+                <span className="text-xs text-muted-foreground text-left break-words w-full">
                   {selectedOption.description}
                 </span>
               </div>
@@ -226,14 +226,14 @@ export function GraphTypeSelector({ value, onChange, disabled, className, showPr
                 <CardContent className="p-3">
                   <div className="flex items-center gap-3">
                     <option.icon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 overflow-hidden">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm sm:text-base">{option.label}</span>
+                        <span className="font-medium text-sm sm:text-base truncate">{option.label}</span>
                         {value === option.type && (
-                          <Check className="h-3 w-3 text-primary" aria-label="Selected" />
+                          <Check className="h-3 w-3 text-primary flex-shrink-0" aria-label="Selected" />
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                      <p className="text-xs text-muted-foreground mt-1 break-words">
                         {option.description}
                       </p>
                     </div>

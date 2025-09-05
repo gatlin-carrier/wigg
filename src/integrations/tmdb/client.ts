@@ -71,10 +71,26 @@ export async function getTvSeasons(tvId: number) {
 }
 
 export async function getTvSeasonDetails(tvId: number, seasonNumber: number) {
+  // Validate inputs
+  if (!tvId || tvId <= 0) {
+    throw new Error(`Invalid TMDB TV ID: ${tvId}`);
+  }
+  if (!seasonNumber || seasonNumber <= 0) {
+    throw new Error(`Invalid season number: ${seasonNumber}`);
+  }
+  
   return tmdbGet<any>(`/tv/${tvId}/season/${seasonNumber}`, { language: 'en-US' });
 }
 
 export async function getTvEpisodes(tvId: number, seasonNumber = 1) {
+  // Validate inputs
+  if (!tvId || tvId <= 0) {
+    throw new Error(`Invalid TMDB TV ID: ${tvId}`);
+  }
+  if (!seasonNumber || seasonNumber <= 0) {
+    throw new Error(`Invalid season number: ${seasonNumber}`);
+  }
+  
   const seasonData = await getTvSeasonDetails(tvId, seasonNumber);
   return seasonData.episodes?.map((ep: any, index: number) => ({
     id: `tmdb-ep-${tvId}-s${seasonNumber}e${ep.episode_number}`,
