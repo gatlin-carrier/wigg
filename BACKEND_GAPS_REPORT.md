@@ -6,6 +6,58 @@ This document outlines the backend features and API contracts that are expected 
 
 The new visualization components (`PacingBarcode`, `MilestonePath`, `LollipopStrip`, `RealtimeWiggOverlay`, `TitleCard`, `TitleHeader`) assume several backend capabilities that may need to be implemented or adapted.
 
+## Backend Gaps Checklist (UI Contracts → API Proposals)
+
+The UI integrates via hooks that are currently mocked in the app:
+
+- `useTitleProgress(titleId)` → segments, total length
+- `useUserWiggs(titleId)` → user entries, T2G estimate, add
+- `useMilestones(titleId)` → content milestones
+- `useLiveCapture()` → currentPct feed, markWigg
+
+To go from mocks to production, the following backend features and endpoint shapes are needed:
+
+1) Progress Segmentation per title (server-preferred)
+- Contract: `{ startPct:number; endPct:number; meanScore?:number; userScore?:number }[]`
+- API Proposal: `GET /titles/{titleId}/segments?bins=20`
+- Notes: Support 12–40 bins; optionally return `totalLengthSeconds`.
+
+2) User WIGG marks (list + create, idempotent)
+- Contract: `{ id:string; pct:number; note?:string; createdAt:string; rating?:number }`
+- API Proposal:
+  - `GET /titles/{titleId}/wiggs`
+  - `POST /wiggs { titleId, pct, note?, rating? } -> { id, pct, snappedPct? }`
+- Idempotency: Accept `Idempotency-Key` header to avoid duplicates.
+
+3) T2G estimate (canonical, with confidence)
+- Contract: `{ pct:number; confidence?: 'low'|'medium'|'high' }`
+- API Proposal: `GET /titles/{titleId}/t2g`
+- Server may reconcile client placements and return `snappedPct` deltas.
+
+4) Milestones metadata
+- Contract: `{ id:string; pct:number; label:string; icon?:string }[]`
+- API Proposal: `GET /titles/{titleId}/milestones`
+
+5) Live capture feed (progress while playing)
+- Contract (poll): `GET /sessions/{sessionId}/progress -> { currentPct:number }`
+- Contract (push): WebSocket `progress` events `{ currentPct:number }`
+- Fallback: Allow client to set currentPct manually when player integration is absent.
+
+6) Optimistic updates + Undo
+- Create returns a durable `id` for undo.
+- API Proposal: `POST /actions/undo { actionId }`
+- Reconciliation: create responses may include `{ snappedPct:number }` for client UI correction.
+
+7) Batch segment score update (optional, for paint mode)
+- Contract: `{ titleId, scores: Array<{ pct:number, score:number }> }`
+- API Proposal: `POST /segments/scores`
+- Limits: cap batch size; return per-item status array.
+
+8) Haptics capability flag (optional)
+- Surface a boolean `canHaptic` from native layer; web fallback is no-op.
+
+Status in repo: The hooks above are mocked under `src/hooks/*`. Implement corresponding endpoints and swap the hooks to real clients.
+
 ### 🆕 **EDIT GRAPH MODE UPDATE**
 
 This report has been updated to include requirements for the new **Edit Graph Mode** functionality, which allows users to:
