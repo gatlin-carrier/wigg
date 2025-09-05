@@ -54,6 +54,8 @@ export const EditModeBasic: Story = {
     t2gEstimatePct: 42,
     editable: true,
     showFisheye: true,
+    suppressGlobalListeners: true,
+    suppressHaptics: true,
   },
   render: function EditModeBasicStory(args) {
     const [wiggPoints, setWiggPoints] = useState<Array<{id: string; pct: number; note?: string}>>([]);
@@ -82,11 +84,11 @@ export const EditModeBasic: Story = {
             <strong>Instructions:</strong> Tap to place WIGG • Drag to fine-tune • Long-press for precision zoom
           </div>
         </div>
-        <PacingBarcode 
-          {...args}
-          onPlaceWigg={handlePlaceWigg}
-          onPaintSegmentScore={handlePaintSegmentScore}
-        />
+            <PacingBarcode 
+              {...args}
+              onPlaceWigg={handlePlaceWigg}
+              onPaintSegmentScore={handlePaintSegmentScore}
+            />
         
         {/* Display placed WIGGs */}
         <div className="space-y-2">

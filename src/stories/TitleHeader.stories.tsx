@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { TitleHeader } from '@/components/wigg/TitleHeader';
-
 const meta: Meta<typeof TitleHeader> = {
   title: 'Wigg/TitleHeader',
   component: TitleHeader,
@@ -76,4 +75,3 @@ export const LollipopView: Story = {
     },
   },
 };
-

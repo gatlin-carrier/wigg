@@ -49,6 +49,7 @@ export const EditModeIntegration: Story = {
           onClose={() => setIsOpen(false)}
           mediaType="game"
           estimatedTotalMinutes={3000} // 50 hours
+          storybookSafe
         />
       </div>
     );
@@ -179,6 +180,7 @@ export const EditModeWorkflow: Story = {
           onClose={() => setIsOpen(false)}
           mediaType="game"
           estimatedTotalMinutes={4200} // 70 hours
+          storybookSafe
         />
       </div>
     );
@@ -270,6 +272,7 @@ export const EditModeAccessibility: Story = {
           onClose={() => setIsOpen(false)}
           mediaType="game"
           estimatedTotalMinutes={1500} // 25 hours
+          storybookSafe
         />
       </div>
     );

@@ -18,6 +18,8 @@ export interface RealtimeWiggOverlayProps {
   onClose: () => void;
   mediaType?: 'movie' | 'tv' | 'game' | 'book' | 'manga';
   estimatedTotalMinutes?: number;
+  // Storybook/runtime safety toggle
+  storybookSafe?: boolean;
 }
 
 export function RealtimeWiggOverlay({
@@ -26,7 +28,8 @@ export function RealtimeWiggOverlay({
   isOpen,
   onClose,
   mediaType = 'game',
-  estimatedTotalMinutes
+  estimatedTotalMinutes,
+  storybookSafe = false
 }: RealtimeWiggOverlayProps) {
   const [note, setNote] = useState('');
   const [showNoteInput, setShowNoteInput] = useState(false);
@@ -309,6 +312,8 @@ export function RealtimeWiggOverlay({
               onPaintSegmentScore={handlePaintSegmentScore}
               showFisheye={true}
               editIdleTimeoutMs={15000} // 15 second timeout in overlay
+              suppressGlobalListeners={storybookSafe}
+              suppressHaptics={storybookSafe}
             />
             <div className="text-xs text-center text-muted-foreground mt-2">
               {isEditMode ? (

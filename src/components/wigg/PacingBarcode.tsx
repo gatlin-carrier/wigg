@@ -76,6 +76,9 @@ export interface PacingBarcodeProps {
   onPaintSegmentScore?: (pct: number, score: number) => Promise<void>;
   showFisheye?: boolean;
   editIdleTimeoutMs?: number; // Auto-exit after idle (default 10s)
+  // Storybook/runtime safety toggles
+  suppressGlobalListeners?: boolean; // avoid attaching window-level listeners in Storybook
+  suppressHaptics?: boolean;         // disable navigator.vibrate calls
 }
 
 export const PacingBarcode = memo(function PacingBarcode({
@@ -99,7 +102,9 @@ export const PacingBarcode = memo(function PacingBarcode({
   onPlaceWigg,
   onPaintSegmentScore,
   showFisheye = true,
-  editIdleTimeoutMs = 10000
+  editIdleTimeoutMs = 10000,
+  suppressGlobalListeners = false,
+  suppressHaptics = false
 }: PacingBarcodeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null); // For puck and fisheye
@@ -233,7 +238,7 @@ export const PacingBarcode = memo(function PacingBarcode({
       }
       
       // Success feedback
-      if ('vibrate' in navigator) {
+      if (!suppressHaptics && 'vibrate' in navigator) {
         navigator.vibrate([20, 20]); // Double tap for undo
       }
       
@@ -643,7 +648,7 @@ export const PacingBarcode = memo(function PacingBarcode({
       
       setTimeout(() => setPuckState(null), 500);
       
-      if ('vibrate' in navigator) {
+      if (!suppressHaptics && 'vibrate' in navigator) {
         navigator.vibrate([30, 30, 30]);
       }
       
@@ -701,7 +706,7 @@ export const PacingBarcode = memo(function PacingBarcode({
       const fisheyeTimer = setTimeout(() => {
         if (!isPaintMode) {
           setPuckState(prev => prev ? { ...prev, showFisheye: true } : null);
-          if ('vibrate' in navigator) {
+          if (!suppressHaptics && 'vibrate' in navigator) {
             navigator.vibrate(20);
           }
         }
@@ -731,7 +736,7 @@ export const PacingBarcode = memo(function PacingBarcode({
     if (onMarkWigg) {
       const timer = setTimeout(() => {
         onMarkWigg(snappedPct);
-        if ('vibrate' in navigator) {
+        if (!suppressHaptics && 'vibrate' in navigator) {
           navigator.vibrate(50);
         }
       }, 500);
@@ -769,7 +774,7 @@ export const PacingBarcode = memo(function PacingBarcode({
       setPuckState(prev => prev ? { ...prev, pct: snappedPct } : null);
       
       // Haptic feedback on segment crossing
-      if ('vibrate' in navigator && Math.abs(snappedPct - puckState.pct) > (100 / clampedSegmentCount)) {
+      if (!suppressHaptics && 'vibrate' in navigator && Math.abs(snappedPct - puckState.pct) > (100 / clampedSegmentCount)) {
         navigator.vibrate(10);
       }
       
@@ -783,7 +788,7 @@ export const PacingBarcode = memo(function PacingBarcode({
     onScrub(snappedPct);
 
     // Haptic feedback on segment change
-    if ('vibrate' in navigator && Math.abs(snappedPct - (currentScrubPct || 0)) > 5) {
+    if (!suppressHaptics && 'vibrate' in navigator && Math.abs(snappedPct - (currentScrubPct || 0)) > 5) {
       navigator.vibrate(10);
     }
   }, [isDragging, onScrub, editState, puckState, getPointerPosition, snapToSegment, currentScrubPct, clampedSegmentCount, isPaintMode, paintStartY, onPaintSegmentScore, getScoreFromY, paintBuffer]),
@@ -824,7 +829,7 @@ export const PacingBarcode = memo(function PacingBarcode({
         });
         
         // Success feedback
-        if ('vibrate' in navigator) {
+        if (!suppressHaptics && 'vibrate' in navigator) {
           navigator.vibrate([30, 30, 30]);
         }
         
@@ -874,7 +879,7 @@ export const PacingBarcode = memo(function PacingBarcode({
         }, 1000);
         
         // Haptic success feedback
-        if ('vibrate' in navigator) {
+        if (!suppressHaptics && 'vibrate' in navigator) {
           navigator.vibrate([50, 50, 50]);
         }
         
@@ -995,19 +1000,17 @@ export const PacingBarcode = memo(function PacingBarcode({
   }, [interactive, currentPct, t2gEstimatePct, clampedSegmentCount, onScrub, onCommitScrub, onMarkWigg, snapToSegment, handleUndoGesture, editState, onEnterEdit, exitEditMode, performUndo, onPlaceWigg, setPuckState]);
 
   // Global mouse up listener for drag operations
-  useEffect(() => {
-    if (!isDragging) return;
+useEffect(() => {
+  if (suppressGlobalListeners || !isDragging) return;
 
-    const handleGlobalPointerUp = () => handlePointerUp();
-    
-    window.addEventListener('mouseup', handleGlobalPointerUp);
-    window.addEventListener('touchend', handleGlobalPointerUp);
-    
-    return () => {
-      window.removeEventListener('mouseup', handleGlobalPointerUp);
-      window.removeEventListener('touchend', handleGlobalPointerUp);
-    };
-  }, [isDragging, handlePointerUp]);
+  const handleGlobalPointerUp = () => handlePointerUp();
+  window.addEventListener('mouseup', handleGlobalPointerUp);
+  window.addEventListener('touchend', handleGlobalPointerUp);
+  return () => {
+    window.removeEventListener('mouseup', handleGlobalPointerUp);
+    window.removeEventListener('touchend', handleGlobalPointerUp);
+  };
+}, [suppressGlobalListeners, isDragging, handlePointerUp]);
 
   const computedAriaLabel = ariaLabel || 
     `Pacing visualization for ${titleId}${t2gEstimatePct ? `. Gets good around ${Math.round(t2gEstimatePct)}%` : ''}`;
