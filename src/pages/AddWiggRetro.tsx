@@ -256,7 +256,6 @@ function AddWiggRetroContent() {
                 <RealTimeVisualization 
                   sessionStats={sessionStats} 
                   currentRatings={currentRatings}
-                  variant="curve"
                 />
                 <div className="grid grid-cols-3 gap-2">
                   {(["curve", "bars", "pulse"] as const).map((variant) => (

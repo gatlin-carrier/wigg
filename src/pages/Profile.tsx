@@ -8,8 +8,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
-import { Film, Tv, Gamepad2, Book, Mic, User, Save, ChevronUp, ChevronDown, BookOpen, Sparkles, Newspaper, Settings } from "lucide-react";
+import { Film, Tv, Gamepad2, Book, Mic, User, Save, ChevronUp, ChevronDown, BookOpen, Sparkles, Newspaper, Settings, BarChart2 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import { GraphTypeSelector, type GraphType } from "@/components/ui/GraphTypeSelector";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ const Profile = () => {
     username: "",
     preferred_media_types: [] as Array<{type: string, priority: number}>,
     hidden_media_types: [] as string[],
+    graph_type: "curve" as GraphType,
   });
 
   usePageHeader({
@@ -51,9 +53,34 @@ const Profile = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, preferred_media_types, hidden_media_types')
+        .select('username, preferred_media_types, hidden_media_types, graph_type')
         .eq('id', user.id)
         .maybeSingle();
+
+      // Handle the case where graph_type column doesn't exist yet
+      if (error && (error as any).code === '42703') {
+        console.warn('graph_type column not found in profiles table. Loading profile without graph_type.');
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('profiles')
+          .select('username, preferred_media_types, hidden_media_types')
+          .eq('id', user.id)
+          .maybeSingle();
+        
+        if (fallbackError) throw fallbackError;
+        
+        if (fallbackData) {
+          const preferences = Array.isArray((fallbackData as any).preferred_media_types) 
+            ? ((fallbackData as any).preferred_media_types as Array<{type: string, priority: number}>)
+            : [];
+          setProfile({
+            username: (fallbackData as any).username || "",
+            preferred_media_types: preferences,
+            hidden_media_types: Array.isArray((fallbackData as any).hidden_media_types) ? (fallbackData as any).hidden_media_types as string[] : [],
+            graph_type: "curve", // Default since column doesn't exist
+          });
+        }
+        return;
+      }
 
       if (error) throw error;
 
@@ -66,6 +93,7 @@ const Profile = () => {
           username: (data as any).username || "",
           preferred_media_types: preferences,
           hidden_media_types: Array.isArray((data as any).hidden_media_types) ? (data as any).hidden_media_types as string[] : [],
+          graph_type: (data as any).graph_type || "curve",
         });
       }
     } catch (error) {
@@ -145,14 +173,30 @@ const Profile = () => {
 
     setLoading(true);
     try {
-      const { error } = await supabase
+      // Try to save with graph_type first
+      let { error } = await supabase
         .from('profiles')
         .upsert({
           id: user.id,
           username: profile.username,
           preferred_media_types: profile.preferred_media_types,
-          hidden_media_types: profile.hidden_media_types
+          hidden_media_types: profile.hidden_media_types,
+          graph_type: profile.graph_type
         });
+
+      // If graph_type column doesn't exist, save without it
+      if (error && (error as any).code === '42703') {
+        console.warn('graph_type column not found. Saving profile without graph_type.');
+        const { error: fallbackError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: user.id,
+            username: profile.username,
+            preferred_media_types: profile.preferred_media_types,
+            hidden_media_types: profile.hidden_media_types
+          });
+        error = fallbackError;
+      }
 
       if (error) throw error;
 
@@ -323,6 +367,29 @@ const Profile = () => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label>Visualization Preferences</Label>
+            <p className="text-sm text-muted-foreground">
+              Choose how you want to see real-time progress graphs
+            </p>
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <BarChart2 className="h-4 w-4" />
+                  Graph Type
+                </Label>
+                <GraphTypeSelector
+                  value={profile.graph_type}
+                  onChange={(type) => setProfile(prev => ({ ...prev, graph_type: type }))}
+                  disabled={loading}
+                />
+                <p className="text-xs text-muted-foreground">
+                  This affects how progress visualizations appear during live capture sessions
+                </p>
+              </div>
             </div>
           </div>
 

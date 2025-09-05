@@ -126,13 +126,6 @@ export function SceneSelector({
   return (
     <Card className={`rounded-2xl shadow-sm w-full ${className}`}>
       <CardHeader className="pb-4">
-        <CardTitle className="text-base flex items-center gap-2">
-          <Film className="h-4 w-4" />
-          When does {mediaTitle} get good?
-        </CardTitle>
-        <CardDescription className="text-xs">
-          Select a scene/chapter or enter a specific time
-        </CardDescription>
         {mediaType === "movie" && runtime && (
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="text-xs">
@@ -161,36 +154,6 @@ export function SceneSelector({
         )}
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Mode Selector */}
-        <div className="flex gap-1 p-1 bg-muted rounded-lg">
-          <button
-            onClick={() => setMode("scenes")}
-            className={`flex-1 py-2 px-3 rounded text-xs font-medium transition-all ${
-              mode === "scenes" ? "bg-background shadow-sm" : "text-muted-foreground"
-            }`}
-          >
-            <Film className="h-3 w-3 inline mr-1" />
-            Scenes
-          </button>
-          <button
-            onClick={() => setMode("manual")}
-            className={`flex-1 py-2 px-3 rounded text-xs font-medium transition-all ${
-              mode === "manual" ? "bg-background shadow-sm" : "text-muted-foreground"
-            }`}
-          >
-            <Clock className="h-3 w-3 inline mr-1" />
-            Manual
-          </button>
-          <button
-            onClick={() => setMode("add")}
-            className={`flex-1 py-2 px-3 rounded text-xs font-medium transition-all ${
-              mode === "add" ? "bg-background shadow-sm" : "text-muted-foreground"
-            }`}
-          >
-            <Plus className="h-3 w-3 inline mr-1" />
-            Add Scene
-          </button>
-        </div>
 
         {/* Scene Selection Mode */}
         {mode === "scenes" && (
@@ -427,8 +390,8 @@ export function SceneSelector({
               className="flex-1"
               size="lg"
             >
-              Submit Time-Based Rating
-            </Button>
+              Submit
+              </Button>
             {onReset && (
               <Button 
                 variant="outline"

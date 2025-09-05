@@ -17,6 +17,7 @@ import PodcastTrending from "@/components/podcast/PodcastTrending";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MediaEntry {
   id: string;
@@ -102,11 +103,12 @@ const Dashboard = () => {
     }
   };
   const [selectedMedia, setSelectedMedia] = useState<{ title: string; type: string } | null>(null);
+  const isMobile = useIsMobile();
   
   // Configure global header for this page
   usePageHeader({
     title: "WIGG Dashboard",
-    subtitle: "Discover when media gets good and track your own entries",
+    subtitle: isMobile ? undefined : "Discover when media gets good and track your own entries",
     showBackButton: true,
     showHomeButton: true,
   });

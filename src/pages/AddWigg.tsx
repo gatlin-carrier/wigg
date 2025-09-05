@@ -173,6 +173,13 @@ function AddWiggContent() {
     setShowGameTimeInput(true);
   };
 
+  const handleSeek = (position: number) => {
+    // Convert position (0-1) to unit index
+    const unitIndex = Math.round(position * (units.length - 1));
+    const newProgress = Math.max(1, unitIndex + 1); // progress is 1-based
+    setProgress(newProgress);
+  };
+
   const currentUnit = units[currentUnitIndex] || null;
   const isComplete = currentUnitIndex >= units.length;
 
@@ -212,13 +219,37 @@ function AddWiggContent() {
         <TabsList className="grid w-full grid-cols-2 mb-6">
           <TabsTrigger value="live" className="flex items-center gap-2">
             <Play className="h-4 w-4" />
-            Live Capture
+            Live
           </TabsTrigger>
           <TabsTrigger value="retro" className="flex items-center gap-2">
             <RotateCcw className="h-4 w-4" />
-            Retrospective
+            Log
           </TabsTrigger>
         </TabsList>
+
+        {/* Rating Visualization */}
+        <RealTimeVisualization
+          sessionStats={sessionStats}
+          currentRatings={currentRatings}
+          mediaType={mediaType}
+          runtime={
+            mediaType === "game" 
+              ? userGameData?.completionTimeHours
+              : mediaType === "movie"
+              ? selectedMedia?.duration
+              : mediaType === "book" || mediaType === "manga"
+              ? units.reduce((total, unit) => total + (unit.pages || 0), 0)
+              : undefined
+          }
+          currentPosition={
+            units.length > 1 
+              ? currentUnitIndex / (units.length - 1)
+              : units.length === 1 
+              ? 0.5 // Show playhead in middle if only one unit
+              : undefined
+          }
+          onSeek={handleSeek}
+        />
 
         <TabsContent value="live" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -382,13 +413,6 @@ function AddWiggContent() {
                     </div>
                   </div>
                 )}
-              
-              {/* Rating Visualization */}
-              <RealTimeVisualization
-                sessionStats={sessionStats}
-                currentRatings={currentRatings}
-                variant="curve"
-              />
             </div>
           ) : (
             <Card className="rounded-2xl shadow-sm text-center p-8">
