@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
 import { useMilestones } from '@/hooks/useMilestones';
+import { useUserPreferences } from '@/hooks/useUserPreferences';
 import { MilestonePath } from './MilestonePath';
 import { PacingBarcode } from './PacingBarcode';
 import { LollipopStrip } from './LollipopStrip';
@@ -46,6 +47,28 @@ export function TitleHeader({
   const { data: progressData, isLoading: progressLoading } = useTitleProgress(titleId);
   const { data: wiggsData, isLoading: wiggsLoading } = useUserWiggs(titleId);
   const { data: milestonesData, isLoading: milestonesLoading } = useMilestones(titleId);
+  const { preferences } = useUserPreferences();
+
+  // Map user preference graph_type -> default visualization in header
+  // - 'barcode' -> barcode view
+  // - 'bars'    -> lollipop strip (1-D beads)
+  // - otherwise -> milestones (default narrative map)
+  const [hasAppliedPref, setHasAppliedPref] = useState(false);
+  useEffect(() => {
+    if (hasAppliedPref) return;
+    const pref = preferences?.graph_type;
+    if (!pref) return;
+    if (pref === 'barcode') {
+      setVisualMode('barcode');
+      setHasAppliedPref(true);
+    } else if (pref === 'bars') {
+      setVisualMode('lollipop');
+      setHasAppliedPref(true);
+    } else {
+      // curve/pulse or unknown: keep milestones as default
+      setHasAppliedPref(true);
+    }
+  }, [preferences?.graph_type, hasAppliedPref]);
 
   const isLoading = progressLoading || wiggsLoading || milestonesLoading;
 
@@ -262,7 +285,9 @@ export function TitleHeader({
               <Button
                 variant={visualMode === 'milestones' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setVisualMode('milestones')}
+                onClick={() => {
+                  setVisualMode('milestones');
+                }}
                 disabled={!milestonesData?.items?.length}
               >
                 Milestones
@@ -270,7 +295,9 @@ export function TitleHeader({
               <Button
                 variant={visualMode === 'barcode' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setVisualMode('barcode')}
+                onClick={() => {
+                  setVisualMode('barcode');
+                }}
               >
                 <BarChart3 className="h-4 w-4 mr-1" />
                 Barcode
@@ -278,7 +305,9 @@ export function TitleHeader({
               <Button
                 variant={visualMode === 'lollipop' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setVisualMode('lollipop')}
+                onClick={() => {
+                  setVisualMode('lollipop');
+                }}
               >
                 <Minus className="h-4 w-4 mr-1" />
                 Strip

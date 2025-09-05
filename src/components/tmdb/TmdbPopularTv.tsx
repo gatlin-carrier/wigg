@@ -74,6 +74,14 @@ export function TmdbPopularTv({ kind = 'popular', period = 'day', onAdd }: Props
                   tags={tags}
                   onAdd={() => onAdd?.({ title, type: 'TV Show' })}
                   onClick={() => navigate(`/media/tmdb-tv/${r.id}`)}
+                  mediaData={{
+                    source: 'tmdb-tv',
+                    id: String(r.id),
+                    title,
+                    type: 'tv',
+                    posterUrl: poster,
+                    year
+                  }}
                 />
               </div>
             );

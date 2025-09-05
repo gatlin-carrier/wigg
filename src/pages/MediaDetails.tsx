@@ -221,7 +221,7 @@ export default function MediaDetails() {
   return (
     <div className="min-h-screen bg-background">
       {/* Backdrop */}
-      <div className="relative h-96 overflow-hidden">
+      <div className="relative h-64 sm:h-96 overflow-hidden">
         {backdropUrl && !bgError ? (
           // Display image backdrop when available
           <>
@@ -263,7 +263,7 @@ export default function MediaDetails() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
       </div>
       
-      <div className="container mx-auto px-4 py-8 relative">
+      <div className="container mx-auto px-4 py-8 relative -mt-16 sm:-mt-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Details */}
           <div className="lg:col-span-2 space-y-6">

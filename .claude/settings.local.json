@@ -14,7 +14,8 @@
       "Bash(npx supabase migration:*)",
       "Bash(npx supabase:*)",
       "Bash(curl:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": [],

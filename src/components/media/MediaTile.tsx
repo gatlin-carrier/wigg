@@ -1,7 +1,9 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
-import { Star } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Star, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   title: string;
@@ -12,18 +14,61 @@ type Props = {
   onAdd?: () => void;
   onClick?: () => void;
   className?: string;
+  // Data needed for WIGG routing
+  mediaData?: {
+    source: string;
+    id: string;
+    title: string;
+    type: string;
+    posterUrl?: string;
+    year?: number | string;
+    runtime?: number;
+  };
 };
 
-export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onClick, className }: Props) {
+export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onClick, className, mediaData }: Props) {
+  const navigate = useNavigate();
+
+  const handleAddWigg = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (mediaData) {
+      navigate('/add-wigg', { 
+        state: { 
+          media: mediaData
+        }
+      });
+    } else if (onAdd) {
+      onAdd();
+    }
+  };
   return (
     <Card 
       className={cn(
-        'p-4 bg-card hover:bg-muted/40 border-0 shadow-soft hover:shadow-medium transition-colors duration-200 group h-full',
+        'p-4 bg-card hover:bg-muted/40 border-0 shadow-soft hover:shadow-medium transition-colors duration-200 group h-full relative',
         onClick && 'cursor-pointer',
         className
       )}
       onClick={onClick}
     >
+      {/* Add WIGG Button */}
+      <Button
+        onClick={handleAddWigg}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        onTouchStart={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        size="sm"
+        className="absolute top-1 right-1 h-8 w-8 rounded-full p-0 bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white border-2 border-white shadow-lg hover:shadow-xl transition-all duration-200 z-10 opacity-0 group-hover:opacity-100"
+        aria-label="Add WIGG point"
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+
       {imageUrl && (
         <div className="aspect-[2/3] mb-3 overflow-hidden rounded-lg bg-muted">
           <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
