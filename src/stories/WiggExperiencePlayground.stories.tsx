@@ -14,7 +14,7 @@ import { NoteComposer } from '@/components/wigg/NoteComposer';
 import { RatingButtons } from '@/components/wigg/RatingButtons';
 import { RatingDial } from '@/components/wigg/RatingDial';
 import { RatingSlider } from '@/components/wigg/RatingSlider';
-import { SwipeRating, type SwipeValue, type Unit } from '@/components/wigg/SwipeRating';
+import { SwipeRating, type Unit } from '@/components/wigg/SwipeRating';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -56,7 +56,8 @@ export const ExperienceBuilder: Story = {
     const [overlayOpen, setOverlayOpen] = useState(false);
     const [tags, setTags] = useState<string[]>(['world']);
     const [note, setNote] = useState('');
-    const [lastSwipe, setLastSwipe] = useState<SwipeValue | null>(null);
+    const [lastSwipe, setLastSwipe] = useState<number | null>(null);
+    const [sliderValue, setSliderValue] = useState<number>(2);
 
     const widths: Record<Viewport, number> = { mobile: 390, tablet: 768, desktop: 1200 };
     const width = widths[viewport];
@@ -210,28 +211,44 @@ export const ExperienceBuilder: Story = {
           <Card>
             <CardContent className="p-4 space-y-4">
               {rating === 'slider' ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                  {/* Left: Slider */}
+                <div className="space-y-4">
+                  {/* Slider */}
                   <div>
-                    <div className="text-sm font-medium mb-2">Rate this moment</div>
-                    <RatingSlider onChange={(v) => setLastSwipe(v)} />
-                    <div className="text-xs text-muted-foreground mt-1">Last: {lastSwipe ?? '—'}</div>
+                    <RatingSlider
+                      orientation="horizontal"
+                      showIcons
+                      scale={5}
+                      value={sliderValue}
+                      onChange={(v) => { setSliderValue(v); setLastSwipe(v); }}
+                    />
                   </div>
-                  {/* Right: Notes (and optional context under) */}
+                  {/* Notes directly under slider */}
                   <div>
                     <div className="text-sm font-medium mb-2">Notes</div>
                     <NoteComposer value={note} onChange={setNote} />
-                    <div className="mt-4">
-                      <div className="text-sm font-medium mb-2">Add context</div>
-                      <ContextChips options={CONTEXT_OPTIONS} selected={tags} onChange={setTags} />
-                    </div>
+                  </div>
+                  {/* Context chips */}
+                  <div>
+                    <div className="text-sm font-medium mb-2">Add context</div>
+                    <ContextChips options={CONTEXT_OPTIONS} selected={tags} onChange={setTags} />
                   </div>
                 </div>
               ) : (
                 <>
                   <div>
                     <div className="text-sm font-medium mb-2">Rate this moment</div>
-                    {renderRating()}
+                    {/* Use horizontal slider with icons when slider mode is chosen elsewhere */}
+                    {rating === 'slider' ? (
+                      <RatingSlider
+                        orientation="horizontal"
+                        showIcons
+                        scale={5}
+                        value={sliderValue}
+                        onChange={(v) => { setSliderValue(v); setLastSwipe(v); }}
+                      />
+                    ) : (
+                      renderRating()
+                    )}
                     <div className="text-xs text-muted-foreground mt-1">Last: {lastSwipe ?? '—'}</div>
                   </div>
                   <div>
