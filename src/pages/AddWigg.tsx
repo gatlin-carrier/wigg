@@ -21,6 +21,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useWiggSession } from "@/hooks/useWiggSession";
 import { useWiggPersistence } from "@/hooks/useWiggPersistence";
 import { useMediaUnits } from "@/hooks/useMediaUnits";
+import { RatingButtons } from "@/components/wigg/RatingButtons";
+import { RatingDial } from "@/components/wigg/RatingDial";
+import { RatingSlider } from "@/components/wigg/RatingSlider";
+import { AffectGrid } from "@/components/wigg/AffectGrid";
+import { useUserPreferences } from "@/hooks/useUserPreferences";
 
 
 
@@ -67,6 +72,7 @@ function AddWiggContent() {
 
   const { saveMoment, saveMediaToDatabase } = useWiggPersistence();
   const { units: apiUnits, isLoading: unitsLoading, error: unitsError } = useMediaUnits(selectedMedia);
+  const { preferences } = useUserPreferences();
   
   // Game-specific hooks
   const { data: userGameData } = useUserGameData(selectedMedia?.id || '');
@@ -379,48 +385,57 @@ function AddWiggContent() {
                       </div>
                     </div>
                     
-                    {/* Compact Rating Buttons */}
+                    {/* Rating UI (preference-driven) */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-center">
-                        <Info 
-                          className="h-4 w-4 text-muted-foreground cursor-help" 
-                          title="Swipe gestures: ← ↑ → ↓ or keys A S D F"
+                        <Info
+                          className="h-4 w-4 text-muted-foreground cursor-help"
+                          title="Swipe: ← ↑ → ↓ or keys A S D F. Change rating UI in preferences."
                         />
                       </div>
-                      <div className="grid grid-cols-4 gap-2">
-                        <Button
-                          variant="outline"
-                          onClick={() => handleSwipeRating(0)}
-                          className="flex flex-col items-center gap-1 h-16 text-xs"
-                        >
-                          <span className="text-lg">😴</span>
-                          <span>zzz</span>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() => handleSwipeRating(1)}
-                          className="flex flex-col items-center gap-1 h-16 text-xs"
-                        >
-                          <span className="text-lg">🌱</span>
-                          <span>good</span>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() => handleSwipeRating(2)}
-                          className="flex flex-col items-center gap-1 h-16 text-xs"
-                        >
-                          <span className="text-lg">⚡</span>
-                          <span>better</span>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() => handleSwipeRating(3)}
-                          className="flex flex-col items-center gap-1 h-16 text-xs"
-                        >
-                          <span className="text-lg">🔥</span>
-                          <span>peak</span>
-                        </Button>
-                      </div>
+                      {(() => {
+                        const ui = preferences?.rating_ui || 'buttons';
+                        if (ui === 'dial') {
+                          return (
+                            <div className="flex items-center justify-center">
+                              <RatingDial
+                                value={2}
+                                onChange={(v) => handleSwipeRating(v)}
+                              />
+                            </div>
+                          );
+                        }
+                        if (ui === 'slider') {
+                          return (
+                            <div className="flex items-center justify-center">
+                              <RatingSlider
+                                value={2}
+                                onChange={(v) => handleSwipeRating(v)}
+                              />
+                            </div>
+                          );
+                        }
+                        if (ui === 'grid') {
+                          return (
+                            <div className="flex items-center justify-center">
+                              <AffectGrid
+                                size={220}
+                                onChange={(val) => {
+                                  const level = val.quality < 0.25 ? 0 : val.quality < 0.5 ? 1 : val.quality < 0.75 ? 2 : 3;
+                                  handleSwipeRating(level as SwipeValue);
+                                }}
+                              />
+                            </div>
+                          );
+                        }
+                        // default buttons
+                        return (
+                          <RatingButtons
+                            size="regular"
+                            onChange={(v) => handleSwipeRating(v)}
+                          />
+                        );
+                      })()}
                     </div>
                   </div>
                 )}

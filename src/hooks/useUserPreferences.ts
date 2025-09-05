@@ -7,12 +7,14 @@ interface UserPreferences {
   graph_type: GraphType;
   preferred_media_types: Array<{ type: string; priority: number }>;
   hidden_media_types: string[];
+  rating_ui?: 'buttons' | 'dial' | 'slider' | 'grid' | 'paint' | 'hybrid';
 }
 
 const defaultPreferences: UserPreferences = {
   graph_type: 'curve',
   preferred_media_types: [],
   hidden_media_types: [],
+  rating_ui: 'buttons',
 };
 
 export function useUserPreferences() {
@@ -34,7 +36,7 @@ export function useUserPreferences() {
     try {
       const { data, error: dbError } = await supabase
         .from('profiles')
-        .select('graph_type, preferred_media_types, hidden_media_types')
+        .select('graph_type, preferred_media_types, hidden_media_types, rating_ui')
         .eq('id', user.id)
         .maybeSingle();
 
@@ -56,6 +58,7 @@ export function useUserPreferences() {
           hidden_media_types: Array.isArray((data as any).hidden_media_types) 
             ? (data as any).hidden_media_types 
             : defaultPreferences.hidden_media_types,
+          rating_ui: (data as any).rating_ui || defaultPreferences.rating_ui,
         });
       } else {
         setPreferences(defaultPreferences);
