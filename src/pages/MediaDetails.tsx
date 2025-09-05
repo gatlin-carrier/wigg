@@ -12,13 +12,21 @@ import { getMovieDetails, getTvDetails, getImageUrl } from '@/integrations/tmdb/
 import { fetchAnimeDetails, fetchMangaDetails } from '@/integrations/anilist/client';
 import { fetchWorkDetails } from '@/integrations/openlibrary/client';
 import { useTmdbMovieGenres } from '@/integrations/tmdb/hooks';
-import { WiggMap } from '@/components/wigg/WiggMap';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
+import { usePageHeader } from '@/contexts/HeaderContext';
 
 export default function MediaDetails() {
   const { source, id } = useParams<{ source: string; id: string }>();
   const navigate = useNavigate();
+  
+  // Configure header first, before any other logic
+  usePageHeader({
+    title: "Media Details",
+    showBackButton: true,
+    showHomeButton: true,
+  });
+  
   const [heroColor, setHeroColor] = React.useState<string | undefined>(undefined);
   const [bgError, setBgError] = React.useState<boolean>(false);
   const [enlargedImage, setEnlargedImage] = React.useState<{ url: string; alt: string } | null>(null);
@@ -210,8 +218,6 @@ export default function MediaDetails() {
         ? ((movie as any)?.siteUrl ?? `https://anilist.co/anime/${id}`)
         : (movie as any)?.url;
 
-  
-
   return (
     <div className="min-h-screen bg-background">
       {/* Backdrop */}
@@ -259,24 +265,92 @@ export default function MediaDetails() {
       
       <div className="container mx-auto px-4 py-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Poster */}
-          <div className="lg:col-span-1">
-            <Card className="p-0 overflow-hidden">
-              {posterUrl ? (
-                <img
-                  src={posterUrl}
-                  alt={title}
-                  className="w-full aspect-[2/3] object-cover cursor-pointer"
-                  onClick={() => setEnlargedImage({ url: posterUrl, alt: title })}
-                />
-              ) : (
-                <div className="w-full aspect-[2/3] bg-muted flex items-center justify-center">
-                  <span className="text-muted-foreground">No poster available</span>
+          {/* Details */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Title and Poster Row (Mobile) */}
+            <div className="flex gap-4 lg:block">
+              {/* Poster (Mobile only - smaller) */}
+              <div className="w-24 sm:w-32 lg:hidden flex-shrink-0">
+                <Card className="p-0 overflow-hidden">
+                  {posterUrl ? (
+                    <img
+                      src={posterUrl}
+                      alt={title}
+                      className="w-full aspect-[2/3] object-cover cursor-pointer"
+                      onClick={() => setEnlargedImage({ url: posterUrl, alt: title })}
+                    />
+                  ) : (
+                    <div className="w-full aspect-[2/3] bg-muted flex items-center justify-center">
+                      <span className="text-xs text-muted-foreground text-center">No poster</span>
+                    </div>
+                  )}
+                </Card>
+              </div>
+              
+              {/* Title Section */}
+              <div className="flex-1 lg:mb-0">
+                <h1 className="text-2xl sm:text-4xl font-bold mb-2">{title}</h1>
+                
+                {/* Rating and Year under title */}
+                <div className="flex flex-wrap items-center gap-4 mb-3">
+                  {rating && (
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                      <span className="font-medium">{(Number(rating) as number).toFixed(1)}/10</span>
+                    </div>
+                  )}
+                  {year && (
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span>{year}</span>
+                    </div>
+                  )}
+                  {runtime && (
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span>{runtime} min</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Genre chips on mobile */}
+                {genres.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3 lg:hidden">
+                    {genres.map((genre: string) => (
+                      <Badge key={genre} variant="secondary">{genre}</Badge>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Tagline/Summary for movies, TV, and games */}
+                {((isTmdbMovie || isTmdbTv) && (movie as any).tagline) || (isGame && (movie as any).summary) && (
+                  <p className="text-sm sm:text-lg text-muted-foreground italic mb-4 hidden lg:block">
+                    {(isTmdbMovie || isTmdbTv) ? (movie as any).tagline : 
+                     isGame ? (movie as any).summary?.split('.')[0] + ((movie as any).summary?.includes('.') ? '.' : '') : ''}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Tagline on mobile (below title/poster) */}
+            {(((isTmdbMovie || isTmdbTv) && (movie as any).tagline) || (isGame && (movie as any).summary)) && (
+              <p className="text-sm text-muted-foreground italic lg:hidden">
+                {(isTmdbMovie || isTmdbTv) ? (movie as any).tagline : 
+                 isGame ? (movie as any).summary?.split('.')[0] + ((movie as any).summary?.includes('.') ? '.' : '') : ''}
+              </p>
+            )}
+            
+            {/* Genres (Desktop only) */}
+            {genres.length > 0 && (
+                <div className="hidden lg:flex flex-wrap gap-2 mb-6">
+                  {genres.map((genre: string) => (
+                    <Badge key={genre} variant="secondary">{genre}</Badge>
+                  ))}
                 </div>
               )}
-            </Card>
-            
-            <div className="mt-4 space-y-2">
+
+            {/* Action Buttons */}
+            <div className="space-y-2">
               <Button 
                 className="w-full" 
                 size="lg"
@@ -306,45 +380,6 @@ export default function MediaDetails() {
                 </Button>
               )}
             </div>
-          </div>
-
-          {/* Details */}
-          <div className="lg:col-span-2 space-y-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">{title}</h1>
-              {(isTmdbMovie || isTmdbTv) && (movie as any).tagline && (
-                <p className="text-lg text-muted-foreground italic mb-4">{(movie as any).tagline}</p>
-              )}
-              
-              <div className="flex flex-wrap items-center gap-4 mb-6">
-                {rating && (
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                    <span className="font-medium">{(Number(rating) as number).toFixed(1)}/10</span>
-                  </div>
-                )}
-                {year && (
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>{year}</span>
-                  </div>
-                )}
-                {runtime && (
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                    <span>{runtime} min</span>
-                  </div>
-                )}
-              </div>
-
-              {genres.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {genres.map((genre: string) => (
-                    <Badge key={genre} variant="secondary">{genre}</Badge>
-                  ))}
-                </div>
-              )}
-            </div>
 
             <Separator />
 
@@ -367,33 +402,24 @@ export default function MediaDetails() {
               </>
             )}
 
-            <Separator />
+          </div>
 
-            <div>
-              <h2 className="text-xl font-semibold mb-3">WIGG Chart</h2>
-              <Card className="p-4 mb-4">
-                <WiggMap
-                  consensus={{
-                    posKind: 'sec',
-                    duration: runtime || 7200, // Use movie runtime or default 2 hours
-                    medianPos: (runtime || 7200) / 2, // Default to middle
-                    windows: []
-                  }}
-                  points={[]}
-                  width={600}
-                  height={80}
-                  className="text-primary"
+          {/* Desktop Poster */}
+          <div className="lg:col-span-1 hidden lg:block">
+            <Card className="p-0 overflow-hidden sticky top-8">
+              {posterUrl ? (
+                <img
+                  src={posterUrl}
+                  alt={title}
+                  className="w-full aspect-[2/3] object-cover cursor-pointer"
+                  onClick={() => setEnlargedImage({ url: posterUrl, alt: title })}
                 />
-              </Card>
-              
-              <Card className="p-6 text-center border-dashed">
-                <p className="text-muted-foreground mb-3">No WIGG points yet for this media</p>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add the first WIGG point
-                </Button>
-              </Card>
-            </div>
+              ) : (
+                <div className="w-full aspect-[2/3] bg-muted flex items-center justify-center">
+                  <span className="text-muted-foreground">No poster available</span>
+                </div>
+              )}
+            </Card>
           </div>
         </div>
       </div>

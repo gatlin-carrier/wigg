@@ -350,49 +350,6 @@ export function RealtimeWiggOverlay({
               )}
             </Button>
 
-            {/* Quick Note Toggle */}
-            <div className="flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowNoteInput(!showNoteInput)}
-                className="text-muted-foreground"
-              >
-                {showNoteInput ? 'Hide note' : 'Add note'}
-              </Button>
-              <div className="text-xs text-muted-foreground">
-                {isEditMode ? (
-                  'Alt+E to exit edit mode'
-                ) : (
-                  'Space or Cmd+Enter to mark • Alt+E for edit mode'
-                )}
-              </div>
-            </div>
-
-            {/* Optional Note Input */}
-            {showNoteInput && (
-              <div className="space-y-2">
-                <Label htmlFor="wigg-note" className="text-sm">
-                  Quick note (optional)
-                </Label>
-                <Input
-                  id="wigg-note"
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  placeholder="Why is this moment good? (e.g., 'Great boss fight', 'Plot twist')"
-                  maxLength={140}
-                  className="text-sm"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                      handleMarkWigg();
-                    }
-                  }}
-                />
-                <div className="text-xs text-muted-foreground text-right">
-                  {note.length}/140
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Recent Activity */}
@@ -442,6 +399,55 @@ export function RealtimeWiggOverlay({
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Context Box & Quick Note */}
+          <div className="flex-shrink-0 px-4 space-y-4 border-t pt-4">
+            {/* Context/Keyboard Shortcuts */}
+            <div className="text-xs text-center text-muted-foreground bg-muted/30 rounded-lg p-3">
+              {isEditMode ? (
+                'Alt+E to exit edit mode'
+              ) : (
+                'Space or Cmd+Enter to mark • Alt+E for edit mode'
+              )}
+            </div>
+
+            {/* Quick Note Toggle */}
+            <div className="flex items-center justify-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowNoteInput(!showNoteInput)}
+                className="text-muted-foreground"
+              >
+                {showNoteInput ? 'Hide note' : 'Add note'}
+              </Button>
+            </div>
+
+            {/* Optional Note Input */}
+            {showNoteInput && (
+              <div className="space-y-2">
+                <Label htmlFor="wigg-note" className="text-sm">
+                  Quick note (optional)
+                </Label>
+                <Input
+                  id="wigg-note"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  placeholder="Why is this moment good? (e.g., 'Great boss fight', 'Plot twist')"
+                  maxLength={140}
+                  className="text-sm"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                      handleMarkWigg();
+                    }
+                  }}
+                />
+                <div className="text-xs text-muted-foreground text-right">
+                  {note.length}/140
+                </div>
+              </div>
+            )}
           </div>
           
           {/* Live announcements for screen readers */}

@@ -42,6 +42,13 @@ function AddWiggContent() {
   const [customTags, setCustomTags] = useState<string[]>([]);
   const [showVisualization, setShowVisualization] = useState(false);
   
+  // Switch to retro tab when media type is game (games don't have live mode)
+  useEffect(() => {
+    if (mediaType === "game" && activeTab === "live") {
+      setActiveTab("retro");
+    }
+  }, [mediaType, activeTab]);
+  
   const {
     selectedMedia,
     units,
@@ -187,8 +194,6 @@ function AddWiggContent() {
   const currentUnitSubtitle = currentUnit ? `${currentUnit.subtype.charAt(0).toUpperCase() + currentUnit.subtype.slice(1)} ${currentUnit.ordinal}${currentUnit.title ? `: ${currentUnit.title}` : ''}` : undefined;
   
   usePageHeader({
-    title: selectedMedia?.title || "Rate Your Media",
-    subtitle: selectedMedia ? currentUnitSubtitle : "Live capture or retrospective rating modes",
     showBackButton: true,
     showHomeButton: true,
   });
@@ -213,19 +218,31 @@ function AddWiggContent() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl mobile-safe-bottom">
-
+      {/* Media Title and Subtitle */}
+      <div className="mb-8 text-center">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
+          {selectedMedia?.title || "Rate Your Media"}
+        </h1>
+        {mediaType !== "game" && (selectedMedia ? currentUnitSubtitle : "Live capture or retrospective rating modes") && (
+          <p className="text-sm sm:text-base text-muted-foreground">
+            {selectedMedia ? currentUnitSubtitle : "Live capture or retrospective rating modes"}
+          </p>
+        )}
+      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-6">
-          <TabsTrigger value="live" className="flex items-center gap-2">
-            <Play className="h-4 w-4" />
-            Live
-          </TabsTrigger>
-          <TabsTrigger value="retro" className="flex items-center gap-2">
-            <RotateCcw className="h-4 w-4" />
-            Log
-          </TabsTrigger>
-        </TabsList>
+        {mediaType !== "game" && (
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="live" className="flex items-center gap-2">
+              <Play className="h-4 w-4" />
+              Live
+            </TabsTrigger>
+            <TabsTrigger value="retro" className="flex items-center gap-2">
+              <RotateCcw className="h-4 w-4" />
+              Log
+            </TabsTrigger>
+          </TabsList>
+        )}
 
         {/* Rating Visualization */}
         <RealTimeVisualization
@@ -317,12 +334,6 @@ function AddWiggContent() {
             </div>
           </div>
 
-          <MomentCapture
-            mediaType={mediaType}
-            unit={currentUnit}
-            onAddMoment={handleAddMoment}
-            externalPlayer={playerControls}
-          />
         </TabsContent>
 
         <TabsContent value="retro" className="space-y-6">
@@ -441,11 +452,6 @@ function AddWiggContent() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <MomentCapture
-                mediaType={mediaType}
-                unit={currentUnit}
-                onAddMoment={handleAddMoment}
-              />
               
               <WhyTagSelector
                 selectedTags={whyTags}

@@ -194,12 +194,6 @@ function AddWiggLiveContent() {
         </div>
       </div>
 
-      <MomentCapture
-        mediaType={mediaType}
-        unit={currentUnit}
-        onAddMoment={handleAddMoment}
-        externalPlayer={playerControls}
-      />
     </div>
   );
 }

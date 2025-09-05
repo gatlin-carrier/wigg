@@ -14,7 +14,7 @@ import { SwipeRating, type Unit, type SwipeValue, type SwipeDirection } from "@/
 import { SessionRecap } from "@/components/wigg/SessionRecap";
 import { GoodnessCurve, type GoodnessCurveData } from "@/components/wigg/GoodnessCurve";
 import { MomentsPanel } from "@/components/wigg/MomentsPanel";
-import { MomentCapture, type MediaType } from "@/components/wigg/MomentCapture";
+import { type MediaType } from "@/components/wigg/MomentCapture";
 import { WhyTagSelector, type SpoilerLevel } from "@/components/wigg/WhyTagSelector";
 import { RealTimeVisualization } from "@/components/wigg/RealTimeVisualization";
 import { TimeBasedRating } from "@/components/wigg/TimeBasedRating";
@@ -339,11 +339,6 @@ function AddWiggRetroContent() {
         </div>
       )}
 
-      <MomentCapture
-        mediaType={mediaType}
-        unit={currentUnit}
-        onAddMoment={addMoment}
-      />
     </div>
   );
 }

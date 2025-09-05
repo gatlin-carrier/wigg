@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Home, User } from 'lucide-react';
+import { ArrowLeft, User } from 'lucide-react';
 import HeaderSearch from '@/components/search/HeaderSearch';
 import ThemeToggle from '@/components/ThemeToggle';
 import { useHeader } from '@/contexts/HeaderContext';
@@ -64,18 +64,6 @@ export default function GlobalHeader() {
                 </Button>
               )}
               
-              {showHomeButton && !isHomePage && !isDashboardPage && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleHome}
-                  className="hidden sm:flex items-center gap-2"
-                  title="Go to dashboard"
-                >
-                  <Home className="h-4 w-4" />
-                  Home
-                </Button>
-              )}
             </div>
             
             {/* Page Title */}
