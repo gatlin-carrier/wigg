@@ -294,11 +294,12 @@ export function RealtimeWiggOverlay({
           <div className="flex-shrink-0 px-4">
             <PacingBarcode
               titleId={titleId}
-              height={48}
+              height={60}
               segmentCount={Math.min(30, Math.max(15, Math.floor(window.innerWidth / 20)))}
               segments={progressData?.segments || []}
               t2gEstimatePct={wiggsData?.t2gEstimatePct}
               currentPct={liveData.currentPct}
+              dataScope="local"
               onScrub={handleScrub}
               onCommitScrub={handleScrub}
               onMarkWigg={handleMarkWiggFromBarcode}

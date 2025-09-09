@@ -134,20 +134,21 @@ export function TitleHeader({
           />
         );
       
-      case 'barcode':
-        return (
-          <div className="bg-gradient-to-r from-background to-muted/20 rounded-lg border p-4">
+          case 'barcode':
+            return (
+              <div className="bg-gradient-to-r from-background to-muted/20 rounded-lg border p-4">
             <PacingBarcode
               titleId={titleId}
-              height={48}
+              height={60}
               segmentCount={Math.min(40, Math.max(20, Math.floor(window.innerWidth / 15)))}
               segments={progressData?.segments || []}
               t2gEstimatePct={wiggsData?.t2gEstimatePct}
-              interactive={true}
-              onScrub={(pct) => {
-                // Visual feedback for scrubbing
-              }}
-              onMarkWigg={(pct) => {
+                  dataScope="community"
+                  interactive={true}
+                  onScrub={(pct) => {
+                    // Visual feedback for scrubbing
+                  }}
+                  onMarkWigg={(pct) => {
                 // Quick mark from barcode
                 console.log('Quick mark at', pct);
               }}

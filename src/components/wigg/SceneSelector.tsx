@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Clock, Film, Users, Plus, ThumbsUp, ThumbsDown, Pencil, RefreshCw } from "lucide-react";
 import { type SwipeValue } from "./SwipeRating";
+import { WiggRatingGrid } from '@/components/wigg/WiggRatingGrid';
 
 export interface MovieScene {
   id: string;
@@ -336,25 +337,7 @@ export function SceneSelector({
         {(mode === "scenes" || mode === "manual") && (
           <div className="space-y-3">
             <Label className="text-sm font-medium">How good does it get?</Label>
-            <div className="grid grid-cols-2 gap-2">
-              {([0, 1, 2, 3] as SwipeValue[]).map((value) => {
-                const ratingData = getRatingData(value);
-                return (
-                  <button
-                    key={value}
-                    onClick={() => setRating(value)}
-                    className={`p-3 rounded-lg border text-center transition-all ${
-                      rating === value 
-                        ? "border-primary bg-primary/10 scale-105" 
-                        : "border-border hover:border-primary/50"
-                    }`}
-                  >
-                    <div className="text-lg mb-1">{ratingData.emoji}</div>
-                    <div className="text-xs font-medium">{ratingData.label}</div>
-                  </button>
-                );
-              })}
-            </div>
+            <WiggRatingGrid value={rating} onChange={setRating} />
           </div>
         )}
 

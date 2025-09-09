@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Star, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 type Props = {
   title: string;
@@ -52,26 +52,102 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
       onClick={onClick}
     >
       {/* Add WIGG Button */}
-      <Button
-        onClick={handleAddWigg}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-        onTouchStart={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-        size="sm"
-        className="absolute top-1 right-1 h-8 w-8 rounded-full p-0 bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white border-2 border-white shadow-lg hover:shadow-xl transition-all duration-200 z-10 opacity-0 group-hover:opacity-100"
-        aria-label="Add WIGG point"
-      >
-        <Plus className="h-4 w-4" />
-      </Button>
+      {mediaData ? (
+        <Button
+          asChild
+          onPointerDownCapture={(e) => {
+            e.stopPropagation();
+          }}
+          onPointerDown={(e) => {
+            e.stopPropagation();
+          }}
+          onPointerMove={(e) => {
+            e.stopPropagation();
+          }}
+          onPointerUp={(e) => {
+            e.stopPropagation();
+          }}
+          onMouseDownCapture={(e) => {
+            e.stopPropagation();
+          }}
+          onMouseDown={(e) => {
+            e.stopPropagation();
+          }}
+          onTouchStartCapture={(e) => {
+            e.stopPropagation();
+          }}
+          onTouchStart={(e) => {
+            e.stopPropagation();
+          }}
+          onTouchMove={(e) => {
+            e.stopPropagation();
+          }}
+          onTouchEnd={(e) => {
+            e.stopPropagation();
+          }}
+          onDragStart={(e) => {
+            e.stopPropagation();
+          }}
+          draggable={false}
+          size="sm"
+          className="absolute top-1 right-1 h-8 w-8 rounded-full p-0 bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white border-2 border-white shadow-lg hover:shadow-xl transition-all duration-200 z-50 opacity-100 md:opacity-0 md:group-hover:opacity-100 pointer-events-auto touch-none select-none active:scale-95"
+          aria-label="Add WIGG point"
+        >
+          <Link to="/add-wigg" state={{ media: mediaData }}>
+            <Plus className="h-4 w-4" />
+          </Link>
+        </Button>
+      ) : (
+        <Button
+          onClick={handleAddWigg}
+          onPointerDownCapture={(e) => {
+            // Capture phase: block carousel from starting a drag
+            e.stopPropagation();
+          }}
+          onPointerDown={(e) => {
+            // Ensure carousel drag doesn't hijack this interaction
+            e.stopPropagation();
+          }}
+          onPointerMove={(e) => {
+            // Prevent drag threshold from activating while pressing the button
+            e.stopPropagation();
+          }}
+          onPointerUp={(e) => {
+            e.stopPropagation();
+          }}
+          onMouseDownCapture={(e) => {
+            e.stopPropagation();
+          }}
+          onMouseDown={(e) => {
+            e.stopPropagation();
+          }}
+          onTouchStartCapture={(e) => {
+            e.stopPropagation();
+          }}
+          onTouchStart={(e) => {
+            e.stopPropagation();
+          }}
+          onTouchMove={(e) => {
+            e.stopPropagation();
+          }}
+          onTouchEnd={(e) => {
+            e.stopPropagation();
+          }}
+          onDragStart={(e) => {
+            e.stopPropagation();
+          }}
+          draggable={false}
+          size="sm"
+          className="absolute top-1 right-1 h-8 w-8 rounded-full p-0 bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white border-2 border-white shadow-lg hover:shadow-xl transition-all duration-200 z-50 opacity-100 md:opacity-0 md:group-hover:opacity-100 pointer-events-auto touch-none select-none active:scale-95"
+          aria-label="Add WIGG point"
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      )}
 
       {imageUrl && (
         <div className="aspect-[2/3] mb-3 overflow-hidden rounded-lg bg-muted">
-          <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+          <img src={imageUrl} alt={title} className="w-full h-full object-cover" draggable={false} />
         </div>
       )}
       <div className="space-y-2">

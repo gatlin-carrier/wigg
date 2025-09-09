@@ -74,7 +74,7 @@ export const ExperienceBuilder: Story = {
           return (
             <PacingBarcode
               titleId={titleId}
-              height={viewport === 'mobile' ? 32 : 48}
+              height={60}
               segmentCount={viewport === 'mobile' ? 20 : 30}
               segments={progress?.segments || []}
               t2gEstimatePct={wiggs?.t2gEstimatePct}

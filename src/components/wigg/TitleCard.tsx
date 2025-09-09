@@ -174,10 +174,11 @@ export function TitleCard({
                 ) : (
                   <PacingBarcode
                     titleId={titleId}
-                    height={24}
+                    height={60}
                     segmentCount={Math.min(20, Math.max(12, Math.floor(window.innerWidth / 25)))}
                     segments={progressData?.segments || []}
                     t2gEstimatePct={wiggsData?.t2gEstimatePct}
+                    dataScope="community"
                     className="rounded"
                   />
                 )}

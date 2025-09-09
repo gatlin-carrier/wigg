@@ -60,6 +60,14 @@ export default function PodcastTrending({ onAdd }: Props) {
                   imageUrl={img}
                   tags={publisher ? [publisher] : []}
                   onAdd={() => onAdd?.({ title, type: 'Podcast' })}
+                  mediaData={{
+                    source: 'podcast',
+                    id: String(r.id),
+                    title,
+                    type: 'podcast',
+                    posterUrl: img,
+                    year: undefined
+                  }}
                 />
               </div>
             );
@@ -69,4 +77,3 @@ export default function PodcastTrending({ onAdd }: Props) {
     </div>
   );
 }
-

@@ -79,6 +79,14 @@ export function TmdbAnime({ onAdd }: Props) {
                   tags={tags}
                   onAdd={() => onAdd?.({ title: displayTitle, type: isTv ? 'TV Show' : 'Movie' })}
                   onClick={() => navigate(isTv ? `/media/tmdb-tv/${r.id}` : `/media/tmdb/${r.id}`)}
+                  mediaData={{
+                    source: isTv ? 'tmdb-tv' : 'tmdb',
+                    id: String(r.id),
+                    title: displayTitle,
+                    type: isTv ? 'tv' : 'movie',
+                    posterUrl: poster,
+                    year
+                  }}
                 />
               </div>
             );

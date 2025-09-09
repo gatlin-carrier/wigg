@@ -506,29 +506,28 @@ export function RealTimeVisualization({
   };
 
   const renderBarcodeVisualization = () => {
-    // Convert SwipeValue ratings to segments for barcode
-    const segments = currentRatings.map((rating, index) => ({
-      startPct: (index / currentRatings.length) * 100,
-      endPct: ((index + 1) / currentRatings.length) * 100,
-      userScore: rating,
-      meanScore: undefined // Use user score for real-time visualization
+    // Use a fixed segment count so previously rated bars do not resize on each new rating.
+    const fixedCount = isMobile ? 20 : 30;
+    const fixedSegments = Array.from({ length: fixedCount }, (_, i) => ({
+      startPct: (i / fixedCount) * 100,
+      endPct: ((i + 1) / fixedCount) * 100,
+      userScore: currentRatings[i] as number | undefined,
+      meanScore: undefined,
     }));
 
     // Use fallback segments if no current ratings
-    const displaySegments = segments.length > 0 ? segments : (progressData?.segments || []);
+    const displaySegments = sessionStats.n > 0 ? fixedSegments : (progressData?.segments || []);
 
     return (
       <div className="w-full px-4 py-6">
         <PacingBarcode
           titleId={titleId}
-          height={isMobile ? 48 : 56}
-          segmentCount={isMobile ? 
-            Math.min(25, Math.max(15, Math.floor(window.innerWidth / 20))) : 
-            Math.min(35, Math.max(20, Math.floor(window.innerWidth / 15)))
-          }
+          height={60}
+          segmentCount={fixedCount}
           segments={displaySegments}
           t2gEstimatePct={wiggsData?.t2gEstimatePct}
           currentPct={currentPosition ? currentPosition * 100 : undefined}
+          dataScope="local"
           onScrub={onSeek ? (pct) => onSeek(pct / 100) : undefined}
           onCommitScrub={onSeek ? (pct) => onSeek(pct / 100) : undefined}
           onMarkWigg={onMarkWigg}
@@ -557,18 +556,6 @@ export function RealTimeVisualization({
     );
   };
 
-  // Use barcode on mobile for all media types, or when explicitly requested
-  const shouldUseBarcode = isMobile || effectiveVariant === "barcode";
-
-  if (shouldUseBarcode) {
-    return renderBarcodeVisualization();
-  }
-
-  switch (effectiveVariant) {
-    case "curve": return renderCurveVisualization();
-    case "bars": return renderBarsVisualization();
-    case "pulse": return renderPulseVisualization();
-    case "barcode": return renderBarcodeVisualization();
-    default: return renderCurveVisualization();
-  }
+  // Always use the barcode for real-time visualization (simplified UX)
+  return renderBarcodeVisualization();
 }

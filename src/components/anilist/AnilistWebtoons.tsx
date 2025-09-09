@@ -92,6 +92,14 @@ export default function AnilistWebtoons({ country = 'KR', onAdd }: Props) {
                   tags={co ? [...tags, co].slice(0,3) : tags}
                   onAdd={() => onAdd?.({ title: displayTitle, type: 'Book' })}
                   onClick={() => navigate(`/media/anilist-manga/${id}`)}
+                  mediaData={{
+                    source: 'anilist-manga',
+                    id: String(id),
+                    title: displayTitle,
+                    type: 'webtoon',
+                    posterUrl: poster,
+                    year
+                  }}
                 />
               </div>
             );

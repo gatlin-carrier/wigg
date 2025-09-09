@@ -12,9 +12,14 @@ import { getMovieDetails, getTvDetails, getImageUrl } from '@/integrations/tmdb/
 import { fetchAnimeDetails, fetchMangaDetails } from '@/integrations/anilist/client';
 import { fetchWorkDetails } from '@/integrations/openlibrary/client';
 import { useTmdbMovieGenres } from '@/integrations/tmdb/hooks';
+import { normalizeRatingTo10, formatRating10 } from '@/lib/ratings';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { usePageHeader } from '@/contexts/HeaderContext';
+import { PacingBarcode } from '@/components/wigg/PacingBarcode';
+import { useTitleProgress } from '@/hooks/useTitleProgress';
+import { useUserWiggs } from '@/hooks/useUserWiggs';
+import { useMediaUnits } from '@/hooks/useMediaUnits';
 
 export default function MediaDetails() {
   const { source, id } = useParams<{ source: string; id: string }>();
@@ -124,6 +129,49 @@ export default function MediaDetails() {
     };
   }, [backdropUrl, posterUrl, bgError]);
 
+  // Community pacing data keyed by a stable local id (source:id)
+  const titleKey = `${source ?? 'media'}:${id ?? ''}`;
+  const { data: progressData } = useTitleProgress(titleKey);
+  const { data: wiggsData } = useUserWiggs(titleKey);
+  const { units } = useMediaUnits(movie ? {
+    id: id || '',
+    title: (movie as any)?.title || (movie as any)?.name || 'Title',
+    type: (isTmdbTv ? 'tv' : (isAnilist ? 'anime' : (isBook ? 'book' : (isTmdbMovie ? 'movie' : 'game')))) as any,
+    year: (movie as any)?.release_date ? parseInt((movie as any).release_date.slice(0,4)) : undefined,
+    coverImage: posterUrl,
+    externalIds: { tmdb_id: (isTmdbMovie || isTmdbTv) ? Number(id) : undefined }
+  } as any : null);
+
+  // Compute segments count heuristics for details page
+  const detailSegmentCount = React.useMemo(() => {
+    // Unified policy with AddWigg: prefer units when episodic/chapter-based
+    if (units && units.length > 1) {
+      return Math.max(2, Math.min(100, units.length));
+    }
+    // Fallback to runtime-based
+    const minutes = (isTmdbMovie || isTmdbTv) ? (movie as any)?.runtime ?? 120
+      : isGame ? (((movie as any)?.completionTimeHours ?? 30) * 60)
+      : 120;
+    if (minutes <= 45) return 12;
+    if (minutes <= 120) return 20;
+    if (minutes <= 240) return 24;
+    if (minutes <= 600) return 30;
+    return 40;
+  }, [units, isTmdbTv, isTmdbMovie, isGame, movie]);
+
+  // Build per-segment labels for episodic/chapter media
+  const segmentLabels = React.useMemo(() => {
+    const segCount = detailSegmentCount;
+    if (!units || units.length <= 1) return undefined as string[] | undefined;
+    // Map each segment index to closest unit ordinal
+    return Array.from({ length: segCount }, (_, i) => {
+      const ord = Math.max(1, Math.min(units.length, Math.round(((i + 0.5) / segCount) * units.length)));
+      const u = units[ord - 1];
+      const kind = u?.subtype === 'chapter' ? 'Chapter' : 'Episode';
+      return `${kind} ${ord}`;
+    });
+  }, [units, detailSegmentCount]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -189,11 +237,15 @@ export default function MediaDetails() {
     : isBook
       ? String((movie as any)?.first_publish_date ?? '').slice(0, 4)
       : String((movie as any)?.releaseDate ?? '').slice(0, 4);
-  const rating = (isTmdbMovie || isTmdbTv)
-    ? (movie as any).vote_average
-    : isAnilist
-      ? (typeof (movie as any)?.averageScore === 'number' ? (movie as any).averageScore / 10 : undefined)
-      : (movie as any)?.rating;
+  const rating = normalizeRatingTo10(
+    (isTmdbMovie || isTmdbTv)
+      ? (movie as any).vote_average
+      : isAnilist
+        ? (movie as any)?.averageScore
+        : (movie as any)?.rating,
+    { source: (source as any) }
+  );
+  const ratingLabel = rating !== undefined ? formatRating10(rating) : undefined;
   const overview = (isTmdbMovie || isTmdbTv)
     ? (movie as any).overview
     : isBook
@@ -293,10 +345,10 @@ export default function MediaDetails() {
                 
                 {/* Rating and Year under title */}
                 <div className="flex flex-wrap items-center gap-4 mb-3">
-                  {rating && (
+                  {ratingLabel !== undefined && (
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                      <span className="font-medium">{(Number(rating) as number).toFixed(1)}/10</span>
+                      <span className="font-medium">{ratingLabel}/10</span>
                     </div>
                   )}
                   {year && (
@@ -379,6 +431,48 @@ export default function MediaDetails() {
                   </a>
                 </Button>
               )}
+            </div>
+
+            <Separator />
+
+            <div>
+              <h2 className="text-xl font-semibold mb-3">Community Pacing</h2>
+              <div className="rounded-lg border bg-card p-3">
+                <PacingBarcode
+                  titleId={titleKey}
+                  height={60}
+                  segmentCount={detailSegmentCount}
+                  segments={progressData?.segments || []}
+                  t2gEstimatePct={wiggsData?.t2gEstimatePct}
+                  dataScope="community"
+                  colorMode="heat"
+                  highlightOnHover={Boolean(units && units.length > 1)}
+                  segmentLabels={segmentLabels}
+                  onSegmentClick={(idx) => {
+                    const segCount = detailSegmentCount;
+                    const ord = !units || units.length <= 1
+                      ? 1
+                      : Math.max(1, Math.min(units.length, Math.round(((idx + 0.5) / segCount) * units.length)));
+                    const target = { 
+                      id: id || '',
+                      title,
+                      type: (isTmdbTv ? 'tv' : (isAnilist ? 'anime' : (isBook ? 'book' : (isTmdbMovie ? 'movie' : 'game')))) as any,
+                      year,
+                      posterUrl,
+                      externalIds: { tmdb_id: (isTmdbMovie || isTmdbTv) ? Number(id) : undefined }
+                    } as any;
+                    navigate('/add-wigg/retro', { state: { media: target, focusUnitOrdinal: ord } });
+                  }}
+                />
+                <div className="mt-2 text-xs text-muted-foreground flex items-center justify-between">
+                  <span>
+                    {progressData?.segments?.length ? `${progressData.segments.length} segments` : 'No pacing data yet'}
+                  </span>
+                  {wiggsData?.t2gEstimatePct && (
+                    <span>Gets good around {wiggsData.t2gEstimatePct.toFixed(0)}%</span>
+                  )}
+                </div>
+              </div>
             </div>
 
             <Separator />

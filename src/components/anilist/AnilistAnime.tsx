@@ -71,6 +71,14 @@ export default function AnilistAnime({ kind = 'trending', onAdd }: Props) {
                   tags={tags}
                   onAdd={() => onAdd?.({ title: displayTitle, type: isTv ? 'TV Show' : 'Movie' })}
                   onClick={() => navigate(`/media/anilist/${id}`)}
+                  mediaData={{
+                    source: 'anilist',
+                    id: String(id),
+                    title: displayTitle,
+                    type: 'anime',
+                    posterUrl: poster,
+                    year
+                  }}
                 />
               </div>
             );
@@ -80,4 +88,3 @@ export default function AnilistAnime({ kind = 'trending', onAdd }: Props) {
     </div>
   );
 }
-

@@ -112,6 +112,14 @@ export const GameRecommendations = ({ onAddGame }: GameRecommendationsProps) => 
                 tags={game.genres ? String(game.genres).split(', ').slice(0, 2) : []}
                 onAdd={() => onAddGame({ title: game.name, type: 'Game' })}
                 onClick={() => navigate(`/media/game/${game.id}`)}
+                mediaData={{
+                  source: 'game',
+                  id: String(game.id),
+                  title: game.name,
+                  type: 'game',
+                  posterUrl: game.cover,
+                  year: game.releaseDate
+                }}
               />
             </div>
           ))}

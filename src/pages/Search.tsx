@@ -182,7 +182,9 @@ export default function SearchPage() {
             const year = (r.first_air_date || '').slice(0, 4);
             const rating = typeof r.vote_average === 'number' ? `${r.vote_average.toFixed(1)}/10` : undefined;
             return (
-              <MediaTile key={`tv-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} onClick={() => navigate(`/media/tmdb-tv/${r.id}`)} />
+              <MediaTile key={`tv-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} onClick={() => navigate(`/media/tmdb-tv/${r.id}`)}
+                mediaData={{ source: 'tmdb-tv', id: String(r.id), title, type: 'tv', posterUrl: poster, year }}
+              />
             );
           })}
         </CollapsibleSection>
@@ -197,7 +199,16 @@ export default function SearchPage() {
             const year = (r.release_date || r.first_air_date || '').slice(0, 4);
             const rating = typeof r.vote_average === 'number' ? `${r.vote_average.toFixed(1)}/10` : undefined;
             return (
-              <MediaTile key={`anime-${r.media_type}-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} onClick={() => navigate(`/media/tmdb${r.media_type === 'tv' ? '-tv' : ''}/${r.id}`)} />
+              <MediaTile key={`anime-${r.media_type}-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} onClick={() => navigate(`/media/tmdb${r.media_type === 'tv' ? '-tv' : ''}/${r.id}`)}
+                mediaData={{
+                  source: r.media_type === 'tv' ? 'tmdb-tv' : 'tmdb',
+                  id: String(r.id),
+                  title,
+                  type: r.media_type === 'tv' ? 'tv' : 'movie',
+                  posterUrl: poster,
+                  year
+                }}
+              />
             );
           })}
         </CollapsibleSection>
@@ -212,7 +223,9 @@ export default function SearchPage() {
             const year = (r.release_date || '').slice(0, 4);
             const rating = typeof r.vote_average === 'number' ? `${r.vote_average.toFixed(1)}/10` : undefined;
             return (
-              <MediaTile key={`movie-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} onClick={() => navigate(`/media/tmdb/${r.id}`)} />
+              <MediaTile key={`movie-${r.id}`} title={title} imageUrl={poster} year={year} ratingLabel={rating} onClick={() => navigate(`/media/tmdb/${r.id}`)}
+                mediaData={{ source: 'tmdb', id: String(r.id), title, type: 'movie', posterUrl: poster, year }}
+              />
             );
           })}
         </CollapsibleSection>
@@ -229,6 +242,7 @@ export default function SearchPage() {
               year={b.year} 
               tags={b.genre ? [b.genre] : []}
               onClick={() => navigate(`/media/openlibrary/${encodeURIComponent(b.id)}`)}
+              mediaData={{ source: 'openlibrary', id: String(b.id), title: b.title, type: 'book', posterUrl: b.cover_url, year: b.year }}
             />
           ))}
         </CollapsibleSection>
@@ -245,6 +259,7 @@ export default function SearchPage() {
               year={g.releaseDate}
               ratingLabel={typeof g.rating === 'number' ? `${g.rating}/100` : undefined}
               onClick={() => navigate(`/media/game/${g.id}`)}
+              mediaData={{ source: 'game', id: String(g.id), title: g.name, type: 'game', posterUrl: g.cover, year: g.releaseDate }}
             />
           ))}
         </CollapsibleSection>
@@ -268,6 +283,7 @@ export default function SearchPage() {
                 ratingLabel={rating}
                 tags={tags}
                 onClick={() => navigate(`/media/anilist-manga/${m.id}`)}
+                mediaData={{ source: 'anilist-manga', id: String(m.id), title, type: 'manga', posterUrl: cover, year }}
               />
             );
           })}

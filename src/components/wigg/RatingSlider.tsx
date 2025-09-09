@@ -2,8 +2,8 @@ import React from 'react';
 import { type SwipeValue } from '@/components/wigg/SwipeRating';
 
 export interface RatingSliderProps {
-  value?: SwipeValue;
-  onChange?: (value: SwipeValue) => void;
+  value?: number;
+  onChange?: (value: number) => void;
   height?: number; // px (for vertical)
   className?: string;
   discrete?: boolean; // snap to 4 stops (kept for API symmetry)
@@ -39,7 +39,7 @@ export function RatingSlider({
   const peakStop = { v: 3 as SwipeValue, label: 'peak', emoji: '🤩' };
   const stops = (scale === 5 ? [...stops5, peakStop] : stops4) as Array<{ v: SwipeValue; label: string; emoji: string }>;
 
-  const handleClick = (v: SwipeValue) => onChange?.(v);
+  const handleClick = (v: number) => onChange?.(v);
 
   if (orientation === 'horizontal') {
     return (

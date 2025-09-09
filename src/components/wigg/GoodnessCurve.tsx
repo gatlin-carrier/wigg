@@ -55,15 +55,15 @@ export function GoodnessCurve({
               <YAxis domain={[0, 3]} tick={{ fontSize: 12 }} />
               <Tooltip />
               <Line
-                type="monotone"
+                type="natural"
                 dataKey="score"
-                strokeWidth={3}
-                dot={{ r: 2 }}
+                strokeWidth={1.5}
+                dot={false}
               />
               <Line
                 type="monotone"
                 dataKey={() => threshold}
-                strokeWidth={2}
+                strokeWidth={1.5}
                 strokeDasharray="6 4"
               />
             </LineChart>

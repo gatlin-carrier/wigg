@@ -73,6 +73,14 @@ export default function AnilistManga({ onAdd }: Props) {
                   tags={tags}
                   onAdd={() => onAdd?.({ title: displayTitle, type: 'Book' })}
                   onClick={() => navigate(`/media/anilist-manga/${id}`)}
+                  mediaData={{
+                    source: 'anilist-manga',
+                    id: String(id),
+                    title: displayTitle,
+                    type: 'manga',
+                    posterUrl: poster,
+                    year
+                  }}
                 />
               </div>
             );

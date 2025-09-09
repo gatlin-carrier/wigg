@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { type SwipeValue } from '@/components/wigg/SwipeRating';
-import { Moon, ThumbsUp, Sparkles, Crown } from 'lucide-react';
 
 export type RatingButtonsSize = 'compact' | 'regular' | 'large';
 
@@ -11,49 +10,80 @@ export interface RatingButtonsProps {
   size?: RatingButtonsSize;
   showHints?: boolean;
   className?: string;
+  flyToSelector?: string; // CSS selector of target (e.g., '#barcode-target')
 }
 
-const LABELS: Record<SwipeValue, { label: string; icon: React.ReactNode; hint: string }> = {
-  0: { label: 'zzz',   icon: <Moon className="h-4 w-4" />,      hint: 'A / ←' },
-  1: { label: 'good',  icon: <ThumbsUp className="h-4 w-4" />,  hint: 'S / ↑' },
-  2: { label: 'better',icon: <Sparkles className="h-4 w-4" />,  hint: 'D / →' },
-  3: { label: 'peak',  icon: <Crown className="h-4 w-4" />,     hint: 'F / ↓' },
+// Face emojis for 4-level scale: 0..3
+const FACES: Record<SwipeValue, string> = {
+  0: '😴', // zzz
+  1: '🙂', // good
+  2: '😃', // better
+  3: '🤩', // peak
 };
 
-export function RatingButtons({ value = null, onChange, size = 'regular', showHints = true, className = '' }: RatingButtonsProps) {
+export function RatingButtons({ value = null, onChange, size = 'regular', showHints = false, className = '', flyToSelector = '#barcode-target' }: RatingButtonsProps) {
   const sizes: Record<RatingButtonsSize, string> = {
-    compact: 'h-10 text-[10px] gap-0.5',
-    regular: 'h-14 text-xs gap-1',
-    large: 'h-16 text-sm gap-1.5',
+    compact: 'h-11 w-11 text-base',
+    regular: 'h-12 w-12 text-lg',
+    large: 'h-14 w-14 text-xl',
   };
 
+  const flyTo = useCallback((emoji: string, source: HTMLElement) => {
+    const target = document.querySelector(flyToSelector) as HTMLElement | null;
+    if (!target) return;
+    const sRect = source.getBoundingClientRect();
+    const tRect = target.getBoundingClientRect();
+    const ghost = document.createElement('div');
+    ghost.textContent = emoji;
+    Object.assign(ghost.style, {
+      position: 'fixed',
+      left: `${sRect.left + sRect.width / 2 - 14}px`,
+      top: `${sRect.top + sRect.height / 2 - 14}px`,
+      width: '28px', height: '28px',
+      borderRadius: '9999px',
+      background: 'var(--background)',
+      border: '1px solid hsl(var(--border))',
+      display: 'grid', placeItems: 'center',
+      zIndex: '9999',
+      transition: 'transform 450ms cubic-bezier(.2,.8,.2,1), opacity 450ms',
+    } as CSSStyleDeclaration);
+    document.body.appendChild(ghost);
+    const dx = (tRect.left + tRect.width / 2) - (sRect.left + sRect.width / 2);
+    const dy = (tRect.top + 8) - (sRect.top + sRect.height / 2);
+    requestAnimationFrame(() => {
+      ghost.style.transform = `translate(${dx}px, ${dy}px) scale(.7)`;
+      ghost.style.opacity = '0.3';
+    });
+    setTimeout(() => {
+      ghost.remove();
+    }, 500);
+  }, [flyToSelector]);
+
   return (
-    <div role="radiogroup" aria-label="Rate moment" className={`grid grid-cols-4 gap-2 ${className}`}>
-      {(Object.keys(LABELS) as Array<keyof typeof LABELS>).map((key) => {
+    <div role="radiogroup" aria-label="Rate moment" className={`flex items-center gap-3 ${className}`}>
+      {(Object.keys(FACES) as Array<keyof typeof FACES>).map((key) => {
         const k = key as SwipeValue;
         const active = value === k;
         return (
-          <Button
+          <button
             key={k}
             type="button"
-            variant={active ? 'default' : 'outline'}
-            className={`flex flex-col items-center justify-center ${sizes[size]} rounded-lg min-w-[44px]`}
-            onClick={() => onChange?.(k)}
+            className={`inline-flex items-center justify-center ${sizes[size]} rounded-full border transition-transform duration-150 ${active ? 'bg-primary text-primary-foreground border-primary' : 'bg-secondary text-secondary-foreground border-border'} hover:scale-105 hover:rotate-1`}
+            onClick={(e) => {
+              flyTo(FACES[k], e.currentTarget as HTMLElement);
+              onChange?.(k);
+            }}
             role="radio"
             aria-checked={active}
-            aria-label={`${LABELS[k].label}${showHints ? ` (${LABELS[k].hint})` : ''}`}
+            aria-label={`Rate ${k}`}
+            style={{ minWidth: 44, minHeight: 44 }}
           >
-            <span className={`inline-flex items-center justify-center ${size === 'compact' ? 'mb-0.5' : 'mb-1'} ${active ? '' : 'opacity-90'}`}>
-              {LABELS[k].icon}
+            <span className="pointer-events-none select-none animate-[wiggle_900ms_ease-in-out_infinite] [@keyframes_wiggle]{0%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}100%{transform:rotate(-2deg)}}">
+              {FACES[k]}
             </span>
-            <span className={active ? 'font-medium' : 'text-muted-foreground'}>{LABELS[k].label}</span>
-            {showHints && (
-              <span className="text-[10px] text-muted-foreground/80 mt-0.5">{LABELS[k].hint}</span>
-            )}
-          </Button>
+          </button>
         );
       })}
     </div>
   );
 }
-

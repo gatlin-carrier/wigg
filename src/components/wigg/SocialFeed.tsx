@@ -126,10 +126,11 @@ function FeedCard({ item, dense }: { item: SocialFeedItem; dense?: boolean }) {
                   >
                     <PacingBarcode
                       titleId={item.title.id}
-                      height={28}
+                      height={60}
                       segmentCount={20}
                       segments={item.segments}
                       t2gEstimatePct={item.t2gEstimatePct}
+                      dataScope="local"
                       suppressGlobalListeners
                       suppressHaptics
                     />
@@ -162,10 +163,11 @@ function FeedCard({ item, dense }: { item: SocialFeedItem; dense?: boolean }) {
                     >
                       <PacingBarcode
                         titleId={item.title.id}
-                        height={24}
+                        height={60}
                         segmentCount={20}
                         segments={item.segments}
                         t2gEstimatePct={item.t2gEstimatePct}
+                        dataScope="community"
                         suppressGlobalListeners
                         suppressHaptics
                       />

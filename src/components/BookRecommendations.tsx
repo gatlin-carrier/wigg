@@ -104,6 +104,14 @@ export const BookRecommendations = ({ onAddBook }: BookRecommendationsProps) => 
                 tags={book.genre ? [book.genre] : []}
                 onAdd={() => onAddBook({ title: book.title, type: 'Book' })}
                 onClick={() => navigate(`/media/openlibrary/${encodeURIComponent(book.id)}`)}
+                mediaData={{
+                  source: 'openlibrary',
+                  id: String(book.id),
+                  title: book.title,
+                  type: 'book',
+                  posterUrl: book.cover_url,
+                  year: book.year
+                }}
               />
             </div>
           ))}

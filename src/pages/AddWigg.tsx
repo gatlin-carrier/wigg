@@ -22,9 +22,16 @@ import { useWiggSession } from "@/hooks/useWiggSession";
 import { useWiggPersistence } from "@/hooks/useWiggPersistence";
 import { useMediaUnits } from "@/hooks/useMediaUnits";
 import { RatingButtons } from "@/components/wigg/RatingButtons";
+import { WiggRatingGrid } from "@/components/wigg/WiggRatingGrid";
 import { RatingDial } from "@/components/wigg/RatingDial";
 import { RatingSlider } from "@/components/wigg/RatingSlider";
 import { AffectGrid } from "@/components/wigg/AffectGrid";
+import { PacingBarcode } from "@/components/wigg/PacingBarcode";
+import { NoteComposer } from "@/components/wigg/NoteComposer";
+import { ContextChips } from "@/components/wigg/ContextChips";
+import { useTitleProgress } from "@/hooks/useTitleProgress";
+import { useUserWiggs } from "@/hooks/useUserWiggs";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useUserPreferences } from "@/hooks/useUserPreferences";
 
 
@@ -73,10 +80,66 @@ function AddWiggContent() {
   const { saveMoment, saveMediaToDatabase } = useWiggPersistence();
   const { units: apiUnits, isLoading: unitsLoading, error: unitsError } = useMediaUnits(selectedMedia);
   const { preferences } = useUserPreferences();
-  
-  // Game-specific hooks
+  const isMobile = useIsMobile();
+  const { data: progressData } = useTitleProgress(selectedMedia?.id || 'mobile');
+  const { data: wiggsData } = useUserWiggs(selectedMedia?.id || 'mobile');
+  // Game-specific hooks (declared early for dependent memos)
   const { data: userGameData } = useUserGameData(selectedMedia?.id || '');
   const setGameCompletionTime = useSetGameCompletionTime();
+
+  // Compute preferred segment count:
+  // - For episodic/chapter media, use number of units
+  // - Otherwise, choose a logical number based on runtime/playtime
+  const computedSegmentCount = React.useMemo(() => {
+    // Units available? Use count when they look episodic/chapter-ish
+    if (units && units.length > 1) {
+      const isEpisodic = units[0]?.subtype === 'episode' || units[0]?.subtype === 'chapter';
+      if (isEpisodic) return Math.max(2, Math.min(100, units.length));
+    }
+
+    // Fallback to runtime-based heuristics
+    const minutes = mediaType === 'game'
+      ? (userGameData?.completionTimeHours ? userGameData.completionTimeHours * 60 : (selectedMedia?.duration ?? 1800))
+      : (selectedMedia?.duration ?? 120);
+
+    if (minutes <= 45) return 12;      // shorts/episodes
+    if (minutes <= 120) return 20;     // typical movie/anime cour
+    if (minutes <= 240) return 24;     // long movies/miniseries
+    if (minutes <= 600) return 30;     // games < 10h or very long films
+    return 40;                         // very long games/shows
+  }, [units, mediaType, userGameData?.completionTimeHours, selectedMedia?.duration]);
+
+  // Build labels per segment when episodic/chapter-based
+  const segmentLabels = React.useMemo(() => {
+    if (!units || units.length <= 1) return undefined as string[] | undefined;
+    const segCount = computedSegmentCount;
+    return Array.from({ length: segCount }, (_, i) => {
+      const ord = Math.max(1, Math.min(units.length, Math.round(((i + 0.5) / segCount) * units.length)));
+      const u = units[ord - 1];
+      const kind = u?.subtype === 'chapter' ? 'Chapter' : 'Episode';
+      return `${kind} ${ord}`;
+    });
+  }, [units, computedSegmentCount]);
+
+  // Current playhead percent based on current unit progress (if available)
+  const currentPlayheadPct = React.useMemo(() => {
+    if (!units || units.length === 0) return undefined as number | undefined;
+    const segCount = computedSegmentCount;
+    const ord = Math.max(1, Math.min(units.length, progress || 1));
+    // Position across full timeline as percent (center of current unit)
+    return ((ord - 0.5) / units.length) * 100;
+  }, [units, computedSegmentCount, progress]);
+
+  // Selected segment index to highlight the current episode/chapter
+  const selectedSegmentIndex = React.useMemo(() => {
+    if (!units || units.length <= 1) return undefined as number | undefined;
+    const segCount = computedSegmentCount;
+    const ord = Math.max(1, Math.min(units.length, progress || 1));
+    const pos = (ord - 0.5) / units.length; // 0..1 center of current unit
+    const idx = Math.round(pos * segCount - 0.5);
+    return Math.max(0, Math.min(segCount - 1, idx));
+  }, [units, computedSegmentCount, progress]);
+  
 
   useEffect(() => {
     // Check if media was passed from MediaDetails page
@@ -101,6 +164,15 @@ function AddWiggContent() {
       setMediaType(selectedMedia.type);
     }
   }, [selectedMedia, apiUnits, setUnits]);
+
+  // Focus a specific unit (episode/chapter) if provided by navigation state
+  useEffect(() => {
+    const state: any = (location as any).state;
+    const focusOrdinal = state && (state as any).focusUnitOrdinal as number | undefined;
+    if (focusOrdinal && units.length > 0) {
+      setProgress(focusOrdinal);
+    }
+  }, [location, units, setProgress]);
 
   const handleMediaSelect = async (media: MediaSearchResult) => {
     try {
@@ -345,6 +417,35 @@ function AddWiggContent() {
         <TabsContent value="retro" className="space-y-6">
           {!isComplete ? (
             <div className="space-y-6">
+              {/* Global barcode overview (all media types) */}
+              <div className="space-y-2">
+                <div id="barcode-target">
+                  <PacingBarcode
+                    titleId={selectedMedia?.id || 'addwigg'}
+                    height={60}
+                    segmentCount={computedSegmentCount}
+                    segments={progressData?.segments || []}
+                    t2gEstimatePct={wiggsData?.t2gEstimatePct}
+                    dataScope="community"
+                    colorMode="heat"
+                    className="max-w-[600px] mx-auto"
+                    currentPct={currentPlayheadPct}
+                    playheadVisibility={(units && units.length > 1 && (units[0]?.subtype === 'episode' || units[0]?.subtype === 'chapter')) ? 'never' : 'hover'}
+                    selectedSegmentIndex={selectedSegmentIndex}
+                    highlightOnHover={Boolean(units && units.length > 1)}
+                    segmentLabels={segmentLabels}
+                    onSegmentClick={(idx: number) => {
+                      if (!units || units.length <= 1) return;
+                      const segCount = computedSegmentCount;
+                      const ord = Math.max(1, Math.min(units.length, Math.round(((idx + 0.5) / segCount) * units.length)));
+                      setProgress(ord);
+                    }}
+                  />
+                </div>
+                <div className="text-xs text-muted-foreground text-center">
+                  {wiggsData?.t2gEstimatePct ? `T2G ~${wiggsData.t2gEstimatePct.toFixed(0)}%` : 'Progress overview'}
+                </div>
+              </div>
               {mediaType === "game" ? (
                 !userGameData || showGameTimeInput ? (
                     <GameCompletionTime
@@ -375,16 +476,6 @@ function AddWiggContent() {
                   />
                 ) : (
                   <div className="space-y-4">
-                    {/* Compact Progress Indicator */}
-                    <div className="text-center py-4 border rounded-lg">
-                      <div className="text-sm font-semibold mb-1">
-                        {currentUnit ? `${currentUnit.subtype.toUpperCase()} ${currentUnit.ordinal}` : "Starting..."}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {currentUnit?.title || "Ready to begin"}
-                      </div>
-                    </div>
-                    
                     {/* Rating UI (preference-driven) */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-center">
@@ -394,7 +485,7 @@ function AddWiggContent() {
                         />
                       </div>
                       {(() => {
-                        const ui = preferences?.rating_ui || 'buttons';
+                        const ui = isMobile ? 'slider' : (preferences?.rating_ui || 'buttons');
                         if (ui === 'dial') {
                           return (
                             <div className="flex items-center justify-center">
@@ -408,10 +499,7 @@ function AddWiggContent() {
                         if (ui === 'slider') {
                           return (
                             <div className="flex items-center justify-center">
-                              <RatingSlider
-                                value={2}
-                                onChange={(v) => handleSwipeRating(v)}
-                              />
+                              <WiggRatingGrid onChange={(v: any) => handleSwipeRating(v)} />
                             </div>
                           );
                         }
@@ -430,13 +518,33 @@ function AddWiggContent() {
                         }
                         // default buttons
                         return (
-                          <RatingButtons
-                            size="regular"
-                            onChange={(v) => handleSwipeRating(v)}
-                          />
+                          <WiggRatingGrid onChange={(v: any) => handleSwipeRating(v)} />
                         );
                       })()}
                     </div>
+                    {/* Mobile notes/context directly inline */}
+                    {isMobile && (
+                      <div className="space-y-3">
+                        <div>
+                          <div className="text-sm font-medium mb-2">Notes</div>
+                          <NoteComposer />
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium mb-2">Add context</div>
+                          <ContextChips
+                            options={[
+                              { id: 'world', label: 'World opens', emoji: '🗺️' },
+                              { id: 'twist', label: 'Plot twist', emoji: '🤯' },
+                              { id: 'music', label: 'Music hits', emoji: '🎵' },
+                              { id: 'fight', label: 'Fight', emoji: '⚔️' },
+                              { id: 'art', label: 'Art spike', emoji: '🎨' },
+                            ]}
+                            selected={[]}
+                            onChange={() => {}}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
             </div>
@@ -459,6 +567,7 @@ function AddWiggContent() {
           )}
 
           {/* Combined Context Section */}
+          {!isMobile && (
           <Card className="rounded-2xl shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-base">Add Context (Optional)</CardTitle>
@@ -478,6 +587,7 @@ function AddWiggContent() {
               />
             </CardContent>
           </Card>
+          )}
         </TabsContent>
       </Tabs>
     </div>

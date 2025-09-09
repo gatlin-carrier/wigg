@@ -48,7 +48,7 @@ const slowStartSegments = Array.from({ length: 20 }, (_, i) => {
 export const EditModeBasic: Story = {
   args: {
     titleId: 'edit-basic',
-    height: 56,
+    height: 60,
     segmentCount: 25,
     segments: mockSegments,
     t2gEstimatePct: 42,
@@ -160,7 +160,7 @@ export const EditModeToggleable: Story = {
 
         <PacingBarcode
           titleId="edit-toggleable"
-          height={56}
+          height={60}
           segmentCount={25}
           segments={mockSegments}
           t2gEstimatePct={42}
@@ -249,7 +249,7 @@ export const EditModePaintingDemo: Story = {
 
         <PacingBarcode
           titleId="paint-demo"
-          height={64} // Taller for painting
+          height={60} // Standardized height
           segmentCount={20}
           segments={mockSegments}
           t2gEstimatePct={45}
@@ -284,7 +284,7 @@ export const EditModePaintingDemo: Story = {
 export const EditModeAccessibility: Story = {
   args: {
     titleId: 'edit-a11y',
-    height: 56,
+    height: 60,
     segmentCount: 20,
     segments: mockSegments,
     t2gEstimatePct: 35,
@@ -360,7 +360,7 @@ export const EditModeComparison: Story = {
             </div>
             <PacingBarcode
               titleId="comparison-standard"
-              height={48}
+              height={60}
               segmentCount={20}
               segments={slowStartSegments}
               t2gEstimatePct={58}
@@ -381,7 +381,7 @@ export const EditModeComparison: Story = {
             </div>
             <PacingBarcode
               titleId="comparison-edit"
-              height={48}
+              height={60}
               segmentCount={20}
               segments={slowStartSegments}
               t2gEstimatePct={58}

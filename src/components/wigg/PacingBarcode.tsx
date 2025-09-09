@@ -79,11 +79,28 @@ export interface PacingBarcodeProps {
   // Storybook/runtime safety toggles
   suppressGlobalListeners?: boolean; // avoid attaching window-level listeners in Storybook
   suppressHaptics?: boolean;         // disable navigator.vibrate calls
+  // Coloring mode
+  colorMode?: 'brand' | 'heat';
+  // Heat palette style
+  heatStyle?: 'muted' | 'vivid';
+  // Hover/click by segment (non-edit usage)
+  segmentLabels?: string[];
+  highlightOnHover?: boolean;
+  onSegmentClick?: (segmentIndex: number) => void;
+  // Data source selection
+  // - 'community': render using aggregated/mean scores only
+  // - 'local': render using user/personal scores only
+  // - 'auto': prefer user score when present, fall back to mean
+  dataScope?: 'community' | 'local' | 'auto';
+  // Playhead visibility control
+  playheadVisibility?: 'always' | 'hover' | 'never';
+  // Optional externally-selected segment to highlight (e.g., current episode/chapter)
+  selectedSegmentIndex?: number;
 }
 
 export const PacingBarcode = memo(function PacingBarcode({
   titleId,
-  height = 32,
+  height = 60,
   segmentCount = 20,
   segments,
   t2gEstimatePct,
@@ -104,7 +121,15 @@ export const PacingBarcode = memo(function PacingBarcode({
   showFisheye = true,
   editIdleTimeoutMs = 10000,
   suppressGlobalListeners = false,
-  suppressHaptics = false
+  suppressHaptics = false,
+  colorMode = 'brand',
+  heatStyle = 'muted',
+  segmentLabels,
+  highlightOnHover = false,
+  onSegmentClick,
+  dataScope = 'auto',
+  playheadVisibility = 'always',
+  selectedSegmentIndex,
 }: PacingBarcodeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null); // For puck and fisheye
@@ -137,11 +162,28 @@ export const PacingBarcode = memo(function PacingBarcode({
   const [showCoachmark, setShowCoachmark] = useState(false);
   const [isPaintMode, setIsPaintMode] = useState(false);
   const [paintStartY, setPaintStartY] = useState<number | null>(null);
+  // Hover state
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const [hoverX, setHoverX] = useState<number | null>(null);
+
+  
 
   // Clamp segment count (memoized)
   const clampedSegmentCount = useMemo(() => 
     Math.max(12, Math.min(40, segmentCount))
   , [segmentCount]);
+
+  // Helper: compute segment index from a clientX on the main canvas
+  const getSegmentIndexFromClientX = useCallback((clientX: number): number | null => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const width = rect.width || 1;
+    const segW = width / clampedSegmentCount;
+    const idx = Math.floor(Math.max(0, Math.min(width - 1, x)) / segW);
+    return Math.max(0, Math.min(clampedSegmentCount - 1, idx));
+  }, [clampedSegmentCount]);
   
   // Debounced paint buffer for smooth painting
   const [paintBuffer, setPaintBuffer] = useState<number[]>([]);
@@ -152,6 +194,15 @@ export const PacingBarcode = memo(function PacingBarcode({
     if (score === undefined) return 0.2; // Default neutral opacity
     return Math.max(0.1, Math.min(1, score / 4)); // Assuming 4 is max score
   }, []);
+
+  const heatColorFor = useCallback((norm: number) => {
+    // Monochrome gradient: 0 => light gray, 1 => near-black
+    const n = Math.max(0, Math.min(1, norm));
+    const light = heatStyle === 'vivid'
+      ? Math.round(92 - 52 * n)   // 92% -> 40%
+      : Math.round(92 - 44 * n);  // 92% -> 48%
+    return `hsl(0 0% ${light}%)`;
+  }, [heatStyle]);
 
   // Snap to nearest segment center
   const snapToSegment = useCallback((pct: number): number => {
@@ -359,30 +410,59 @@ export const PacingBarcode = memo(function PacingBarcode({
     // Clear canvas
     ctx.clearRect(0, 0, displayWidth, displayHeight);
 
-    // Draw segments
+    // Draw segments with optional selected enlargement
     const segmentWidth = displayWidth / clampedSegmentCount;
-    
+    const gap = 1; // pixel gap between segments
+    const anySelected = typeof selectedSegmentIndex === 'number';
+    // Inset non-selected bars more when a selection exists to make the selected bar feel taller
+    const inset = anySelected
+      ? Math.max(2, Math.round(displayHeight * 0.14))
+      : Math.max(1, Math.round(displayHeight * 0.06));
+
+    const getSegmentRect = (idx: number): { x: number; y: number; w: number; h: number } => {
+      const isSelected = typeof selectedSegmentIndex === 'number' && idx === selectedSegmentIndex;
+      const baseX = idx * segmentWidth;
+      const baseW = Math.max(0, segmentWidth - gap);
+      if (isSelected) {
+        // Expand selected bar width more noticeably
+        const expandW = Math.min(12, Math.max(2, segmentWidth * 0.35));
+        const x = Math.max(0, baseX - expandW / 2);
+        const w = Math.min(displayWidth - x, baseW + expandW);
+        const y = 0;
+        const h = displayHeight;
+        return { x, y, w, h };
+      }
+      const y = anySelected ? inset : 0;
+      const h = anySelected ? Math.max(0, displayHeight - inset * 2) : displayHeight;
+      return { x: baseX, y, w: baseW, h };
+    };
+
     segments.forEach((segment, index) => {
       if (index >= clampedSegmentCount) return;
+      const rect = getSegmentRect(index);
 
-      const x = index * segmentWidth;
-      const score = segment.userScore !== undefined ? segment.userScore : segment.meanScore;
-      const opacity = normalizeScore(score);
+      // Determine score based on selected data scope
+      const score = (
+        dataScope === 'community' ? segment.meanScore
+        : dataScope === 'local' ? segment.userScore
+        : (segment.userScore !== undefined ? segment.userScore : segment.meanScore)
+      );
+      const norm = normalizeScore(score);
 
       // Use CSS custom property colors
       const style = getComputedStyle(document.documentElement);
       const primaryColor = style.getPropertyValue('--primary').trim();
       
-      ctx.fillStyle = `hsl(${primaryColor} / ${opacity})`;
-      ctx.fillRect(x, 0, segmentWidth - 1, displayHeight);
+      ctx.fillStyle = colorMode === 'heat' ? heatColorFor(norm) : `hsl(${primaryColor} / ${norm})`;
+      ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
     });
 
     // Draw empty segments if not enough data
     if (segments.length < clampedSegmentCount) {
       for (let i = segments.length; i < clampedSegmentCount; i++) {
-        const x = i * segmentWidth;
-        ctx.fillStyle = `hsl(var(--muted) / 0.3)`;
-        ctx.fillRect(x, 0, segmentWidth - 1, displayHeight);
+        const rect = getSegmentRect(i);
+        ctx.fillStyle = colorMode === 'heat' ? 'hsl(0 0% 85%)' : `hsl(var(--muted) / 0.3)`;
+        ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
       }
     }
 
@@ -391,7 +471,9 @@ export const PacingBarcode = memo(function PacingBarcode({
       const t2gX = (t2gEstimatePct / 100) * displayWidth;
       
       // Star shape for T2G marker
-      ctx.fillStyle = 'hsl(var(--primary))';
+      // Use WIGG brand purple explicitly for strong contrast/consistency
+      const wiggPurple = 'hsl(266 85% 58%)';
+      ctx.fillStyle = wiggPurple;
       ctx.strokeStyle = 'white';
       ctx.lineWidth = 1;
       
@@ -408,12 +490,64 @@ export const PacingBarcode = memo(function PacingBarcode({
       ctx.stroke();
     }
 
-    // Draw current position highlight
+    // Draw current position highlight (playhead)
     if (currentPct !== undefined && currentPct >= 0 && currentPct <= 100) {
-      const currentX = (currentPct / 100) * displayWidth;
-      ctx.fillStyle = 'hsl(var(--primary) / 0.4)';
-      ctx.fillRect(currentX - 2, 0, 4, displayHeight);
+      const shouldShowPlayhead = playheadVisibility === 'always' || (playheadVisibility === 'hover' && hoverIndex !== null);
+      if (shouldShowPlayhead) {
+        const currentX = (currentPct / 100) * displayWidth;
+        ctx.fillStyle = 'hsl(var(--primary) / 0.4)';
+        ctx.fillRect(currentX - 2, 0, 4, displayHeight);
+      }
     }
+
+    // Hover highlight (non-edit): purple fill + thin outline (matches size if selected)
+    if (highlightOnHover && hoverIndex !== null && !(typeof selectedSegmentIndex === 'number' && hoverIndex === selectedSegmentIndex)) {
+      const rect = getSegmentRect(hoverIndex);
+      // If a selected segment exists and intersects this hover rect, skip hover highlight to avoid showing through the enlarged segment
+      if (typeof selectedSegmentIndex === 'number') {
+        const sel = getSegmentRect(selectedSegmentIndex);
+        const intersects = !(rect.x + rect.w <= sel.x || sel.x + sel.w <= rect.x || rect.y + rect.h <= sel.y || sel.y + sel.h <= rect.y);
+        if (intersects) {
+          // Do not draw hover highlight over the selected segment area
+          // This prevents the fill/outline from appearing through the enlarged selection
+          // You can revisit to draw non-overlapping portions if desired
+          
+        } else {
+          const hoverFill = 'hsl(266 85% 58% / 0.18)';
+          ctx.fillStyle = hoverFill;
+          ctx.fillRect(rect.x + 1, rect.y + 1, Math.max(0, rect.w - 2), Math.max(0, rect.h - 2));
+          const wiggPurple = 'hsl(266 85% 58%)';
+          ctx.strokeStyle = wiggPurple;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(rect.x + 0.5, rect.y + 0.5, Math.max(0, rect.w - 1), Math.max(0, rect.h - 1));
+        }
+        
+      } else {
+        const hoverFill = 'hsl(266 85% 58% / 0.18)';
+        ctx.fillStyle = hoverFill;
+        ctx.fillRect(rect.x + 1, rect.y + 1, Math.max(0, rect.w - 2), Math.max(0, rect.h - 2));
+        const wiggPurple = 'hsl(266 85% 58%)';
+        ctx.strokeStyle = wiggPurple;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(rect.x + 0.5, rect.y + 0.5, Math.max(0, rect.w - 1), Math.max(0, rect.h - 1));
+      }
+    }
+
+    // Draw externally-selected segment highlight (e.g., current episode/chapter)
+    if (
+      typeof selectedSegmentIndex === 'number' &&
+      selectedSegmentIndex >= 0 &&
+      selectedSegmentIndex < clampedSegmentCount
+    ) {
+      const rectSel = getSegmentRect(selectedSegmentIndex);
+      // Use WIGG brand purple for selected segment outline only (no fill)
+      const wiggPurple = 'hsl(266 85% 58%)';
+      ctx.strokeStyle = wiggPurple;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(rectSel.x + 0.5, rectSel.y + 0.5, Math.max(0, rectSel.w - 1), Math.max(0, rectSel.h - 1));
+    }
+
+    
 
     // Draw scrub preview
     if (currentScrubPct !== null && interactive) {
@@ -427,7 +561,7 @@ export const PacingBarcode = memo(function PacingBarcode({
       ctx.stroke();
       ctx.setLineDash([]);
     }
-  }, 'Main Canvas Rendering'), [canvasWidth, height, segments, clampedSegmentCount, t2gEstimatePct, currentPct, currentScrubPct, interactive, normalizeScore, debouncedPaintBuffer]);
+  }, 'Main Canvas Rendering'), [canvasWidth, height, segments, clampedSegmentCount, t2gEstimatePct, currentPct, currentScrubPct, interactive, normalizeScore, debouncedPaintBuffer, hoverIndex, highlightOnHover, dataScope, playheadVisibility, selectedSegmentIndex]);
 
   // Use the render function in useEffect
   useEffect(() => {
@@ -547,10 +681,10 @@ export const PacingBarcode = memo(function PacingBarcode({
         if (segmentIndex >= 0 && segmentIndex < segments.length) {
           const segment = segments[segmentIndex];
           const score = segment.userScore !== undefined ? segment.userScore : segment.meanScore;
-          const opacity = normalizeScore(score);
+          const norm = normalizeScore(score);
           
           const segmentX = puckX + (i * zoomedSegmentWidth);
-          ctx.fillStyle = `hsl(var(--primary) / ${opacity})`;
+          ctx.fillStyle = colorMode === 'heat' ? heatColorFor(norm) : `hsl(var(--primary) / ${norm})`;
           ctx.fillRect(segmentX - zoomedSegmentWidth/2, fisheyeY - fisheyeRadius + 8, zoomedSegmentWidth - 1, fisheyeRadius * 2 - 16);
         }
       }
@@ -1051,10 +1185,27 @@ useEffect(() => {
       {/* Main canvas */}
       <canvas
         ref={canvasRef}
-        className={`w-full rounded border ${interactive || editable ? 'cursor-pointer' : ''} ${editable ? 'cursor-crosshair' : ''}`}
+        className={`w-full rounded border-2 border-primary/20 ${interactive || editable || onSegmentClick ? 'cursor-pointer' : ''} ${editable ? 'cursor-crosshair' : ''}`}
         onMouseDown={handlePointerDown}
-        onMouseMove={handlePointerMove}
+        onMouseMove={(e) => {
+          handlePointerMove(e as any);
+          // Basic hover mapping regardless of interactive/edit state
+          const rect = (e.currentTarget as HTMLCanvasElement).getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          setHoverX(x);
+          const segW = rect.width / clampedSegmentCount;
+          const idx = Math.max(0, Math.min(clampedSegmentCount - 1, Math.floor(x / segW)));
+          setHoverIndex(idx);
+        }}
         onMouseUp={handlePointerUp}
+        onMouseLeave={() => { setHoverIndex(null); setHoverX(null); }}
+        onClick={(e) => {
+          if (!onSegmentClick) return;
+          // Only treat as segment navigation when not in interactive scrub or edit modes
+          if (interactive || editState !== 'idle') return;
+          const idx = getSegmentIndexFromClientX(e.clientX);
+          if (idx !== null) onSegmentClick(idx);
+        }}
         onTouchStart={(e) => {
           if (e.touches.length === 3) {
             handleUndoGesture(e);
@@ -1062,8 +1213,18 @@ useEffect(() => {
             handlePointerDown(e);
           }
         }}
-        onTouchMove={handlePointerMove}
-        onTouchEnd={handlePointerUp}
+        onTouchMove={(e) => {
+          handlePointerMove(e);
+        }}
+        onTouchEnd={(e) => {
+          handlePointerUp();
+          if (!onSegmentClick) return;
+          if (interactive || editState !== 'idle') return;
+          const touch = e.changedTouches && e.changedTouches[0];
+          if (!touch) return;
+          const idx = getSegmentIndexFromClientX(touch.clientX);
+          if (idx !== null) onSegmentClick(idx);
+        }}
         onKeyDown={handleKeyDown}
         role={editable ? 'application' : interactive ? 'slider' : 'img'}
         aria-label={editable ? `Edit Graph Mode: ${computedAriaLabel}` : computedAriaLabel}
@@ -1082,6 +1243,17 @@ useEffect(() => {
         className="absolute top-0 left-0 w-full rounded pointer-events-none"
         style={{ touchAction: 'none' }}
       />
+
+      {/* Hover tooltip for segments */}
+      {highlightOnHover && hoverIndex !== null && segmentLabels && segmentLabels[hoverIndex] && hoverX !== null && (
+        <div
+          className="absolute -top-6 px-2 py-1 text-xs bg-popover text-popover-foreground border rounded shadow"
+          style={{ left: Math.max(0, hoverX - 40) }}
+          role="status"
+        >
+          {segmentLabels[hoverIndex]}
+        </div>
+      )}
 
       {/* Edit mode coachmark */}
       {showCoachmark && (
