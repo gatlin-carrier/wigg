@@ -274,7 +274,11 @@ function AddWiggRetroContent() {
           </Card>
 
           {/* Community Consensus Graph */}
-          <GoodnessCurve data={goodnessCurveData || []} />
+          <GoodnessCurve 
+            data={goodnessCurveData || []} 
+            totalUnits={units.length}
+            unitLabelKind={(units[0]?.subtype === 'chapter') ? 'chapter' : 'episode'}
+          />
           
           <Card className="rounded-2xl shadow-sm w-full">
             <CardHeader className="pb-2">

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Clock, Film, Users, Plus, ThumbsUp, ThumbsDown, Pencil, RefreshCw } from "lucide-react";
 import { type SwipeValue } from "./SwipeRating";
 import { WiggRatingGrid } from '@/components/wigg/WiggRatingGrid';
+import { toast } from "@/hooks/use-toast";
 
 export interface MovieScene {
   id: string;
@@ -43,6 +44,26 @@ export function SceneSelector({
   onReset,
   className = ""
 }: SceneSelectorProps) {
+  // Helper functions to handle different time formats
+  const getRuntimeInMinutes = () => {
+    if (!runtime) return 0;
+    // For movies, runtime is in minutes. For games, runtime is in hours.
+    return mediaType === "movie" ? runtime : runtime * 60;
+  };
+
+  const getRuntimeInHours = () => {
+    const totalMinutes = getRuntimeInMinutes();
+    return totalMinutes / 60;
+  };
+
+  const formatRuntimeDisplay = () => {
+    if (!runtime) return "";
+    if (mediaType === "movie") {
+      return `${Math.floor(runtime / 60)}h ${runtime % 60}m`;
+    } else {
+      return `${Math.floor(runtime)}h ${Math.round((runtime % 1) * 60)}m`;
+    }
+  };
   const [mode, setMode] = useState<"scenes" | "manual" | "add">("manual");
   const [selectedScene, setSelectedScene] = useState<MovieScene | null>(null);
   const [rating, setRating] = useState<SwipeValue | null>(null);
@@ -107,6 +128,17 @@ export function SceneSelector({
 
   const handleManualSubmit = () => {
     if (rating !== null) {
+      // Validate that time doesn't exceed runtime
+      const totalMinutes = hours * 60 + minutes;
+      const runtimeMinutes = getRuntimeInMinutes();
+      if (runtime && totalMinutes > runtimeMinutes) {
+        toast({
+          title: "Time exceeds limit",
+          description: `Time cannot exceed ${mediaType === "movie" ? "movie runtime" : "completion time"} of ${formatRuntimeDisplay()}`,
+          variant: "destructive",
+        });
+        return;
+      }
       onManualTimeSubmit(hours, minutes, rating, comment);
     }
   };
@@ -114,6 +146,18 @@ export function SceneSelector({
   const handleAddScene = () => {
     if (newSceneName.trim()) {
       const timestampSeconds = newSceneTime.hours * 3600 + newSceneTime.minutes * 60;
+      const runtimeSeconds = getRuntimeInMinutes() * 60;
+      
+      // Validate that time doesn't exceed runtime
+      if (runtime && timestampSeconds > runtimeSeconds) {
+        toast({
+          title: "Scene time exceeds limit",
+          description: `Scene time cannot exceed ${mediaType === "movie" ? "movie runtime" : "completion time"} of ${formatRuntimeDisplay()}`,
+          variant: "destructive",
+        });
+        return;
+      }
+      
       onAddScene(timestampSeconds, newSceneName.trim(), newSceneDescription.trim() || undefined);
       
       // Reset form
@@ -225,7 +269,7 @@ export function SceneSelector({
                   id="hours"
                   type="number"
                   min="0"
-                  max="10"
+                  max={runtime ? Math.floor(getRuntimeInHours()) : "10"}
                   value={hours}
                   onChange={(e) => setHours(parseInt(e.target.value) || 0)}
                   className="text-center"
@@ -239,9 +283,18 @@ export function SceneSelector({
                   id="minutes"
                   type="number"
                   min="0"
-                  max="59"
+                  max={runtime && hours === Math.floor(getRuntimeInHours()) ? getRuntimeInMinutes() % 60 : "59"}
                   value={minutes}
-                  onChange={(e) => setMinutes(Math.min(59, parseInt(e.target.value) || 0))}
+                  onChange={(e) => {
+                    let newMinutes = parseInt(e.target.value) || 0;
+                    // If we're at max hours, cap minutes to remaining runtime
+                    if (runtime && hours === Math.floor(getRuntimeInHours())) {
+                      newMinutes = Math.min(getRuntimeInMinutes() % 60, newMinutes);
+                    } else {
+                      newMinutes = Math.min(59, newMinutes);
+                    }
+                    setMinutes(newMinutes);
+                  }}
                   className="text-center"
                   placeholder="00"
                 />
@@ -281,7 +334,7 @@ export function SceneSelector({
                   id="scene-hours"
                   type="number"
                   min="0"
-                  max="10"
+                  max={runtime ? Math.floor(getRuntimeInHours()) : "10"}
                   value={newSceneTime.hours}
                   onChange={(e) => setNewSceneTime(prev => ({ ...prev, hours: parseInt(e.target.value) || 0 }))}
                   className="text-center"
@@ -295,9 +348,17 @@ export function SceneSelector({
                   id="scene-minutes"
                   type="number"
                   min="0"
-                  max="59"
+                  max={runtime && newSceneTime.hours === Math.floor(getRuntimeInHours()) ? getRuntimeInMinutes() % 60 : "59"}
                   value={newSceneTime.minutes}
-                  onChange={(e) => setNewSceneTime(prev => ({ ...prev, minutes: Math.min(59, parseInt(e.target.value) || 0) }))}
+                  onChange={(e) => {
+                    let newMinutes = parseInt(e.target.value) || 0;
+                    if (runtime && newSceneTime.hours === Math.floor(getRuntimeInHours())) {
+                      newMinutes = Math.min(getRuntimeInMinutes() % 60, newMinutes);
+                    } else {
+                      newMinutes = Math.min(59, newMinutes);
+                    }
+                    setNewSceneTime(prev => ({ ...prev, minutes: newMinutes }));
+                  }}
                   className="text-center"
                   placeholder="00"
                 />

@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Star, Plus } from 'lucide-react';
+import { Star, Plus, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useTitleProgress } from '@/hooks/useTitleProgress';
+import { PacingBarcode } from '@/components/wigg/PacingBarcode';
+import { useUserWiggs } from '@/hooks/useUserWiggs';
+import { formatT2G } from '@/lib/wigg/format';
+import { classifyPeakFromSegments } from '@/lib/wigg/analysis';
 
 type Props = {
   title: string;
@@ -14,6 +19,7 @@ type Props = {
   onAdd?: () => void;
   onClick?: () => void;
   className?: string;
+  t2gLabelMode?: 'percent' | 'percent+detail';
   // Data needed for WIGG routing
   mediaData?: {
     source: string;
@@ -26,8 +32,12 @@ type Props = {
   };
 };
 
-export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onClick, className, mediaData }: Props) {
+export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onClick, className, t2gLabelMode = 'percent+detail', mediaData }: Props) {
   const navigate = useNavigate();
+  const titleKey = useMemo(() => (mediaData ? `${mediaData.source}:${mediaData.id}` : title), [mediaData, title]);
+  const { data: progressData } = useTitleProgress(titleKey);
+  const { data: wiggsData } = useUserWiggs(titleKey);
+  const pacingInsight = useMemo(() => classifyPeakFromSegments(progressData?.segments || []).label, [progressData?.segments]);
 
   const handleAddWigg = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -52,98 +62,49 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
       onClick={onClick}
     >
       {/* Add WIGG Button */}
-      {mediaData ? (
-        <Button
-          asChild
-          onPointerDownCapture={(e) => {
-            e.stopPropagation();
-          }}
-          onPointerDown={(e) => {
-            e.stopPropagation();
-          }}
-          onPointerMove={(e) => {
-            e.stopPropagation();
-          }}
-          onPointerUp={(e) => {
-            e.stopPropagation();
-          }}
-          onMouseDownCapture={(e) => {
-            e.stopPropagation();
-          }}
-          onMouseDown={(e) => {
-            e.stopPropagation();
-          }}
-          onTouchStartCapture={(e) => {
-            e.stopPropagation();
-          }}
-          onTouchStart={(e) => {
-            e.stopPropagation();
-          }}
-          onTouchMove={(e) => {
-            e.stopPropagation();
-          }}
-          onTouchEnd={(e) => {
-            e.stopPropagation();
-          }}
-          onDragStart={(e) => {
-            e.stopPropagation();
-          }}
-          draggable={false}
-          size="sm"
-          className="absolute top-1 right-1 h-8 w-8 rounded-full p-0 bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white border-2 border-white shadow-lg hover:shadow-xl transition-all duration-200 z-50 opacity-100 md:opacity-0 md:group-hover:opacity-100 pointer-events-auto touch-none select-none active:scale-95"
-          aria-label="Add WIGG point"
-        >
-          <Link to="/add-wigg" state={{ media: mediaData }}>
-            <Plus className="h-4 w-4" />
-          </Link>
-        </Button>
-      ) : (
-        <Button
-          onClick={handleAddWigg}
-          onPointerDownCapture={(e) => {
-            // Capture phase: block carousel from starting a drag
-            e.stopPropagation();
-          }}
-          onPointerDown={(e) => {
-            // Ensure carousel drag doesn't hijack this interaction
-            e.stopPropagation();
-          }}
-          onPointerMove={(e) => {
-            // Prevent drag threshold from activating while pressing the button
-            e.stopPropagation();
-          }}
-          onPointerUp={(e) => {
-            e.stopPropagation();
-          }}
-          onMouseDownCapture={(e) => {
-            e.stopPropagation();
-          }}
-          onMouseDown={(e) => {
-            e.stopPropagation();
-          }}
-          onTouchStartCapture={(e) => {
-            e.stopPropagation();
-          }}
-          onTouchStart={(e) => {
-            e.stopPropagation();
-          }}
-          onTouchMove={(e) => {
-            e.stopPropagation();
-          }}
-          onTouchEnd={(e) => {
-            e.stopPropagation();
-          }}
-          onDragStart={(e) => {
-            e.stopPropagation();
-          }}
-          draggable={false}
-          size="sm"
-          className="absolute top-1 right-1 h-8 w-8 rounded-full p-0 bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white border-2 border-white shadow-lg hover:shadow-xl transition-all duration-200 z-50 opacity-100 md:opacity-0 md:group-hover:opacity-100 pointer-events-auto touch-none select-none active:scale-95"
-          aria-label="Add WIGG point"
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-      )}
+      <Button
+        onClick={handleAddWigg}
+        onPointerDownCapture={(e) => {
+          e.stopPropagation();
+        }}
+        onPointerDown={(e) => {
+          e.stopPropagation();
+        }}
+        onPointerMove={(e) => {
+          e.stopPropagation();
+        }}
+        onPointerUp={(e) => {
+          e.stopPropagation();
+        }}
+        onMouseDownCapture={(e) => {
+          e.stopPropagation();
+        }}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+        }}
+        onTouchStartCapture={(e) => {
+          e.stopPropagation();
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
+        }}
+        onTouchMove={(e) => {
+          e.stopPropagation();
+        }}
+        onTouchEnd={(e) => {
+          e.stopPropagation();
+        }}
+        onDragStart={(e) => {
+          e.stopPropagation();
+        }}
+        draggable={false}
+        size="sm"
+        className="absolute top-1 right-1 h-8 w-8 rounded-full p-0 bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white border-2 border-white shadow-lg hover:shadow-xl transition-all duration-200 z-50 opacity-100 md:opacity-0 md:group-hover:opacity-100 pointer-events-auto touch-none select-none active:scale-95"
+        aria-label="Add WIGG point"
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+
 
       {imageUrl && (
         <div className="aspect-[2/3] mb-3 overflow-hidden rounded-lg bg-muted">
@@ -162,6 +123,41 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
             </span>
           )}
           {year && <span>{year}</span>}
+        </div>
+        {/* Compact Pacing Barcode */}
+        <div className="mt-1">
+          <PacingBarcode
+            titleId={titleKey}
+            height={36}
+            segmentCount={16}
+            segments={progressData?.segments || []}
+            dataScope="community"
+            interactive={false}
+            className="rounded"
+          />
+        </div>
+        {/* Pacing insight + T2G */}
+        <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
+          <div className="inline-flex items-center gap-1">
+            <TrendingUp className="h-3 w-3" />
+            <span>{pacingInsight}</span>
+          </div>
+          {wiggsData?.t2gEstimatePct != null && (
+            <div className="inline-flex items-center gap-1">
+              <Star className="h-3 w-3 text-primary" fill="currentColor" />
+              <span>
+                Gets good {
+                  t2gLabelMode === 'percent'
+                    ? `${wiggsData.t2gEstimatePct.toFixed(0)}%`
+                    : formatT2G(
+                        wiggsData.t2gEstimatePct,
+                        typeof mediaData?.runtime === 'number' ? Number(mediaData.runtime) : undefined,
+                        mediaData?.type
+                      )
+                }
+              </span>
+            </div>
+          )}
         </div>
         {!!(tags && tags.length) && (
           <div className="flex flex-wrap gap-1">

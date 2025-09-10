@@ -15,7 +15,9 @@
       "Bash(npx supabase:*)",
       "Bash(curl:*)",
       "Bash(npx eslint:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": [],

@@ -16,6 +16,7 @@ interface RealTimeVisualizationProps {
   variant?: "curve" | "bars" | "pulse" | "barcode"; // If not provided, uses user preference
   mediaType?: "movie" | "tv" | "anime" | "game" | "book" | "manga";
   runtime?: number; // in minutes for movies/tv, hours for games, pages for books/manga
+  totalUnits?: number; // total episodes/chapters for episodic media
   currentPosition?: number; // current position as a fraction (0-1) of total runtime/episodes
   onSeek?: (position: number) => void; // callback when user scrubs to a new position (0-1)
   onMarkWigg?: (pct: number) => void; // callback for marking a WIGG
@@ -28,6 +29,7 @@ export function RealTimeVisualization({
   variant,
   mediaType,
   runtime,
+  totalUnits,
   currentPosition,
   onSeek,
   onMarkWigg
@@ -156,7 +158,7 @@ export function RealTimeVisualization({
             height={height}
             viewBox={`0 0 ${maxWidth} ${height}`}
             className="overflow-visible border rounded-lg bg-background max-w-full cursor-pointer"
-            preserveAspectRatio="xMidYMid meet"
+            preserveAspectRatio="none"
             onMouseMove={handleMouseMove}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
@@ -229,10 +231,15 @@ export function RealTimeVisualization({
           </svg>
 
           {/* Time markers */}
-          {runtime && (
+          {(runtime || totalUnits) && (
             <div className="relative mt-1 text-[10px] text-zinc-400 w-full">
               {[0, 0.25, 0.5, 0.75, 1].map((t) => {
-                
+                const marker = runtime 
+                  ? formatTimeMarker(t)
+                  : totalUnits 
+                  ? totalUnits === 1 ? '1' : (Math.round(t * (totalUnits - 1)) + 1).toString()
+                  : '';
+                  
                 return (
                   <span 
                     key={t} 
@@ -242,7 +249,7 @@ export function RealTimeVisualization({
                       transform: t === 0 ? 'translateX(0)' : t === 1 ? 'translateX(-100%)' : 'translateX(-50%)'
                     }}
                   >
-                    {formatTimeMarker(t)}
+                    {marker}
                   </span>
                 );
               })}
@@ -309,7 +316,7 @@ export function RealTimeVisualization({
           height={height}
           viewBox={`0 0 ${maxWidth} ${height}`}
           className="overflow-visible border rounded-lg bg-background max-w-full cursor-pointer"
-          preserveAspectRatio="xMidYMid meet"
+          preserveAspectRatio="none"
           onMouseMove={handleMouseMove}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
@@ -404,9 +411,11 @@ export function RealTimeVisualization({
         {/* Time markers - similar to WIGG */}
         <div className="relative mt-1 text-[10px] text-zinc-400 w-full">
           {[0, 0.25, 0.5, 0.75, 1].map((t) => {
-            // Use runtime-based markers if available, otherwise fall back to episode numbers
+            // Use runtime-based markers if available, otherwise use total units, then fall back to current ratings
             const marker = runtime 
               ? formatTimeMarker(t)
+              : totalUnits 
+              ? totalUnits === 1 ? '1' : (Math.round(t * (totalUnits - 1)) + 1).toString()
               : validRatings.length === 1 ? '1' : (Math.round(t * (validRatings.length - 1)) + 1).toString();
             
             return (
@@ -556,6 +565,16 @@ export function RealTimeVisualization({
     );
   };
 
-  // Always use the barcode for real-time visualization (simplified UX)
-  return renderBarcodeVisualization();
+  // Choose renderer based on user preference or prop variant
+  switch (effectiveVariant) {
+    case 'curve':
+      return renderCurveVisualization();
+    case 'bars':
+      return renderBarsVisualization();
+    case 'pulse':
+      return renderPulseVisualization();
+    case 'barcode':
+    default:
+      return renderBarcodeVisualization();
+  }
 }

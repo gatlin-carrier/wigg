@@ -37,7 +37,7 @@ export function MiniGoodnessCurve({
     const max = 4;
     const xs = values.map((_, i) => (i / (n - 1)) * w);
     const ys = values.map(v => h - (Math.max(0, Math.min(max, v)) / max) * (h - 4) - 2);
-    // Build a smooth cubic bezier path using Catmull-Rom to Bezier conversion
+    // Build a smoother cubic bezier path using Catmull-Rom to Bezier conversion
     const pts = xs.map((x, i) => ({ x, y: ys[i] }));
     const segs: string[] = [];
     if (pts.length > 0) {
@@ -47,12 +47,17 @@ export function MiniGoodnessCurve({
         const p1 = pts[i];
         const p2 = pts[i + 1];
         const p3 = pts[Math.min(pts.length - 1, i + 2)];
-        // Catmull-Rom to Bezier with adjustable tension (more rounded if minimal)
-        const t = minimal ? 0.7 : 0.5;
+        // Catmull-Rom to Bezier with higher tension to increase curviness
+        // Standard CR uses t=1. We go a bit higher visually by clamping control points to bounds
+        const t = minimal ? 0.9 : 1.0;
         const c1x = p1.x + (p2.x - p0.x) * (t / 6);
-        const c1y = p1.y + (p2.y - p0.y) * (t / 6);
+        let  c1y = p1.y + (p2.y - p0.y) * (t / 6);
         const c2x = p2.x - (p3.x - p1.x) * (t / 6);
-        const c2y = p2.y - (p3.y - p1.y) * (t / 6);
+        let  c2y = p2.y - (p3.y - p1.y) * (t / 6);
+        // Clamp control points vertically to avoid overshoot outside the viewbox
+        const clampY = (yy: number) => Math.max(2, Math.min(h - 2, yy));
+        c1y = clampY(c1y);
+        c2y = clampY(c2y);
         segs.push(
           `C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`
         );

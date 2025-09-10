@@ -11,6 +11,27 @@ import { useTmdbSearch } from "@/integrations/tmdb/hooks";
 import { useOpenLibrarySearch } from "@/integrations/openlibrary/searchHooks";
 import { type MediaType } from "../wigg/MomentCapture";
 
+// Helper function to safely parse year from date strings
+function parseYear(dateStr?: string): number | undefined {
+  if (!dateStr) return undefined;
+  
+  // First try parsing as a date
+  const date = new Date(dateStr);
+  if (!isNaN(date.getTime())) {
+    const year = date.getFullYear();
+    if (year > 1800 && year < 2100) return year;
+  }
+  
+  // If that fails, try extracting 4-digit year from the string
+  const yearMatch = dateStr.match(/\b(19|20)\d{2}\b/);
+  if (yearMatch) {
+    const year = parseInt(yearMatch[0], 10);
+    if (year > 1800 && year < 2100) return year;
+  }
+  
+  return undefined;
+}
+
 export interface MediaSearchResult {
   id: string;
   title: string;
@@ -20,6 +41,7 @@ export interface MediaSearchResult {
   description?: string;
   episodeCount?: number;
   chapterCount?: number;
+  volumeCount?: number;
   duration?: number;
   externalIds?: {
     tmdb_id?: number;
@@ -55,7 +77,7 @@ export function MediaSearch({ onMediaSelect, className = "" }: MediaSearchProps)
         ).map((item: any) => ({
           id: item.id.toString(),
           title: item.name || item.title || "Unknown Title",
-          year: new Date(item.first_air_date || item.release_date || '').getFullYear() || undefined,
+          year: parseYear(item.first_air_date || item.release_date),
           type: "tv" as MediaType,
           coverImage: item.poster_path ? `https://image.tmdb.org/t/p/w342${item.poster_path}` : undefined,
           description: item.overview,
@@ -71,7 +93,7 @@ export function MediaSearch({ onMediaSelect, className = "" }: MediaSearchProps)
         ).map((item: any) => ({
           id: item.id.toString(),
           title: item.name || item.title || "Unknown Title",
-          year: new Date(item.first_air_date || item.release_date || '').getFullYear() || undefined,
+          year: parseYear(item.first_air_date || item.release_date),
           type: "anime" as MediaType,
           coverImage: item.poster_path ? `https://image.tmdb.org/t/p/w342${item.poster_path}` : undefined,
           description: item.overview,
@@ -99,6 +121,7 @@ export function MediaSearch({ onMediaSelect, className = "" }: MediaSearchProps)
           coverImage: item.coverImage?.medium,
           description: item.description,
           chapterCount: item.chapters,
+          volumeCount: item.volumes,
           externalIds: { 
             anilist_id: item.id,
             // Store title for MangaDx cross-reference

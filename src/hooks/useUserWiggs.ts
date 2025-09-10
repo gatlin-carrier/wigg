@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useTitleProgress } from './useTitleProgress';
+import { useTitleMetrics } from './useTitleMetrics';
+import { firstGoodFromWiggs, estimateT2GFromSegments, pickT2G } from '@/lib/wigg/analysis';
 
 export interface WiggEntry {
   id: string;
@@ -11,6 +14,7 @@ export interface WiggEntry {
 export interface UserWiggsData {
   entries: WiggEntry[];
   t2gEstimatePct?: number; // Time-to-good estimate
+  t2gConfidence?: number;  // 0..1 heuristic
 }
 
 export function useUserWiggs(titleId: string): {
@@ -22,6 +26,8 @@ export function useUserWiggs(titleId: string): {
   const [data, setData] = useState<UserWiggsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const { data: progressData } = useTitleProgress(titleId);
+  const { data: metrics } = useTitleMetrics(titleId);
 
   useEffect(() => {
     // Mock implementation - replace with actual API call
@@ -57,13 +63,16 @@ export function useUserWiggs(titleId: string): {
           }
         ];
 
-        // Calculate T2G estimate based on existing wiggs (first rating >= 1)
-        const firstGoodWigg = mockEntries.find(entry => (entry.rating || 0) >= 1);
-        const t2gEstimatePct = firstGoodWigg ? firstGoodWigg.pct : 35; // Default estimate
+        // Calculate T2G (prefer personal wiggs, fallback to curve)
+        const personal = firstGoodFromWiggs(mockEntries, 1);
+        const community = metrics?.t2g_comm_pct ?? null;
+        const curveFallback = estimateT2GFromSegments(progressData?.segments || [], 2.0);
+        const pick = pickT2G(personal, community ?? curveFallback);
 
         const mockData: UserWiggsData = {
           entries: mockEntries,
-          t2gEstimatePct
+          t2gEstimatePct: pick.pct,
+          t2gConfidence: pick.confidence,
         };
 
         setData(mockData);

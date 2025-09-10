@@ -7,7 +7,7 @@ interface UserPreferences {
   graph_type: GraphType;
   preferred_media_types: Array<{ type: string; priority: number }>;
   hidden_media_types: string[];
-  rating_ui?: 'buttons' | 'dial' | 'slider' | 'grid' | 'paint' | 'hybrid';
+  rating_ui?: 'buttons' | 'dial' | 'slider' | 'grid' | 'affect' | 'swipe' | 'hybrid' | 'paint';
 }
 
 const defaultPreferences: UserPreferences = {
@@ -92,7 +92,15 @@ export function useUserPreferences() {
           [key]: value,
         });
 
-      if (dbError) throw dbError;
+      // If the column is missing in schema (e.g., rating_ui before migration), quietly ignore
+      if (dbError) {
+        const code = (dbError as any)?.code;
+        if (code === '42703' || String(code || '').startsWith('PGRST')) {
+          console.warn(`Preference column missing (${String(code)}). Skipping server save for key:`, String(key));
+          return; // keep optimistic client state
+        }
+        throw dbError;
+      }
     } catch (err) {
       console.error(`Error updating ${key}:`, err);
       // Revert optimistic update
@@ -118,7 +126,20 @@ export function useUserPreferences() {
           ...updates,
         });
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        const code = (dbError as any)?.code;
+        if (code === '42703' || String(code || '').startsWith('PGRST')) {
+          // Retry without any unknown columns (e.g., rating_ui) to avoid hard failure
+          const sanitized = { ...updates } as any;
+          delete sanitized.rating_ui;
+          const { error: fallbackError } = await supabase
+            .from('profiles')
+            .upsert({ id: user.id, ...sanitized });
+          if (fallbackError) throw fallbackError;
+          return;
+        }
+        throw dbError;
+      }
     } catch (err) {
       console.error('Error updating preferences:', err);
       // Revert optimistic update

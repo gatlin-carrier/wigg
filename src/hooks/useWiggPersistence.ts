@@ -129,12 +129,15 @@ export function useWiggPersistence() {
         dbType = media.type as "movie" | "tv" | "anime" | "game" | "book" | "podcast";
       }
 
+      // Ensure year is a valid integer or null
+      const validYear = typeof media.year === 'number' && !isNaN(media.year) && media.year > 0 ? media.year : null;
+      
       // Use the upsert_media function which has proper permissions
       const { data: mediaId, error } = await supabase
         .rpc("upsert_media", {
           p_type: dbType,
           p_title: media.title,
-          p_year: media.year,
+          p_year: validYear,
           p_duration_sec: media.duration,
           p_pages: media.chapterCount,
           p_external_ids: media.externalIds || {}

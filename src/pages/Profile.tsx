@@ -11,6 +11,7 @@ import { usePageHeader } from "@/contexts/HeaderContext";
 import { Film, Tv, Gamepad2, Book, Mic, User, Save, ChevronUp, ChevronDown, BookOpen, Sparkles, Newspaper, Settings, BarChart2 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { GraphTypeSelector, type GraphType } from "@/components/ui/GraphTypeSelector";
+import { RatingSystemSelector, type RatingSystem } from "@/components/ui/RatingSystemSelector";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -21,6 +22,7 @@ const Profile = () => {
     preferred_media_types: [] as Array<{type: string, priority: number}>,
     hidden_media_types: [] as string[],
     graph_type: "curve" as GraphType,
+    rating_ui: "buttons" as RatingSystem,
   });
 
   usePageHeader({
@@ -53,7 +55,7 @@ const Profile = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, preferred_media_types, hidden_media_types, graph_type')
+        .select('username, preferred_media_types, hidden_media_types, graph_type, rating_ui')
         .eq('id', user.id)
         .maybeSingle();
 
@@ -76,7 +78,8 @@ const Profile = () => {
             username: (fallbackData as any).username || "",
             preferred_media_types: preferences,
             hidden_media_types: Array.isArray((fallbackData as any).hidden_media_types) ? (fallbackData as any).hidden_media_types as string[] : [],
-            graph_type: "curve", // Default since column doesn't exist
+            graph_type: "curve", // Default since column may not exist
+            rating_ui: "buttons",
           });
         }
         return;
@@ -94,6 +97,7 @@ const Profile = () => {
           preferred_media_types: preferences,
           hidden_media_types: Array.isArray((data as any).hidden_media_types) ? (data as any).hidden_media_types as string[] : [],
           graph_type: (data as any).graph_type || "curve",
+          rating_ui: (data as any).rating_ui || "buttons",
         });
       }
     } catch (error) {
@@ -181,7 +185,8 @@ const Profile = () => {
           username: profile.username,
           preferred_media_types: profile.preferred_media_types,
           hidden_media_types: profile.hidden_media_types,
-          graph_type: profile.graph_type
+          graph_type: profile.graph_type,
+          rating_ui: profile.rating_ui,
         });
 
       // If graph_type column doesn't exist, save without it
@@ -371,7 +376,7 @@ const Profile = () => {
           </div>
 
           <div className="space-y-3">
-            <Label>Visualization Preferences</Label>
+          <Label>Visualization Preferences</Label>
             <p className="text-sm text-muted-foreground">
               Choose how you want to see real-time progress graphs
             </p>
@@ -388,6 +393,21 @@ const Profile = () => {
                 />
                 <p className="text-xs text-muted-foreground">
                   This affects how progress visualizations appear during live capture sessions
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <BarChart2 className="h-4 w-4" />
+                  Rating System
+                </Label>
+                <RatingSystemSelector
+                  value={profile.rating_ui}
+                  onChange={(v) => setProfile(prev => ({ ...prev, rating_ui: v }))}
+                  disabled={loading}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Choose your preferred control for rating episodes/chapters
                 </p>
               </div>
             </div>

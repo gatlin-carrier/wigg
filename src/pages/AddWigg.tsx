@@ -7,6 +7,7 @@ import { FlameKindling, RefreshCw, Play, RotateCcw, ChevronDown, ChevronUp, Info
 import { usePageHeader } from "@/contexts/HeaderContext";
 import { useAuth } from "@/hooks/useAuth";
 import { MediaSearch, type MediaSearchResult } from "@/components/media/MediaSearch";
+import { SeasonVolumeSelector } from "@/components/media/SeasonVolumeSelector";
 import { MomentCapture, type MediaType } from "@/components/wigg/MomentCapture";
 import { type SpoilerLevel } from "@/components/wigg/WhyTagSelector";
 import { YouTubePlayer, type MediaPlayerControls } from "@/components/wigg/MediaPlayer";
@@ -42,6 +43,9 @@ function AddWiggContent() {
   const [activeTab, setActiveTab] = useState(mode === "live" ? "live" : "retro");
   const [playerControls, setPlayerControls] = useState<MediaPlayerControls | null>(null);
   const [mediaType, setMediaType] = useState<MediaType>("anime");
+  const [selectedSeason, setSelectedSeason] = useState<number | undefined>();
+  const [selectedVolume, setSelectedVolume] = useState<number | undefined>();
+  const [selectedEpisode, setSelectedEpisode] = useState<{ id: string, title: string, number: number } | undefined>();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   
@@ -177,11 +181,20 @@ function AddWiggContent() {
   const handleMediaSelect = async (media: MediaSearchResult) => {
     try {
       const mediaId = await saveMediaToDatabase(media);
-      setSelectedMedia({ ...media, id: mediaId });
+      const updatedMedia = { ...media, id: mediaId };
+      setSelectedMedia(updatedMedia);
       resetSession();
     } catch (error) {
       console.error("Failed to save media:", error);
     }
+  };
+
+  const handleSeasonVolumeSelect = (seasonNumber?: number, volumeNumber?: number, episodeData?: { id: string, title: string, number: number }) => {
+    setSelectedSeason(seasonNumber);
+    setSelectedVolume(volumeNumber);
+    setSelectedEpisode(episodeData);
+    // Reset session when season/volume/episode changes to refresh units
+    resetSession();
   };
 
   const handleAddMoment = async (moment: any) => {
@@ -269,7 +282,19 @@ function AddWiggContent() {
   const isComplete = currentUnitIndex >= units.length;
 
   // Update page header when media/unit changes
-  const currentUnitSubtitle = currentUnit ? `${currentUnit.subtype.charAt(0).toUpperCase() + currentUnit.subtype.slice(1)} ${currentUnit.ordinal}${currentUnit.title ? `: ${currentUnit.title}` : ''}` : undefined;
+  const currentUnitSubtitle = React.useMemo(() => {
+    // If episode is selected, show episode info
+    if (selectedEpisode) {
+      return `Episode ${selectedEpisode.number}${selectedEpisode.title ? `: ${selectedEpisode.title}` : ''}`;
+    }
+    
+    // Otherwise use current unit info
+    if (currentUnit) {
+      return `${currentUnit.subtype.charAt(0).toUpperCase() + currentUnit.subtype.slice(1)} ${currentUnit.ordinal}${currentUnit.title ? `: ${currentUnit.title}` : ''}`;
+    }
+    
+    return undefined;
+  }, [selectedEpisode, currentUnit]);
   
   usePageHeader({
     showBackButton: true,
@@ -294,12 +319,23 @@ function AddWiggContent() {
     );
   }
 
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl mobile-safe-bottom">
       {/* Media Title and Subtitle */}
       <div className="mb-8 text-center">
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
           {selectedMedia?.title || "Rate Your Media"}
+          {selectedSeason && (
+            <span className="text-lg sm:text-xl lg:text-2xl text-muted-foreground ml-2">
+              Season {selectedSeason}
+            </span>
+          )}
+          {selectedVolume && (
+            <span className="text-lg sm:text-xl lg:text-2xl text-muted-foreground ml-2">
+              Volume {selectedVolume}
+            </span>
+          )}
         </h1>
         {mediaType !== "game" && (selectedMedia ? currentUnitSubtitle : "Live capture or retrospective rating modes") && (
           <p className="text-sm sm:text-base text-muted-foreground">
@@ -307,6 +343,15 @@ function AddWiggContent() {
           </p>
         )}
       </div>
+
+      {/* Season/Volume Selector */}
+      {selectedMedia && (
+        <SeasonVolumeSelector 
+          media={selectedMedia}
+          onSelectionChange={handleSeasonVolumeSelect}
+          className="mb-6"
+        />
+      )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {mediaType !== "game" && (
@@ -324,6 +369,7 @@ function AddWiggContent() {
 
         {/* Rating Visualization */}
         <RealTimeVisualization
+          titleId={selectedMedia?.id || ""}
           sessionStats={sessionStats}
           currentRatings={currentRatings}
           mediaType={mediaType}
@@ -334,6 +380,11 @@ function AddWiggContent() {
               ? selectedMedia?.duration
               : mediaType === "book" || mediaType === "manga"
               ? units.reduce((total, unit) => total + (unit.pages || 0), 0)
+              : undefined
+          }
+          totalUnits={
+            (mediaType === "tv" || mediaType === "anime" || mediaType === "book" || mediaType === "manga")
+              ? units.length
               : undefined
           }
           currentPosition={
@@ -418,34 +469,36 @@ function AddWiggContent() {
           {!isComplete ? (
             <div className="space-y-6">
               {/* Global barcode overview (all media types) */}
-              <div className="space-y-2">
-                <div id="barcode-target">
-                  <PacingBarcode
-                    titleId={selectedMedia?.id || 'addwigg'}
-                    height={60}
-                    segmentCount={computedSegmentCount}
-                    segments={progressData?.segments || []}
-                    t2gEstimatePct={wiggsData?.t2gEstimatePct}
-                    dataScope="community"
-                    colorMode="heat"
-                    className="max-w-[600px] mx-auto"
-                    currentPct={currentPlayheadPct}
-                    playheadVisibility={(units && units.length > 1 && (units[0]?.subtype === 'episode' || units[0]?.subtype === 'chapter')) ? 'never' : 'hover'}
-                    selectedSegmentIndex={selectedSegmentIndex}
-                    highlightOnHover={Boolean(units && units.length > 1)}
-                    segmentLabels={segmentLabels}
-                    onSegmentClick={(idx: number) => {
-                      if (!units || units.length <= 1) return;
-                      const segCount = computedSegmentCount;
-                      const ord = Math.max(1, Math.min(units.length, Math.round(((idx + 0.5) / segCount) * units.length)));
-                      setProgress(ord);
-                    }}
-                  />
+              {preferences?.graph_type === 'barcode' && (
+                <div className="space-y-2">
+                  <div id="barcode-target">
+                    <PacingBarcode
+                      titleId={selectedMedia?.id || 'addwigg'}
+                      height={60}
+                      segmentCount={computedSegmentCount}
+                      segments={progressData?.segments || []}
+                      t2gEstimatePct={wiggsData?.t2gEstimatePct}
+                      dataScope="community"
+                      colorMode="heat"
+                      className="max-w-[600px] mx-auto"
+                      currentPct={currentPlayheadPct}
+                      playheadVisibility={(units && units.length > 1 && (units[0]?.subtype === 'episode' || units[0]?.subtype === 'chapter')) ? 'never' : 'hover'}
+                      selectedSegmentIndex={selectedSegmentIndex}
+                      highlightOnHover={Boolean(units && units.length > 1)}
+                      segmentLabels={segmentLabels}
+                      onSegmentClick={(idx: number) => {
+                        if (!units || units.length <= 1) return;
+                        const segCount = computedSegmentCount;
+                        const ord = Math.max(1, Math.min(units.length, Math.round(((idx + 0.5) / segCount) * units.length)));
+                        setProgress(ord);
+                      }}
+                    />
+                  </div>
+                  <div className="text-xs text-muted-foreground text-center">
+                    {wiggsData?.t2gEstimatePct ? `T2G ~${wiggsData.t2gEstimatePct.toFixed(0)}%` : 'Progress overview'}
+                  </div>
                 </div>
-                <div className="text-xs text-muted-foreground text-center">
-                  {wiggsData?.t2gEstimatePct ? `T2G ~${wiggsData.t2gEstimatePct.toFixed(0)}%` : 'Progress overview'}
-                </div>
-              </div>
+              )}
               {mediaType === "game" ? (
                 !userGameData || showGameTimeInput ? (
                     <GameCompletionTime
@@ -489,21 +542,25 @@ function AddWiggContent() {
                         if (ui === 'dial') {
                           return (
                             <div className="flex items-center justify-center">
-                              <RatingDial
-                                value={2}
-                                onChange={(v) => handleSwipeRating(v)}
-                              />
+                              <RatingDial value={2 as SwipeValue} onChange={(v) => handleSwipeRating(v)} />
                             </div>
                           );
                         }
                         if (ui === 'slider') {
                           return (
                             <div className="flex items-center justify-center">
-                              <WiggRatingGrid onChange={(v: any) => handleSwipeRating(v)} />
+                              <RatingSlider value={2 as SwipeValue} onChange={(v) => handleSwipeRating(v)} />
                             </div>
                           );
                         }
                         if (ui === 'grid') {
+                          return (
+                            <div className="flex items-center justify-center">
+                              <WiggRatingGrid onChange={(v: any) => handleSwipeRating(v)} />
+                            </div>
+                          );
+                        }
+                        if (ui === 'affect') {
                           return (
                             <div className="flex items-center justify-center">
                               <AffectGrid
@@ -516,7 +573,56 @@ function AddWiggContent() {
                             </div>
                           );
                         }
-                        // default buttons
+                        if (ui === 'buttons') {
+                          return (
+                            <div className="flex items-center justify-center">
+                              <RatingButtons value={undefined} onChange={(v) => handleSwipeRating(v)} />
+                            </div>
+                          );
+                        }
+                        if (ui === 'swipe') {
+                          return (
+                            <div className="flex items-center justify-center">
+                              <SwipeRating unit={currentUnit as any} onSwiped={(v) => handleSwipeRating(v)} />
+                            </div>
+                          );
+                        }
+                        if (ui === 'hybrid') {
+                          return (
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-center">
+                                <RatingDial value={2 as SwipeValue} onChange={(v) => handleSwipeRating(v)} />
+                              </div>
+                              <div className="flex items-center justify-center">
+                                <RatingButtons value={undefined} onChange={(v) => handleSwipeRating(v)} />
+                              </div>
+                            </div>
+                          );
+                        }
+                        if (ui === 'paint') {
+                          const toSwipe = (score: number): SwipeValue => (score < 0.75 ? 0 : score < 1.5 ? 1 : score < 2.5 ? 2 : 3) as SwipeValue;
+                          return (
+                            <div className="flex items-center justify-center">
+                              <div className="w-full max-w-[600px]">
+                                <PacingBarcode
+                                  titleId={selectedMedia?.id || 'paint-local'}
+                                  height={60}
+                                  segmentCount={computedSegmentCount}
+                                  segments={progressData?.segments || []}
+                                  dataScope="local"
+                                  interactive={false}
+                                  editable={true}
+                                  onPaintSegmentScore={(_, score) => handleSwipeRating(toSwipe(score))}
+                                  editIdleTimeoutMs={10000}
+                                />
+                                <div className="text-xs text-center text-muted-foreground mt-2">
+                                  Paint to choose intensity; we’ll convert to zzz/good/better/peak
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+                        // default fallback
                         return (
                           <WiggRatingGrid onChange={(v: any) => handleSwipeRating(v)} />
                         );

@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      title_metrics: {
+        Row: {
+          title_id: string
+          t2g_comm_pct: number | null
+          t2g_comm_iqr: number | null
+          peak_label: string | null
+          peak_at_pct: number | null
+          sample_size: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          title_id: string
+          t2g_comm_pct?: number | null
+          t2g_comm_iqr?: number | null
+          peak_label?: string | null
+          peak_at_pct?: number | null
+          sample_size?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          title_id?: string
+          t2g_comm_pct?: number | null
+          t2g_comm_iqr?: number | null
+          peak_label?: string | null
+          peak_at_pct?: number | null
+          sample_size?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_first_good: {
+        Row: {
+          id: string
+          user_id: string
+          title_id: string
+          first_good_pct: number
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title_id: string
+          first_good_pct: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title_id?: string
+          first_good_pct?: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_first_good_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       episodes: {
         Row: {
           created_at: string

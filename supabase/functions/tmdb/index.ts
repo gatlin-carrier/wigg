@@ -31,6 +31,26 @@ function isAllowedPath(path: string): boolean {
   if (parts[0] === "movie" && parts[1] && isNumericId(parts[1]) && parts.length === 2) return true;
   if (parts[0] === "tv" && parts[1] && isNumericId(parts[1]) && parts.length === 2) return true;
 
+  // TV season details: tv/{id}/season/{season_number}
+  if (
+    parts[0] === "tv" &&
+    parts[1] && isNumericId(parts[1]) &&
+    parts[2] === "season" &&
+    parts[3] && isNumericId(parts[3]) &&
+    parts.length === 4
+  ) return true;
+
+  // TV episode details: tv/{id}/season/{season_number}/episode/{episode_number}
+  if (
+    parts[0] === "tv" &&
+    parts[1] && isNumericId(parts[1]) &&
+    parts[2] === "season" &&
+    parts[3] && isNumericId(parts[3]) &&
+    parts[4] === "episode" &&
+    parts[5] && isNumericId(parts[5]) &&
+    parts.length === 6
+  ) return true;
+
   // genre lists
   if (parts[0] === "genre" && (parts[1] === "movie" || parts[1] === "tv") && parts[2] === "list") return true;
 
@@ -97,4 +117,3 @@ serve(async (req) => {
     });
   }
 });
-
