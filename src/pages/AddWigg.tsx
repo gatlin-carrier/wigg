@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FlameKindling, RefreshCw, Play, RotateCcw, ChevronDown, ChevronUp, Info } from "lucide-react";
 import { usePageHeader } from "@/contexts/HeaderContext";
 import { useAuth } from "@/hooks/useAuth";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { MediaSearch, type MediaSearchResult } from "@/components/media/MediaSearch";
 import { SeasonVolumeSelector } from "@/components/media/SeasonVolumeSelector";
 import { MomentCapture, type MediaType } from "@/components/wigg/MomentCapture";
@@ -213,8 +214,44 @@ function AddWiggContent() {
     recordSwipe(value);
     setCurrentRatings(prev => [...prev, value]);
     
+    // If an episode is selected, place the rating at the episode's position
+    if (selectedEpisode && selectedSeason) {
+      // Find the episode's position in the overall series timeline
+      const episodePosition = calculateEpisodePosition(selectedSeason, selectedEpisode.number);
+      if (episodePosition !== null) {
+        // Set progress to the episode's position instead of using nextUnit()
+        setProgress(episodePosition);
+        return;
+      }
+    }
     
     nextUnit();
+  };
+
+  // Helper function to calculate episode position in the overall timeline
+  const calculateEpisodePosition = (seasonNumber: number, episodeNumber: number): number | null => {
+    if (!selectedMedia || !units.length) return null;
+    
+    // For TV shows, find the episode's position in the units array
+    const episodeUnit = units.find(unit => 
+      unit.subtype === "episode" && 
+      unit.title?.includes(`S${seasonNumber}E${episodeNumber}`)
+    );
+    
+    if (episodeUnit) {
+      return units.indexOf(episodeUnit) + 1; // +1 because progress is 1-based
+    }
+
+    // Fallback: estimate position based on season and episode number
+    // This is a rough calculation for when we don't have exact unit data
+    if (seasonNumber > 1) {
+      // Estimate that each season has ~12 episodes (adjust based on your data)
+      const estimatedEpisodesPerSeason = 12;
+      const estimatedPosition = ((seasonNumber - 1) * estimatedEpisodesPerSeason) + episodeNumber;
+      return Math.min(estimatedPosition, units.length);
+    }
+    
+    return episodeNumber;
   };
 
   const handleTimeBasedRating = async (hours: number, minutes: number, rating: SwipeValue, comment?: string) => {
@@ -701,9 +738,11 @@ function AddWiggContent() {
 }
 
 export default function AddWigg() {
-  const { user, loading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuthRedirect({
+    message: "Please sign in to rate media and track your viewing experience."
+  });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl mobile-safe-bottom">
         <div className="flex items-center justify-center py-12">
@@ -713,21 +752,9 @@ export default function AddWigg() {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl mobile-safe-bottom">
-        <Card>
-          <CardContent className="p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-4">
-              Please log in to rate media
-            </p>
-            <Button onClick={() => window.location.href = '/auth'}>
-              Sign In
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  if (!isAuthenticated) {
+    // This will never show because useAuthRedirect handles the redirect automatically
+    return null;
   }
 
   return <AddWiggContent />;

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { FlameKindling, RefreshCw } from "lucide-react";
 import { usePageHeader } from "@/contexts/HeaderContext";
 import { useAuth } from "@/hooks/useAuth";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { MediaSearch, type MediaSearchResult } from "@/components/media/MediaSearch";
 import { SwipeRating, type Unit, type SwipeValue, type SwipeDirection } from "@/components/wigg/SwipeRating";
 import { SessionRecap } from "@/components/wigg/SessionRecap";
@@ -348,7 +349,9 @@ function AddWiggRetroContent() {
 }
 
 export default function AddWiggRetro() {
-  const { user, loading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuthRedirect({
+    message: "Please sign in to create retrospective WIGG ratings."
+  });
 
   usePageHeader({
     title: "Retrospective Rating",
@@ -357,7 +360,7 @@ export default function AddWiggRetro() {
     showHomeButton: true,
   });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="flex items-center justify-center py-12">
@@ -367,21 +370,9 @@ export default function AddWiggRetro() {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Card>
-          <CardContent className="p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-4">
-              Please log in to create WIGG ratings
-            </p>
-            <Button onClick={() => window.location.href = '/auth'}>
-              Sign In
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  if (!isAuthenticated) {
+    // This will never show because useAuthRedirect handles the redirect automatically
+    return null;
   }
 
   return <AddWiggRetroContent />;

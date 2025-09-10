@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { FlameKindling, RefreshCw } from "lucide-react";
 import { usePageHeader } from "@/contexts/HeaderContext";
 import { useAuth } from "@/hooks/useAuth";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { MediaSearch, type MediaSearchResult } from "@/components/media/MediaSearch";
 import { MomentCapture, type MediaType } from "@/components/wigg/MomentCapture";
 import { YouTubePlayer, type MediaPlayerControls } from "@/components/wigg/MediaPlayer";
@@ -199,7 +200,9 @@ function AddWiggLiveContent() {
 }
 
 export default function AddWiggLive() {
-  const { user, loading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuthRedirect({
+    message: "Please sign in to capture WIGG moments in real-time."
+  });
 
   usePageHeader({
     title: "Live WIGG Capture",
@@ -208,7 +211,7 @@ export default function AddWiggLive() {
     showHomeButton: true,
   });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="flex items-center justify-center py-12">
@@ -218,21 +221,9 @@ export default function AddWiggLive() {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Card>
-          <CardContent className="p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-4">
-              Please log in to capture WIGG moments
-            </p>
-            <Button onClick={() => window.location.href = '/auth'}>
-              Sign In
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  if (!isAuthenticated) {
+    // This will never show because useAuthRedirect handles the redirect automatically
+    return null;
   }
 
   return <AddWiggLiveContent />;

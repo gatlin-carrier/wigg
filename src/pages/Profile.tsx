@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/useAuth";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
@@ -14,6 +15,9 @@ import { GraphTypeSelector, type GraphType } from "@/components/ui/GraphTypeSele
 import { RatingSystemSelector, type RatingSystem } from "@/components/ui/RatingSystemSelector";
 
 const Profile = () => {
+  const { isAuthenticated, isLoading: authLoading } = useAuthRedirect({
+    message: "Please sign in to access your profile and customize your preferences."
+  });
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -221,16 +225,19 @@ const Profile = () => {
     }
   };
 
-  if (!user) {
+  if (authLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardContent className="flex items-center justify-center py-12">
-            <p className="text-muted-foreground">Please sign in to view your profile.</p>
-          </CardContent>
-        </Card>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-sm text-muted-foreground">Loading...</div>
+        </div>
       </div>
     );
+  }
+
+  if (!isAuthenticated) {
+    // This will never show because useAuthRedirect handles the redirect automatically
+    return null;
   }
 
   return (

@@ -4,16 +4,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Loader2, Film, Tv, Gamepad2, Book, Mic, ChevronUp, ChevronDown } from "lucide-react";
+import { Loader2, Film, Tv, Gamepad2, Book, Mic, ChevronUp, ChevronDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { usePageHeader } from "@/contexts/HeaderContext";
 
 const Auth = () => {
   const navigate = useNavigate();
   const { signIn, signUp, loading } = useAuth();
   const { toast } = useToast();
+  
+  // Check for redirect message from URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirectMessage = urlParams.get('message');
+  const returnTo = urlParams.get('returnTo');
   
   const [signInData, setSignInData] = useState({ email: "", password: "" });
   const [signUpData, setSignUpData] = useState({ 
@@ -23,6 +29,13 @@ const Auth = () => {
     preferences: [] as Array<{type: string, priority: number}>
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  // Set up the page header
+  usePageHeader({
+    title: "WIGG",
+    subtitle: "Join the community to track when media gets good",
+    showBackButton: true,
+  });
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +49,9 @@ const Auth = () => {
         description: error.message || "Please check your credentials and try again.",
         variant: "destructive",
       });
+    } else {
+      // Redirect to the return URL or dashboard
+      navigate(returnTo || "/dashboard");
     }
     
     setIsLoading(false);
@@ -71,6 +87,7 @@ const Auth = () => {
         title: "Check your email",
         description: "We've sent you a confirmation link to complete your registration.",
       });
+      // Don't redirect on sign up, user needs to verify email
     }
     
     setIsLoading(false);
@@ -143,36 +160,17 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-border/50 py-6">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate("/")}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                WIGG
-              </h1>
-              <p className="text-muted-foreground">
-                Join the community to track when media gets good
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Auth Form */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-md mx-auto">
-          <Tabs defaultValue="signin" className="w-full">
+    <div className="container mx-auto px-4 py-12 mobile-safe-bottom">
+      <div className="max-w-md mx-auto">
+        {/* Show redirect message if present */}
+        {redirectMessage && (
+          <Card className="mb-6 bg-blue-50 border-blue-200">
+            <CardContent className="p-4 text-center">
+              <p className="text-sm text-blue-800">{redirectMessage}</p>
+            </CardContent>
+          </Card>
+        )}
+        <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
@@ -350,7 +348,6 @@ const Auth = () => {
           </Tabs>
         </div>
       </div>
-    </div>
   );
 };
 
