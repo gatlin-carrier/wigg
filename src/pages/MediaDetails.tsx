@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { usePageHeader } from '@/contexts/HeaderContext';
 import { PacingBarcode } from '@/components/wigg/PacingBarcode';
+import { TitleHeader } from '@/components/wigg/TitleHeader';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
 import { useMediaUnits } from '@/hooks/useMediaUnits';
@@ -237,6 +238,7 @@ export default function MediaDetails() {
     : isBook
       ? String((movie as any)?.first_publish_date ?? '').slice(0, 4)
       : String((movie as any)?.releaseDate ?? '').slice(0, 4);
+
   const rating = normalizeRatingTo10(
     (isTmdbMovie || isTmdbTv)
       ? (movie as any).vote_average
@@ -269,6 +271,13 @@ export default function MediaDetails() {
       : isAnilist
         ? ((movie as any)?.siteUrl ?? `https://anilist.co/anime/${id}`)
         : (movie as any)?.url;
+
+  // Create subtitle from available metadata (after all dependencies are defined)
+  const subtitle = [
+    year && `${year}`,
+    runtime && (runtime > 60 ? `${Math.floor(runtime / 60)}h ${runtime % 60}m` : `${runtime}m`),
+    genres?.slice(0, 2).join(', ')
+  ].filter(Boolean).join(' • ');
 
   return (
     <div className="min-h-screen bg-background">
@@ -435,63 +444,17 @@ export default function MediaDetails() {
 
             <Separator />
 
-            <div>
-              <h2 className="text-xl font-semibold mb-3">Community Pacing</h2>
-              <div className="rounded-lg border bg-card p-3">
-                <PacingBarcode
-                  titleId={titleKey}
-                  height={60}
-                  segmentCount={detailSegmentCount}
-                  segments={progressData?.segments || []}
-                  t2gEstimatePct={wiggsData?.t2gEstimatePct}
-                  dataScope="community"
-                  colorMode="heat"
-                  highlightOnHover={Boolean(units && units.length > 1)}
-                  segmentLabels={segmentLabels}
-                  onSegmentClick={(idx) => {
-                    const segCount = detailSegmentCount;
-                    const ord = !units || units.length <= 1
-                      ? 1
-                      : Math.max(1, Math.min(units.length, Math.round(((idx + 0.5) / segCount) * units.length)));
-                    const target = { 
-                      id: id || '',
-                      title,
-                      type: (isTmdbTv ? 'tv' : (isAnilist ? 'anime' : (isBook ? 'book' : (isTmdbMovie ? 'movie' : 'game')))) as any,
-                      year,
-                      posterUrl,
-                      externalIds: { tmdb_id: (isTmdbMovie || isTmdbTv) ? Number(id) : undefined }
-                    } as any;
-                    navigate('/add-wigg/retro', { state: { media: target, focusUnitOrdinal: ord } });
-                  }}
-                />
-                <div className="mt-2 text-xs text-muted-foreground flex items-center justify-between">
-                  <span>
-                    {progressData?.segments?.length ? `${progressData.segments.length} segments` : 'No pacing data yet'}
-                  </span>
-                  {wiggsData?.t2gEstimatePct && (
-                    <span>
-                      Gets good around {(() => {
-                        const type = (isTmdbTv ? 'tv' : (isAnilist ? 'anime' : (isBook ? 'book' : (isTmdbMovie ? 'movie' : 'game')))) as string;
-                        const minutes = runtime as number | undefined;
-                        const pct = wiggsData.t2gEstimatePct as number;
-                        // inline formatting to avoid extra imports here
-                        const pctLabel = `${pct.toFixed(0)}%`;
-                        if (!minutes || !type) return pctLabel;
-                        if (type === 'book' || type === 'manga') {
-                          const page = Math.round((pct / 100) * minutes);
-                          return `${pctLabel} (~page ${page})`;
-                        }
-                        const t2gMinutes = (pct / 100) * minutes;
-                        if (t2gMinutes < 60) return `${pctLabel} (~${Math.round(t2gMinutes)}m)`;
-                        const h = Math.floor(t2gMinutes / 60);
-                        const m = Math.round(t2gMinutes % 60);
-                        return `${pctLabel} (~${h}h${m ? ` ${m}m` : ''})`;
-                      })()}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
+            {/* Enhanced WIGG Interface with Edit Functionality */}
+            <TitleHeader
+              titleId={titleKey}
+              title={title}
+              subtitle={subtitle}
+              coverArt={posterUrl}
+              mediaType={isTmdbMovie ? 'movie' : isTmdbTv ? 'tv' : isGame ? 'game' : isBook ? 'book' : isAnilist ? (source === 'anilist-manga' ? 'manga' : 'anime') : 'movie'}
+              runtime={runtime}
+              genre={genres}
+              year={year ? parseInt(year) : undefined}
+            />
 
             <Separator />
 

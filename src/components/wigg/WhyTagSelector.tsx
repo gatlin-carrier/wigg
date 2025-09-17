@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Plus, X } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const WHY_TAGS: { id: string; label: string; spoilerLevel: "none" | "light" | "heavy" }[] = [
   { id: "pacing", label: "Pacing ↑", spoilerLevel: "none" },
@@ -29,6 +30,7 @@ interface WhyTagSelectorProps {
   customTags?: string[];
   onCustomTagsChange?: (tags: string[]) => void;
   className?: string;
+  loading?: boolean;
 }
 
 export function WhyTagSelector({
@@ -39,6 +41,7 @@ export function WhyTagSelector({
   customTags = [],
   onCustomTagsChange,
   className = "",
+  loading = false,
 }: WhyTagSelectorProps) {
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customTagInput, setCustomTagInput] = useState("");
@@ -69,6 +72,29 @@ export function WhyTagSelector({
       onTagsChange(selectedTags.filter(tag => tag !== tagToRemove));
     }
   };
+
+  if (loading) {
+    return (
+      <div className={className}>
+        <div className="space-y-3">
+          <div>
+            <div className="text-xs mb-2">Why (optional)</div>
+            <div className="flex flex-wrap gap-2">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-8 w-20 rounded-full" />
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <Label className="text-xs">Spoiler level</Label>
+            <Skeleton className="h-4 w-16 rounded" />
+            <Skeleton className="h-4 w-16 rounded" />
+            <Skeleton className="h-4 w-16 rounded" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={className}>

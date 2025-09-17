@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Star, Plus, TrendingUp } from 'lucide-react';
@@ -9,6 +9,9 @@ import { PacingBarcode } from '@/components/wigg/PacingBarcode';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
 import { formatT2G } from '@/lib/wigg/format';
 import { classifyPeakFromSegments } from '@/lib/wigg/analysis';
+import QuickWiggModal, { type QuickWiggVariant, type QuickWiggMedia, type QuickWiggUnits, type QuickWiggResult } from '@/components/wigg/QuickWiggModal';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
 
 type Props = {
   title: string;
@@ -30,29 +33,35 @@ type Props = {
     year?: number | string;
     runtime?: number;
   };
+  // Quick Wigg prototype integration
+  quickWiggEnabled?: boolean; // default: true (prototype)
+  quickWiggVariant?: QuickWiggVariant; // default: 'dialog'
+  quickWiggUnits?: QuickWiggUnits;
 };
 
-export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onClick, className, t2gLabelMode = 'percent+detail', mediaData }: Props) {
+export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onClick, className, t2gLabelMode = 'percent+detail', mediaData, quickWiggEnabled = true, quickWiggVariant = 'dialog', quickWiggUnits }: Props) {
   const navigate = useNavigate();
   const titleKey = useMemo(() => (mediaData ? `${mediaData.source}:${mediaData.id}` : title), [mediaData, title]);
   const { data: progressData } = useTitleProgress(titleKey);
-  const { data: wiggsData } = useUserWiggs(titleKey);
+  const { data: wiggsData, addWigg: addWiggLocal } = useUserWiggs(titleKey);
   const pacingInsight = useMemo(() => classifyPeakFromSegments(progressData?.segments || []).label, [progressData?.segments]);
+  const [quickOpen, setQuickOpen] = useState(false);
 
   const handleAddWigg = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (mediaData) {
-      navigate('/add-wigg', { 
-        state: { 
-          media: mediaData
-        }
-      });
-    } else if (onAdd) {
-      onAdd();
+    // Prototype: prefer quick modal when enabled
+    if (quickWiggEnabled) {
+      setQuickOpen(true);
+      return;
     }
+    // Legacy fallback
+    if (mediaData) {
+      navigate('/add-wigg', { state: { media: mediaData } });
+    } else if (onAdd) onAdd();
   };
   return (
+    <>
     <Card 
       className={cn(
         'p-4 bg-card hover:bg-muted/40 border-0 shadow-soft hover:shadow-medium transition-colors duration-200 group h-full relative',
@@ -170,6 +179,138 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
         )}
       </div>
     </Card>
+    {quickWiggEnabled && (
+      <QuickWiggModal
+        open={quickOpen}
+        onOpenChange={setQuickOpen}
+        variant={quickWiggVariant}
+        media={(() => {
+          if (mediaData) {
+            const externalIds: any = {};
+            if (mediaData.source?.startsWith('tmdb')) externalIds.tmdb_id = Number(mediaData.id);
+            if (mediaData.source === 'anilist') externalIds.anilist_id = Number(mediaData.id);
+            return {
+              id: `${mediaData.source}:${mediaData.id}`,
+              title: mediaData.title,
+              type: mediaData.type as QuickWiggMedia['type'],
+              year: mediaData.year,
+              externalIds,
+            } as QuickWiggMedia;
+          }
+          return { id: titleKey, title } as QuickWiggMedia;
+        })()}
+        units={quickWiggUnits}
+        onSave={async (res: QuickWiggResult) => {
+          try {
+            if (!mediaData) return;
+            const { data: sessionData } = await supabase.auth.getSession();
+            const userId = sessionData.session?.user?.id;
+            if (!userId) {
+              navigate('/add-wigg', { state: { media: mediaData } });
+              return;
+            }
+
+            // Upsert media and get DB id
+            const mapType = (t?: string): 'movie' | 'tv' | 'anime' | 'game' | 'book' | 'podcast' => {
+              const v = (t || '').toLowerCase();
+              if (v === 'tv' || v === 'tmdb-tv') return 'tv';
+              if (v === 'anime') return 'anime';
+              if (v === 'game') return 'game';
+              if (v === 'book' || v === 'manga') return 'book';
+              if (v === 'podcast') return 'podcast';
+              return 'movie';
+            };
+            const extIds: Record<string, any> = {};
+            if (mediaData.source?.startsWith('tmdb')) extIds.tmdb_id = Number(mediaData.id);
+            if (mediaData.source === 'anilist') extIds.anilist_id = Number(mediaData.id);
+            if (mediaData.source === 'openlibrary') extIds.openlibrary_id = String(mediaData.id);
+            if (mediaData.source === 'podcastindex') extIds.podcast_guid = String(mediaData.id);
+
+            const { data: mediaId, error: upsertErr } = await supabase.rpc('upsert_media', {
+              p_type: mapType(mediaData.type),
+              p_title: mediaData.title,
+              p_year: typeof mediaData.year === 'string' ? parseInt(mediaData.year) || null : (mediaData.year as any) ?? null,
+              p_duration_sec: typeof mediaData.runtime === 'number' ? Number(mediaData.runtime) : null,
+              p_pages: null,
+              p_external_ids: extIds,
+            });
+            if (upsertErr) throw upsertErr;
+
+            // Compute position percent across the series when episodic
+            const seasons = quickWiggUnits?.seasons || [];
+            const totalEps = seasons.reduce((acc, s) => acc + (s.episodes?.length || 0), 0);
+            let pct = 50; // default midpoint
+            if (totalEps > 0) {
+              if (res.scope === 'episode' && res.seasonNo && res.episodeNo) {
+                const prevCount = seasons
+                  .filter((s) => s.number < res.seasonNo!)
+                  .reduce((acc, s) => acc + (s.episodes?.length || 0), 0);
+                const ordinal = prevCount + res.episodeNo;
+                pct = Math.round((ordinal / totalEps) * 100);
+              } else if (res.scope === 'season' && res.seasonNo) {
+                const prevCount = seasons
+                  .filter((s) => s.number < res.seasonNo!)
+                  .reduce((acc, s) => acc + (s.episodes?.length || 0), 0);
+                const thisLen = seasons.find((s) => s.number === res.seasonNo)?.episodes?.length || 0;
+                const mid = prevCount + thisLen / 2;
+                pct = Math.round((mid / totalEps) * 100);
+              } else {
+                // series scope
+                pct = 50;
+              }
+            }
+
+            const spoilerMap: Record<string, '0' | '1' | '2'> = { none: '0', light: '1', heavy: '2' } as const;
+            const p_spoiler = spoilerMap[(res as any).spoiler] || '0';
+            const allTags = Array.from(
+              new Set([
+                ...(res.tags || []),
+                ...((res.customTags as string[]) || []),
+                typeof res.rating === 'number' ? `rating_${res.rating}` : undefined,
+              ].filter(Boolean) as string[])
+            );
+
+            const { error: addErr } = await supabase.rpc('add_wigg', {
+              p_media_id: mediaId as string,
+              p_episode_id: null as any,
+              p_user_id: userId,
+              p_pos_kind: 'percent',
+              p_pos_value: pct,
+              p_span_start: null,
+              p_span_end: null,
+              p_tags: allTags,
+              p_reason_short: (res.note || '').slice(0, 140) || null,
+              p_spoiler,
+            } as any);
+
+            if (addErr) throw addErr;
+            // Update local UI approximation
+            try { await addWiggLocal?.(pct, res.note, res.rating); } catch {}
+            toast({ title: 'Saved', description: 'Your Wigg has been added.' });
+          } catch (err) {
+            console.error('Quick add failed', err);
+            toast({ title: 'Save failed', description: 'Could not add Wigg. Try Full Add.', variant: 'destructive' });
+          }
+        }}
+        footerExtra={
+          mediaData ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(ev) => {
+                ev.preventDefault();
+                ev.stopPropagation();
+                setQuickOpen(false);
+                navigate('/add-wigg', { state: { media: mediaData } });
+              }}
+            >
+              Full Add
+            </Button>
+          ) : null
+        }
+      />
+    )}
+    </>
   );
 }
 

@@ -1,73 +1,88 @@
-# Welcome to your Lovable project
+# WIGG
 
-## Project info
+WIGG is a storytelling insight platform that helps fans capture how film, TV, games, and podcasts land in the moment. The web app pairs rich logging tools with interactive visualizations so you can compare arcs, track pacing, and surface the scenes that mattered most.
 
-**URL**: https://lovable.dev/projects/12e50fc1-9643-45ed-8add-b93e41ab09a0
+![WIGG dashboard](public/WIGG-Dashboard.png)
 
-## How can I edit this code?
+## Highlights
+- Live and retro logging flows with Moment Capture, swipe ratings, timeline notes, and game completion tracking
+- Goodness, pacing, and consensus visualizations (GoodnessCurve, PacingBarcode, WiggMap, RealTimeVisualization)
+- Supabase-backed sync with LLM-powered smart search, podcast search, and other edge functions
+- Shared TypeScript monorepo powering the Vite web app, Storybook UI library, and experimental native surfaces
 
-There are several ways of editing your application.
+## Repository Layout
+- `src/` &mdash; primary React + TypeScript web app (components, pages, hooks, contexts, integrations)
+- `apps/web` & `apps/native` &mdash; platform-specific shells and examples
+- `packages/shared` &mdash; cross-platform utilities and Wigg data helpers (`@shared/wigg/*`)
+- `public/` &mdash; static assets served by Vite
+- `docs/` &mdash; feature notes, MCP setup, and integration guides
+- `supabase/` &mdash; edge functions, migrations, and Supabase wiring
 
-**Use Lovable**
+## Getting Started
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/12e50fc1-9643-45ed-8add-b93e41ab09a0) and start prompting.
+### Prerequisites
+- Node.js 18 or newer (use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) for easy installs)
+- npm 10+
+- Access to the Supabase project backing the app
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Install & Run
+```bash
+git clone <repo-url>
+cd wigg
+npm install
 npm run dev
 ```
+The dev server defaults to `http://localhost:5173` with hot module reloading.
 
-**Edit a file directly in GitHub**
+### Environment Configuration
+Create a `.env` at the repository root (never commit secrets). At minimum you need:
+```env
+VITE_SUPABASE_URL="https://<your-project>.supabase.co"
+VITE_SUPABASE_PROJECT_ID="<project-ref>"
+VITE_SUPABASE_PUBLISHABLE_KEY="<anon-key>"
+VITE_TMDB_API_KEY="<tmdb-api-key>"
+```
+Additional provider credentials (Podcast Index, Spotify, etc.) should be added as Supabase function secrets rather than `VITE_*` variables. See `docs/mcp-supabase.md` for details.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Development Workflow
+- `npm run dev` &mdash; start Vite with HMR
+- `npm run build` &mdash; production build to `dist/`
+- `npm run build:dev` &mdash; faster development build
+- `npm run preview` &mdash; serve the production build locally
+- `npm run lint` &mdash; ESLint with React Hooks/Refresh rules
+- `npm test` &mdash; Vitest (single run). Use `npx vitest` for watch mode
+- `npm run storybook` / `npm run build-storybook` &mdash; component explorer
 
-**Use GitHub Codespaces**
+## Testing & Quality
+- Tests live alongside source in `**/__tests__` with `.test.ts(x)` suffixes
+- Prefer user-oriented tests via Testing Library; mock external APIs as needed
+- Fix all ESLint findings before pushing (`eslint.config.js` governs shared rules)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Supabase Edge Functions
+Edge functions live under `supabase/functions/` (e.g., `smart-search`, `podcast-search`, `podcast-trending`). Use the Supabase CLI to manage secrets and deploy:
+```bash
+supabase secrets set <KEY>=<VALUE> --project-ref <project>
+supabase functions deploy podcast-search --project-ref <project>
+```
+Refer to `docs/mcp-supabase.md` for MCP integration and deployment workflows.
 
-## What technologies are used for this project?
+## Storybook & UI Review
+Run `npm run storybook` to explore components (e.g., GoodnessCurve, PacingBarcode, TitleHeader) in isolation. Stories live in `src/stories/` and should accompany complex UI updates.
 
-This project is built with:
+## Documentation & References
+- `docs/smart-search.md` &mdash; LLM-powered media search architecture
+- `docs/wiggmap.md` &mdash; WiggMap rendering and shared types
+- `docs/wigg-ui-test-plan.md` &mdash; end-to-end UI validation checklist
+- `docs/mcp-supabase.md` &mdash; Supabase MCP setup, secrets, and deployment tips
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Contributing
+Follow the repository guidelines in `AGENTS.md`:
+- Use path aliases (`@/*`, `@shared/*`) and keep components in PascalCase
+- Co-locate tests, prefer deterministic patterns, and write clear commit messages (Conventional Commit style)
+- Run linting and tests before opening a PR
 
-## How can I deploy this project?
+## Deployment
+Build with `npm run build`; the optimized output is placed in `dist/` and can be served by any static host (Vercel, Netlify, Supabase Hosting, etc.). Ensure required Supabase functions are deployed and environment secrets are configured in the target environment.
 
-Simply open [Lovable](https://lovable.dev/projects/12e50fc1-9643-45ed-8add-b93e41ab09a0) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## License
+License details have not been specified for this repository. Treat the codebase as private unless told otherwise.
