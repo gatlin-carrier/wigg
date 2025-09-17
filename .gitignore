@@ -33,3 +33,8 @@ storybook-static
 .env.*
 *.env.local
 !.env.example
+
+# Ignore env files
+.env
+.env.*
+**/.env
