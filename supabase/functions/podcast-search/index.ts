@@ -12,9 +12,9 @@ const corsHeaders = {
 };
 
 function readPIAuthFromEnv() {
-  const apiKey = Deno.env.get('PI_API_KEY') || Deno.env.get('VITE_PI_API_KEY');
-  const apiSecret = Deno.env.get('PI_API_SECRET') || Deno.env.get('VITE_PI_API_SECRET');
-  const userAgent = Deno.env.get('PODCAST_USER_AGENT') || Deno.env.get('VITE_PODCAST_USER_AGENT') || 'WIGG/PodcastSearch (+https://wigg.app)';
+  const apiKey = Deno.env.get('PI_API_KEY');
+  const apiSecret = Deno.env.get('PI_API_SECRET');
+  const userAgent = Deno.env.get('PODCAST_USER_AGENT') ?? 'WIGG/PodcastSearch (+https://wigg.app)';
   if (!apiKey || !apiSecret) return undefined;
   return { apiKey, apiSecret, userAgent } as const;
 }

@@ -35,7 +35,7 @@ npm run dev
 The dev server defaults to `http://localhost:5173` with hot module reloading.
 
 ### Environment Configuration
-Create a `.env` at the repository root (never commit secrets). At minimum you need:
+Copy `.env.example` to `.env` (never commit secrets). At minimum you need:
 ```env
 VITE_SUPABASE_URL="https://<your-project>.supabase.co"
 VITE_SUPABASE_PROJECT_ID="<project-ref>"

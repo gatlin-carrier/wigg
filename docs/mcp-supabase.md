@@ -7,8 +7,7 @@ This doc shows how to use the Supabase MCP server with Codex CLI in this repo, v
 - MCP config: `c:\Users\gatli\.codex\config.toml`
   - Uses: `npx -y @supabase/mcp-server-supabase@latest --read-only --project-ref=anmadaditlpkedmaeibx`
   - Has `SUPABASE_ACCESS_TOKEN` set in `env`.
-- Project ref matches `.env`:
-  - `.env: VITE_SUPABASE_PROJECT_ID` = `anmadaditlpkedmaeibx`
+- Project ref matches your local `.env` (see `.env.example`).
 
 If you want reproducible behavior, consider pinning the MCP server version (e.g., `@supabase/mcp-server-supabase@1.x.y`).
 
@@ -77,7 +76,7 @@ Podcasts trending (browse row):
 ### Security Notes
 
 - Keep Podcast Index secrets out of the browser. Prefer function secrets over `.env` `VITE_*` vars.
-- You can remove `VITE_PI_API_KEY`/`VITE_PI_API_SECRET` from `.env` after setting Supabase function secrets.
+- Edge functions ignore `VITE_PI_API_KEY`/`VITE_PI_API_SECRET`; configure Podcast Index credentials with `supabase secrets` only.
 
 ### Troubleshooting
 

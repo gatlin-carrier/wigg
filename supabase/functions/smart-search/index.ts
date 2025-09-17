@@ -212,9 +212,9 @@ async function executeQueryPlan(plan: QueryPlan): Promise<{ ok: boolean; data?: 
       url = 'https://graphql.anilist.co';
     } else if (plan.provider === 'podcastindex') {
       // PodcastIndex REST with HMAC auth
-      const apiKey = Deno.env.get('PI_API_KEY') || Deno.env.get('VITE_PI_API_KEY');
-      const apiSecret = Deno.env.get('PI_API_SECRET') || Deno.env.get('VITE_PI_API_SECRET');
-      const userAgent = Deno.env.get('PODCAST_USER_AGENT') || Deno.env.get('VITE_PODCAST_USER_AGENT') || 'WIGG/SmartSearch (+https://wigg.app)';
+      const apiKey = Deno.env.get('PI_API_KEY');
+      const apiSecret = Deno.env.get('PI_API_SECRET');
+      const userAgent = Deno.env.get('PODCAST_USER_AGENT') ?? 'WIGG/SmartSearch (+https://wigg.app)';
       if (!apiKey || !apiSecret) throw new Error('PodcastIndex credentials not configured');
       const t = Math.floor(Date.now() / 1000);
       const auth = await sha1Hex(`${apiKey}${apiSecret}${t}`);

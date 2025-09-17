@@ -19,9 +19,9 @@ async function sha1Async(input: string): Promise<string> {
 }
 
 async function buildHeaders(): Promise<HeadersInit> {
-  const apiKey = Deno.env.get('PI_API_KEY') || Deno.env.get('VITE_PI_API_KEY');
-  const apiSecret = Deno.env.get('PI_API_SECRET') || Deno.env.get('VITE_PI_API_SECRET');
-  const userAgent = Deno.env.get('PODCAST_USER_AGENT') || Deno.env.get('VITE_PODCAST_USER_AGENT') || 'WIGG/PodcastBrowse (+https://wigg.app)';
+  const apiKey = Deno.env.get('PI_API_KEY');
+  const apiSecret = Deno.env.get('PI_API_SECRET');
+  const userAgent = Deno.env.get('PODCAST_USER_AGENT') ?? 'WIGG/PodcastBrowse (+https://wigg.app)';
   if (!apiKey || !apiSecret) throw new Error('PodcastIndex API credentials not configured');
   const t = Math.floor(Date.now() / 1000);
   const auth = await sha1Async(`${apiKey}${apiSecret}${t}`);

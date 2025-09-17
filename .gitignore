@@ -29,3 +29,7 @@ storybook-static
 
 #Ignore vscode AI rules
 .github\instructions\codacy.instructions.md
+.env
+.env.*
+*.env.local
+!.env.example
