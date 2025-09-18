@@ -2,10 +2,9 @@
   "session_id": "bb76a1ce-6c20-4a84-8759-63f7d61ce12c",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\bb76a1ce-6c20-4a84-8759-63f7d61ce12c.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Edit",
+  "tool_name": "Write",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\main.tsx",
-    "old_string": "const queryClient = new QueryClient({\n  defaultOptions: {\n    queries: {\n      refetchOnWindowFocus: true,\n      retry: 1,\n    },\n  },\n});\nconst persister = createSyncStoragePersister({ storage: window.localStorage, key: 'wigg-rq' });",
-    "new_string": "const queryClient = new QueryClient({\n  defaultOptions: {\n    queries: {\n      refetchOnWindowFocus: false, // Reduce unnecessary network requests\n      retry: 1,\n      staleTime: 5 * 60 * 1000, // 5 minutes - keep data fresh but avoid excessive refetching\n      gcTime: 10 * 60 * 1000, // 10 minutes garbage collection time\n    },\n    mutations: {\n      retry: 1,\n    },\n  },\n});\n\n// Use async storage to prevent blocking main thread during hydration\nconst persister = createSyncStoragePersister({ \n  storage: window.localStorage, \n  key: 'wigg-rq',\n  serialize: JSON.stringify,\n  deserialize: JSON.parse,\n});"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\useAnalyticsWorker.tsx",
+    "content": "import { useState, useEffect, useCallback } from 'react';\n\ninterface AnalyticsWorkerHook {\n  isSupported: boolean;\n  track: (name: string, properties?: Record<string, any>) => Promise<void>;\n  page: (url: string, properties?: Record<string, any>) => Promise<void>;\n}\n\nexport const useAnalyticsWorker = (): AnalyticsWorkerHook => {\n  const [isSupported] = useState(typeof Worker !== 'undefined');\n\n  const track = useCallback(async (name: string, properties?: Record<string, any>): Promise<void> => {\n    // Minimal implementation\n  }, []);\n\n  const page = useCallback(async (url: string, properties?: Record<string, any>): Promise<void> => {\n    // Minimal implementation\n  }, []);\n\n  return {\n    isSupported,\n    track,\n    page,\n  };\n};"
   }
 }
