@@ -2,9 +2,10 @@
   "session_id": "bb76a1ce-6c20-4a84-8759-63f7d61ce12c",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\bb76a1ce-6c20-4a84-8759-63f7d61ce12c.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Write",
+  "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\useAnalyticsWorker.tsx",
-    "content": "import { useState, useEffect, useCallback } from 'react';\n\ninterface AnalyticsWorkerHook {\n  isSupported: boolean;\n  track: (name: string, properties?: Record<string, any>) => Promise<void>;\n  page: (url: string, properties?: Record<string, any>) => Promise<void>;\n}\n\nexport const useAnalyticsWorker = (): AnalyticsWorkerHook => {\n  const [isSupported] = useState(typeof Worker !== 'undefined');\n\n  const track = useCallback(async (name: string, properties?: Record<string, any>): Promise<void> => {\n    // Minimal implementation\n  }, []);\n\n  const page = useCallback(async (url: string, properties?: Record<string, any>): Promise<void> => {\n    // Minimal implementation\n  }, []);\n\n  return {\n    isSupported,\n    track,\n    page,\n  };\n};"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\vitest.setup.ts",
+    "old_string": "// @ts-ignore\nglobal.Worker = MockWorker;",
+    "new_string": "// @ts-expect-error - MockWorker is not a full Worker implementation\nglobal.Worker = MockWorker;"
   }
 }

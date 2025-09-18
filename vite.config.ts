@@ -20,6 +20,9 @@ export default defineConfig(({ mode }) => ({
       "@shared": path.resolve(__dirname, "./packages/shared"),
     },
   },
+  worker: {
+    format: 'es',
+  },
   build: {
     // Optimize bundle for better loading performance
     rollupOptions: {

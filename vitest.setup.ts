@@ -31,7 +31,7 @@ class MockWorker {
   onmessageerror: ((event: MessageEvent) => void) | null = null;
 }
 
-// @ts-ignore
+// @ts-expect-error - MockWorker is not a full Worker implementation
 global.Worker = MockWorker;
 
 // Mock environment variables for tests
