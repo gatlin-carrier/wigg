@@ -2,10 +2,9 @@
   "session_id": "b3a0688b-829d-4ffb-9803-93a3d54d2d91",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\b3a0688b-829d-4ffb-9803-93a3d54d2d91.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Edit",
+  "tool_name": "Write",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\integrations\\supabase\\client.ts",
-    "old_string": "export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {\n  auth: {\n    storage: localStorage,\n    persistSession: true,\n    autoRefreshToken: true,\n  }\n});",
-    "new_string": "export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {\n  auth: {\n    storage: localStorage,\n    persistSession: true,\n    autoRefreshToken: true,\n  },\n  realtime: {\n    params: {\n      eventsPerSecond: 10,\n    },\n    heartbeatIntervalMs: 30000,\n    reconnectAfterMs: (tries: number) => Math.min(tries * 1000, 30000),\n  },\n  global: {\n    headers: {\n      'X-Client-Info': 'wigg-app@1.0.0',\n    },\n  },\n});"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\__tests__\\serviceWorker.test.ts",
+    "content": "import { describe, it, expect, beforeEach, vi } from 'vitest';\n\ndescribe('Service Worker Performance', () => {\n  beforeEach(() => {\n    // Mock service worker registration\n    global.navigator = {\n      serviceWorker: {\n        register: vi.fn(),\n        ready: Promise.resolve({\n          active: {\n            postMessage: vi.fn()\n          }\n        })\n      }\n    } as any;\n  });\n\n  it('should have service worker registration capability', () => {\n    expect(navigator.serviceWorker).toBeDefined();\n    expect(typeof navigator.serviceWorker.register).toBe('function');\n  });\n});"
   }
 }

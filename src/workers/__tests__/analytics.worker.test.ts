@@ -11,29 +11,40 @@ describe('Analytics Worker', () => {
     mockWorker = new (global as any).Worker('test-url');
   });
   
-  it('should receive and acknowledge analytics events', () => {
-    const mockEvent = {
+  it('should load analytics worker successfully', () => {
+    expect(() => {
+      new Worker(new URL('../analytics.worker.ts', import.meta.url), {
+        type: 'module'
+      });
+    }).not.toThrow();
+  });
+
+  it('should process analytics events', async () => {
+    const worker = new Worker(new URL('../analytics.worker.ts', import.meta.url), {
+      type: 'module'
+    });
+
+    const messagePromise = new Promise((resolve) => {
+      worker.onmessage = (event) => {
+        resolve(event.data);
+      };
+    });
+
+    const testEvent = {
       id: 'test-1',
-      event: {
-        type: 'track' as const,
-        name: 'button_click',
-        properties: { button: 'submit' }
+      type: 'track',
+      payload: {
+        type: 'pageview',
+        data: { page: '/dashboard' },
+        timestamp: Date.now()
       }
     };
-    
-    // Test the mock worker receives and processes the message
-    mockWorker.postMessage(mockEvent);
-    
-    expect(mockWorker.postMessage).toHaveBeenCalledWith(mockEvent);
-    
-    // Simulate worker response
-    mockWorker.simulateMessage({
-      type: 'event_queued',
-      id: 'test-1',
-      queueSize: 1
-    });
-    
-    // The test now passes since we're using the mock
-    expect(mockWorker.postMessage).toHaveBeenCalledTimes(1);
+
+    worker.postMessage(testEvent);
+
+    const response = await messagePromise;
+    expect(response).toEqual({ id: 'test-1', status: 'processed' });
+
+    worker.terminate();
   });
 });
