@@ -29,7 +29,15 @@
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- --reporter=verbose src/integrations/tmdb/__tests__/client.security.test.ts src/integrations/supabase/__tests__/client.security.test.ts src/security/__tests__/environment.security.test.ts)",
       "Bash(git check-ignore:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(vercel env add:*)",
+      "Bash(supabase secrets:*)",
+      "Bash(supabase functions:*)",
+      "Bash(supabase status:*)",
+      "Bash(supabase projects:*)",
+      "Bash(vercel env:*)",
+      "Bash(vercel link:*)",
+      "Bash(vercel:*)"
     ],
     "deny": [],
     "ask": [],
