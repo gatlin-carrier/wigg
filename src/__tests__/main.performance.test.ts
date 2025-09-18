@@ -7,8 +7,10 @@ describe('Main App QueryClient Configuration', () => {
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
-          refetchOnWindowFocus: true, // Current setting from main.tsx
+          refetchOnWindowFocus: false, // Updated setting from main.tsx
+          staleTime: 5 * 60 * 1000, // 5 minutes
           retry: 1,
+          gcTime: 10 * 60 * 1000, // 10 minutes garbage collection
         },
       },
     });

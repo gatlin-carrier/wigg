@@ -2,10 +2,9 @@
   "session_id": "bb76a1ce-6c20-4a84-8759-63f7d61ce12c",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\bb76a1ce-6c20-4a84-8759-63f7d61ce12c.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Edit",
+  "tool_name": "Write",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\vitest.setup.ts",
-    "old_string": "// @ts-ignore\nglobal.Worker = MockWorker;",
-    "new_string": "// @ts-expect-error - MockWorker is not a full Worker implementation\nglobal.Worker = MockWorker;"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\utils\\serviceWorker.ts",
+    "content": "export const registerServiceWorker = () => {};"
   }
 }
