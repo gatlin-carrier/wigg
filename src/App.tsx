@@ -1,6 +1,7 @@
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Analytics } from '@vercel/analytics/react';
 import GlobalHeader from "@/components/layout/GlobalHeader";
 import { HeaderProvider } from "@/contexts/HeaderContext";
 import Index from "./pages/Index";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <Analytics />
         </div>
       </HeaderProvider>
     </BrowserRouter>

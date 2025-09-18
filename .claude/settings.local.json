@@ -18,7 +18,9 @@
       "Bash(npm run dev:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
-      "Bash(npm run lint:*)"
+      "Bash(npm run lint:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": [],
