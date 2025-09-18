@@ -12,6 +12,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
+    <!-- Critical resource hints for faster loading -->
+    <link rel="dns-prefetch" href="https://vitals.vercel-analytics.com" />
+    <link rel="preconnect" href="https://vitals.vercel-analytics.com" crossorigin />
+    
+    <!-- Preload critical CSS and JS chunks -->
+    <link rel="modulepreload" href="/src/main.tsx" />
+    
+    <!-- Resource hints for performance -->
+    <meta name="theme-color" content="#8b5cf6" />
+    <link rel="preload" as="style" href="/src/index.css" onload="this.onload=null;this.rel='stylesheet'" />
+    
     <!-- Favicon with preload -->
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="shortcut icon" type="image/png" href="/favicon.png" />

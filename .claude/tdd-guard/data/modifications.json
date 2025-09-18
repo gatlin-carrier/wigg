@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\pages\\Index.tsx",
-    "old_string": "      {/* Hero Section */}\n      <div className=\"bg-gradient-hero relative overflow-hidden\">\n        <div className=\"absolute inset-0 bg-black/10\"></div>\n        <div className=\"relative container mx-auto px-4 py-16 md:py-24\">",
-    "new_string": "      {/* Hero Section */}\n      <div className=\"bg-gradient-hero relative overflow-hidden\" style={{ minHeight: '60vh' }}>\n        <div className=\"absolute inset-0 bg-black/10\"></div>\n        <div className=\"relative container mx-auto px-4 py-16 md:py-24\">"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\main.tsx",
+    "old_string": "const queryClient = new QueryClient({\n  defaultOptions: {\n    queries: {\n      refetchOnWindowFocus: true,\n      retry: 1,\n    },\n  },\n});\nconst persister = createSyncStoragePersister({ storage: window.localStorage, key: 'wigg-rq' });",
+    "new_string": "const queryClient = new QueryClient({\n  defaultOptions: {\n    queries: {\n      refetchOnWindowFocus: false, // Reduce unnecessary network requests\n      retry: 1,\n      staleTime: 5 * 60 * 1000, // 5 minutes - keep data fresh but avoid excessive refetching\n      gcTime: 10 * 60 * 1000, // 10 minutes garbage collection time\n    },\n    mutations: {\n      retry: 1,\n    },\n  },\n});\n\n// Use async storage to prevent blocking main thread during hydration\nconst persister = createSyncStoragePersister({ \n  storage: window.localStorage, \n  key: 'wigg-rq',\n  serialize: JSON.stringify,\n  deserialize: JSON.parse,\n});"
   }
 }

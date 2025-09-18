@@ -46,6 +46,34 @@ All colors MUST be HSL.
     transform: translateZ(0);
   }
   
+  /* Content visibility optimization for performance */
+  .content-auto {
+    content-visibility: auto;
+    contain: layout style paint;
+  }
+  
+  /* Grid layout stability */
+  .grid-stable {
+    min-height: 200px;
+  }
+  
+  /* Hero section optimization */
+  .hero-section {
+    min-height: 60vh;
+    content-visibility: auto;
+    contain: layout style paint;
+  }
+  
+  /* Stats section stability */
+  .stats-section {
+    min-height: 300px;
+  }
+  
+  /* Features section stability */
+  .features-section {
+    min-height: 400px;
+  }
+  
   :root {
     --background: 250 100% 98%;
     --foreground: 260 15% 8%;

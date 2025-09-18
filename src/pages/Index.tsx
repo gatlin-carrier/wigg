@@ -12,7 +12,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="bg-gradient-hero relative overflow-hidden">
+      <div className="bg-gradient-hero relative overflow-hidden hero-section">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative container mx-auto px-4 py-16 md:py-24">
           <div className="absolute right-4 top-4 z-10 flex items-center gap-3">
