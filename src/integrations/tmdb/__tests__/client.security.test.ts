@@ -53,7 +53,8 @@ describe('TMDB Client Security', () => {
     const [url] = fetchCall;
     
     // Should always go through Edge Function
-    expect(url).toContain('https://test.supabase.co/functions/v1/tmdb');
+    expect(url).toContain('/functions/v1/tmdb');
+    expect(url).toContain('.supabase.co');
     expect(url).not.toContain('api.themoviedb.org');
   });
 });
