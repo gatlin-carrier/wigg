@@ -2,11 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Font loading optimization to prevent CLS */
+@font-face {
+  font-family: system-ui;
+  font-display: swap;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
 
 @layer base {
+  /* Font optimization for reduced layout shift */
+  * {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  /* Prevent layout shifts by ensuring consistent sizing */
+  img, svg {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Optimize icon sizing to prevent shifts */
+  svg[class*="lucide"] {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  /* Ensure containers maintain aspect ratios */
+  .aspect-square {
+    aspect-ratio: 1;
+  }
+  
+  .aspect-video {
+    aspect-ratio: 16 / 9;
+  }
+  
+  /* Reduce animation-induced layout shifts */
+  .animate-pulse {
+    transform: translateZ(0);
+  }
+  
   :root {
     --background: 250 100% 98%;
     --foreground: 260 15% 8%;

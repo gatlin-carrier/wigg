@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\__tests__\\WiggPointForm.test.tsx",
-    "old_string": "import { useAuth } from '@/hooks/useAuth';\nimport { toast } from '@/hooks/use-toast';\n\ndescribe('WiggPointForm', () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n    (useAuth as any).mockReturnValue({\n      user: { id: 'test-user-id' }\n    });",
-    "new_string": "import { useAuth } from '@/hooks/useAuth';\nimport { toast } from '@/hooks/use-toast';\n\nconst mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;\nconst mockToast = toast as jest.MockedFunction<typeof toast>;\n\ndescribe('WiggPointForm', () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n    mockUseAuth.mockReturnValue({\n      user: { id: 'test-user-id' }\n    } as any);"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\pages\\Index.tsx",
+    "old_string": "      {/* Hero Section */}\n      <div className=\"bg-gradient-hero relative overflow-hidden\">\n        <div className=\"absolute inset-0 bg-black/10\"></div>\n        <div className=\"relative container mx-auto px-4 py-16 md:py-24\">",
+    "new_string": "      {/* Hero Section */}\n      <div className=\"bg-gradient-hero relative overflow-hidden\" style={{ minHeight: '60vh' }}>\n        <div className=\"absolute inset-0 bg-black/10\"></div>\n        <div className=\"relative container mx-auto px-4 py-16 md:py-24\">"
   }
 }

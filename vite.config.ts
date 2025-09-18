@@ -20,4 +20,29 @@ export default defineConfig(({ mode }) => ({
       "@shared": path.resolve(__dirname, "./packages/shared"),
     },
   },
+  build: {
+    // Optimize bundle for better loading performance
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-select'],
+          charts: ['recharts'],
+          motion: ['framer-motion'],
+          query: ['@tanstack/react-query'],
+        },
+      },
+    },
+    // Optimize chunk size warnings
+    chunkSizeWarningLimit: 1000,
+  },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      '@tanstack/react-query',
+      'lucide-react',
+    ],
+  },
 }));
