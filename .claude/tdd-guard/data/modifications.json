@@ -1,10 +1,11 @@
 {
-  "session_id": "bb76a1ce-6c20-4a84-8759-63f7d61ce12c",
-  "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\bb76a1ce-6c20-4a84-8759-63f7d61ce12c.jsonl",
+  "session_id": "b3a0688b-829d-4ffb-9803-93a3d54d2d91",
+  "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\b3a0688b-829d-4ffb-9803-93a3d54d2d91.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Write",
+  "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\public\\sw.js",
-    "content": "const CACHE_NAME = 'wigg-v1';\nconst STATIC_ASSETS = [\n  '/',\n  '/index.html',\n  '/favicon.png'\n];\n\nself.addEventListener('install', (event) => {\n  event.waitUntil(\n    caches.open(CACHE_NAME)\n      .then((cache) => cache.addAll(STATIC_ASSETS))\n      .then(() => self.skipWaiting())\n  );\n});\n\nself.addEventListener('activate', (event) => {\n  event.waitUntil(\n    caches.keys().then((cacheNames) => {\n      return Promise.all(\n        cacheNames.map((cacheName) => {\n          if (cacheName !== CACHE_NAME) {\n            return caches.delete(cacheName);\n          }\n        })\n      );\n    }).then(() => self.clients.claim())\n  );\n});\n\nself.addEventListener('fetch', (event) => {\n  if (event.request.method === 'GET') {\n    if (event.request.url.includes('.js') || \n        event.request.url.includes('.css') || \n        event.request.url.includes('.png')) {\n      // Cache-first for static assets\n      event.respondWith(\n        caches.match(event.request).then((cachedResponse) => {\n          if (cachedResponse) {\n            return cachedResponse;\n          }\n          return fetch(event.request).then((response) => {\n            if (response.status === 200) {\n              const responseClone = response.clone();\n              caches.open(CACHE_NAME).then((cache) => {\n                cache.put(event.request, responseClone);\n              });\n            }\n            return response;\n          });\n        })\n      );\n    }\n  }\n});"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\integrations\\supabase\\client.ts",
+    "old_string": "export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {\n  auth: {\n    storage: localStorage,\n    persistSession: true,\n    autoRefreshToken: true,\n  }\n});",
+    "new_string": "export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {\n  auth: {\n    storage: localStorage,\n    persistSession: true,\n    autoRefreshToken: true,\n  },\n  realtime: {\n    params: {\n      eventsPerSecond: 10,\n    },\n    heartbeatIntervalMs: 30000,\n    reconnectAfterMs: (tries: number) => Math.min(tries * 1000, 30000),\n  },\n  global: {\n    headers: {\n      'X-Client-Info': 'wigg-app@1.0.0',\n    },\n  },\n});"
   }
 }

@@ -37,12 +37,27 @@
       "Bash(supabase projects:*)",
       "Bash(vercel env:*)",
       "Bash(vercel link:*)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "WebFetch(domain:github.com)"
     ],
+    
     "deny": [],
     "ask": [],
     "additionalDirectories": [
       "C:\\c\\Users\\gatli\\Projects"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Write|Edit|MultiEdit|TodoWrite",
+      "hooks": [{"type": "command", "command": "tdd-guard"}]
+    }],
+    "UserPromptSubmit": [{
+      "hooks": [{"type": "command", "command": "tdd-guard"}]
+    }],
+    "SessionStart": [{
+      "matcher": "startup|resume|clear",
+      "hooks": [{"type": "command", "command": "tdd-guard"}]
+    }]
   }
 }
