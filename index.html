@@ -22,6 +22,17 @@
     <!-- Resource hints for performance -->
     <meta name="theme-color" content="#8b5cf6" />
     <link rel="preload" as="style" href="/src/index.css" onload="this.onload=null;this.rel='stylesheet'" />
+
+    <!-- Critical resource preloading for CLS < 0.1 -->
+    <link rel="preload" as="font" href="/fonts/system-ui.woff2" type="font/woff2" crossorigin />
+    <link rel="preload" as="image" href="/logo.svg" type="image/svg+xml" />
+
+    <!-- Above-fold image preloading -->
+    <link rel="preload" as="image" href="/hero-bg.jpg" type="image/jpeg" media="(min-width: 768px)" />
+
+    <!-- Critical API preconnections -->
+    <link rel="preconnect" href="https://api.themoviedb.org" />
+    <link rel="preconnect" href="https://image.tmdb.org" />
     
     <!-- Favicon with preload -->
     <link rel="icon" type="image/png" href="/favicon.png" />

@@ -117,7 +117,7 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
 
       {imageUrl && (
         <div className="aspect-[2/3] mb-3 overflow-hidden rounded-lg bg-muted">
-          <img src={imageUrl} alt={title} className="w-full h-full object-cover" draggable={false} />
+          <img src={imageUrl} alt={title} className="w-full h-full object-cover" draggable={false} width="200" height="300" />
         </div>
       )}
       <div className="space-y-2">

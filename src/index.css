@@ -56,6 +56,50 @@ All colors MUST be HSL.
   .grid-stable {
     min-height: 200px;
   }
+
+  /* Media tile containers for CLS prevention */
+  .media-tile-container {
+    min-height: 400px;
+    contain: layout style;
+  }
+
+  /* Media grid container stability */
+  .media-grid {
+    min-height: 500px;
+    contain: layout style paint;
+  }
+
+  /* Loading container dimensions */
+  .loading-container {
+    min-height: 300px;
+    contain: layout;
+  }
+
+  /* Advanced layout containment for CLS < 0.1 */
+  .layout-stable {
+    contain: layout style paint;
+    content-visibility: auto;
+    will-change: auto;
+  }
+
+  /* GPU-accelerated containers */
+  .gpu-optimized {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Critical above-fold content */
+  .above-fold {
+    contain: layout style;
+    will-change: auto;
+  }
+
+  /* Off-screen content optimization */
+  .below-fold {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 400px;
+  }
   
   /* Hero section optimization */
   .hero-section {

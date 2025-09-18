@@ -4,7 +4,7 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Write",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\__tests__\\serviceWorker.test.ts",
-    "content": "import { describe, it, expect, beforeEach, vi } from 'vitest';\n\ndescribe('Service Worker Performance', () => {\n  beforeEach(() => {\n    // Mock service worker registration\n    global.navigator = {\n      serviceWorker: {\n        register: vi.fn(),\n        ready: Promise.resolve({\n          active: {\n            postMessage: vi.fn()\n          }\n        })\n      }\n    } as any;\n  });\n\n  it('should have service worker registration capability', () => {\n    expect(navigator.serviceWorker).toBeDefined();\n    expect(typeof navigator.serviceWorker.register).toBe('function');\n  });\n});"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\media\\MediaTileSkeleton.tsx",
+    "content": "// MediaTileSkeleton component\nexport function MediaTileSkeleton() {\n  return null;\n}"
   }
 }
