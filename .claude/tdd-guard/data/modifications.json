@@ -4,7 +4,7 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Write",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\utils\\serviceWorker.ts",
-    "content": "export const registerServiceWorker = () => {};"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\public\\sw.js",
+    "content": "const CACHE_NAME = 'wigg-v1';\nconst STATIC_ASSETS = [\n  '/',\n  '/index.html',\n  '/favicon.png'\n];\n\nself.addEventListener('install', (event) => {\n  event.waitUntil(\n    caches.open(CACHE_NAME)\n      .then((cache) => cache.addAll(STATIC_ASSETS))\n      .then(() => self.skipWaiting())\n  );\n});\n\nself.addEventListener('activate', (event) => {\n  event.waitUntil(\n    caches.keys().then((cacheNames) => {\n      return Promise.all(\n        cacheNames.map((cacheName) => {\n          if (cacheName !== CACHE_NAME) {\n            return caches.delete(cacheName);\n          }\n        })\n      );\n    }).then(() => self.clients.claim())\n  );\n});\n\nself.addEventListener('fetch', (event) => {\n  if (event.request.method === 'GET') {\n    if (event.request.url.includes('.js') || \n        event.request.url.includes('.css') || \n        event.request.url.includes('.png')) {\n      // Cache-first for static assets\n      event.respondWith(\n        caches.match(event.request).then((cachedResponse) => {\n          if (cachedResponse) {\n            return cachedResponse;\n          }\n          return fetch(event.request).then((response) => {\n            if (response.status === 200) {\n              const responseClone = response.clone();\n              caches.open(CACHE_NAME).then((cache) => {\n                cache.put(event.request, responseClone);\n              });\n            }\n            return response;\n          });\n        })\n      );\n    }\n  }\n});"
   }
 }
