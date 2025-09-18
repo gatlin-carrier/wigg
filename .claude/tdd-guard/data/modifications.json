@@ -2,9 +2,10 @@
   "session_id": "b3a0688b-829d-4ffb-9803-93a3d54d2d91",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\b3a0688b-829d-4ffb-9803-93a3d54d2d91.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Write",
+  "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\media\\MediaTileSkeleton.tsx",
-    "content": "// MediaTileSkeleton component\nexport function MediaTileSkeleton() {\n  return null;\n}"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\ThemeToggle.tsx",
+    "old_string": "  function toggle() {\n    setTheme(current === 'dark' ? 'light' : 'dark');\n  }",
+    "new_string": "  function toggle() {\n    const newTheme = current === 'dark' ? 'light' : 'dark';\n\n    // Use View Transitions API for smooth theme switching\n    if ('startViewTransition' in document) {\n      (document as any).startViewTransition(() => {\n        setTheme(newTheme);\n      });\n    } else {\n      setTheme(newTheme);\n    }\n  }"
   }
 }

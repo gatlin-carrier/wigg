@@ -21,6 +21,7 @@
     
     <!-- Resource hints for performance -->
     <meta name="theme-color" content="#8b5cf6" />
+    <meta name="color-scheme" content="dark light" />
     <link rel="preload" as="style" href="/src/index.css" onload="this.onload=null;this.rel='stylesheet'" />
 
     <!-- Critical resource preloading for CLS < 0.1 -->
@@ -53,6 +54,33 @@
   </head>
 
   <body>
+    <!-- Prevent theme flash (FOUC) -->
+    <script>
+      (function() {
+        function getStoredTheme() {
+          try {
+            return localStorage.getItem('wigg-theme');
+          } catch {
+            return null;
+          }
+        }
+
+        function getSystemTheme() {
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        const theme = getStoredTheme() || 'system';
+        const resolvedTheme = theme === 'system' ? getSystemTheme() : theme;
+
+        if (resolvedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+
+        // Optimize theme transitions
+        document.documentElement.style.setProperty('--theme-transition-duration', '300ms');
+      })();
+    </script>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
