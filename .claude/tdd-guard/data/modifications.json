@@ -1,0 +1,11 @@
+{
+  "session_id": "55b23cb3-9c08-45ba-a3c5-930b49c01d1a",
+  "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\55b23cb3-9c08-45ba-a3c5-930b49c01d1a.jsonl",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\.env",
+    "old_string": "VITE_SUPABASE_URL=https://anmadaditlpkedmaeibx.supabase.co\nVITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFubWFkYWRpdGxwa2VkbWFlaWJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMDk3MTMsImV4cCI6MjA3Mzc4NTcxM30.37LO-zOeTF1yl219b8sGrkkH4qo5v2lAoi5twDiYIzc\nSUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFubWFkYWRpdGxwa2VkbWFlaWJ4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODIwOTcxMywiZXhwIjoyMDczNzg1NzEzfQ.IP380rQ0gpQez5b2iFQPoTMfLGzYUJ2SFaaXJeWgH1E",
+    "new_string": "VITE_SUPABASE_URL=https://anmadaditlpkedmaeibx.supabase.co\nVITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFubWFkYWRpdGxwa2VkbWFlaWJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMDk3MTMsImV4cCI6MjA3Mzc4NTcxM30.37LO-zOeTF1yl219b8sGrkkH4qo5v2lAoi5twDiYIzc\n\n# Server-side only keys (for Edge Functions)\nSUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFubWFkYWRpdGxwa2VkbWFlaWJ4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODIwOTcxMywiZXhwIjoyMDczNzg1NzEzfQ.IP380rQ0gpQez5b2iFQPoTMfLGzYUJ2SFaaXJeWgH1E\nTMDB_API_KEY=your_tmdb_api_key_here"
+  }
+}

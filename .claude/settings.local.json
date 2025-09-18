@@ -20,7 +20,13 @@
       "Bash(grep:*)",
       "Bash(npm run lint:*)",
       "Bash(git remote add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/integrations/tmdb/__tests__/client.security.test.ts)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/integrations/supabase/__tests__/client.security.test.ts)",
+      "Bash(printenv)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/security/__tests__/environment.security.test.ts)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- --reporter=verbose src/integrations/tmdb/__tests__/client.security.test.ts src/integrations/supabase/__tests__/client.security.test.ts src/security/__tests__/environment.security.test.ts)"
     ],
     "deny": [],
     "ask": [],

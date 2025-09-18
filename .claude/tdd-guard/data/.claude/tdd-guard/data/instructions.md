@@ -42,14 +42,6 @@ Each step in TDD should address ONE specific issue:
 - Test fails "not a function" → Add method stub only  
 - Test fails with assertion → Implement minimal logic only
 
-### Security Refactoring Exception
-Security-related refactoring that removes exposed secrets or improves security posture is allowed when:
-- Tests are currently passing (green state) OR test output shows recent successful test run
-- The change maintains the same external API behavior
-- The change removes security vulnerabilities (e.g., exposed API keys, VITE_ prefixed secrets)
-- The refactoring doesn't add new functionality, only improves security
-- CRITICAL: When test output shows "76 passed" or similar successful runs, this satisfies the green state requirement
-
 ### General Information
 - Sometimes the test output shows as no tests have been run when a new test is failing due to a missing import or constructor. In such cases, allow the agent to create simple stubs. Ask them if they forgot to create a stub if they are stuck.
 - It is never allowed to introduce new logic without evidence of relevant failing tests. However, stubs and simple implementation to make imports and test infrastructure work is fine.

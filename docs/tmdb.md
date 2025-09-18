@@ -2,11 +2,13 @@ TMDB Integration
 ================
 
 Setup
-- Add your API key to `.env`:
+- Add your API key to Vercel environment variables (production) or local `.env` (development):
 
-  VITE_TMDB_API_KEY=your_tmdb_v3_api_key
+  # Server-side only (Vercel dashboard or Edge Functions)
+  TMDB_API_KEY=your_tmdb_v3_api_key
 
-- Restart dev server after editing `.env`.
+- IMPORTANT: Do NOT use VITE_TMDB_API_KEY as it exposes the key to browsers
+- All TMDB requests go through secure Edge Functions at `/functions/v1/tmdb/*`
 
 Files
 - Client: `src/integrations/tmdb/client.ts`
@@ -23,6 +25,7 @@ import { TmdbSearch } from '@/components/tmdb/TmdbSearch';
 ```
 
 Notes
-- This client uses TMDB v3 with `api_key` query param.
-- For production, consider proxying through your backend to avoid exposing keys.
+- This client always uses secure Edge Functions to protect your TMDB API key
+- TMDB v3 API calls are proxied through `/functions/v1/tmdb/*` endpoints
+- API keys are never exposed to the browser for maximum security
 
