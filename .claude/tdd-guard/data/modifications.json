@@ -1,0 +1,11 @@
+{
+  "session_id": "bb76a1ce-6c20-4a84-8759-63f7d61ce12c",
+  "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\bb76a1ce-6c20-4a84-8759-63f7d61ce12c.jsonl",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\__tests__\\WiggPointForm.test.tsx",
+    "old_string": "import { useAuth } from '@/hooks/useAuth';\nimport { toast } from '@/hooks/use-toast';\n\ndescribe('WiggPointForm', () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n    (useAuth as any).mockReturnValue({\n      user: { id: 'test-user-id' }\n    });",
+    "new_string": "import { useAuth } from '@/hooks/useAuth';\nimport { toast } from '@/hooks/use-toast';\n\nconst mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;\nconst mockToast = toast as jest.MockedFunction<typeof toast>;\n\ndescribe('WiggPointForm', () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n    mockUseAuth.mockReturnValue({\n      user: { id: 'test-user-id' }\n    } as any);"
+  }
+}
