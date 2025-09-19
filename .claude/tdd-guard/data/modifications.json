@@ -1,0 +1,11 @@
+{
+  "session_id": "50a3d970-9e2a-4ab2-8ff9-a50c3072cdb1",
+  "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\50a3d970-9e2a-4ab2-8ff9-a50c3072cdb1.jsonl",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\main.tsx",
+    "old_string": "import { StrictMode } from 'react'\nimport { createRoot } from 'react-dom/client'\nimport { QueryClient, QueryClientProvider } from \"@tanstack/react-query\";\nimport { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';\nimport { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';\nimport { AuthProvider } from './hooks/useAuth';\nimport { Toaster } from './components/ui/toaster';\nimport App from './App.tsx'\nimport './index.css'\nimport { ThemeProvider } from 'next-themes';",
+    "new_string": "import { StrictMode } from 'react'\nimport { createRoot } from 'react-dom/client'\nimport { QueryClient, QueryClientProvider } from \"@tanstack/react-query\";\nimport { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';\nimport { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';\nimport { AuthProvider } from './hooks/useAuth';\nimport { Toaster } from './components/ui/toaster';\nimport { registerServiceWorker } from './utils/serviceWorker';\nimport App from './App.tsx'\nimport './index.css'\nimport { ThemeProvider } from 'next-themes';"
+  }
+}

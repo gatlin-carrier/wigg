@@ -1,0 +1,89 @@
+{
+  "name": "WIGG - When It Gets Good",
+  "short_name": "WIGG",
+  "description": "Track when media gets good and discover your next favorite show, game, book, or movie",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#8b5cf6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-US",
+  "categories": ["entertainment", "lifestyle", "social"],
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/dashboard.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "WIGG Dashboard - Discover and track media"
+    },
+    {
+      "src": "/screenshots/pacing-barcode.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Interactive pacing visualization"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Add WIGG",
+      "short_name": "Add",
+      "description": "Mark a new WIGG point",
+      "url": "/dashboard?tab=add",
+      "icons": [
+        {
+          "src": "/favicon.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Browse Media",
+      "short_name": "Browse",
+      "description": "Discover new media recommendations",
+      "url": "/dashboard?tab=browse",
+      "icons": [
+        {
+          "src": "/favicon.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Community Feed",
+      "short_name": "Feed",
+      "description": "See what others are discovering",
+      "url": "/feed",
+      "icons": [
+        {
+          "src": "/favicon.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  }
+}
