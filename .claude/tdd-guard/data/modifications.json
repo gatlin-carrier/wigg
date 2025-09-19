@@ -5,7 +5,7 @@
   "tool_name": "Edit",
   "tool_input": {
     "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\integrations\\smart-search\\telemetry.ts",
-    "old_string": "      console.log('[SmartSearch] Telemetry batch:', data);\n      \n      // Example: send to analytics service\n      // await fetch('/api/analytics/search', {\n      //   method: 'POST',\n      //   headers: { 'Content-Type': 'application/json' },\n      //   body: JSON.stringify(data),\n      // });",
-    "new_string": "      // Send telemetry to Vercel Analytics\n      if (navigator.sendBeacon) {\n        navigator.sendBeacon('/_vercel/insights/event', JSON.stringify({\n          event: 'smart_search_telemetry',\n          data: data\n        }));\n      }"
+    "old_string": "      console.log('[SmartSearch] Telemetry batch:', data);",
+    "new_string": "      // Send telemetry to Vercel Analytics\n      if (navigator.sendBeacon) {\n        navigator.sendBeacon('/_vercel/insights/event', JSON.stringify({\n          event: 'smart_search_telemetry',\n          data: data\n        }));\n      } else {\n        console.log('[SmartSearch] Telemetry batch:', data);\n      }"
   }
 }

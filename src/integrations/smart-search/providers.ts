@@ -109,8 +109,15 @@ export const anilistAdapter: ProviderAdapter = {
   name: 'anilist',
   
   async execute(plan: QueryPlan): Promise<any> {
-    // TODO: Connect to existing AniList client - searchManga/searchAnime functions available
-    throw new Error('AniList adapter not implemented');
+    const { searchManga } = await import('@/integrations/anilist/client');
+    const { params } = plan;
+
+    switch (plan.endpoint) {
+      case 'search/manga':
+        return { results: await searchManga(params.query, params.page || 1) };
+      default:
+        throw new Error(`Unsupported AniList endpoint: ${plan.endpoint}`);
+    }
   },
   
   normalize(data: any): NormalizedResult[] {
@@ -122,8 +129,21 @@ export const podcastIndexAdapter: ProviderAdapter = {
   name: 'podcastindex',
   
   async execute(plan: QueryPlan): Promise<any> {
-    // TODO: Connect to existing podcast-search Supabase function
-    throw new Error('PodcastIndex adapter not implemented');
+    const { searchPodcasts } = await import('@/integrations/podcast-search/client');
+    const { params } = plan;
+
+    const result = await searchPodcasts({
+      user_query: params.query,
+      locale: 'en-US',
+      market: 'US',
+      cost_budget: { max_providers: 2, allow_fallbacks: true }
+    });
+
+    return {
+      show: result.resolved?.show,
+      episodes: result.resolved?.episodes || [],
+      alternatives: result.resolved?.alternatives || []
+    };
   },
   
   normalize(data: any): NormalizedResult[] {
@@ -135,8 +155,15 @@ export const igdbAdapter: ProviderAdapter = {
   name: 'igdb',
   
   async execute(plan: QueryPlan): Promise<any> {
-    // TODO: Use existing Supabase function for games
-    throw new Error('IGDB adapter not implemented');
+    const { supabase } = await import('@/integrations/supabase/client');
+    const { params } = plan;
+
+    const { data, error } = await supabase.functions.invoke('fetch-game-details', {
+      body: { query: params.query, limit: params.limit || 20 },
+    });
+
+    if (error) throw error;
+    return { results: data?.games || [] };
   },
   
   normalize(data: any): NormalizedResult[] {
