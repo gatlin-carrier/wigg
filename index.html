@@ -16,13 +16,9 @@
     <link rel="dns-prefetch" href="https://vitals.vercel-analytics.com" />
     <link rel="preconnect" href="https://vitals.vercel-analytics.com" crossorigin />
     
-    <!-- Preload critical CSS and JS chunks -->
-    <link rel="modulepreload" href="/src/main.tsx" />
-    
     <!-- Resource hints for performance -->
     <meta name="theme-color" content="#8b5cf6" />
     <meta name="color-scheme" content="dark light" />
-    <link rel="preload" as="style" href="/src/index.css" onload="this.onload=null;this.rel='stylesheet'" />
 
     <!-- Critical resource preloading for CLS < 0.1 -->
     <link rel="preload" as="font" href="/fonts/system-ui.woff2" type="font/woff2" crossorigin />

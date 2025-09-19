@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/((?!api/|_next/|_static/|favicon\\.ico|sw\\.js|.*\\.[a-zA-Z0-9]+$).*)",
+      "source": "/((?!api/|_next/|_static/|assets/|favicon\\.ico|sw\\.js|.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|mjs)$).*)",
       "destination": "/index.html"
     }
   ],
@@ -20,6 +20,19 @@
         {
           "key": "Content-Type",
           "value": "application/javascript"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*\\.js)$",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     },
