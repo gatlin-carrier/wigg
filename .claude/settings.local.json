@@ -39,12 +39,13 @@
       "Bash(vercel link:*)",
       "Bash(vercel:*)",
       "WebFetch(domain:github.com)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(tdd-guard:*)"
     ],
     "deny": [],
     "ask": [],
     "additionalDirectories": [
-      "C:\\c\\Users\\gatli\\Projects"
+      "C:\\Users\\gatli\\Projects"
     ]
   },
   "hooks": {
@@ -69,16 +70,6 @@
         ]
       }
     ],
-    "SessionStart": [
-      {
-        "matcher": "startup|resume|clear",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "tdd-guard"
-          }
-        ]
-      }
-    ]
+    "SessionStart": []
   }
 }

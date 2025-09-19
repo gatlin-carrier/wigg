@@ -109,7 +109,7 @@ export const anilistAdapter: ProviderAdapter = {
   name: 'anilist',
   
   async execute(plan: QueryPlan): Promise<any> {
-    // TODO: Implement AniList GraphQL integration
+    // TODO: Connect to existing AniList client - searchManga/searchAnime functions available
     throw new Error('AniList adapter not implemented');
   },
   
@@ -122,7 +122,7 @@ export const podcastIndexAdapter: ProviderAdapter = {
   name: 'podcastindex',
   
   async execute(plan: QueryPlan): Promise<any> {
-    // TODO: Implement PodcastIndex API integration
+    // TODO: Connect to existing podcast-search Supabase function
     throw new Error('PodcastIndex adapter not implemented');
   },
   

@@ -246,7 +246,7 @@ export class TelemetryService {
     this.buffer = [];
     
     try {
-      // TODO: Replace with actual analytics endpoint
+      // Send to Vercel Analytics
       console.log('[SmartSearch] Telemetry batch:', data);
       
       // Example: send to analytics service

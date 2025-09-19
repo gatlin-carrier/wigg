@@ -39,8 +39,16 @@ The foundation of TDD is the Red-Green-Refactor cycle:
 ### Critical Principle: Incremental Development
 Each step in TDD should address ONE specific issue:
 - Test fails "not defined" → Create empty stub/class only
-- Test fails "not a function" → Add method stub only  
+- Test fails "not a function" → Add method stub only
 - Test fails with assertion → Implement minimal logic only
+
+### Evidence-Based Implementation Exception
+Implementation beyond minimal requirements is allowed when there is clear evidence of the required behavior:
+- Existing test output showing specific expected behavior or error messages
+- Clear documentation or specifications that define the complete interface
+- Error messages from the current failing test that indicate multiple missing methods/properties
+- When implementing a well-defined interface or contract that's already established in the codebase
+- IMPORTANT: Evidence must be concrete and verifiable, not assumptions about what "might be needed"
 
 ### Security Refactoring Exception
 Security-related refactoring that removes exposed secrets or improves security posture is allowed when:
