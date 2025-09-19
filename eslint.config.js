@@ -25,5 +25,9 @@ export default tseslint.config({ ignores: ["dist"] }, {
       { allowConstantExport: true },
     ],
     "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-require-imports": "warn",
+    "storybook/no-renderer-packages": "off",
+    "react-hooks/exhaustive-deps": "warn",
   },
 }, storybook.configs["flat/recommended"]);
