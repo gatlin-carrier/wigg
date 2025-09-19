@@ -202,17 +202,6 @@ const Dashboard = () => {
                   )}
                 </div>
               </div>
-
-              {/* Community list */}
-              <div className="space-y-4">
-                <div className="text-center space-y-2">
-                  <h2 className="text-3xl font-bold">Community WIGG Points</h2>
-                  <p className="text-muted-foreground">
-                    See when media gets good according to the community
-                  </p>
-                </div>
-                <WiggPointsList />
-              </div>
             </TabsContent>
 
             <TabsContent value="add" className="space-y-8">
