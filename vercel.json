@@ -1,7 +1,31 @@
 {
   "rewrites": [
     {
-      "source": "/((?!api/|_next/|_static/|assets/|favicon\\.ico|sw\\.js|.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|mjs)$).*)",
+      "source": "/dashboard",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/search",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/media/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/lists/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/profile/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/settings",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/((?!api/|assets/|favicon\\.ico|sw\\.js|.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|mjs)$).*)",
       "destination": "/index.html"
     }
   ],
