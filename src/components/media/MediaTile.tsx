@@ -45,6 +45,16 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
   const { data: progressData } = useTitleProgress(titleKey);
   const { data: wiggsData, addWigg: addWiggLocal } = useUserWiggs(titleKey);
   const pacingInsight = useMemo(() => classifyPeakFromSegments(progressData?.segments || []).label, [progressData?.segments]);
+  const PeakIcon = useMemo(() => {
+    switch (pacingInsight) {
+      case 'Even pacing':
+        return Activity;
+      case 'Peak late':
+        return Minus;
+      default:
+        return TrendingUp;
+    }
+  }, [pacingInsight]);
   const [quickOpen, setQuickOpen] = useState(false);
 
   const handleAddWigg = (e: React.MouseEvent) => {
@@ -148,7 +158,7 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
         {/* Pacing insight + T2G */}
         <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
           <div className="inline-flex items-center gap-1">
-            <TrendingUp className="h-4 w-4 text-purple-600" data-testid="peak-icon" />
+            <PeakIcon className="h-4 w-4 text-purple-600" data-testid="peak-icon" />
           </div>
           {wiggsData?.t2gEstimatePct != null && (
             <div className="inline-flex items-center gap-1">
