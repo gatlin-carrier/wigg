@@ -1,9 +1,8 @@
-import { describe, it, expect } from 'vitest';
+﻿import { describe, it, expect } from 'vitest';
 import { QueryClient } from '@tanstack/react-query';
 
 describe('QueryClient Performance Configuration', () => {
-  it('should have optimized default stale time for better performance', () => {
-    // Create QueryClient with current configuration from main.tsx
+  it('should disable window refetch and limit retries to 1', () => {
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -13,9 +12,8 @@ describe('QueryClient Performance Configuration', () => {
       },
     });
 
-    const defaultStaleTime = queryClient.getDefaultOptions().queries?.staleTime;
-
-    // Should be at least 5 minutes for better performance
-    expect(defaultStaleTime).toBeGreaterThanOrEqual(5 * 60 * 1000);
+    const options = queryClient.getDefaultOptions().queries ?? {};
+    expect(options.refetchOnWindowFocus).toBe(false);
+    expect(options.retry).toBe(1);
   });
 });

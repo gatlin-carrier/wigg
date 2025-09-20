@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { WiggPointCard } from "./WiggPointCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Filter, SortAsc } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Search, Filter } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -20,8 +21,6 @@ interface WiggPoint {
   created_at: string;
   username?: string;
   user_id: string;
-  vote_score: number;
-  user_vote?: number;
 }
 
 interface WiggPointsListProps {
@@ -84,11 +83,7 @@ export const WiggPointsList = ({
           break;
         case "oldest":
           query = query.order('created_at', { ascending: true });
-          break;
-        case "highest_rated":
-          // Ordering by an aggregate alias isn't supported server-side here; sort client-side below
-          break;
-        case "position_asc":
+          break;        case "position_asc":
           query = query.order('pos_value', { ascending: true });
           break;
         case "position_desc":
@@ -115,14 +110,7 @@ export const WiggPointsList = ({
         created_at: point.created_at,
         username: point.profiles?.username,
         user_id: point.user_id,
-        vote_score: 0, // Simplified for now to fix database error
-        user_vote: 0
       }));
-
-      if (sortBy === "highest_rated") {
-        transformedPoints = transformedPoints.sort((a, b) => b.vote_score - a.vote_score);
-      }
-
       setPoints(transformedPoints);
 
     } catch (error) {
@@ -136,28 +124,27 @@ export const WiggPointsList = ({
     fetchWiggPoints();
   }, [searchTerm, mediaTypeFilter, sortBy, userId, user?.id]);
 
-  const handleVoteUpdate = (pointId: string, newScore: number, userVote: number) => {
-    setPoints(prev => prev.map(point => 
-      point.id === pointId 
-        ? { ...point, vote_score: newScore, user_vote: userVote }
-        : point
-    ));
-  };
 
   if (loading) {
     return (
       <div className="space-y-4">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Card key={i} className="w-full">
-            <CardContent className="p-6">
-              <div className="animate-pulse space-y-4">
-                <div className="h-4 bg-muted rounded w-1/2"></div>
-                <div className="h-20 bg-muted rounded"></div>
-                <div className="h-4 bg-muted rounded w-1/4"></div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {Array.from({ length: 4 }).map((_, index) => {
+          const baseDelay = index * 0.12;
+          const secondaryDelay = baseDelay + 0.05;
+          const tertiaryDelay = baseDelay + 0.12;
+          return (
+            <Card key={index} className="w-full border border-border/60 bg-card/70 shadow-soft">
+              <CardContent className="p-6 space-y-4">
+                <Skeleton className="h-4 w-1/2" style={{ animationDelay: `${baseDelay}s` }} />
+                <Skeleton className="h-20 w-full rounded-lg" style={{ animationDelay: `${secondaryDelay}s` }} />
+                <div className="flex gap-3">
+                  <Skeleton className="h-4 w-24 rounded-full" style={{ animationDelay: `${tertiaryDelay}s` }} />
+                  <Skeleton className="h-4 w-16 rounded-full" style={{ animationDelay: `${tertiaryDelay + 0.05}s` }} />
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     );
   }
@@ -207,9 +194,7 @@ export const WiggPointsList = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="oldest">Oldest First</SelectItem>
-                  <SelectItem value="highest_rated">Highest Rated</SelectItem>
-                  <SelectItem value="position_asc">Position (Low to High)</SelectItem>
+                  <SelectItem value="oldest">Oldest First</SelectItem>                  <SelectItem value="position_asc">Position (Low to High)</SelectItem>
                   <SelectItem value="position_desc">Position (High to Low)</SelectItem>
                 </SelectContent>
               </Select>
@@ -236,7 +221,6 @@ export const WiggPointsList = ({
             <WiggPointCard
               key={point.id}
               point={point}
-              onVoteUpdate={handleVoteUpdate}
             />
           ))
         )}
@@ -252,3 +236,6 @@ export const WiggPointsList = ({
     </div>
   );
 };
+
+
+

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, X } from 'lucide-react';
@@ -24,7 +24,7 @@ export default function HeaderSearch({ isExpanded = false, onToggle }: HeaderSea
     const newExpanded = !isExpanded;
     onToggle?.(newExpanded);
     if (isExpanded) {
-      setQ(''); // Clear search when closing
+      setQ('');
     }
   }
 
@@ -36,14 +36,14 @@ export default function HeaderSearch({ isExpanded = false, onToggle }: HeaderSea
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search movies, TV, books…"
+          data-onboarding-target="search-input"
           className="w-80"
         />
       </form>
-      
+
       {/* Mobile search */}
       <div className="md:hidden flex items-center w-full">
         {!isExpanded ? (
-          /* Search icon button with smooth transition */
           <Button
             variant="ghost"
             size="sm"
@@ -53,13 +53,13 @@ export default function HeaderSearch({ isExpanded = false, onToggle }: HeaderSea
             <Search className="h-4 w-4 transition-transform duration-300 ease-out hover:scale-110" />
           </Button>
         ) : (
-          /* Expanded search form - inline with animation */
           <div className="flex items-center gap-2 w-full animate-in slide-in-from-right-2 duration-300">
             <form onSubmit={go} className="flex items-center gap-2 flex-1">
               <Input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search…"
+                data-onboarding-target="search-input"
                 className="flex-1 transition-all duration-200 ease-out focus:scale-[1.02] focus-visible:ring-0 focus-visible:ring-offset-0"
                 autoFocus
               />
@@ -79,4 +79,3 @@ export default function HeaderSearch({ isExpanded = false, onToggle }: HeaderSea
     </>
   );
 }
-

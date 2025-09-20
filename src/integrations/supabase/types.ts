@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -79,7 +79,281 @@ export type Database = {
           },
         ]
       }
-      episodes: {
+      user_follows: {
+        Row: {
+          id: string
+          follower_id: string
+          following_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          follower_id: string
+          following_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          follower_id?: string
+          following_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wigg_point_likes: {
+        Row: {
+          id: string
+          point_id: string
+          user_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          point_id: string
+          user_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          point_id?: string
+          user_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wigg_point_likes_point_id_fkey"
+            columns: ["point_id"]
+            isOneToOne: false
+            referencedRelation: "wigg_points"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wigg_point_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wigg_point_comments: {
+        Row: {
+          id: string
+          point_id: string
+          user_id: string
+          content: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          point_id: string
+          user_id: string
+          content: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          point_id?: string
+          user_id?: string
+          content?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wigg_point_comments_point_id_fkey"
+            columns: ["point_id"]
+            isOneToOne: false
+            referencedRelation: "wigg_points"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wigg_point_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wigg_point_shares: {
+        Row: {
+          id: string
+          point_id: string
+          user_id: string
+          share_text: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          point_id: string
+          user_id: string
+          share_text?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          point_id?: string
+          user_id?: string
+          share_text?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wigg_point_shares_point_id_fkey"
+            columns: ["point_id"]
+            isOneToOne: false
+            referencedRelation: "wigg_points"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wigg_point_shares_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }\n      notifications: {
+        Row: {
+          id: string
+          user_id: string
+          type: string
+          title: string
+          body: string | null
+          data: Json | null
+          read_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          type: string
+          title: string
+          body?: string | null
+          data?: Json | null
+          read_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          type?: string
+          title?: string
+          body?: string | null
+          data?: Json | null
+          read_at?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_push_tokens: {
+        Row: {
+          id: string
+          user_id: string
+          endpoint: string
+          auth: string
+          p256dh: string
+          expiration_time: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          endpoint: string
+          auth: string
+          p256dh: string
+          expiration_time?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          endpoint?: string
+          auth?: string
+          p256dh?: string
+          expiration_time?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_push_tokens_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_notification_preferences: {
+        Row: {
+          user_id: string
+          push_enabled: boolean
+          email_enabled: boolean
+          in_app_enabled: boolean
+          follower_updates: boolean
+          wigg_likes: boolean
+          t2g_updates: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          user_id: string
+          push_enabled?: boolean
+          email_enabled?: boolean
+          in_app_enabled?: boolean
+          follower_updates?: boolean
+          wigg_likes?: boolean
+          t2g_updates?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          user_id?: string
+          push_enabled?: boolean
+          email_enabled?: boolean
+          in_app_enabled?: boolean
+          follower_updates?: boolean
+          wigg_likes?: boolean
+          t2g_updates?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }\n      episodes: {
         Row: {
           created_at: string
           duration_sec: number | null
@@ -309,6 +583,8 @@ export type Database = {
           sensitivity_flags: string[]
           trust_score: number
           username: string | null
+          accent_color: string | null
+          theme_mode: string | null
         }
         Insert: {
           created_at?: string
@@ -318,6 +594,8 @@ export type Database = {
           sensitivity_flags?: string[]
           trust_score?: number
           username?: string | null
+          accent_color?: string | null
+          theme_mode?: string | null
         }
         Update: {
           created_at?: string
@@ -327,6 +605,8 @@ export type Database = {
           sensitivity_flags?: string[]
           trust_score?: number
           username?: string | null
+          accent_color?: string | null
+          theme_mode?: string | null
         }
         Relationships: []
       }
@@ -707,3 +987,9 @@ export const Constants = {
     },
   },
 } as const
+
+
+
+
+
+

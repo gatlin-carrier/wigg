@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, User } from 'lucide-react';
 import HeaderSearch from '@/components/search/HeaderSearch';
+import NotificationBell from '@/components/notifications/NotificationBell';
 import ThemeToggle from '@/components/ThemeToggle';
 import { useHeader } from '@/contexts/HeaderContext';
 import { useAuth } from '@/hooks/useAuth';
@@ -116,6 +117,7 @@ export default function GlobalHeader() {
             }`}>
               <button 
                 onClick={handleHome}
+                data-onboarding-target="home-button"
                 className={`w-8 h-8 rounded-full object-cover flex-shrink-0 hover:opacity-80 transition-all duration-300 ease-out ${
                   isMobileSearchExpanded ? 'scale-75 opacity-0' : 'scale-100 opacity-100'
                 }`}
@@ -170,6 +172,7 @@ export default function GlobalHeader() {
             )}
             {rightContent}
             
+            {user && <NotificationBell />}
             {/* Profile button - only show when logged in */}
             {user && (
               <Button

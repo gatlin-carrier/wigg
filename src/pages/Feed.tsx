@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { WiggPointCard } from '@/components/WiggPointCard';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,70 +17,70 @@ const DUMMY: WiggPoint[] = [
     reason_short: 'Buddy dynamic clicks during the first chase',
     tags: ['chemistry','chase'], spoiler: '0',
     created_at: new Date(Date.now() - 1000*60*30).toISOString(),
-    username: 'sam', user_id: '00000000-0000-0000-0000-000000000011', vote_score: 12,
+    username: 'sam', user_id: '00000000-0000-0000-0000-000000000011',
   },
   {
     id: 'f2', media_title: 'The Expanse S1', type: 'tv show', pos_kind: 'episode', pos_value: 4,
     reason_short: 'Political threads converge and raise stakes',
     tags: ['politics','reveal'], spoiler: '1',
     created_at: new Date(Date.now() - 1000*60*60*2).toISOString(),
-    username: 'arya', user_id: '00000000-0000-0000-0000-000000000012', vote_score: 34,
+    username: 'arya', user_id: '00000000-0000-0000-0000-000000000012',
   },
   {
     id: 'f3', media_title: 'Dune (novel)', type: 'book', pos_kind: 'page', pos_value: 80,
     reason_short: 'Worldbuilding coheres; first maneuver lands',
     tags: ['politics','lore'], spoiler: '0',
     created_at: new Date(Date.now() - 1000*60*60*6).toISOString(),
-    username: 'kyle', user_id: '00000000-0000-0000-0000-000000000013', vote_score: 21,
+    username: 'kyle', user_id: '00000000-0000-0000-0000-000000000013',
   },
   {
-    id: 'f4', media_title: 'Into the Spider‑Verse', type: 'movie', pos_kind: 'min', pos_value: 25,
-    reason_short: 'First big set‑piece + theme stated',
+    id: 'f4', media_title: 'Into the Spiderâ€‘Verse', type: 'movie', pos_kind: 'min', pos_value: 25,
+    reason_short: 'First big setâ€‘piece + theme stated',
     tags: ['setpiece','theme'], spoiler: '0',
     created_at: new Date(Date.now() - 1000*60*60*12).toISOString(),
-    username: 'miles', user_id: '00000000-0000-0000-0000-000000000014', vote_score: 57,
+    username: 'miles', user_id: '00000000-0000-0000-0000-000000000014',
   },
   {
     id: 'f5', media_title: 'The Last of Us (game)', type: 'game', pos_kind: 'hour', pos_value: 2,
     reason_short: 'Systems open up and tone locks in',
     tags: ['mechanics','tone'], spoiler: '1',
     created_at: new Date(Date.now() - 1000*60*60*24).toISOString(),
-    username: 'ellie', user_id: '00000000-0000-0000-0000-000000000015', vote_score: 40,
+    username: 'ellie', user_id: '00000000-0000-0000-0000-000000000015',
   },
   {
     id: 'f6', media_title: 'Better Call Saul S1', type: 'tv show', pos_kind: 'episode', pos_value: 3,
     reason_short: 'Character aim crystallizes with a clever pivot',
     tags: ['character','pivot'], spoiler: '0',
     created_at: new Date(Date.now() - 1000*60*60*30).toISOString(),
-    username: 'kim', user_id: '00000000-0000-0000-0000-000000000016', vote_score: 19,
+    username: 'kim', user_id: '00000000-0000-0000-0000-000000000016',
   },
   {
     id: 'f7', media_title: 'Arrival', type: 'movie', pos_kind: 'min', pos_value: 35,
     reason_short: 'Linguistics route surfaces; tone deepens',
     tags: ['tone','pivot'], spoiler: '0',
     created_at: new Date(Date.now() - 1000*60*60*42).toISOString(),
-    username: 'lou', user_id: '00000000-0000-0000-0000-000000000017', vote_score: 28,
+    username: 'lou', user_id: '00000000-0000-0000-0000-000000000017',
   },
   {
-    id: 'f8', media_title: 'Andre Agassi – Open', type: 'book', pos_kind: 'page', pos_value: 50,
+    id: 'f8', media_title: 'Andre Agassi â€“ Open', type: 'book', pos_kind: 'page', pos_value: 50,
     reason_short: 'Voice fully lands; themes cohere',
     tags: ['voice','memoir'], spoiler: '0',
     created_at: new Date(Date.now() - 1000*60*60*72).toISOString(),
-    username: 'serena', user_id: '00000000-0000-0000-0000-000000000018', vote_score: 13,
+    username: 'serena', user_id: '00000000-0000-0000-0000-000000000018',
   },
   {
     id: 'f9', media_title: 'Dark S1', type: 'tv show', pos_kind: 'episode', pos_value: 5,
     reason_short: 'Timeline interlocks; mystery hooks in',
     tags: ['mystery','timelines'], spoiler: '2',
     created_at: new Date(Date.now() - 1000*60*60*96).toISOString(),
-    username: 'ulrich', user_id: '00000000-0000-0000-0000-000000000019', vote_score: 31,
+    username: 'ulrich', user_id: '00000000-0000-0000-0000-000000000019',
   },
   {
-    id: 'f10', media_title: 'Spider‑Man 2 (PS5)', type: 'game', pos_kind: 'hour', pos_value: 1,
+    id: 'f10', media_title: 'Spiderâ€‘Man 2 (PS5)', type: 'game', pos_kind: 'hour', pos_value: 1,
     reason_short: 'Traversal + first boss showcase mechanics',
     tags: ['traversal','boss'], spoiler: '0',
     created_at: new Date(Date.now() - 1000*60*60*120).toISOString(),
-    username: 'pete', user_id: '00000000-0000-0000-0000-000000000020', vote_score: 22,
+    username: 'pete', user_id: '00000000-0000-0000-0000-000000000020',
   },
 ];
 
@@ -115,17 +115,9 @@ export default function Feed() {
             type,
             year
           ),
-          episodes(
-            id,
-            title,
-            season,
-            episode
-          ),
           profiles!inner(
+            id,
             username
-          ),
-          votes(
-            value
           )
         `)
         .order('created_at', { ascending: false })
@@ -145,9 +137,7 @@ export default function Feed() {
       // Transform to WiggPoint format
       return data.map((point: any) => ({
         id: point.id,
-        media_title: point.episodes?.title 
-          ? `${point.media.title} - ${point.episodes.title}`
-          : point.media.title,
+        media_title: point.media.title,
         type: point.media.type,
         pos_kind: point.pos_kind,
         pos_value: point.pos_value,
@@ -156,8 +146,7 @@ export default function Feed() {
         spoiler: point.spoiler,
         created_at: point.created_at,
         username: point.profiles?.username,
-        user_id: point.profiles?.id,
-        vote_score: point.votes?.reduce((sum: number, vote: any) => sum + vote.value, 0) || 0,
+        user_id: point.user_id,
       }));
     },
     staleTime: 1000 * 60 * 2, // 2 minutes
@@ -269,13 +258,9 @@ export default function Feed() {
         <>
           <div className="space-y-6">
             {points.map((point) => (
-              <WiggPointCard 
-                key={point.id} 
+              <WiggPointCard
+                key={point.id}
                 point={point}
-                onVoteUpdate={(pointId, newScore, userVote) => {
-                  // Optimistically update the vote score
-                  refetch();
-                }}
               />
             ))}
           </div>
@@ -293,7 +278,7 @@ export default function Feed() {
           {wiggPoints && wiggPoints.length > 0 && (
             <Card className="mt-8">
               <CardContent className="p-4 text-xs text-muted-foreground text-center">
-                Live feed powered by Supabase • Real-time updates enabled
+                Live feed powered by Supabase â€¢ Real-time updates enabled
               </CardContent>
             </Card>
           )}
@@ -302,4 +287,7 @@ export default function Feed() {
     </div>
   );
 }
+
+
+
 

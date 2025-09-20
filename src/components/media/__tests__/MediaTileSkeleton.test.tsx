@@ -1,17 +1,19 @@
-import { describe, it, expect } from 'vitest';
+﻿import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { MediaTileSkeleton } from '../MediaTileSkeleton';
 
 describe('MediaTileSkeleton', () => {
-  it('should render skeleton with fixed dimensions to prevent layout shifts', () => {
+  it('renders structural skeleton placeholders', () => {
     const { container } = render(<MediaTileSkeleton />);
-
-    // Should have image skeleton with exact aspect ratio
     const imageSkeleton = container.querySelector('.aspect-\\[2\\/3\\]');
     expect(imageSkeleton).toBeTruthy();
-
-    // Should have multiple skeleton elements for different content areas
     const skeletons = container.querySelectorAll('.animate-pulse');
-    expect(skeletons.length).toBeGreaterThan(3); // Image, title, rating, barcode
+    expect(skeletons.length).toBeGreaterThan(3);
+  });
+
+  it('applies animation delay when provided', () => {
+    const { container } = render(<MediaTileSkeleton delay={0.2} />);
+    const firstSkeleton = container.querySelector('.animate-pulse') as HTMLElement | null;
+    expect(firstSkeleton?.style.animationDelay).toBe('0.20s');
   });
 });

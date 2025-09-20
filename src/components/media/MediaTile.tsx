@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Star, Plus, TrendingUp } from 'lucide-react';
+import { Star, Plus, TrendingUp, Activity, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
@@ -148,8 +148,7 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
         {/* Pacing insight + T2G */}
         <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
           <div className="inline-flex items-center gap-1">
-            <TrendingUp className="h-3 w-3" />
-            <span>{pacingInsight}</span>
+            <TrendingUp className="h-4 w-4 text-purple-600" data-testid="peak-icon" />
           </div>
           {wiggsData?.t2gEstimatePct != null && (
             <div className="inline-flex items-center gap-1">

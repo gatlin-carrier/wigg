@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+﻿import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -6,6 +6,7 @@ import { useTmdbPopular, useTmdbTrending, useTmdbMovieGenres } from '@/integrati
 import { getImageUrl } from '@/integrations/tmdb/client';
 import useEmblaCarousel from 'embla-carousel-react';
 import MediaTile from '@/components/media/MediaTile';
+import { MediaTileSkeletonRow } from '@/components/media/MediaTileSkeleton';
 
 type Props = {
   kind?: 'trending' | 'popular';
@@ -17,6 +18,7 @@ export function TmdbPopular({ kind = 'trending', period = 'day', onAdd }: Props)
   const navigate = useNavigate();
   const { data, isFetching, isError, error } = kind === 'trending' ? useTmdbTrending(period) : useTmdbPopular();
   const items = data?.results ?? [];
+  const showSkeleton = isFetching && !items.length;
   const { data: genreMap = {} } = useTmdbMovieGenres();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start', slidesToScroll: 1, dragFree: true });
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
@@ -29,7 +31,7 @@ export function TmdbPopular({ kind = 'trending', period = 'day', onAdd }: Props)
           {kind === 'trending' ? `Trending Movies (${period})` : 'Popular Movies'}
         </h3>
         <div className="hidden sm:flex gap-2">
-          <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={scrollPrev} aria-label="Prev">
+          <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={scrollPrev} aria-label="Previous">
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={scrollNext} aria-label="Next">
@@ -45,48 +47,41 @@ export function TmdbPopular({ kind = 'trending', period = 'day', onAdd }: Props)
       )}
 
       <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-3">
-          {(isFetching && !items.length ? Array.from({ length: 10 }) : items.slice(0, 24)).map((it: any, idx: number) => {
-            if (isFetching && !items.length) {
+        {showSkeleton ? (
+          <MediaTileSkeletonRow containerClassName="flex gap-3" itemClassName="flex-none w-36 sm:w-40 md:w-44 lg:w-48" />
+        ) : (
+          <div className="flex gap-3">
+            {items.slice(0, 24).map((r: any) => {
+              const title = r.title ?? r.name ?? 'Untitled';
+              const year = (r.release_date || r.first_air_date || '').slice(0, 4);
+              const poster = getImageUrl(r.poster_path, 'w342');
+              const rating = r.vote_average;
+              const genreIds: number[] = r.genre_ids || [];
+              const tags = genreIds.map((id) => genreMap[id]).filter(Boolean).slice(0, 2);
               return (
-                <div key={idx} className="flex-none w-36 sm:w-40 md:w-44 lg:w-48">
-                  <div className="p-2 bg-muted/40 rounded-lg animate-pulse">
-                    <div className="aspect-[2/3] rounded-md bg-muted" />
-                    <div className="mt-2 h-3 bg-muted rounded w-3/4" />
-                  </div>
+                <div key={`pop-${r.id}`} className="flex-none w-36 sm:w-40 md:w-44 lg:w-48">
+                  <MediaTile
+                    title={title}
+                    imageUrl={poster}
+                    year={year}
+                    ratingLabel={typeof rating === 'number' ? `${rating.toFixed(1)}/10` : undefined}
+                    tags={tags}
+                    onAdd={() => onAdd?.({ title, type: 'Movie' })}
+                    onClick={() => navigate(`/media/tmdb/${r.id}`)}
+                    mediaData={{
+                      source: 'tmdb',
+                      id: String(r.id),
+                      title,
+                      type: 'movie',
+                      posterUrl: poster,
+                      year,
+                    }}
+                  />
                 </div>
               );
-            }
-            const r = it;
-            const title = (r as any).title ?? (r as any).name ?? 'Untitled';
-            const year = (r.release_date || (r as any).first_air_date || '').slice(0, 4);
-            const poster = getImageUrl(r.poster_path, 'w342');
-            const rating = (r as any).vote_average;
-            const genreIds: number[] = (r as any).genre_ids || [];
-            const tags = genreIds.map((id) => genreMap[id]).filter(Boolean).slice(0, 2);
-            return (
-              <div key={`pop-${r.id}`} className="flex-none w-36 sm:w-40 md:w-44 lg:w-48">
-                <MediaTile
-                  title={title}
-                  imageUrl={poster}
-                  year={year}
-                  ratingLabel={typeof rating === 'number' ? `${rating.toFixed(1)}/10` : undefined}
-                  tags={tags}
-                  onAdd={() => onAdd?.({ title, type: 'Movie' })}
-                  onClick={() => navigate(`/media/tmdb/${r.id}`)}
-                  mediaData={{
-                    source: 'tmdb',
-                    id: String(r.id),
-                    title,
-                    type: 'movie',
-                    posterUrl: poster,
-                    year
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

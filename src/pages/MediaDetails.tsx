@@ -1,9 +1,10 @@
-import React from 'react';
+﻿import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Star, Calendar, Clock, ExternalLink, Plus, Play, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
@@ -177,19 +178,19 @@ export default function MediaDetails() {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
-          <div className="animate-pulse space-y-6">
-            <div className="h-8 w-32 bg-muted rounded" />
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-48 rounded-md" style={{ animationDelay: '0s' }} />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-1">
-                <div className="aspect-[2/3] bg-muted rounded-lg" />
+                <Skeleton className="aspect-[2/3] w-full rounded-xl" style={{ animationDelay: '0.08s' }} />
               </div>
               <div className="lg:col-span-2 space-y-4">
-                <div className="h-8 bg-muted rounded w-3/4" />
-                <div className="h-4 bg-muted rounded w-1/2" />
+                <Skeleton className="h-8 w-3/4 rounded-md" style={{ animationDelay: '0.12s' }} />
+                <Skeleton className="h-4 w-1/2 rounded-md" style={{ animationDelay: '0.18s' }} />
                 <div className="space-y-2">
-                  <div className="h-4 bg-muted rounded" />
-                  <div className="h-4 bg-muted rounded" />
-                  <div className="h-4 bg-muted rounded w-3/4" />
+                  <Skeleton className="h-4 w-full rounded-md" style={{ animationDelay: '0.24s' }} />
+                  <Skeleton className="h-4 w-full rounded-md" style={{ animationDelay: '0.28s' }} />
+                  <Skeleton className="h-4 w-3/4 rounded-md" style={{ animationDelay: '0.32s' }} />
                 </div>
               </div>
             </div>
@@ -277,7 +278,7 @@ export default function MediaDetails() {
     year && `${year}`,
     runtime && (runtime > 60 ? `${Math.floor(runtime / 60)}h ${runtime % 60}m` : `${runtime}m`),
     genres?.slice(0, 2).join(', ')
-  ].filter(Boolean).join(' • ');
+  ].filter(Boolean).join(' â€¢ ');
 
   return (
     <div className="min-h-screen bg-background">

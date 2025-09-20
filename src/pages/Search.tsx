@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import MediaTile from '@/components/media/MediaTile';
+import { MediaTileSkeletonRow } from '@/components/media/MediaTileSkeleton';
 import { useTmdbSearch, useTmdbMovieGenres, useTmdbTvGenres } from '@/integrations/tmdb/hooks';
 import { useOpenLibrarySearch } from '@/integrations/openlibrary/searchHooks';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,8 @@ export default function SearchPage() {
   const [sp, setSp] = useSearchParams();
   const navigate = useNavigate();
   const q = sp.get('q') || '';
+  const trimmedQuery = q.trim();
+  const hasQuery = trimmedQuery.length > 0;
   
   // Configure global header for this page
   usePageHeader({
@@ -57,32 +60,41 @@ export default function SearchPage() {
   };
 
 
-  const { data: tmdb } = useTmdbSearch(q, 'multi');
-  const { data: books } = useOpenLibrarySearch(q);
+  const { data: tmdb, isLoading: isTmdbLoading, isFetching: isTmdbFetching } = useTmdbSearch(q, 'multi');
+  const { data: books, isLoading: isBooksLoading, isFetching: isBooksFetching } = useOpenLibrarySearch(q);
   const { data: movieGenres = {} } = useTmdbMovieGenres();
   const { data: tvGenres = {} } = useTmdbTvGenres();
-  const { data: podcast } = usePodcastSearch(q);
-  const { data: games = [] } = useGameSearch(q);
-  const { data: mangaResults = [] } = useAnilistMangaSearch(q);
+  const { data: podcast, isLoading: isPodcastLoading, isFetching: isPodcastFetching } = usePodcastSearch(q);
+  const { data: games = [], isLoading: isGamesLoading, isFetching: isGamesFetching } = useGameSearch(q);
+  const { data: mangaResults = [], isLoading: isMangaLoading, isFetching: isMangaFetching } = useAnilistMangaSearch(q);
+  const booksList = books ?? [];
+
   const locale = typeof navigator !== 'undefined' ? (navigator.language || 'en-US') : 'en-US';
-  const ssInput: SmartSearchInput = { user_query: q, locale, market: (locale.split('-')[1] || 'US').toUpperCase(), user_profile: { last_vertical: 'tv' }, cost_budget: { max_providers: 3, allow_fallbacks: true } };
-  const { data: smartResolved } = useSmartSearch(ssInput, q.trim().length > 0);
+  const ssInput: SmartSearchInput = { user_query: trimmedQuery || q, locale, market: (locale.split('-')[1] || 'US').toUpperCase(), user_profile: { last_vertical: 'tv' }, cost_budget: { max_providers: 3, allow_fallbacks: true } };
+  const { data: smartResolved } = useSmartSearch(ssInput, hasQuery);
 
   const tv = (tmdb?.results || []).filter((r) => (r.media_type === 'tv'));
   const movies = (tmdb?.results || []).filter((r) => (r.media_type === 'movie'));
   const anime = (tmdb?.results || []).filter((r) => isAnime(r as any, movieGenres, tvGenres));
+  const showTvSkeleton = hasQuery && tv.length === 0 && (isTmdbLoading || isTmdbFetching);
+  const showAnimeSkeleton = hasQuery && anime.length === 0 && (isTmdbLoading || isTmdbFetching);
+  const showMoviesSkeleton = hasQuery && movies.length === 0 && (isTmdbLoading || isTmdbFetching);
+  const showBookSkeleton = hasQuery && booksList.length === 0 && (isBooksLoading || isBooksFetching);
+  const showGameSkeleton = hasQuery && games.length === 0 && (isGamesLoading || isGamesFetching);
+  const showMangaSkeleton = hasQuery && mangaResults.length === 0 && (isMangaLoading || isMangaFetching);
+  const showPodcastSkeleton = hasQuery && !podcast?.resolved && (isPodcastLoading || isPodcastFetching);
 
   const chips: Array<{ id: string; label: string; count: number }> = [
     { id: 'tv', label: 'TV', count: tv.length },
     { id: 'anime', label: 'Anime', count: anime.length },
     { id: 'movies', label: 'Movies', count: movies.length },
-    { id: 'books', label: 'Books', count: (books || []).length },
+    { id: 'books', label: 'Books', count: booksList.length },
     { id: 'games', label: 'Games', count: games.length },
     { id: 'manga', label: 'Manga', count: mangaResults.length },
     { id: 'podcasts', label: 'Podcasts', count: podcast?.resolved ? 1 : 0 },
   ].filter(c => c.count > 0);
 
-  const totalCount = tv.length + anime.length + movies.length + (books?.length || 0) + games.length + mangaResults.length + (podcast?.resolved ? 1 : 0);
+  const totalCount = tv.length + anime.length + movies.length + booksList.length + games.length + mangaResults.length + (podcast?.resolved ? 1 : 0);
 
   function entityToUrl(e: EntityCard): string | undefined {
     const p: any = e.providers || {};
@@ -120,7 +132,7 @@ export default function SearchPage() {
   }: { 
     id: string; 
     title: string; 
-    count: number; 
+    count?: number; 
     children: React.ReactNode; 
   }) => {
     const isCollapsed = collapsedSections.has(id);
@@ -174,7 +186,15 @@ export default function SearchPage() {
       )}
 
       {/* TV */}
-      {tv.length > 0 && (
+      {showTvSkeleton ? (
+        <CollapsibleSection id="tv" title="TV">
+          <MediaTileSkeletonRow
+            count={10}
+            containerClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+            itemClassName="w-full"
+          />
+        </CollapsibleSection>
+      ) : tv.length > 0 && (
         <CollapsibleSection id="tv" title="TV" count={tv.length}>
           {tv.slice(0,40).map((r) => {
             const title = r.name ?? 'Untitled';
@@ -191,7 +211,15 @@ export default function SearchPage() {
       )}
 
       {/* Anime */}
-      {anime.length > 0 && (
+      {showAnimeSkeleton ? (
+        <CollapsibleSection id="anime" title="Anime">
+          <MediaTileSkeletonRow
+            count={10}
+            containerClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+            itemClassName="w-full"
+          />
+        </CollapsibleSection>
+      ) : anime.length > 0 && (
         <CollapsibleSection id="anime" title="Anime" count={anime.length}>
           {anime.slice(0,40).map((r) => {
             const title = r.title ?? r.name ?? 'Untitled';
@@ -215,7 +243,15 @@ export default function SearchPage() {
       )}
 
       {/* Movies */}
-      {movies.length > 0 && (
+      {showMoviesSkeleton ? (
+        <CollapsibleSection id="movies" title="Movies">
+          <MediaTileSkeletonRow
+            count={10}
+            containerClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+            itemClassName="w-full"
+          />
+        </CollapsibleSection>
+      ) : movies.length > 0 && (
         <CollapsibleSection id="movies" title="Movies" count={movies.length}>
           {movies.slice(0,40).map((r) => {
             const title = r.title ?? 'Untitled';
@@ -232,9 +268,17 @@ export default function SearchPage() {
       )}
 
       {/* Books */}
-      {books && books.length > 0 && (
-        <CollapsibleSection id="books" title="Books" count={books.length}>
-          {books.slice(0,40).map((b) => (
+      {showBookSkeleton ? (
+        <CollapsibleSection id="books" title="Books">
+          <MediaTileSkeletonRow
+            count={10}
+            containerClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+            itemClassName="w-full"
+          />
+        </CollapsibleSection>
+      ) : booksList.length > 0 && (
+        <CollapsibleSection id="books" title="Books" count={booksList.length}>
+          {booksList.slice(0,40).map((b) => (
             <MediaTile 
               key={`book-${b.id}`} 
               title={b.title} 
@@ -249,7 +293,15 @@ export default function SearchPage() {
       )}
 
       {/* Games */}
-      {games.length > 0 && (
+      {showGameSkeleton ? (
+        <CollapsibleSection id="games" title="Games">
+          <MediaTileSkeletonRow
+            count={10}
+            containerClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+            itemClassName="w-full"
+          />
+        </CollapsibleSection>
+      ) : games.length > 0 && (
         <CollapsibleSection id="games" title="Games" count={games.length}>
           {games.slice(0,40).map((g: any) => (
             <MediaTile
@@ -266,7 +318,15 @@ export default function SearchPage() {
       )}
 
       {/* Manga */}
-      {mangaResults.length > 0 && (
+      {showMangaSkeleton ? (
+        <CollapsibleSection id="manga" title="Manga">
+          <MediaTileSkeletonRow
+            count={10}
+            containerClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+            itemClassName="w-full"
+          />
+        </CollapsibleSection>
+      ) : mangaResults.length > 0 && (
         <CollapsibleSection id="manga" title="Manga" count={mangaResults.length}>
           {mangaResults.slice(0,40).map((m: any) => {
             const title = m?.title?.english || m?.title?.romaji || m?.title?.native || 'Untitled';
@@ -299,7 +359,7 @@ export default function SearchPage() {
               const url = entityToUrl(e);
               return (
                 <button key={e.title_id} className="text-left text-blue-600 hover:underline" onClick={() => url ? navigate(url) : undefined}>
-                  {e.display_title}{e.year_start ? ` (${e.year_start})` : ''} — {e.type}
+                  {e.display_title}{e.year_start ? ` (${e.year_start})` : ''} â€” {e.type}
                 </button>
               );
             })}
@@ -308,7 +368,15 @@ export default function SearchPage() {
       )}
 
       {/* Podcasts (top resolved + up to 3 alternatives as tiles) */}
-      {podcast?.resolved && (
+      {showPodcastSkeleton ? (
+        <CollapsibleSection id="podcasts" title="Podcasts">
+          <MediaTileSkeletonRow
+            count={6}
+            containerClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
+            itemClassName="w-full"
+          />
+        </CollapsibleSection>
+      ) : podcast?.resolved && (
         <CollapsibleSection id="podcasts" title="Podcasts" count={1 + (podcast.resolved.alternatives?.length || 0)}>
           {(() => {
             const tiles: Array<{ key: string; title: string; imageUrl?: string; subtitle?: string }> = [];
@@ -326,4 +394,3 @@ export default function SearchPage() {
     </div>
   );
 }
-
