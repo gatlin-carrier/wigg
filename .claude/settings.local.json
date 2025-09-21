@@ -46,7 +46,13 @@
       "Bash(npx lhci:*)",
       "Bash(git checkout:*)",
       "Bash(timeout 10s npm run preview -- --port 4173 --host)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(gh run list:*)",
+      "Bash(sudo dd:*)",
+      "Bash(sudo chmod:*)",
+      "Bash(sudo tee:*)",
+      "Bash(sudo apt:*)",
+      "Bash(sudo apt install:*)"
     ],
     "deny": [],
     "ask": [],

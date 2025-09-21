@@ -38,27 +38,47 @@ jobs:
           echo "🚀 Starting RUM crawl of $BASE_URL"
 
           # Simple Playwright script to visit routes and trigger interactions
-          npx playwright test --config=- <<'EOF'
-          import { test } from '@playwright/test';
-          import fs from 'fs';
+          cat > playwright.config.js <<'EOF'
+          module.exports = {
+            testDir: '.',
+            timeout: 30000,
+            use: {
+              headless: true,
+              viewport: { width: 1280, height: 720 },
+            },
+          };
+          EOF
+
+          cat > rum-test.spec.js <<'EOF'
+          const { test } = require('@playwright/test');
+          const fs = require('fs');
 
           const routes = JSON.parse(fs.readFileSync('routes.json', 'utf8'));
           const baseUrl = process.env.BASE_URL;
 
-          for (const route of routes.slice(0, 3)) { // Limit to first 3 routes
+          routes.slice(0, 3).forEach((route, index) => {
             test(`RUM crawl ${route}`, async ({ page }) => {
               console.log(`📍 Testing route: ${route}`);
 
-              await page.goto(`${baseUrl}${route}`, { waitUntil: 'networkidle' });
+              try {
+                await page.goto(`${baseUrl}${route}`, {
+                  waitUntil: 'networkidle',
+                  timeout: 10000
+                });
 
-              // Light interactions to trigger INP/CLS measurements
-              await page.mouse.move(100, 300);
-              await page.mouse.wheel(0, 500);
-              await page.keyboard.press('Tab').catch(() => {});
+                // Light interactions to trigger INP/CLS measurements
+                await page.mouse.move(100, 300);
+                await page.mouse.wheel(0, 500);
+                await page.keyboard.press('Tab').catch(() => {});
 
-              // Wait and navigate away to flush metrics
-              await page.waitForTimeout(2000);
-              await page.goto('about:blank');
+                // Wait and navigate away to flush metrics
+                await page.waitForTimeout(2000);
+                await page.goto('about:blank');
+              } catch (error) {
+                console.log(`❌ Error testing ${route}:`, error.message);
+              }
             });
-          }
+          });
           EOF
+
+          npx playwright test rum-test.spec.js

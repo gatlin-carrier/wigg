@@ -23,9 +23,11 @@ jobs:
       - name: Test preview server
         run: |
           echo "Testing preview server startup..."
+          npm run build
           timeout 15s npm run preview -- --port 4173 --host &
-          sleep 10
+          sleep 12
           curl -f http://localhost:4173/ || echo "Server not responding"
+          pkill -f "vite preview" || echo "No preview process found"
 
       - name: Run Lighthouse CI with debug
         run: |

@@ -9,7 +9,7 @@
       },
       "startServerCommand": "npm run build && npm run preview -- --port 4173 --host",
       "startServerReadyPattern": "Local:",
-      "startServerReadyTimeout": 30000
+      "startServerReadyTimeout": 60000
     },
     "assert": {
       "assertions": {

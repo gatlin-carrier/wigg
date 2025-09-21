@@ -2,14 +2,9 @@
   "session_id": "ca364f58-a33d-452c-bee5-510b37f23103",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\ca364f58-a33d-452c-bee5-510b37f23103.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "MultiEdit",
+  "tool_name": "Write",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\scripts\\wigg_reddit_seed.py",
-    "edits": [
-      {
-        "old_string": "HOOK_PHRASES = [\n    \"gets good\", \"get good\", \"picks up\", \"clicks\", \"worth it after\",\n    \"starts being good\", \"really starts\", \"turns around\", \"hooks you\",\n    \"it hooked me at\", \"kept watching after\"\n]",
-        "new_string": "HOOK_PHRASES = [\n    \"gets good\", \"get good\", \"picks up\", \"clicks\", \"worth it after\",\n    \"starts being good\", \"really starts\", \"turns around\", \"hooks you\",\n    \"it hooked me at\", \"kept watching after\", \"grow the beard\",\n    \"growing the beard\", \"grows the beard\", \"grew the beard\", \"grown the beard\"\n]"
-      }
-    ]
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\test-rum.js",
+    "content": "import { test } from '@playwright/test';\nimport fs from 'fs';\n\nconst routes = JSON.parse(fs.readFileSync('src/routes.seed.json', 'utf8'));\nconst baseUrl = 'http://localhost:4173';\n\nfor (const route of routes.slice(0, 3)) { // Limit to first 3 routes\n  test(`RUM crawl ${route}`, async ({ page }) => {\n    console.log(`📍 Testing route: ${route}`);\n\n    await page.goto(`${baseUrl}${route}`, { waitUntil: 'networkidle' });\n\n    // Light interactions to trigger INP/CLS measurements\n    await page.mouse.move(100, 300);\n    await page.mouse.wheel(0, 500);\n    await page.keyboard.press('Tab').catch(() => {});\n\n    // Wait and navigate away to flush metrics\n    await page.waitForTimeout(2000);\n    await page.goto('about:blank');\n  });\n}"
   }
 }
