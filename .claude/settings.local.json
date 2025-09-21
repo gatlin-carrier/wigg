@@ -45,7 +45,8 @@
       "Bash(npx playwright install:*)",
       "Bash(npx lhci:*)",
       "Bash(git checkout:*)",
-      "Bash(timeout 10s npm run preview -- --port 4173 --host)"
+      "Bash(timeout 10s npm run preview -- --port 4173 --host)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": [],
