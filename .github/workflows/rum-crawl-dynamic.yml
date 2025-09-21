@@ -1,0 +1,26 @@
+# Alternative workflow that auto-detects preview URL
+name: RUM Crawl (Auto-detect Preview)
+on:
+  workflow_dispatch:
+  deployment_status:
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment_url != ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+      - run: npx playwright install --with-deps
+
+      - name: Generate routes.json
+        env:
+          SITEMAP_CONTENT: ${{ secrets.VERCEL_SITEMAP_XML }}
+        run: npx tsx scripts/gen-routes.ts
+
+      - name: Run crawl against deployment
+        env:
+          BASE_URL: ${{ github.event.deployment_status.environment_url }}
+        run: npx tsx scripts/rum-crawl.ts
