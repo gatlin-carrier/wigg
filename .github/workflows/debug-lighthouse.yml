@@ -1,33 +1,65 @@
 # Debug workflow to test Lighthouse CI setup
 name: Debug Lighthouse CI
+
+permissions:
+  contents: read
+  actions: write
+
 on:
   workflow_dispatch:
 
 jobs:
   debug:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+        with:
+          node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Test build process
+      - name: Build application
         run: |
-          echo "Testing build process..."
+          echo "Building application..."
           npm run build
+          if [ ! -d "dist" ]; then
+            echo "❌ Build failed - dist directory not found"
+            exit 1
+          fi
+          echo "✅ Build completed successfully"
           ls -la dist/
 
       - name: Test preview server
         run: |
           echo "Testing preview server startup..."
-          npm run build
-          timeout 15s npm run preview -- --port 4173 --host &
-          sleep 12
-          curl -f http://localhost:4173/ || echo "Server not responding"
-          pkill -f "vite preview" || echo "No preview process found"
+          # Start server in background
+          npm run preview -- --port 4173 --host &
+          SERVER_PID=$!
+          echo "Server PID: $SERVER_PID"
+
+          # Wait for server to start
+          echo "Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -f http://localhost:4173/ > /dev/null 2>&1; then
+              echo "✅ Server is responding"
+              break
+            fi
+            echo "Attempt $i/30 - waiting..."
+            sleep 2
+          done
+
+          # Test server response
+          curl -f http://localhost:4173/ || echo "❌ Server not responding"
+
+          # Cleanup
+          echo "Cleaning up server process..."
+          kill $SERVER_PID || echo "Process already terminated"
+          wait $SERVER_PID 2>/dev/null || true
 
       - name: Run Lighthouse CI with debug
         run: |

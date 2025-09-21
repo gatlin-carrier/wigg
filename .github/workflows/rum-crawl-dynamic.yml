@@ -1,5 +1,11 @@
 # Alternative workflow that auto-detects preview URL
 name: RUM Crawl (Auto-detect Preview)
+
+permissions:
+  contents: read
+  deployments: read
+  actions: write
+
 on:
   workflow_dispatch:
   deployment_status:
@@ -7,13 +13,29 @@ on:
 jobs:
   crawl:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment_url != ''
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - run: npm ci
-      - run: npx playwright install --with-deps
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
 
       - name: Generate routes.json from seed file
         run: |
@@ -26,26 +48,60 @@ jobs:
           fi
           echo "Routes for testing:" && cat routes.json
 
-      - name: Basic RUM crawl with Playwright
+      - name: Validate deployment URL
         env:
           BASE_URL: ${{ github.event.deployment_status.environment_url }}
         run: |
           if [ -z "$BASE_URL" ]; then
-            echo "⚠️ BASE_URL not set, skipping RUM crawl"
+            echo "⚠️ Deployment URL not available, skipping RUM crawl"
             exit 0
           fi
 
-          echo "🚀 Starting RUM crawl of $BASE_URL"
+          # Validate URL format
+          if [[ ! "$BASE_URL" =~ ^https?:// ]]; then
+            echo "❌ Invalid deployment URL format: $BASE_URL"
+            exit 1
+          fi
+
+          # Test if URL is accessible (with retries for new deployments)
+          echo "🔍 Validating deployment accessibility..."
+          for i in {1..5}; do
+            if curl -f -s --max-time 30 "$BASE_URL" > /dev/null; then
+              echo "✅ Deployment URL validated: $BASE_URL"
+              exit 0
+            fi
+            echo "Attempt $i/5 - deployment may still be starting up..."
+            sleep 30
+          done
+
+          echo "❌ Deployment URL is not accessible after retries: $BASE_URL"
+          exit 1
+
+      - name: Run RUM crawl on deployment
+        env:
+          BASE_URL: ${{ github.event.deployment_status.environment_url }}
+          MAX_ROUTES: 5
+        run: |
+          echo "🚀 Starting RUM crawl of deployment: $BASE_URL"
 
           # Simple Playwright script to visit routes and trigger interactions
           cat > playwright.config.cjs <<'EOF'
           module.exports = {
             testDir: '.',
             timeout: 30000,
+            retries: 1,
+            workers: 1,
             use: {
               headless: true,
               viewport: { width: 1280, height: 720 },
+              actionTimeout: 10000,
+              navigationTimeout: 30000,
             },
+            reporter: [
+              ['list'],
+              ['json', { outputFile: 'test-results.json' }],
+              ['html', { outputFolder: 'playwright-report' }]
+            ],
           };
           EOF
 
@@ -56,29 +112,100 @@ jobs:
           const routes = JSON.parse(fs.readFileSync('routes.json', 'utf8'));
           const baseUrl = process.env.BASE_URL;
 
-          routes.slice(0, 3).forEach((route, index) => {
+          const maxRoutes = parseInt(process.env.MAX_ROUTES || '3');
+          const testRoutes = routes.slice(0, maxRoutes);
+
+          testRoutes.forEach((route, index) => {
             test(`RUM crawl ${route}`, async ({ page }) => {
-              console.log(`📍 Testing route: ${route}`);
+              console.log(`📍 Testing route ${index + 1}/${testRoutes.length}: ${route}`);
 
               try {
-                await page.goto(`${baseUrl}${route}`, {
+                const response = await page.goto(`${baseUrl}${route}`, {
                   waitUntil: 'networkidle',
-                  timeout: 10000
+                  timeout: 15000
                 });
+
+                if (response.status() >= 400) {
+                  throw new Error(`HTTP ${response.status()}`);
+                }
+
+                console.log(`✅ Route loaded: ${route} (${response.status()})`);
+
+                await page.waitForLoadState('domcontentloaded');
 
                 // Light interactions to trigger INP/CLS measurements
                 await page.mouse.move(100, 300);
                 await page.mouse.wheel(0, 500);
-                await page.keyboard.press('Tab').catch(() => {});
 
-                // Wait and navigate away to flush metrics
+                try {
+                  await page.keyboard.press('Tab');
+                  await page.waitForTimeout(500);
+                } catch (e) {
+                  // Ignore tab errors
+                }
+
                 await page.waitForTimeout(2000);
                 await page.goto('about:blank');
+
+                console.log(`✅ Completed: ${route}`);
               } catch (error) {
-                console.log(`❌ Error testing ${route}:`, error.message);
+                console.log(`❌ Failed ${route}: ${error.message}`);
+
+                try {
+                  await page.screenshot({
+                    path: `error-${route.replace(/[^a-zA-Z0-9]/g, '_')}.png`,
+                    fullPage: true
+                  });
+                } catch (e) {
+                  console.log('Could not capture screenshot');
+                }
+
+                throw error;
               }
             });
           });
           EOF
 
-          npx playwright test --config=playwright.config.cjs rum-test.spec.cjs
+          # Run the tests and generate summary
+          echo "📊 Running deployment RUM crawl tests..."
+          if npx playwright test --config=playwright.config.cjs rum-test.spec.cjs; then
+            echo "✅ Deployment RUM crawl completed successfully"
+            echo "CRAWL_STATUS=success" >> $GITHUB_ENV
+          else
+            echo "❌ Deployment RUM crawl failed"
+            echo "CRAWL_STATUS=failure" >> $GITHUB_ENV
+            exit 1
+          fi
+
+      - name: Generate deployment test summary
+        if: always()
+        run: |
+          echo "## 🚀 Deployment RUM Crawl Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment URL:** ${{ github.event.deployment_status.environment_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ env.CRAWL_STATUS }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Routes tested:** $(cat routes.json | jq length)" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment ID:** ${{ github.event.deployment.id }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "test-results.json" ]; then
+            echo "**Test Results:** Available in artifacts" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload deployment test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-rum-crawl-results
+          path: |
+            test-results.json
+            error-*.png
+            playwright-report/
+          retention-days: 30
+
+      - name: Upload deployment screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-rum-crawl-screenshots
+          path: error-*.png
+          retention-days: 7
