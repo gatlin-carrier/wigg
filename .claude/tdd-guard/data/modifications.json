@@ -2,9 +2,10 @@
   "session_id": "ca364f58-a33d-452c-bee5-510b37f23103",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\ca364f58-a33d-452c-bee5-510b37f23103.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Write",
+  "tool_name": "Edit",
   "tool_input": {
     "file_path": "C:\\Users\\gatli\\Projects\\wigg\\scripts\\gen-routes.ts",
-    "content": "#!/usr/bin/env node\n// Minimal route generation script for testing\nimport fs from \"node:fs\";\n\nconsole.log(\"🔍 Generating routes for performance testing...\");\n\nconst seed = fs.existsSync(\"src/routes.seed.json\")\n  ? JSON.parse(fs.readFileSync(\"src/routes.seed.json\", \"utf8\"))\n  : [\"/\", \"/dashboard\", \"/search\", \"/feed\"];\n\nconst siteMapOverride = process.env.SITEMAP_CONTENT;\nlet routes = seed;\n\nif (siteMapOverride) {\n  console.log(\"📄 Using sitemap content for route discovery\");\n  const urls = [...siteMapOverride.matchAll(/<loc>(.*?)<\\/loc>/g)]\n    .map(m => new URL(m[1]).pathname);\n  const unique = Array.from(new Set(urls))\n    .filter(p => p && p.startsWith(\"/\"));\n  if (unique.length) routes = unique;\n}\n\nfs.writeFileSync(\"routes.json\", JSON.stringify(routes, null, 2));\nconsole.log(`✅ Generated ${routes.length} routes:`, routes);\nconsole.log(`📝 Wrote routes to routes.json`);"
+    "old_string": "",
+    "new_string": "export function generateRoutes() {\n  return {\n    routes: [\"/\", \"/dashboard\"],\n    source: \"default\" as const\n  };\n}"
   }
 }
