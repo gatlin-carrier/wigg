@@ -12,7 +12,49 @@ jobs:
         with: { node-version: 20 }
       - run: npm ci
       - run: npx playwright install --with-deps
-      - name: Generate routes.json (placeholder)
-        run: echo "Creating placeholder routes.json" && echo '["/" , "/dashboard"]' > routes.json
-      - name: RUM crawl placeholder
-        run: echo "RUM crawl scripts not yet implemented - skipping for now"
+      - name: Generate routes.json from seed file
+        run: |
+          if [ -f "src/routes.seed.json" ]; then
+            cp src/routes.seed.json routes.json
+            echo "✅ Using routes from src/routes.seed.json"
+          else
+            echo '["/" , "/dashboard", "/search", "/feed"]' > routes.json
+            echo "📋 Using default routes"
+          fi
+          echo "Routes for testing:" && cat routes.json
+      - name: Basic RUM crawl with Playwright
+        env:
+          BASE_URL: ${{ secrets.VERCEL_PREVIEW_URL }}
+        run: |
+          if [ -z "$BASE_URL" ]; then
+            echo "⚠️ BASE_URL not set, skipping RUM crawl"
+            exit 0
+          fi
+
+          echo "🚀 Starting RUM crawl of $BASE_URL"
+
+          # Simple Playwright script to visit routes and trigger interactions
+          npx playwright test --config=- <<'EOF'
+          import { test } from '@playwright/test';
+          import fs from 'fs';
+
+          const routes = JSON.parse(fs.readFileSync('routes.json', 'utf8'));
+          const baseUrl = process.env.BASE_URL;
+
+          for (const route of routes.slice(0, 3)) { // Limit to first 3 routes
+            test(`RUM crawl ${route}`, async ({ page }) => {
+              console.log(`📍 Testing route: ${route}`);
+
+              await page.goto(`${baseUrl}${route}`, { waitUntil: 'networkidle' });
+
+              // Light interactions to trigger INP/CLS measurements
+              await page.mouse.move(100, 300);
+              await page.mouse.wheel(0, 500);
+              await page.keyboard.press('Tab').catch(() => {});
+
+              // Wait and navigate away to flush metrics
+              await page.waitForTimeout(2000);
+              await page.goto('about:blank');
+            });
+          }
+          EOF
