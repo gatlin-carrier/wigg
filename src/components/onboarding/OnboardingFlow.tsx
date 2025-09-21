@@ -182,7 +182,7 @@ export function OnboardingFlow() {
               />
             </div>
             <div className="flex items-center justify-between gap-3">
-              <Button variant="ghost" size="sm" onClick={skip} className="text-muted-foreground">
+              <Button variant="ghost" size="sm" onClick={skip} className="text-muted-foreground" data-testid="onboarding-skip">
                 Skip tour
               </Button>
               <div className="flex items-center gap-2">
@@ -199,7 +199,7 @@ export function OnboardingFlow() {
                     Back
                   </Button>
                 )}
-                <Button size="sm" onClick={handleNext}>
+                <Button size="sm" onClick={handleNext} data-testid="primary-cta">
                   {activeStep.final ? 'Finish' : 'Next'}
                 </Button>
               </div>

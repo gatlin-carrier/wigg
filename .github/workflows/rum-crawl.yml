@@ -1,0 +1,22 @@
+name: RUM Crawl (Preview)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * *"  # daily
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - name: Generate routes.json
+        env:
+          SITEMAP_CONTENT: ${{ secrets.VERCEL_SITEMAP_XML }} # optional
+        run: npx tsx scripts/gen-routes.ts
+      - name: Run crawl against latest Preview
+        env:
+          BASE_URL: ${{ secrets.VERCEL_PREVIEW_URL }} # set this secret
+        run: npx tsx scripts/rum-crawl.ts
