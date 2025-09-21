@@ -61,12 +61,45 @@ jobs:
           kill $SERVER_PID || echo "Process already terminated"
           wait $SERVER_PID 2>/dev/null || true
 
+      - name: Start debug server for LHCI
+        run: |
+          echo "Starting debug server for Lighthouse CI..."
+          npm run preview -- --port 4173 --host &
+          SERVER_PID=$!
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
+
+          # Wait and test server
+          for i in {1..20}; do
+            if curl -f -s http://localhost:4173/ > /dev/null 2>&1; then
+              echo "✅ Debug server ready"
+              break
+            fi
+            echo "Waiting for debug server... ($i/20)"
+            sleep 3
+          done
+
+          # Test server response
+          echo "Testing server response:"
+          curl -I http://localhost:4173/ || echo "Server not responding"
+
       - name: Run Lighthouse CI with debug
         run: |
           echo "Running Lighthouse CI..."
           echo "Config contents:"
           cat lighthouserc.json
+          echo "Testing URL accessibility:"
+          curl -f http://localhost:4173/ | head -20 || echo "URL not accessible"
+
           npx lhci autorun --config=lighthouserc.json
         env:
           LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
           LHCI_BUILD_CONTEXT__CURRENT_BRANCH: ${{ github.ref_name }}
+
+      - name: Cleanup debug server
+        if: always()
+        run: |
+          if [ -n "$SERVER_PID" ]; then
+            echo "Stopping debug server"
+            kill $SERVER_PID || true
+            wait $SERVER_PID 2>/dev/null || true
+          fi

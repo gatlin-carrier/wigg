@@ -6,10 +6,7 @@
       "settings": {
         "preset": "desktop",
         "chromeFlags": "--no-sandbox --disable-dev-shm-usage"
-      },
-      "startServerCommand": "npm run preview -- --port 4173 --host",
-      "startServerReadyPattern": "Local.*http://localhost",
-      "startServerReadyTimeout": 60000
+      }
     },
     "assert": {
       "assertions": {
