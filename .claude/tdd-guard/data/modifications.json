@@ -4,7 +4,7 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Write",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\test-rum.js",
-    "content": "import { test } from '@playwright/test';\nimport fs from 'fs';\n\nconst routes = JSON.parse(fs.readFileSync('src/routes.seed.json', 'utf8'));\nconst baseUrl = 'http://localhost:4173';\n\nfor (const route of routes.slice(0, 3)) { // Limit to first 3 routes\n  test(`RUM crawl ${route}`, async ({ page }) => {\n    console.log(`📍 Testing route: ${route}`);\n\n    await page.goto(`${baseUrl}${route}`, { waitUntil: 'networkidle' });\n\n    // Light interactions to trigger INP/CLS measurements\n    await page.mouse.move(100, 300);\n    await page.mouse.wheel(0, 500);\n    await page.keyboard.press('Tab').catch(() => {});\n\n    // Wait and navigate away to flush metrics\n    await page.waitForTimeout(2000);\n    await page.goto('about:blank');\n  });\n}"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\test-rum-local.cjs",
+    "content": "const { test } = require('@playwright/test');\nconst fs = require('fs');\n\n// Simple test to verify @playwright/test works\nconst routes = [\"/\", \"/dashboard\"];\nconst baseUrl = \"http://localhost:4173\";\n\nroutes.forEach((route, index) => {\n  test(`RUM crawl ${route}`, async ({ page }) => {\n    console.log(`📍 Testing route: ${route}`);\n\n    try {\n      await page.goto(`${baseUrl}${route}`, {\n        waitUntil: 'networkidle',\n        timeout: 10000\n      });\n      console.log(`✅ Successfully loaded ${route}`);\n    } catch (error) {\n      console.log(`❌ Error testing ${route}:`, error.message);\n    }\n  });\n});"
   }
 }
