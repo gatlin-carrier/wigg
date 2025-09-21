@@ -32,6 +32,9 @@ jobs:
       - name: Run Lighthouse CI with debug
         run: |
           echo "Running Lighthouse CI..."
-          npx lhci autorun --config=lighthouserc.json || echo "LHCI failed but continuing..."
+          echo "Config contents:"
+          cat lighthouserc.json
+          npx lhci autorun --config=lighthouserc.json
         env:
           LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
+          LHCI_BUILD_CONTEXT__CURRENT_BRANCH: ${{ github.ref_name }}

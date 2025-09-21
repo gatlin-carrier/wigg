@@ -52,7 +52,8 @@
       "Bash(sudo chmod:*)",
       "Bash(sudo tee:*)",
       "Bash(sudo apt:*)",
-      "Bash(sudo apt install:*)"
+      "Bash(sudo apt install:*)",
+      "Bash(timeout 5s npm run preview:*)"
     ],
     "deny": [],
     "ask": [],
