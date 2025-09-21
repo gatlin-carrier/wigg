@@ -40,8 +40,12 @@
       "Bash(vercel:*)",
       "WebFetch(domain:github.com)",
       "Bash(echo:*)",
-      "Bash(tdd-guard:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(npm install:*)",
+      "Bash(npx playwright install:*)",
+      "Bash(npx lhci:*)",
+      "Bash(git checkout:*)",
+      "Bash(timeout 10s npm run preview -- --port 4173 --host)"
     ],
     "deny": [],
     "ask": [],
@@ -50,27 +54,8 @@
     ]
   },
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit|TodoWrite",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "tdd-guard"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "tdd-guard"
-          }
-        ]
-      }
-    ],
+    "PreToolUse": [],
+    "UserPromptSubmit": [],
     "SessionStart": []
   }
 }
