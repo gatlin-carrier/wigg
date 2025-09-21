@@ -1,0 +1,35 @@
+# Debug workflow to test Lighthouse CI setup
+name: Debug Lighthouse CI
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test build process
+        run: |
+          echo "Testing build process..."
+          npm run build
+          ls -la dist/
+
+      - name: Test preview server
+        run: |
+          echo "Testing preview server startup..."
+          timeout 15s npm run preview -- --port 4173 --host &
+          sleep 10
+          curl -f http://localhost:4173/ || echo "Server not responding"
+
+      - name: Run Lighthouse CI with debug
+        run: |
+          echo "Running Lighthouse CI..."
+          npx lhci autorun --config=lighthouserc.json || echo "LHCI failed but continuing..."
+        env:
+          LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
