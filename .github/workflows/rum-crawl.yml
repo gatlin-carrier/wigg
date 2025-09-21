@@ -34,7 +34,7 @@ jobs:
           echo "🚀 Starting RUM crawl of $BASE_URL"
 
           # Simple Playwright script to visit routes and trigger interactions
-          cat > playwright.config.js <<'EOF'
+          cat > playwright.config.cjs <<'EOF'
           module.exports = {
             testDir: '.',
             timeout: 30000,
@@ -45,7 +45,7 @@ jobs:
           };
           EOF
 
-          cat > rum-test.spec.js <<'EOF'
+          cat > rum-test.spec.cjs <<'EOF'
           const { test } = require('@playwright/test');
           const fs = require('fs');
 
@@ -77,4 +77,4 @@ jobs:
           });
           EOF
 
-          npx playwright test rum-test.spec.js
+          npx playwright test --config=playwright.config.cjs rum-test.spec.cjs
