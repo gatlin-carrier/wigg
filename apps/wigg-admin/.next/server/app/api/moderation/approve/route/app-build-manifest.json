@@ -1,0 +1,10 @@
+{
+  "pages": {
+    "/api/moderation/approve/route": [
+      "static/chunks/de3bea7ffb85b96b.js",
+      "static/chunks/e9d1e94e5bc19480.js",
+      "static/chunks/3cfebe76a3ee6f60.js",
+      "static/chunks/turbopack-bb747b4178c58034.js"
+    ]
+  }
+}

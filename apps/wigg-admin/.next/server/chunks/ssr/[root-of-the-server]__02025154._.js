@@ -1,0 +1,3 @@
+module.exports=[18622,(a,b,c)=>{b.exports=a.x("next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",()=>require("next/dist/compiled/next-server/app-page-turbo.runtime.prod.js"))},37041,(a,b,c)=>{"use strict";b.exports=a.r(18622)},18030,(a,b,c)=>{"use strict";b.exports=a.r(37041).vendored["react-ssr"].ReactJsxRuntime},99229,a=>{"use strict";a.s(["default",()=>c]);var b=a.i(18030);function c(){return(0,b.jsx)("div",{children:"Loading moderation table..."})}}];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__02025154._.js.map

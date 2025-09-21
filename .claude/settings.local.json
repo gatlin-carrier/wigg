@@ -40,7 +40,8 @@
       "Bash(vercel:*)",
       "WebFetch(domain:github.com)",
       "Bash(echo:*)",
-      "Bash(tdd-guard:*)"
+      "Bash(tdd-guard:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": [],

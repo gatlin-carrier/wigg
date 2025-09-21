@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,43177,t=>{"use strict";t.s(["default",()=>i]);var e=t.i(16612);function i(){return(0,e.jsx)("div",{children:"Loading moderation table..."})}}]);

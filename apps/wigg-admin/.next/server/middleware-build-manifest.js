@@ -1,0 +1,55 @@
+globalThis.__BUILD_MANIFEST = {
+  "pages": {
+    "/_app": [
+      "static/chunks/64b0e_next_dist_compiled_next-devtools_index_a7e9165a.js",
+      "static/chunks/64b0e_next_dist_compiled_0816862d._.js",
+      "static/chunks/64b0e_next_dist_shared_lib_30391b22._.js",
+      "static/chunks/64b0e_next_dist_client_0372df9e._.js",
+      "static/chunks/64b0e_next_dist_87de8bf8._.js",
+      "static/chunks/64b0e_next_app_415b8013.js",
+      "static/chunks/[next]_entry_page-loader_ts_971f8540._.js",
+      "static/chunks/64b0e_react-dom_07364be5._.js",
+      "static/chunks/64b0e_f2fd766f._.js",
+      "static/chunks/[root-of-the-server]__8de578a8._.js",
+      "static/chunks/wigg_apps_wigg-admin_pages__app_2da965e7._.js",
+      "static/chunks/turbopack-wigg_apps_wigg-admin_pages__app_b1436b62._.js"
+    ],
+    "/_error": [
+      "static/chunks/64b0e_next_dist_compiled_next-devtools_index_a7e9165a.js",
+      "static/chunks/64b0e_next_dist_compiled_0816862d._.js",
+      "static/chunks/64b0e_next_dist_shared_lib_2fb9e482._.js",
+      "static/chunks/64b0e_next_dist_client_0372df9e._.js",
+      "static/chunks/64b0e_next_dist_0ade4194._.js",
+      "static/chunks/64b0e_next_error_50ca3466.js",
+      "static/chunks/[next]_entry_page-loader_ts_7f295c94._.js",
+      "static/chunks/64b0e_react-dom_07364be5._.js",
+      "static/chunks/64b0e_f2fd766f._.js",
+      "static/chunks/[root-of-the-server]__7ea9db86._.js",
+      "static/chunks/wigg_apps_wigg-admin_pages__error_2da965e7._.js",
+      "static/chunks/turbopack-wigg_apps_wigg-admin_pages__error_41748406._.js"
+    ]
+  },
+  "devFiles": [],
+  "ampDevFiles": [],
+  "polyfillFiles": [
+    "static/chunks/64b0e_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
+  "lowPriorityFiles": [],
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_a6587477._.js",
+    "static/chunks/64b0e_next_dist_compiled_react-dom_518f33fa._.js",
+    "static/chunks/64b0e_next_dist_compiled_next-devtools_index_5329a40a.js",
+    "static/chunks/64b0e_next_dist_compiled_2b7417f5._.js",
+    "static/chunks/64b0e_next_dist_client_5e204d47._.js",
+    "static/chunks/64b0e_next_dist_78bc225e._.js",
+    "static/chunks/64b0e_@swc_helpers_cjs_5a31dbe6._.js",
+    "static/chunks/wigg_apps_wigg-admin_a0ff3932._.js",
+    "static/chunks/turbopack-wigg_apps_wigg-admin_a7ca2e4f._.js"
+  ],
+  "ampFirstPages": []
+};
+globalThis.__BUILD_MANIFEST.lowPriorityFiles = [
+"/static/" + process.env.__NEXT_BUILD_ID + "/_buildManifest.js",
+,"/static/" + process.env.__NEXT_BUILD_ID + "/_ssgManifest.js",
+
+];

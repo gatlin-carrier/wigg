@@ -1,0 +1,55 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/64b0e_next_dist_2bc21222._.js",
+      "static/chunks/wigg_apps_wigg-admin_app_favicon_ico_mjs_bca86f0f._.js",
+      "static/chunks/[root-of-the-server]__addc66dd._.css",
+      "static/chunks/wigg_apps_wigg-admin_app_layout_tsx_4ef826aa._.js",
+      "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_a6587477._.js",
+      "static/chunks/64b0e_next_dist_compiled_react-dom_518f33fa._.js",
+      "static/chunks/64b0e_next_dist_compiled_next-devtools_index_5329a40a.js",
+      "static/chunks/64b0e_next_dist_compiled_2b7417f5._.js",
+      "static/chunks/64b0e_next_dist_client_5e204d47._.js",
+      "static/chunks/64b0e_next_dist_78bc225e._.js",
+      "static/chunks/64b0e_@swc_helpers_cjs_5a31dbe6._.js",
+      "static/chunks/wigg_apps_wigg-admin_a0ff3932._.js",
+      "static/chunks/turbopack-wigg_apps_wigg-admin_a7ca2e4f._.js"
+    ],
+    "/moderation/page": [
+      "static/chunks/64b0e_next_dist_2bc21222._.js",
+      "static/chunks/wigg_apps_wigg-admin_app_favicon_ico_mjs_bca86f0f._.js",
+      "static/chunks/[root-of-the-server]__addc66dd._.css",
+      "static/chunks/wigg_apps_wigg-admin_app_layout_tsx_4ef826aa._.js",
+      "static/chunks/64b0e_next_dist_client_components_builtin_global-error_e1892f1f.js",
+      "static/chunks/wigg_apps_wigg-admin_4c81d6fb._.js",
+      "static/chunks/wigg_apps_wigg-admin_app_moderation_page_tsx_e1892f1f._.js",
+      "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_a6587477._.js",
+      "static/chunks/64b0e_next_dist_compiled_react-dom_518f33fa._.js",
+      "static/chunks/64b0e_next_dist_compiled_next-devtools_index_5329a40a.js",
+      "static/chunks/64b0e_next_dist_compiled_2b7417f5._.js",
+      "static/chunks/64b0e_next_dist_client_5e204d47._.js",
+      "static/chunks/64b0e_next_dist_78bc225e._.js",
+      "static/chunks/64b0e_@swc_helpers_cjs_5a31dbe6._.js",
+      "static/chunks/wigg_apps_wigg-admin_a0ff3932._.js",
+      "static/chunks/turbopack-wigg_apps_wigg-admin_a7ca2e4f._.js"
+    ],
+    "/page": [
+      "static/chunks/64b0e_next_dist_2bc21222._.js",
+      "static/chunks/wigg_apps_wigg-admin_app_favicon_ico_mjs_bca86f0f._.js",
+      "static/chunks/[root-of-the-server]__addc66dd._.css",
+      "static/chunks/wigg_apps_wigg-admin_app_layout_tsx_4ef826aa._.js",
+      "static/chunks/64b0e_next_dist_client_components_builtin_global-error_e1892f1f.js",
+      "static/chunks/64b0e_next_dist_c01979a4._.js",
+      "static/chunks/wigg_apps_wigg-admin_app_page_tsx_e1892f1f._.js",
+      "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_a6587477._.js",
+      "static/chunks/64b0e_next_dist_compiled_react-dom_518f33fa._.js",
+      "static/chunks/64b0e_next_dist_compiled_next-devtools_index_5329a40a.js",
+      "static/chunks/64b0e_next_dist_compiled_2b7417f5._.js",
+      "static/chunks/64b0e_next_dist_client_5e204d47._.js",
+      "static/chunks/64b0e_next_dist_78bc225e._.js",
+      "static/chunks/64b0e_@swc_helpers_cjs_5a31dbe6._.js",
+      "static/chunks/wigg_apps_wigg-admin_a0ff3932._.js",
+      "static/chunks/turbopack-wigg_apps_wigg-admin_a7ca2e4f._.js"
+    ]
+  }
+}

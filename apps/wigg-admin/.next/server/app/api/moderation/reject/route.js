@@ -1,0 +1,11 @@
+var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/moderation/reject/route.js")
+R.c("server/chunks/64b0e_@supabase_node-fetch_lib_index_16705a9e.js")
+R.c("server/chunks/64b0e_next_debd3b63._.js")
+R.c("server/chunks/ec73d_zod_v3_538d5cdf._.js")
+R.c("server/chunks/64b0e_tr46_642dac09._.js")
+R.c("server/chunks/64b0e_@supabase_auth-js_dist_module_e1cfb4ff._.js")
+R.c("server/chunks/64b0e_d9e89300._.js")
+R.c("server/chunks/[root-of-the-server]__aa7cc0d1._.js")
+R.m("[project]/wigg/apps/wigg-admin/.next-internal/server/app/api/moderation/reject/route/actions.js [app-rsc] (server actions loader, ecmascript)")
+R.m("[project]/wigg/apps/wigg-admin/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/wigg/apps/wigg-admin/app/api/moderation/reject/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)")
+module.exports=R.m("[project]/wigg/apps/wigg-admin/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/wigg/apps/wigg-admin/app/api/moderation/reject/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)").exports
