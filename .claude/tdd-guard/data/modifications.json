@@ -2,10 +2,14 @@
   "session_id": "ca364f58-a33d-452c-bee5-510b37f23103",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\ca364f58-a33d-452c-bee5-510b37f23103.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Edit",
+  "tool_name": "MultiEdit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\scripts\\gen-routes.ts",
-    "old_string": "",
-    "new_string": "export function generateRoutes() {\n  return {\n    routes: [\"/\", \"/dashboard\"],\n    source: \"default\" as const\n  };\n}"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\scripts\\wigg_reddit_seed.py",
+    "edits": [
+      {
+        "old_string": "HOOK_PHRASES = [\n    \"gets good\", \"get good\", \"picks up\", \"clicks\", \"worth it after\",\n    \"starts being good\", \"really starts\", \"turns around\", \"hooks you\",\n    \"it hooked me at\", \"kept watching after\"\n]",
+        "new_string": "HOOK_PHRASES = [\n    \"gets good\", \"get good\", \"picks up\", \"clicks\", \"worth it after\",\n    \"starts being good\", \"really starts\", \"turns around\", \"hooks you\",\n    \"it hooked me at\", \"kept watching after\", \"grow the beard\",\n    \"growing the beard\", \"grows the beard\", \"grew the beard\", \"grown the beard\"\n]"
+      }
+    ]
   }
 }
