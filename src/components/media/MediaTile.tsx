@@ -5,13 +5,13 @@ import { Star, Plus, TrendingUp, Activity, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
-import { PacingBarcode } from '@/components/wigg/PacingBarcode';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
 import { formatT2G } from '@/lib/wigg/format';
-import { classifyPeakFromSegments } from '@/lib/wigg/analysis';
+import { classifyPeakFromSegments, resampleSegments } from '@/lib/wigg/analysis';
 import QuickWiggModal, { type QuickWiggVariant, type QuickWiggMedia, type QuickWiggUnits, type QuickWiggResult } from '@/components/wigg/QuickWiggModal';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { MiniGoodnessCurve } from '@/components/wigg/MiniGoodnessCurve';
 
 type Props = {
   title: string;
@@ -45,6 +45,10 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
   const { data: progressData } = useTitleProgress(titleKey);
   const { data: wiggsData, addWigg: addWiggLocal } = useUserWiggs(titleKey);
   const pacingInsight = useMemo(() => classifyPeakFromSegments(progressData?.segments || []).label, [progressData?.segments]);
+  const curveValues = useMemo(
+    () => resampleSegments(progressData?.segments || [], 16),
+    [progressData?.segments]
+  );
   const PeakIcon = useMemo(() => {
     switch (pacingInsight) {
       case 'Even pacing':
@@ -143,15 +147,15 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
           )}
           {year && <span>{year}</span>}
         </div>
-        {/* Compact Pacing Barcode */}
+        {/* Compact Goodness Curve */}
         <div className="mt-1">
-          <PacingBarcode
-            titleId={titleKey}
+          <MiniGoodnessCurve
+            values={curveValues}
             height={36}
-            segmentCount={16}
-            segments={progressData?.segments || []}
-            dataScope="community"
-            interactive={false}
+            threshold={2}
+            colorMode="heat"
+            heatStyle="muted"
+            badThreshold={1.5}
             className="rounded"
           />
         </div>
