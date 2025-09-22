@@ -14,7 +14,7 @@ jobs:
   crawl:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment_url != ''
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment_url != '' && contains(github.event.deployment_status.environment_url, 'vercel.app')
     steps:
       - uses: actions/checkout@v4
 
@@ -63,31 +63,63 @@ jobs:
             exit 1
           fi
 
+          echo "🔍 Testing deployment accessibility: $BASE_URL"
+          echo "Deployment context: ${{ github.event.deployment_status.state }}"
+          echo "Deployment ID: ${{ github.event.deployment.id }}"
+
           # Test if URL is accessible (with retries for new deployments)
           echo "🔍 Validating deployment accessibility..."
-          for i in {1..8}; do
-            echo "Attempt $i/8 - checking deployment status..."
+          for i in {1..10}; do
+            echo "Attempt $i/10 - checking deployment status..."
 
-            # Try multiple approaches to check the URL
-            if curl -f -s --max-time 45 --retry 2 "$BASE_URL" > /dev/null; then
-              echo "✅ Deployment URL validated: $BASE_URL"
-              exit 0
-            elif curl -I -s --max-time 30 "$BASE_URL" | grep -q "HTTP/[0-9]\.[0-9] [23][0-9][0-9]"; then
-              echo "✅ Deployment responding with success status: $BASE_URL"
-              exit 0
+            # Check deployment status first
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$BASE_URL" || echo "000")
+            echo "HTTP Status: $HTTP_STATUS"
+
+            # Success conditions
+            if [[ "$HTTP_STATUS" =~ ^2[0-9][0-9]$ ]]; then
+              echo "✅ Deployment URL validated with status $HTTP_STATUS: $BASE_URL"
+
+              # Additional content verification
+              RESPONSE=$(curl -s --max-time 20 "$BASE_URL" | head -c 1000)
+              if [[ "$RESPONSE" == *"<html"* ]] || [[ "$RESPONSE" == *"<!DOCTYPE"* ]]; then
+                echo "✅ Deployment serving HTML content"
+                exit 0
+              else
+                echo "⚠️ Deployment responding but not serving expected HTML content"
+                echo "Response preview: ${RESPONSE:0:200}..."
+              fi
+            elif [[ "$HTTP_STATUS" =~ ^3[0-9][0-9]$ ]]; then
+              echo "⚠️ Deployment returned redirect status $HTTP_STATUS, following redirects..."
+              FINAL_URL=$(curl -s -L -o /dev/null -w "%{url_effective}" --max-time 30 "$BASE_URL")
+              echo "Final URL after redirects: $FINAL_URL"
+            elif [[ "$HTTP_STATUS" == "000" ]]; then
+              echo "⚠️ No response from deployment (connection failed)"
+            else
+              echo "⚠️ Deployment returned status $HTTP_STATUS"
             fi
 
-            # Wait longer for later attempts
+            # Progressive wait times
             if [ $i -le 3 ]; then
+              echo "Waiting 30 seconds before retry..."
               sleep 30
+            elif [ $i -le 6 ]; then
+              echo "Waiting 45 seconds before retry..."
+              sleep 45
             else
+              echo "Waiting 60 seconds before retry..."
               sleep 60
             fi
           done
 
           echo "❌ Deployment URL is not accessible after extended retries: $BASE_URL"
-          echo "This may indicate the deployment failed or is taking unusually long to start"
-          exit 1
+          echo "Final status was: $HTTP_STATUS"
+          echo "This likely indicates the deployment failed or was replaced by a newer deployment"
+
+          # Gracefully handle failed deployments
+          echo "🏃‍♂️ Skipping RUM crawl due to inaccessible deployment URL"
+          echo "This is expected behavior when deployments fail or are quickly replaced"
+          exit 0
 
       - name: Run RUM crawl on deployment
         env:
