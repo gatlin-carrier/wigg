@@ -18,6 +18,9 @@ export interface MiniGoodnessCurveProps {
   showPeakMarker?: boolean;
   showPeakPlayhead?: boolean;
   peakMarkerColor?: string;
+  gridLines?: number[];
+  gridLineColor?: string;
+  gridLineDash?: string;
 }
 
 export function MiniGoodnessCurve({
@@ -33,6 +36,9 @@ export function MiniGoodnessCurve({
   showPeakMarker = true,
   showPeakPlayhead = true,
   peakMarkerColor = '#8b5cf6',
+  gridLines,
+  gridLineColor = 'hsl(var(--muted-foreground) / 0.3)',
+  gridLineDash = '3 3',
 }: MiniGoodnessCurveProps) {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const [width, setWidth] = React.useState<number>(0);
@@ -90,6 +96,41 @@ export function MiniGoodnessCurve({
       </svg>
     );
   }, [badThreshold, badMarkerColor, height, values, width]);
+
+  const gridSvg = React.useMemo(() => {
+    if (!gridLines?.length || width <= 0) {
+      return null;
+    }
+    const domainMin = 0;
+    const domainMax = 4;
+    const innerWidth = Math.max(0, width - chartMargin * 2);
+    const innerHeight = Math.max(0, height - chartMargin * 2);
+    return (
+      <svg
+        className="pointer-events-none absolute inset-0"
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="none"
+      >
+        {gridLines.map((value, idx) => {
+          if (value < domainMin || value > domainMax) return null;
+          const ratio = (value - domainMin) / (domainMax - domainMin || 1);
+          const y = chartMargin + (1 - ratio) * innerHeight;
+          return (
+            <line
+              key={`grid-${idx}`}
+              x1={chartMargin}
+              x2={width - chartMargin}
+              y1={y}
+              y2={y}
+              stroke={gridLineColor}
+              strokeDasharray={gridLineDash}
+              strokeWidth={1}
+            />
+          );
+        })}
+      </svg>
+    );
+  }, [chartMargin, gridLineColor, gridLineDash, gridLines, height, width]);
 
   const firstPeak = React.useMemo(() => {
     const n = values.length;
@@ -193,6 +234,7 @@ export function MiniGoodnessCurve({
           />
         )}
       </SparkLineChart>
+      {gridSvg}
       {markerSvg}
       {peakOverlay}
     </div>
