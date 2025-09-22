@@ -22,7 +22,7 @@ const values = Array.from({ length: 24 }, (_, i) => {
   return 2.6 + Math.sin(x * 8) * 0.2; // settled high
 });
 
-export const MinimalBrand: Story = {
+export const Minimal: Story = {
   args: {
     values,
     height: 28,
@@ -31,14 +31,14 @@ export const MinimalBrand: Story = {
   },
 };
 
-export const MinimalPurpleHeat: Story = {
+export const WithPeakMarker: Story = {
   args: {
     values,
-    height: 28,
-    minimal: true,
-    colorMode: 'heat',
-    heatStyle: 'muted',
+    height: 36,
+    threshold: 2,
     badThreshold: 1.0,
+    showPeakMarker: true,
+    showPeakPlayhead: true,
   },
 };
 

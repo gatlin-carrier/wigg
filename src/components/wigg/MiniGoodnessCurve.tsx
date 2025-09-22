@@ -2,6 +2,7 @@ import React from 'react';
 import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
 import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
 
+import { smooth } from '@/lib/wigg/analysis';
 import { cn } from '@/lib/utils';
 
 export interface MiniGoodnessCurveProps {
@@ -11,11 +12,12 @@ export interface MiniGoodnessCurveProps {
   fill?: string;   // CSS color (area under)
   className?: string;
   threshold?: number; // 0..4
-  colorMode?: 'brand' | 'heat';
-  heatStyle?: 'muted' | 'vivid';
   minimal?: boolean; // no fill, no threshold, round caps
   badThreshold?: number; // draw tiny markers on x-axis where value <= threshold
   badMarkerColor?: string;
+  showPeakMarker?: boolean;
+  showPeakPlayhead?: boolean;
+  peakMarkerColor?: string;
 }
 
 export function MiniGoodnessCurve({
@@ -25,19 +27,16 @@ export function MiniGoodnessCurve({
   fill = 'hsl(var(--primary) / 0.12)',
   className = '',
   threshold,
-  colorMode = 'brand',
-  heatStyle = 'muted',
   minimal = false,
   badThreshold,
   badMarkerColor = 'hsl(var(--destructive))',
+  showPeakMarker = true,
+  showPeakPlayhead = true,
+  peakMarkerColor = '#8b5cf6',
 }: MiniGoodnessCurveProps) {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const [width, setWidth] = React.useState<number>(0);
-  const uniqueId = React.useId();
-  const gradientId = React.useMemo(
-    () => `mgc-grad-${uniqueId.replace(/[:]/g, '')}`,
-    [uniqueId]
-  );
+  const chartMargin = minimal ? 0 : 4;
 
   React.useEffect(() => {
     if (!containerRef.current || typeof ResizeObserver === 'undefined') {
@@ -53,25 +52,13 @@ export function MiniGoodnessCurve({
     return () => observer.disconnect();
   }, []);
 
-  const heatColorFor = React.useCallback(
-    (norm: number) => {
-      const n = Math.max(0, Math.min(1, norm));
-      const light = heatStyle === 'vivid'
-        ? Math.round(92 - 52 * n)
-        : Math.round(92 - 44 * n);
-      return `hsl(0 0% ${light}%)`;
-    },
-    [heatStyle]
-  );
-
   const areaSlotProps = React.useMemo(() => {
     if (minimal) return undefined;
     return {
       filter: 'none',
-      fill: colorMode === 'heat' ? `url(#${gradientId})` : fill,
-      opacity: colorMode === 'heat' ? 1 : undefined,
+      fill,
     } as const;
-  }, [minimal, colorMode, gradientId, fill]);
+  }, [minimal, fill]);
 
   const lineSlotProps = React.useMemo(
     () => ({
@@ -104,6 +91,72 @@ export function MiniGoodnessCurve({
     );
   }, [badThreshold, badMarkerColor, height, values, width]);
 
+  const firstPeak = React.useMemo(() => {
+    const n = values.length;
+    if (n === 0) return null;
+    if (n === 1) return { index: 0, value: values[0] };
+    const window = Math.max(3, Math.round(n * 0.12));
+    const smoothed = smooth(values, window);
+    const epsilon = 0.05;
+    for (let i = 1; i < n - 1; i++) {
+      const prev = smoothed[i - 1];
+      const curr = smoothed[i];
+      const next = smoothed[i + 1];
+      if (curr >= prev && curr >= next && (curr - prev > epsilon || curr - next > epsilon)) {
+        return { index: i, value: values[i] ?? curr };
+      }
+    }
+    let maxIdx = 0;
+    for (let i = 1; i < n; i++) {
+      if (smoothed[i] > smoothed[maxIdx]) maxIdx = i;
+    }
+    return { index: maxIdx, value: values[maxIdx] ?? smoothed[maxIdx] };
+  }, [values]);
+
+  const peakOverlay = React.useMemo(() => {
+    if ((!showPeakMarker && !showPeakPlayhead) || !firstPeak || width <= 0) {
+      return null;
+    }
+    const domainMin = 0;
+    const domainMax = 4;
+    const clamped = Math.min(domainMax, Math.max(domainMin, firstPeak.value));
+    const innerWidth = Math.max(0, width - chartMargin * 2);
+    const innerHeight = Math.max(0, height - chartMargin * 2);
+    const denom = Math.max(1, values.length - 1);
+    const x = values.length > 1
+      ? chartMargin + (firstPeak.index / denom) * innerWidth
+      : width / 2;
+    const ratio = (clamped - domainMin) / (domainMax - domainMin || 1);
+    const y = chartMargin + (1 - ratio) * innerHeight;
+
+    return (
+      <svg
+        className="pointer-events-none absolute inset-0"
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="none"
+      >
+        {showPeakPlayhead && (
+          <line
+            x1={x}
+            x2={x}
+            y1={chartMargin}
+            y2={height - chartMargin}
+            stroke={peakMarkerColor}
+            strokeWidth={1}
+            strokeLinecap="round"
+            opacity={0.6}
+          />
+        )}
+        {showPeakMarker && (
+          <>
+            <circle cx={x} cy={y} r={4} fill="white" opacity={0.9} />
+            <circle cx={x} cy={y} r={2.5} fill={peakMarkerColor} />
+          </>
+        )}
+      </svg>
+    );
+  }, [chartMargin, firstPeak, height, peakMarkerColor, showPeakMarker, showPeakPlayhead, values.length, width]);
+
   return (
     <div
       ref={containerRef}
@@ -119,7 +172,7 @@ export function MiniGoodnessCurve({
         curve={minimal ? 'linear' : 'catmullRom'}
         area={!minimal}
         baseline={0}
-        margin={minimal ? 0 : 4}
+        margin={chartMargin}
         showTooltip={false}
         showHighlight={false}
         clipAreaOffset={{ top: 0, bottom: 0, left: 0, right: 0 }}
@@ -129,24 +182,6 @@ export function MiniGoodnessCurve({
           line: lineSlotProps,
         }}
       >
-        {colorMode === 'heat' && (
-          <defs>
-            <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-              {values.map((v, i) => {
-                const denom = Math.max(1, values.length - 1);
-                const offset = (i / denom) * 100;
-                return (
-                  <stop
-                    key={i}
-                    offset={`${offset}%`}
-                    stopColor={heatColorFor(v / 4)}
-                    stopOpacity={0.9}
-                  />
-                );
-              })}
-            </linearGradient>
-          </defs>
-        )}
         {!minimal && typeof threshold === 'number' && (
           <ChartsReferenceLine
             y={threshold}
@@ -159,6 +194,7 @@ export function MiniGoodnessCurve({
         )}
       </SparkLineChart>
       {markerSvg}
+      {peakOverlay}
     </div>
   );
 }

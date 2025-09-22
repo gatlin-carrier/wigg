@@ -153,8 +153,6 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
             values={curveValues}
             height={36}
             threshold={2}
-            colorMode="heat"
-            heatStyle="muted"
             badThreshold={1.5}
             className="rounded"
           />

@@ -35,18 +35,18 @@ export const Desktop: Story = {
   },
 };
 
-export const HeatFill: Story = {
-  args: {
-    ...Default.args,
-    miniColorMode: 'heat',
-  },
-};
-
 export const Minimal: Story = {
   args: {
     ...Default.args,
-    miniColorMode: 'brand',
     miniMinimal: true,
     miniBadThreshold: 1.0,
+    miniShowPeakPlayhead: false,
+  },
+};
+
+export const WithoutPeakMarker: Story = {
+  args: {
+    ...Default.args,
+    miniShowPeakMarker: false,
   },
 };
