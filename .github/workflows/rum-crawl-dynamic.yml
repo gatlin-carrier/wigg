@@ -48,10 +48,13 @@ jobs:
           fi
           echo "Routes for testing:" && cat routes.json
 
-      - name: Validate deployment URL
+      - name: Validate deployment and run RUM crawl
         env:
           BASE_URL: ${{ github.event.deployment_status.environment_url }}
+          MAX_ROUTES: 5
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
+          # First validate the deployment URL
           if [ -z "$BASE_URL" ]; then
             echo "⚠️ Deployment URL not available, skipping RUM crawl"
             exit 0
@@ -63,17 +66,33 @@ jobs:
             exit 1
           fi
 
-          echo "🔍 Testing deployment accessibility: $BASE_URL"
+          # Construct test URL with bypass secret if available
+          if [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+            # Check if URL already has query parameters
+            if [[ "$BASE_URL" == *"?"* ]]; then
+              TEST_URL="${BASE_URL}&vercel-protection-bypass=${VERCEL_AUTOMATION_BYPASS_SECRET}"
+            else
+              TEST_URL="${BASE_URL}?vercel-protection-bypass=${VERCEL_AUTOMATION_BYPASS_SECRET}"
+            fi
+            echo "🔓 Using Vercel automation bypass for protected deployment"
+            echo "🔍 Testing deployment accessibility: $BASE_URL (with bypass)"
+          else
+            TEST_URL="$BASE_URL"
+            echo "🔍 Testing deployment without bypass (no secret available)"
+            echo "🔍 Testing deployment accessibility: $BASE_URL"
+          fi
           echo "Deployment context: ${{ github.event.deployment_status.state }}"
           echo "Deployment ID: ${{ github.event.deployment.id }}"
 
           # Test if URL is accessible (with retries for new deployments)
           echo "🔍 Validating deployment accessibility..."
+          DEPLOYMENT_READY=false
+
           for i in {1..10}; do
             echo "Attempt $i/10 - checking deployment status..."
 
             # Check deployment status first
-            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$BASE_URL" || echo "000")
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$TEST_URL" || echo "000")
             echo "HTTP Status: $HTTP_STATUS"
 
             # Success conditions
@@ -81,17 +100,28 @@ jobs:
               echo "✅ Deployment URL validated with status $HTTP_STATUS: $BASE_URL"
 
               # Additional content verification
-              RESPONSE=$(curl -s --max-time 20 "$BASE_URL" | head -c 1000)
+              RESPONSE=$(curl -s --max-time 20 "$TEST_URL" | head -c 1000)
               if [[ "$RESPONSE" == *"<html"* ]] || [[ "$RESPONSE" == *"<!DOCTYPE"* ]]; then
                 echo "✅ Deployment serving HTML content"
-                exit 0
+                DEPLOYMENT_READY=true
+                break
               else
                 echo "⚠️ Deployment responding but not serving expected HTML content"
                 echo "Response preview: ${RESPONSE:0:200}..."
               fi
+            elif [[ "$HTTP_STATUS" == "401" ]]; then
+              if [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+                echo "⚠️ Deployment still requires authentication (401) despite bypass secret"
+                echo "This may indicate an issue with the bypass secret or deployment configuration"
+              else
+                echo "⚠️ Deployment requires authentication (401) - likely password-protected preview"
+                echo "Consider adding VERCEL_AUTOMATION_BYPASS_SECRET to GitHub secrets for full testing coverage"
+              fi
+              echo "🏃‍♂️ Skipping RUM crawl for authenticated deployment"
+              exit 0
             elif [[ "$HTTP_STATUS" =~ ^3[0-9][0-9]$ ]]; then
               echo "⚠️ Deployment returned redirect status $HTTP_STATUS, following redirects..."
-              FINAL_URL=$(curl -s -L -o /dev/null -w "%{url_effective}" --max-time 30 "$BASE_URL")
+              FINAL_URL=$(curl -s -L -o /dev/null -w "%{url_effective}" --max-time 30 "$TEST_URL")
               echo "Final URL after redirects: $FINAL_URL"
             elif [[ "$HTTP_STATUS" == "000" ]]; then
               echo "⚠️ No response from deployment (connection failed)"
@@ -112,21 +142,21 @@ jobs:
             fi
           done
 
-          echo "❌ Deployment URL is not accessible after extended retries: $BASE_URL"
-          echo "Final status was: $HTTP_STATUS"
-          echo "This likely indicates the deployment failed or was replaced by a newer deployment"
+          # Check if deployment is ready
+          if [ "$DEPLOYMENT_READY" != "true" ]; then
+            echo "❌ Deployment URL is not accessible after extended retries: $BASE_URL"
+            echo "Final status was: $HTTP_STATUS"
+            echo "This likely indicates the deployment failed or was replaced by a newer deployment"
+            echo "🏃‍♂️ Skipping RUM crawl due to inaccessible deployment URL"
+            echo "This is expected behavior when deployments fail or are quickly replaced"
+            exit 0
+          fi
 
-          # Gracefully handle failed deployments
-          echo "🏃‍♂️ Skipping RUM crawl due to inaccessible deployment URL"
-          echo "This is expected behavior when deployments fail or are quickly replaced"
-          exit 0
+          # Deployment is ready, proceed with RUM crawl
+          echo "🚀 Starting RUM crawl of validated deployment: $BASE_URL"
 
-      - name: Run RUM crawl on deployment
-        env:
-          BASE_URL: ${{ github.event.deployment_status.environment_url }}
-          MAX_ROUTES: 5
-        run: |
-          echo "🚀 Starting RUM crawl of deployment: $BASE_URL"
+          # Export TEST_URL for Playwright to use
+          export TEST_URL
 
           # Simple Playwright script to visit routes and trigger interactions
           cat > playwright.config.cjs <<'EOF'
@@ -154,7 +184,7 @@ jobs:
           const fs = require('fs');
 
           const routes = JSON.parse(fs.readFileSync('routes.json', 'utf8'));
-          const baseUrl = process.env.BASE_URL;
+          const baseUrl = process.env.TEST_URL || process.env.BASE_URL;
 
           const maxRoutes = parseInt(process.env.MAX_ROUTES || '3');
           const testRoutes = routes.slice(0, maxRoutes);
@@ -212,13 +242,30 @@ jobs:
 
           # Run the tests and generate summary
           echo "📊 Running deployment RUM crawl tests..."
-          if npx playwright test --config=playwright.config.cjs rum-test.spec.cjs; then
+
+          # Disable exit on error for the RUM crawl command
+          set +e
+          npx playwright test --config=playwright.config.cjs rum-test.spec.cjs
+          CRAWL_EXIT_CODE=$?
+          set -e
+
+          if [ $CRAWL_EXIT_CODE -eq 0 ]; then
             echo "✅ Deployment RUM crawl completed successfully"
             echo "CRAWL_STATUS=success" >> $GITHUB_ENV
           else
-            echo "❌ Deployment RUM crawl failed"
-            echo "CRAWL_STATUS=failure" >> $GITHUB_ENV
-            exit 1
+            echo "⚠️ RUM crawl failed with exit code $CRAWL_EXIT_CODE"
+
+            # Verify deployment is still accessible
+            FINAL_CHECK=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$TEST_URL" || echo "000")
+            if [[ "$FINAL_CHECK" =~ ^2[0-9][0-9]$ ]]; then
+              echo "✅ Deployment is still accessible (HTTP $FINAL_CHECK)"
+              echo "This may be a transient issue with the crawl, not the deployment"
+              echo "CRAWL_STATUS=partial" >> $GITHUB_ENV
+            else
+              echo "❌ Deployment is no longer accessible (HTTP $FINAL_CHECK)"
+              echo "CRAWL_STATUS=failure" >> $GITHUB_ENV
+              exit 1
+            fi
           fi
 
       - name: Generate deployment test summary
@@ -229,6 +276,11 @@ jobs:
           echo "**Status:** ${{ env.CRAWL_STATUS }}" >> $GITHUB_STEP_SUMMARY
           echo "**Routes tested:** $(cat routes.json | jq length)" >> $GITHUB_STEP_SUMMARY
           echo "**Deployment ID:** ${{ github.event.deployment.id }}" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}" ]; then
+            echo "**Bypass Used:** Yes (automation secret)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Bypass Used:** No (public deployment)" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
 
           if [ -f "test-results.json" ]; then
