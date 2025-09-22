@@ -1,0 +1,28 @@
+{
+  "ci": {
+    "collect": {
+      "url": ["http://localhost:4173/"],
+      "numberOfRuns": 1,
+      "settings": {
+        "preset": "desktop",
+        "chromeFlags": "--no-sandbox --disable-dev-shm-usage --disable-gpu --headless --disable-web-security --disable-features=VizDisplayCompositor,TranslateUI,BlinkGenPropertyTrees --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --disable-ipc-flooding-protection --virtual-time-budget=20000 --run-all-compositor-stages-before-draw --disable-extensions --disable-default-apps --no-first-run --disable-sync --disable-background-networking --disable-client-side-phishing-detection --disable-default-apps --disable-hang-monitor --disable-popup-blocking --disable-prompt-on-repost --disable-domain-reliability --disable-component-extensions-with-background-pages --disable-breakpad --single-process",
+        "throttling": {
+          "rttMs": 0,
+          "throughputKbps": 0,
+          "cpuSlowdownMultiplier": 1
+        },
+        "emulatedFormFactor": "desktop",
+        "maxWaitForFcp": 90000,
+        "maxWaitForLoad": 90000
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.6 }],
+        "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.2 }],
+        "total-blocking-time": ["warn", { "maxNumericValue": 500 }]
+      }
+    },
+    "upload": { "target": "temporary-public-storage" }
+  }
+}

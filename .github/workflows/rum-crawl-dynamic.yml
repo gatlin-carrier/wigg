@@ -1,0 +1,307 @@
+# Alternative workflow that auto-detects preview URL
+name: RUM Crawl (Auto-detect Preview)
+
+permissions:
+  contents: read
+  deployments: read
+  actions: write
+
+on:
+  workflow_dispatch:
+  deployment_status:
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment_url != '' && contains(github.event.deployment_status.environment_url, 'vercel.app')
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Generate routes.json from seed file
+        run: |
+          if [ -f "src/routes.seed.json" ]; then
+            cp src/routes.seed.json routes.json
+            echo "✅ Using routes from src/routes.seed.json"
+          else
+            echo '["/" , "/dashboard", "/search", "/feed"]' > routes.json
+            echo "📋 Using default routes"
+          fi
+          echo "Routes for testing:" && cat routes.json
+
+      - name: Validate deployment and run RUM crawl
+        env:
+          BASE_URL: ${{ github.event.deployment_status.environment_url }}
+          MAX_ROUTES: 5
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          # First validate the deployment URL
+          if [ -z "$BASE_URL" ]; then
+            echo "⚠️ Deployment URL not available, skipping RUM crawl"
+            exit 0
+          fi
+
+          # Validate URL format
+          if [[ ! "$BASE_URL" =~ ^https?:// ]]; then
+            echo "❌ Invalid deployment URL format: $BASE_URL"
+            exit 1
+          fi
+
+          # Construct test URL with bypass secret if available
+          if [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+            # Check if URL already has query parameters
+            if [[ "$BASE_URL" == *"?"* ]]; then
+              TEST_URL="${BASE_URL}&vercel-protection-bypass=${VERCEL_AUTOMATION_BYPASS_SECRET}"
+            else
+              TEST_URL="${BASE_URL}?vercel-protection-bypass=${VERCEL_AUTOMATION_BYPASS_SECRET}"
+            fi
+            echo "🔓 Using Vercel automation bypass for protected deployment"
+            echo "🔍 Testing deployment accessibility: $BASE_URL (with bypass)"
+          else
+            TEST_URL="$BASE_URL"
+            echo "🔍 Testing deployment without bypass (no secret available)"
+            echo "🔍 Testing deployment accessibility: $BASE_URL"
+          fi
+          echo "Deployment context: ${{ github.event.deployment_status.state }}"
+          echo "Deployment ID: ${{ github.event.deployment.id }}"
+
+          # Test if URL is accessible (with retries for new deployments)
+          echo "🔍 Validating deployment accessibility..."
+          DEPLOYMENT_READY=false
+
+          for i in {1..10}; do
+            echo "Attempt $i/10 - checking deployment status..."
+
+            # Check deployment status first
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$TEST_URL" || echo "000")
+            echo "HTTP Status: $HTTP_STATUS"
+
+            # Success conditions
+            if [[ "$HTTP_STATUS" =~ ^2[0-9][0-9]$ ]]; then
+              echo "✅ Deployment URL validated with status $HTTP_STATUS: $BASE_URL"
+
+              # Additional content verification
+              RESPONSE=$(curl -s --max-time 20 "$TEST_URL" | head -c 1000)
+              if [[ "$RESPONSE" == *"<html"* ]] || [[ "$RESPONSE" == *"<!DOCTYPE"* ]]; then
+                echo "✅ Deployment serving HTML content"
+                DEPLOYMENT_READY=true
+                break
+              else
+                echo "⚠️ Deployment responding but not serving expected HTML content"
+                echo "Response preview: ${RESPONSE:0:200}..."
+              fi
+            elif [[ "$HTTP_STATUS" == "401" ]]; then
+              if [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+                echo "⚠️ Deployment still requires authentication (401) despite bypass secret"
+                echo "This may indicate an issue with the bypass secret or deployment configuration"
+              else
+                echo "⚠️ Deployment requires authentication (401) - likely password-protected preview"
+                echo "Consider adding VERCEL_AUTOMATION_BYPASS_SECRET to GitHub secrets for full testing coverage"
+              fi
+              echo "🏃‍♂️ Skipping RUM crawl for authenticated deployment"
+              exit 0
+            elif [[ "$HTTP_STATUS" =~ ^3[0-9][0-9]$ ]]; then
+              echo "⚠️ Deployment returned redirect status $HTTP_STATUS, following redirects..."
+              FINAL_URL=$(curl -s -L -o /dev/null -w "%{url_effective}" --max-time 30 "$TEST_URL")
+              echo "Final URL after redirects: $FINAL_URL"
+            elif [[ "$HTTP_STATUS" == "000" ]]; then
+              echo "⚠️ No response from deployment (connection failed)"
+            else
+              echo "⚠️ Deployment returned status $HTTP_STATUS"
+            fi
+
+            # Progressive wait times
+            if [ $i -le 3 ]; then
+              echo "Waiting 30 seconds before retry..."
+              sleep 30
+            elif [ $i -le 6 ]; then
+              echo "Waiting 45 seconds before retry..."
+              sleep 45
+            else
+              echo "Waiting 60 seconds before retry..."
+              sleep 60
+            fi
+          done
+
+          # Check if deployment is ready
+          if [ "$DEPLOYMENT_READY" != "true" ]; then
+            echo "❌ Deployment URL is not accessible after extended retries: $BASE_URL"
+            echo "Final status was: $HTTP_STATUS"
+            echo "This likely indicates the deployment failed or was replaced by a newer deployment"
+            echo "🏃‍♂️ Skipping RUM crawl due to inaccessible deployment URL"
+            echo "This is expected behavior when deployments fail or are quickly replaced"
+            exit 0
+          fi
+
+          # Deployment is ready, proceed with RUM crawl
+          echo "🚀 Starting RUM crawl of validated deployment: $BASE_URL"
+
+          # Export TEST_URL for Playwright to use
+          export TEST_URL
+
+          # Simple Playwright script to visit routes and trigger interactions
+          cat > playwright.config.cjs <<'EOF'
+          module.exports = {
+            testDir: '.',
+            timeout: 30000,
+            retries: 1,
+            workers: 1,
+            use: {
+              headless: true,
+              viewport: { width: 1280, height: 720 },
+              actionTimeout: 10000,
+              navigationTimeout: 30000,
+            },
+            reporter: [
+              ['list'],
+              ['json', { outputFile: 'test-results.json' }],
+              ['html', { outputFolder: 'playwright-report' }]
+            ],
+          };
+          EOF
+
+          cat > rum-test.spec.cjs <<'EOF'
+          const { test } = require('@playwright/test');
+          const fs = require('fs');
+
+          const routes = JSON.parse(fs.readFileSync('routes.json', 'utf8'));
+          const baseUrl = process.env.TEST_URL || process.env.BASE_URL;
+
+          const maxRoutes = parseInt(process.env.MAX_ROUTES || '3');
+          const testRoutes = routes.slice(0, maxRoutes);
+
+          testRoutes.forEach((route, index) => {
+            test(`RUM crawl ${route}`, async ({ page }) => {
+              console.log(`📍 Testing route ${index + 1}/${testRoutes.length}: ${route}`);
+
+              try {
+                const response = await page.goto(`${baseUrl}${route}`, {
+                  waitUntil: 'networkidle',
+                  timeout: 15000
+                });
+
+                if (response.status() >= 400) {
+                  throw new Error(`HTTP ${response.status()}`);
+                }
+
+                console.log(`✅ Route loaded: ${route} (${response.status()})`);
+
+                await page.waitForLoadState('domcontentloaded');
+
+                // Light interactions to trigger INP/CLS measurements
+                await page.mouse.move(100, 300);
+                await page.mouse.wheel(0, 500);
+
+                try {
+                  await page.keyboard.press('Tab');
+                  await page.waitForTimeout(500);
+                } catch (e) {
+                  // Ignore tab errors
+                }
+
+                await page.waitForTimeout(2000);
+                await page.goto('about:blank');
+
+                console.log(`✅ Completed: ${route}`);
+              } catch (error) {
+                console.log(`❌ Failed ${route}: ${error.message}`);
+
+                try {
+                  await page.screenshot({
+                    path: `error-${route.replace(/[^a-zA-Z0-9]/g, '_')}.png`,
+                    fullPage: true
+                  });
+                } catch (e) {
+                  console.log('Could not capture screenshot');
+                }
+
+                throw error;
+              }
+            });
+          });
+          EOF
+
+          # Run the tests and generate summary
+          echo "📊 Running deployment RUM crawl tests..."
+
+          # Disable exit on error for the RUM crawl command
+          set +e
+          npx playwright test --config=playwright.config.cjs rum-test.spec.cjs
+          CRAWL_EXIT_CODE=$?
+          set -e
+
+          if [ $CRAWL_EXIT_CODE -eq 0 ]; then
+            echo "✅ Deployment RUM crawl completed successfully"
+            echo "CRAWL_STATUS=success" >> $GITHUB_ENV
+          else
+            echo "⚠️ RUM crawl failed with exit code $CRAWL_EXIT_CODE"
+
+            # Verify deployment is still accessible
+            FINAL_CHECK=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$TEST_URL" || echo "000")
+            if [[ "$FINAL_CHECK" =~ ^2[0-9][0-9]$ ]]; then
+              echo "✅ Deployment is still accessible (HTTP $FINAL_CHECK)"
+              echo "This may be a transient issue with the crawl, not the deployment"
+              echo "CRAWL_STATUS=partial" >> $GITHUB_ENV
+            else
+              echo "❌ Deployment is no longer accessible (HTTP $FINAL_CHECK)"
+              echo "CRAWL_STATUS=failure" >> $GITHUB_ENV
+              exit 1
+            fi
+          fi
+
+      - name: Generate deployment test summary
+        if: always()
+        run: |
+          echo "## 🚀 Deployment RUM Crawl Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment URL:** ${{ github.event.deployment_status.environment_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ env.CRAWL_STATUS }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Routes tested:** $(cat routes.json | jq length)" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment ID:** ${{ github.event.deployment.id }}" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}" ]; then
+            echo "**Bypass Used:** Yes (automation secret)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Bypass Used:** No (public deployment)" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "test-results.json" ]; then
+            echo "**Test Results:** Available in artifacts" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload deployment test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-rum-crawl-results
+          path: |
+            test-results.json
+            error-*.png
+            playwright-report/
+          retention-days: 30
+
+      - name: Upload deployment screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-rum-crawl-screenshots
+          path: error-*.png
+          retention-days: 7

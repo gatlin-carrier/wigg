@@ -1,0 +1,204 @@
+name: RUM Crawl (Preview)
+
+permissions:
+  contents: read
+  actions: write
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * *"  # daily
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+      - name: Generate routes.json from seed file
+        run: |
+          if [ -f "src/routes.seed.json" ]; then
+            cp src/routes.seed.json routes.json
+            echo "✅ Using routes from src/routes.seed.json"
+          else
+            echo '["/" , "/dashboard", "/search", "/feed"]' > routes.json
+            echo "📋 Using default routes"
+          fi
+          echo "Routes for testing:" && cat routes.json
+      - name: Validate and test BASE_URL
+        env:
+          BASE_URL: ${{ secrets.VERCEL_PREVIEW_URL }}
+        run: |
+          if [ -z "$BASE_URL" ]; then
+            echo "⚠️ BASE_URL not set, skipping RUM crawl"
+            exit 0
+          fi
+
+          # Validate URL format
+          if [[ ! "$BASE_URL" =~ ^https?:// ]]; then
+            echo "❌ Invalid BASE_URL format: $BASE_URL"
+            exit 1
+          fi
+
+          # Test if URL is accessible
+          echo "🔍 Validating URL accessibility..."
+          if ! curl -f -s --max-time 30 "$BASE_URL" > /dev/null; then
+            echo "❌ BASE_URL is not accessible: $BASE_URL"
+            exit 1
+          fi
+
+          echo "✅ BASE_URL validated: $BASE_URL"
+
+      - name: Run RUM crawl with Playwright
+        env:
+          BASE_URL: ${{ secrets.VERCEL_PREVIEW_URL }}
+          MAX_ROUTES: 5
+        run: |
+          echo "🚀 Starting RUM crawl of $BASE_URL"
+
+          # Simple Playwright script to visit routes and trigger interactions
+          cat > playwright.config.cjs <<'EOF'
+          module.exports = {
+            testDir: '.',
+            timeout: 30000,
+            retries: 1,
+            workers: 1,
+            use: {
+              headless: true,
+              viewport: { width: 1280, height: 720 },
+              actionTimeout: 10000,
+              navigationTimeout: 30000,
+            },
+            reporter: [
+              ['list'],
+              ['json', { outputFile: 'test-results.json' }],
+              ['html', { outputFolder: 'playwright-report' }]
+            ],
+          };
+          EOF
+
+          cat > rum-test.spec.cjs <<'EOF'
+          const { test } = require('@playwright/test');
+          const fs = require('fs');
+
+          const routes = JSON.parse(fs.readFileSync('routes.json', 'utf8'));
+          const baseUrl = process.env.BASE_URL;
+
+          const maxRoutes = parseInt(process.env.MAX_ROUTES || '3');
+          const testRoutes = routes.slice(0, maxRoutes);
+
+          testRoutes.forEach((route, index) => {
+            test(`RUM crawl ${route}`, async ({ page }) => {
+              console.log(`📍 Testing route ${index + 1}/${testRoutes.length}: ${route}`);
+
+              try {
+                const response = await page.goto(`${baseUrl}${route}`, {
+                  waitUntil: 'networkidle',
+                  timeout: 15000
+                });
+
+                if (response.status() >= 400) {
+                  throw new Error(`HTTP ${response.status()}`);
+                }
+
+                console.log(`✅ Route loaded: ${route} (${response.status()})`);
+
+                // Wait for DOM to be ready
+                await page.waitForLoadState('domcontentloaded');
+
+                // Light interactions to trigger INP/CLS measurements
+                await page.mouse.move(100, 300);
+                await page.mouse.wheel(0, 500);
+
+                try {
+                  await page.keyboard.press('Tab');
+                  await page.waitForTimeout(500);
+                } catch (e) {
+                  // Ignore tab errors
+                }
+
+                // Wait and navigate away to flush metrics
+                await page.waitForTimeout(2000);
+                await page.goto('about:blank');
+
+                console.log(`✅ Completed: ${route}`);
+              } catch (error) {
+                console.log(`❌ Failed ${route}: ${error.message}`);
+
+                // Take screenshot on failure
+                try {
+                  await page.screenshot({
+                    path: `error-${route.replace(/[^a-zA-Z0-9]/g, '_')}.png`,
+                    fullPage: true
+                  });
+                } catch (e) {
+                  console.log('Could not capture screenshot');
+                }
+
+                throw error;
+              }
+            });
+          });
+          EOF
+
+          # Run the tests and generate summary
+          echo "📊 Running RUM crawl tests..."
+          if npx playwright test --config=playwright.config.cjs rum-test.spec.cjs; then
+            echo "✅ RUM crawl completed successfully"
+            echo "CRAWL_STATUS=success" >> $GITHUB_ENV
+          else
+            echo "❌ RUM crawl failed"
+            echo "CRAWL_STATUS=failure" >> $GITHUB_ENV
+            exit 1
+          fi
+
+      - name: Generate test summary
+        if: always()
+        run: |
+          echo "## 🕷️ RUM Crawl Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Target URL:** ${{ secrets.VERCEL_PREVIEW_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ env.CRAWL_STATUS }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Routes tested:** $(cat routes.json | jq length)" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "test-results.json" ]; then
+            echo "**Test Results:** Available in artifacts" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rum-crawl-results
+          path: |
+            test-results.json
+            error-*.png
+            playwright-report/
+          retention-days: 30
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rum-crawl-screenshots
+          path: error-*.png
+          retention-days: 7
