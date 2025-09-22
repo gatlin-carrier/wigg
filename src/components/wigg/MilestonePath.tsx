@@ -1,5 +1,13 @@
-import React, { useMemo } from 'react';
-import { type Milestone } from '@/hooks/useMilestones';
+import React from 'react';
+
+import type { Milestone } from '@/hooks/useMilestones';
+import {
+  buildGoodnessCurveSeries,
+  type GoodnessCurvePoint,
+} from '@/lib/goodnessCurve';
+import { cn } from '@/lib/utils';
+
+import { MiniGoodnessCurve } from './MiniGoodnessCurve';
 
 export interface MilestonePathProps {
   titleId: string;
@@ -12,283 +20,150 @@ export interface MilestonePathProps {
   maxWidth?: number;
 }
 
+const DEFAULT_POINT_COUNT = 24;
+
+function buildPointsFromScores(scores: Array<{ pct: number; score: number }>): GoodnessCurvePoint[] {
+  if (!scores.length) {
+    return Array.from({ length: DEFAULT_POINT_COUNT }, (_, index) => ({
+      unit: index + 1,
+      label: `Seg${index + 1}`,
+      score: null,
+    }));
+  }
+
+  const sorted = [...scores].sort((a, b) => a.pct - b.pct);
+  return sorted.map((entry, index) => ({
+    unit: index + 1,
+    label: `Seg${index + 1}`,
+    score: typeof entry.score === 'number' ? entry.score : null,
+  }));
+}
+
 export function MilestonePath({
-  titleId,
   milestones,
   segmentScores = [],
   onSelect,
   focusPct,
   className = '',
-  height = 120,
-  maxWidth = 800
+  height = 140,
 }: MilestonePathProps) {
-  // Calculate path coordinates and collision avoidance
-  const pathData = useMemo(() => {
-    if (milestones.length === 0) return null;
+  const dataPoints = React.useMemo(() => buildPointsFromScores(segmentScores), [segmentScores]);
 
-    const padding = 40;
-    const contentWidth = maxWidth - (padding * 2);
-    const contentHeight = height - 60; // Leave space for labels
-    const baseY = contentHeight * 0.7;
+  const { series, labelByIndex, values, hasScores } = React.useMemo(
+    () =>
+      buildGoodnessCurveSeries({
+        data: dataPoints,
+        totalUnits: Math.max(DEFAULT_POINT_COUNT, dataPoints.length || DEFAULT_POINT_COUNT),
+        unitLabelKind: 'episode',
+        threshold: 2.2,
+      }),
+    [dataPoints],
+  );
 
-    // Sort milestones by percentage
-    const sortedMilestones = [...milestones].sort((a, b) => a.pct - b.pct);
-
-    // Calculate positions with collision avoidance
-    const positions = sortedMilestones.map((milestone, index) => {
-      const x = padding + (milestone.pct / 100) * contentWidth;
-      
-      // Apply y-jitter for collision avoidance
-      let y = baseY;
-      const jitterRange = 30;
-      
-      // Check for nearby milestones and apply vertical offset
-      const nearby = sortedMilestones.filter((other, otherIndex) => 
-        otherIndex !== index && 
-        Math.abs(other.pct - milestone.pct) < 15 // Within 15% range
-      );
-      
-      if (nearby.length > 0) {
-        const offset = (index % 3 - 1) * (jitterRange / 2);
-        y += offset;
-      }
-
-      return {
-        ...milestone,
-        x,
-        y: Math.max(20, Math.min(contentHeight - 20, y))
-      };
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const [width, setWidth] = React.useState(0);
+  React.useEffect(() => {
+    if (!containerRef.current || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver((entries) => {
+      if (!entries.length) return;
+      setWidth(entries[0].contentRect.width);
     });
+    observer.observe(containerRef.current);
+    setWidth(containerRef.current.clientWidth);
+    return () => observer.disconnect();
+  }, []);
 
-    // Create smooth path curve
-    const createPath = () => {
-      if (positions.length === 0) return '';
-      
-      let path = `M ${padding} ${baseY}`;
-      
-      if (positions.length === 1) {
-        path += ` L ${positions[0].x} ${positions[0].y}`;
-        path += ` L ${maxWidth - padding} ${baseY}`;
-      } else {
-        // Create smooth curve through all points
-        positions.forEach((pos, index) => {
-          if (index === 0) {
-            path += ` L ${pos.x} ${pos.y}`;
-          } else {
-            const prevPos = positions[index - 1];
-            const controlDistance = Math.min(50, (pos.x - prevPos.x) * 0.3);
-            
-            path += ` C ${prevPos.x + controlDistance} ${prevPos.y}, ${pos.x - controlDistance} ${pos.y}, ${pos.x} ${pos.y}`;
-          }
-        });
-        
-        // Complete the path
-        const lastPos = positions[positions.length - 1];
-        path += ` C ${lastPos.x + 30} ${lastPos.y}, ${maxWidth - padding - 30} ${baseY}, ${maxWidth - padding} ${baseY}`;
+  const focusedMilestoneId = React.useMemo(() => {
+    if (focusPct === undefined || !milestones.length) return null;
+    let closest = milestones[0];
+    let minDiff = Math.abs(focusPct - milestones[0].pct);
+    for (let i = 1; i < milestones.length; i++) {
+      const diff = Math.abs(focusPct - milestones[i].pct);
+      if (diff < minDiff) {
+        closest = milestones[i];
+        minDiff = diff;
       }
-
-      return path;
-    };
-
-    return {
-      path: createPath(),
-      positions,
-      baseY
-    };
-  }, [milestones, height, maxWidth]);
-
-  // Interpolate color based on segment scores
-  const getPathColor = (pct: number): string => {
-    if (segmentScores.length === 0) return 'hsl(var(--primary))';
-
-    // Find closest score points
-    const sorted = segmentScores.sort((a, b) => a.pct - b.pct);
-    const lower = sorted.filter(s => s.pct <= pct).pop();
-    const upper = sorted.find(s => s.pct > pct);
-
-    let score = lower?.score || 2; // Default neutral
-    
-    if (lower && upper) {
-      // Interpolate between points
-      const ratio = (pct - lower.pct) / (upper.pct - lower.pct);
-      score = lower.score + (upper.score - lower.score) * ratio;
     }
+    return closest.id;
+  }, [focusPct, milestones]);
 
-    // Map score (0-4) to color intensity
-    const intensity = Math.max(0.3, Math.min(1, score / 4));
-    return `hsl(var(--primary) / ${intensity})`;
-  };
-
-  const createGradient = () => {
-    if (segmentScores.length === 0) return null;
-
-    const gradientStops = [];
-    for (let i = 0; i <= 10; i++) {
-      const pct = (i / 10) * 100;
-      const color = getPathColor(pct);
-      gradientStops.push(
-        <stop
-          key={i}
-          offset={`${i * 10}%`}
-          stopColor={color}
-        />
+  const markers = React.useMemo(() => {
+    if (!width || !milestones.length) return null;
+    const chartMargin = 4; // matches MiniGoodnessCurve default margin
+    const innerWidth = Math.max(0, width - chartMargin * 2);
+    const sorted = [...milestones].sort((a, b) => a.pct - b.pct);
+    return sorted.map((milestone) => {
+      const clampedPct = Math.min(100, Math.max(0, milestone.pct));
+      const x = chartMargin + (clampedPct / 100) * innerWidth;
+      const isFocused = focusedMilestoneId === milestone.id;
+      return (
+        <button
+          key={milestone.id}
+          type="button"
+          className={cn(
+            'absolute top-2 flex -translate-x-1/2 flex-col items-center gap-1 text-[10px] transition-transform hover:-translate-y-1',
+            isFocused ? 'text-primary' : 'text-muted-foreground',
+          )}
+          style={{ left: `${x}px` }}
+          onClick={() => onSelect?.(milestone.id)}
+        >
+          <span
+            className={cn(
+              'flex items-center gap-1 rounded-full bg-background/90 px-2 py-0.5 shadow-sm',
+              isFocused ? 'ring-1 ring-primary/60' : 'border border-border',
+            )}
+          >
+            <span aria-hidden>{milestone.icon ?? '•'}</span>
+            <span className="max-w-[140px] truncate">{milestone.label}</span>
+          </span>
+          <span className="text-[9px] font-medium">{Math.round(clampedPct)}%</span>
+        </button>
       );
-    }
+    });
+  }, [focusedMilestoneId, milestones, onSelect, width]);
 
+  if (!milestones.length && !hasScores) {
     return (
-      <defs>
-        <linearGradient id={`milestone-gradient-${titleId}`} x1="0%" y1="0%" x2="100%" y2="0%">
-          {gradientStops}
-        </linearGradient>
-      </defs>
-    );
-  };
-
-  if (!pathData || milestones.length === 0) {
-    return (
-      <div className={`w-full ${className}`}>
-        <div className="flex items-center justify-center h-24 border rounded-lg bg-muted/20">
-          <span className="text-sm text-muted-foreground">No milestones available</span>
-        </div>
+      <div className={cn('w-full rounded-lg border bg-muted/20 p-6 text-center text-sm text-muted-foreground', className)}>
+        No milestones or community data available yet
       </div>
     );
   }
 
   return (
-    <div className={`w-full ${className}`}>
-      <svg
-        width="100%"
-        height={height}
-        viewBox={`0 0 ${maxWidth} ${height}`}
-        className="overflow-visible"
-        preserveAspectRatio="xMidYMid meet"
+    <div className={cn('flex w-full flex-col gap-3', className)}>
+      <div
+        ref={containerRef}
+        className="relative rounded-xl border bg-gradient-to-br from-background via-background to-muted/40 px-4 py-5 shadow-sm"
+        style={{ minHeight: `${Math.max(120, height)}px` }}
       >
-        {createGradient()}
-        
-        {/* Main path */}
-        <path
-          d={pathData.path}
-          fill="none"
-          stroke={segmentScores.length > 0 ? `url(#milestone-gradient-${titleId})` : 'hsl(var(--primary))'}
-          strokeWidth={3}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="drop-shadow-sm"
-        />
-
-        {/* Focus cursor */}
-        {focusPct !== undefined && focusPct >= 0 && focusPct <= 100 && (
-          <circle
-            cx={40 + (focusPct / 100) * (maxWidth - 80)}
-            cy={pathData.baseY}
-            r={6}
-            fill="hsl(var(--primary))"
-            stroke="white"
-            strokeWidth={2}
-            className="animate-pulse drop-shadow-md"
+        {hasScores ? (
+          <MiniGoodnessCurve
+            values={values}
+            height={Math.max(80, height - 32)}
+            threshold={2.2}
+            badThreshold={1.5}
+            showPeakMarker
+            showPeakPlayhead
+            gridLines={[1, 2, 3]}
           />
+        ) : (
+          <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+            No community data yet
+          </div>
         )}
-
-        {/* Milestone stops */}
-        {pathData.positions.map((milestone) => (
-          <g key={milestone.id}>
-            {/* Milestone circle */}
-            <circle
-              cx={milestone.x}
-              cy={milestone.y}
-              r={16}
-              fill="white"
-              stroke="hsl(var(--primary))"
-              strokeWidth={2}
-              className="drop-shadow-md cursor-pointer hover:stroke-[3px] transition-all"
-              onClick={() => onSelect?.(milestone.id)}
-            />
-            
-            {/* Milestone icon/emoji */}
-            <text
-              x={milestone.x}
-              y={milestone.y + 5}
-              textAnchor="middle"
-              fontSize="12"
-              className="pointer-events-none select-none"
-            >
-              {milestone.icon || '•'}
-            </text>
-
-            {/* Milestone label */}
-            <text
-              x={milestone.x}
-              y={milestone.y - 28}
-              textAnchor="middle"
-              fontSize="11"
-              fontWeight="600"
-              className="fill-foreground pointer-events-none select-none"
-              style={{
-                textShadow: '0 1px 2px rgba(255,255,255,0.8)'
-              }}
-            >
-              {milestone.label}
-            </text>
-
-            {/* Percentage label */}
-            <text
-              x={milestone.x}
-              y={milestone.y + 35}
-              textAnchor="middle"
-              fontSize="9"
-              className="fill-muted-foreground pointer-events-none select-none"
-            >
-              {milestone.pct.toFixed(0)}%
-            </text>
-
-            {/* Invisible click area for better touch targets */}
-            <circle
-              cx={milestone.x}
-              cy={milestone.y}
-              r={22}
-              fill="transparent"
-              className="cursor-pointer"
-              onClick={() => onSelect?.(milestone.id)}
-              role="button"
-              aria-label={`${milestone.label} at ${milestone.pct.toFixed(0)}%`}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onSelect?.(milestone.id);
-                }
-              }}
-            />
-          </g>
-        ))}
-
-        {/* Progress markers at 25% intervals */}
-        {[25, 50, 75].map((pct) => (
-          <line
-            key={pct}
-            x1={40 + (pct / 100) * (maxWidth - 80)}
-            y1={pathData.baseY - 10}
-            x2={40 + (pct / 100) * (maxWidth - 80)}
-            y2={pathData.baseY + 10}
-            stroke="hsl(var(--muted-foreground))"
-            strokeWidth={1}
-            opacity={0.3}
-          />
-        ))}
-      </svg>
-
-      {/* Accessible milestone list for screen readers */}
-      <div className="sr-only">
-        <h3>Narrative milestones for {titleId}</h3>
-        <ul>
-          {milestones.map((milestone) => (
-            <li key={milestone.id}>
-              {milestone.label} at {milestone.pct.toFixed(0)}%
-              {milestone.icon && ` (${milestone.icon})`}
-            </li>
-          ))}
-        </ul>
+        {markers}
       </div>
+
+      {series.length > 0 && (
+        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+          <span>{labelByIndex.get(0)}</span>
+          {series.length > 2 && (
+            <span>{labelByIndex.get(Math.floor((series.length - 1) / 2))}</span>
+          )}
+          <span>{labelByIndex.get(series.length - 1)}</span>
+        </div>
+      )}
     </div>
   );
 }

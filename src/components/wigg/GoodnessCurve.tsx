@@ -2,19 +2,20 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FlameKindling } from "lucide-react";
 import { MiniGoodnessCurve } from './MiniGoodnessCurve';
+import {
+  buildGoodnessCurveSeries,
+  type GoodnessCurvePoint,
+  type GoodnessCurveUnitKind,
+} from '@/lib/goodnessCurve';
 
-export interface GoodnessCurveData {
-  unit: number;
-  label: string;
-  score: number;
-}
+export type GoodnessCurveData = GoodnessCurvePoint;
 
 interface GoodnessCurveProps {
-  data: GoodnessCurveData[];
+  data: GoodnessCurvePoint[];
   className?: string;
   threshold?: number;
   totalUnits?: number;
-  unitLabelKind?: 'episode' | 'chapter';
+  unitLabelKind?: GoodnessCurveUnitKind;
 }
 
 export function GoodnessCurve({ 
@@ -24,46 +25,16 @@ export function GoodnessCurve({
   totalUnits,
   unitLabelKind = 'episode'
 }: GoodnessCurveProps) {
-  // Build evenly spaced series data while keeping labels available for axis annotations
-  const { series, labelByIndex } = React.useMemo(() => {
-    const byUnit = new Map<number, GoodnessCurveData>();
-    data.forEach((d) => byUnit.set(d.unit, d));
-    const total = Math.max(1, totalUnits || data.length);
-    const makeLabel = (u: number) => {
-      const existing = byUnit.get(u);
-      if (existing?.label) return existing.label;
-      return `${unitLabelKind === 'chapter' ? 'Ch' : 'E'}${u}`;
-    };
-    const items = Array.from({ length: total }, (_, i) => {
-      const unit = i + 1;
-      const d = byUnit.get(unit);
-      return {
-        index: i, // 0-based index
-        unit,
-        label: makeLabel(unit),
-        score: (d?.score as number | null) ?? null,
-      } as any;
-    });
-    const m = new Map<number, string>();
-    items.forEach((r: any) => m.set(r.index, r.label));
-    return { series: items, labelByIndex: m };
-  }, [data, totalUnits, unitLabelKind]);
-
-  const hasScores = React.useMemo(() => series.some((item) => typeof item.score === 'number'), [series]);
-
-  const curveValues = React.useMemo(() => {
-    if (!hasScores) return [] as number[];
-    const fallback = typeof threshold === 'number' ? threshold : 2;
-    const firstDefined = series.find((item) => typeof item.score === 'number');
-    let carry = firstDefined?.score ?? fallback;
-    return series.map((item) => {
-      if (typeof item.score === 'number') {
-        carry = item.score;
-        return item.score;
-      }
-      return carry;
-    });
-  }, [hasScores, series, threshold]);
+  const { series, labelByIndex, values: curveValues, hasScores } = React.useMemo(
+    () =>
+      buildGoodnessCurveSeries({
+        data,
+        totalUnits,
+        unitLabelKind,
+        threshold,
+      }),
+    [data, totalUnits, unitLabelKind, threshold],
+  );
 
   const chartHeight = 160;
 
