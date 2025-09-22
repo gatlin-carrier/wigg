@@ -5,7 +5,7 @@
       "numberOfRuns": 2,
       "settings": {
         "preset": "desktop",
-        "chromeFlags": "--no-sandbox --disable-dev-shm-usage"
+        "chromeFlags": "--no-sandbox --disable-dev-shm-usage --disable-gpu --headless --disable-features=VizDisplayCompositor --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --disable-ipc-flooding-protection --force-gpu-mem-available-mb=1024"
       }
     },
     "assert": {

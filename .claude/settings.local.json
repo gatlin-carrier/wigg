@@ -54,7 +54,10 @@
       "Bash(sudo apt:*)",
       "Bash(sudo apt install:*)",
       "Bash(timeout 5s npm run preview:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(unzip:*)",
+      "Bash(./bin/gh.exe:*)",
+      "Bash(gh run view:*)"
     ],
     "deny": [],
     "ask": [],

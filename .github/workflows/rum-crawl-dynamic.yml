@@ -65,16 +65,28 @@ jobs:
 
           # Test if URL is accessible (with retries for new deployments)
           echo "🔍 Validating deployment accessibility..."
-          for i in {1..5}; do
-            if curl -f -s --max-time 30 "$BASE_URL" > /dev/null; then
+          for i in {1..8}; do
+            echo "Attempt $i/8 - checking deployment status..."
+
+            # Try multiple approaches to check the URL
+            if curl -f -s --max-time 45 --retry 2 "$BASE_URL" > /dev/null; then
               echo "✅ Deployment URL validated: $BASE_URL"
               exit 0
+            elif curl -I -s --max-time 30 "$BASE_URL" | grep -q "HTTP/[0-9]\.[0-9] [23][0-9][0-9]"; then
+              echo "✅ Deployment responding with success status: $BASE_URL"
+              exit 0
             fi
-            echo "Attempt $i/5 - deployment may still be starting up..."
-            sleep 30
+
+            # Wait longer for later attempts
+            if [ $i -le 3 ]; then
+              sleep 30
+            else
+              sleep 60
+            fi
           done
 
-          echo "❌ Deployment URL is not accessible after retries: $BASE_URL"
+          echo "❌ Deployment URL is not accessible after extended retries: $BASE_URL"
+          echo "This may indicate the deployment failed or is taking unusually long to start"
           exit 1
 
       - name: Run RUM crawl on deployment

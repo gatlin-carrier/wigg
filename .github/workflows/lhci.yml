@@ -79,11 +79,23 @@ jobs:
       - name: Run Lighthouse CI
         run: |
           echo "Running Lighthouse CI..."
+
+          # Test server one more time before Lighthouse
+          echo "Final server test before Lighthouse:"
+          curl -I http://localhost:4173/ || echo "Server header check failed"
+
+          # Wait a bit more for server to fully stabilize
+          echo "Waiting 5 seconds for server to stabilize..."
+          sleep 5
+
+          # Run Lighthouse with debug
+          echo "Starting Lighthouse CI with enhanced Chrome flags..."
           npx lhci autorun --config=lighthouserc.json
           echo "✅ Lighthouse CI completed"
         env:
           LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
           LHCI_BUILD_CONTEXT__CURRENT_BRANCH: ${{ github.ref_name }}
+          CHROME_PATH: /usr/bin/google-chrome-stable
 
       - name: Cleanup server
         if: always()
