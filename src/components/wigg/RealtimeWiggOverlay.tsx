@@ -8,8 +8,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
 import { useLiveCapture } from '@/hooks/useLiveCapture';
-import { PacingBarcode } from './PacingBarcode';
-import { Star, Clock, TrendingUp, Edit3 } from 'lucide-react';
+import { Star, Clock, TrendingUp } from 'lucide-react';
+
+import { RealtimeGoodnessCurve } from './RealtimeGoodnessCurve';
 
 export interface RealtimeWiggOverlayProps {
   titleId: string;
@@ -18,8 +19,6 @@ export interface RealtimeWiggOverlayProps {
   onClose: () => void;
   mediaType?: 'movie' | 'tv' | 'game' | 'book' | 'manga';
   estimatedTotalMinutes?: number;
-  // Storybook/runtime safety toggle
-  storybookSafe?: boolean;
 }
 
 export function RealtimeWiggOverlay({
@@ -29,12 +28,10 @@ export function RealtimeWiggOverlay({
   onClose,
   mediaType = 'game',
   estimatedTotalMinutes,
-  storybookSafe = false
 }: RealtimeWiggOverlayProps) {
   const [note, setNote] = useState('');
   const [showNoteInput, setShowNoteInput] = useState(false);
   const [isMarking, setIsMarking] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
   
   const { toast } = useToast();
   const { data: progressData } = useTitleProgress(titleId);
@@ -118,80 +115,9 @@ export function RealtimeWiggOverlay({
     }
   }, [liveData.currentPct, markWigg, note, addWigg, toast, formatCurrentTime]);
 
-  const handleScrub = (pct: number) => {
+  const handleScrub = useCallback((pct: number) => {
     setCurrentPct(pct);
-  };
-
-  const handleMarkWiggFromBarcode = (pct: number) => {
-    setCurrentPct(pct);
-    handleMarkWigg();
-  };
-
-  // Edit mode handlers
-  const handleEnterEditMode = useCallback(() => {
-    setIsEditMode(true);
-    toast({
-      title: 'Edit Graph Mode Activated',
-      description: 'Tap to place, drag to fine-tune. Long-press for precision. Alt+E to exit.',
-      duration: 3000
-    });
-  }, [toast]);
-
-  const handleExitEditMode = useCallback(() => {
-    setIsEditMode(false);
-    toast({
-      title: 'Edit Graph Mode Exited',
-      description: 'Returned to standard interaction mode.',
-      duration: 2000
-    });
-  }, [toast]);
-
-  const handlePlaceWigg = useCallback(async (pct: number, note?: string) => {
-    try {
-      // Set current position and mark WIGG
-      setCurrentPct(pct);
-      await markWigg(pct, note);
-      
-      // Add to persistent storage
-      await addWigg(pct, note, 2); // Default to "better" rating
-
-      toast({
-        title: 'WIGG placed!',
-        description: `Marked at ${pct.toFixed(1)}% • ${formatCurrentTime(pct)}`,
-        duration: 2000
-      });
-    } catch (error) {
-      toast({
-        title: 'Failed to place WIGG',
-        description: 'Please try again',
-        variant: 'destructive'
-      });
-      throw error; // Re-throw for PacingBarcode error handling
-    }
-  }, [setCurrentPct, markWigg, addWigg, toast, formatCurrentTime]);
-
-  const handlePaintSegmentScore = useCallback(async (pct: number, score: number) => {
-    try {
-      // This would update segment scores in real-time
-      // For now, we'll just provide feedback
-      console.log(`Paint segment at ${pct.toFixed(1)}% with score ${score}`);
-      
-      // Could potentially update live progress data here
-      // await updateSegmentScore(pct, score);
-      
-    } catch (error) {
-      console.error('Failed to paint segment:', error);
-      throw error;
-    }
-  }, []);
-
-  const toggleEditMode = useCallback(() => {
-    if (isEditMode) {
-      setIsEditMode(false);
-    } else {
-      handleEnterEditMode();
-    }
-  }, [isEditMode, handleEnterEditMode]);
+  }, [setCurrentPct]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -199,17 +125,10 @@ export function RealtimeWiggOverlay({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        if (isEditMode) {
-          setIsEditMode(false);
-        } else {
-          onClose();
-        }
-      } else if (event.key === 'e' && (event.metaKey || event.altKey)) {
-        event.preventDefault();
-        toggleEditMode();
-      } else if (event.key === 'Enter' && (event.metaKey || event.ctrlKey) && !isEditMode) {
+        onClose();
+      } else if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
         handleMarkWigg();
-      } else if (event.key === ' ' && !showNoteInput && !isEditMode) {
+      } else if (event.key === ' ' && !showNoteInput) {
         event.preventDefault();
         handleMarkWigg();
       }
@@ -217,7 +136,7 @@ export function RealtimeWiggOverlay({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, handleMarkWigg, showNoteInput, isEditMode, toggleEditMode]);
+  }, [isOpen, onClose, handleMarkWigg, showNoteInput]);
 
   const confidence = getT2GConfidence();
 
@@ -231,31 +150,8 @@ export function RealtimeWiggOverlay({
               <Badge variant="outline" className="ml-2">
                 Live Capture
               </Badge>
-              <Button
-                variant={isEditMode ? 'default' : 'outline'}
-                size="sm"
-                onClick={toggleEditMode}
-                className={`transition-colors ${isEditMode ? 'bg-primary text-primary-foreground' : ''}`}
-                title={isEditMode ? 'Exit Edit Mode (Alt+E)' : 'Enter Edit Mode (Alt+E)'}
-                aria-label={isEditMode ? 'Exit Edit Graph Mode' : 'Enter Edit Graph Mode'}
-                aria-pressed={isEditMode}
-                aria-describedby="edit-mode-help"
-              >
-                <Edit3 className="h-4 w-4" />
-                {isEditMode && <span className="ml-1 hidden sm:inline">Exit</span>}
-                {!isEditMode && <span className="ml-1 hidden sm:inline">Edit</span>}
-              </Button>
             </div>
           </SheetTitle>
-          
-          {/* Edit mode help for screen readers */}
-          <div id="edit-mode-help" className="sr-only">
-            {isEditMode ? (
-              'Edit Graph Mode active. Use the interactive graph below to place WIGG points with tap, drag, or paint gestures.'
-            ) : (
-              'Edit Graph Mode allows direct placement of WIGG points on the progress graph with enhanced interaction controls.'
-            )}
-          </div>
         </SheetHeader>
 
         <div className="flex-1 flex flex-col space-y-6 py-4 min-h-0">
@@ -290,40 +186,19 @@ export function RealtimeWiggOverlay({
             )}
           </div>
 
-          {/* Interactive Pacing Barcode */}
+          {/* Interactive Goodness Curve */}
           <div className="flex-shrink-0 px-4">
-            <PacingBarcode
-              titleId={titleId}
-              height={60}
-              segmentCount={Math.min(30, Math.max(15, Math.floor(window.innerWidth / 20)))}
-              segments={progressData?.segments || []}
-              t2gEstimatePct={wiggsData?.t2gEstimatePct}
+            <RealtimeGoodnessCurve
+              segments={progressData?.segments}
+              segmentCount={Math.min(30, Math.max(18, Math.floor(window.innerWidth / 18)))}
+              height={96}
               currentPct={liveData.currentPct}
-              dataScope="local"
+              t2gEstimatePct={wiggsData?.t2gEstimatePct}
               onScrub={handleScrub}
-              onCommitScrub={handleScrub}
-              onMarkWigg={handleMarkWiggFromBarcode}
-              interactive={!isEditMode} // Disable standard interaction in edit mode
-              ariaLabel={`Interactive progress scrubber for ${titleName}`}
-              // Edit Graph Mode props
-              editable={isEditMode}
-              onEnterEdit={handleEnterEditMode}
-              onExitEdit={handleExitEditMode}
-              onPlaceWigg={handlePlaceWigg}
-              onPaintSegmentScore={handlePaintSegmentScore}
-              showFisheye={true}
-              editIdleTimeoutMs={15000} // 15 second timeout in overlay
-              suppressGlobalListeners={storybookSafe}
-              suppressHaptics={storybookSafe}
+              onScrubEnd={handleScrub}
             />
             <div className="text-xs text-center text-muted-foreground mt-2">
-              {isEditMode ? (
-                <span className="text-primary font-medium">
-                  Edit Mode: Tap to place • Drag to fine-tune • Long-press for precision
-                </span>
-              ) : (
-                'Tap to scrub • Long press to mark WIGG'
-              )}
+              Drag across the curve to scrub • Press Enter to mark at current position
             </div>
           </div>
 
@@ -331,20 +206,12 @@ export function RealtimeWiggOverlay({
           <div className="flex-shrink-0 px-4 space-y-4">
             <Button
               onClick={handleMarkWigg}
-              disabled={isMarking || isEditMode}
+              disabled={isMarking}
               size="lg"
               className="w-full h-14 text-lg font-semibold"
             >
               {isMarking ? (
                 'Marking...'
-              ) : isEditMode ? (
-                <div className="flex items-center gap-2 opacity-60">
-                  <Edit3 className="h-5 w-5" />
-                  Use Edit Mode above
-                  <span className="text-sm">
-                    to place WIGGs
-                  </span>
-                </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Star className="h-5 w-5" />
@@ -411,11 +278,7 @@ export function RealtimeWiggOverlay({
           <div className="flex-shrink-0 px-4 space-y-4 border-t pt-4">
             {/* Context/Keyboard Shortcuts */}
             <div className="text-xs text-center text-muted-foreground bg-muted/30 rounded-lg p-3">
-              {isEditMode ? (
-                'Alt+E to exit edit mode'
-              ) : (
-                'Space or Cmd+Enter to mark • Alt+E for edit mode'
-              )}
+              Space or Cmd+Enter to mark • Drag the curve to adjust position
             </div>
 
             {/* Quick Note Toggle */}
@@ -458,7 +321,7 @@ export function RealtimeWiggOverlay({
           
           {/* Live announcements for screen readers */}
           <div aria-live="polite" aria-atomic="true" className="sr-only">
-            {isEditMode && 'Edit Graph Mode active. Use the interactive progress graph to place WIGG points.'}
+            {`Current progress ${liveData.currentPct.toFixed(1)} percent.`}
           </div>
         </div>
       </SheetContent>
