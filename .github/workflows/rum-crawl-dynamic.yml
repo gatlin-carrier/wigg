@@ -13,7 +13,7 @@ on:
 jobs:
   crawl:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment_url != '' && contains(github.event.deployment_status.environment_url, 'vercel.app')
     steps:
       - uses: actions/checkout@v4
@@ -88,11 +88,11 @@ jobs:
           echo "🔍 Validating deployment accessibility..."
           DEPLOYMENT_READY=false
 
-          for i in {1..10}; do
-            echo "Attempt $i/10 - checking deployment status..."
+          for i in {1..6}; do
+            echo "Attempt $i/6 - checking deployment status..."
 
             # Check deployment status first
-            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$TEST_URL" || echo "000")
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "$TEST_URL" || echo "000")
             echo "HTTP Status: $HTTP_STATUS"
 
             # Success conditions
@@ -100,7 +100,7 @@ jobs:
               echo "✅ Deployment URL validated with status $HTTP_STATUS: $BASE_URL"
 
               # Additional content verification
-              RESPONSE=$(curl -s --max-time 20 "$TEST_URL" | head -c 1000)
+              RESPONSE=$(curl -s --max-time 15 "$TEST_URL" | head -c 1000)
               if [[ "$RESPONSE" == *"<html"* ]] || [[ "$RESPONSE" == *"<!DOCTYPE"* ]]; then
                 echo "✅ Deployment serving HTML content"
                 DEPLOYMENT_READY=true
@@ -121,7 +121,7 @@ jobs:
               exit 0
             elif [[ "$HTTP_STATUS" =~ ^3[0-9][0-9]$ ]]; then
               echo "⚠️ Deployment returned redirect status $HTTP_STATUS, following redirects..."
-              FINAL_URL=$(curl -s -L -o /dev/null -w "%{url_effective}" --max-time 30 "$TEST_URL")
+              FINAL_URL=$(curl -s -L -o /dev/null -w "%{url_effective}" --max-time 20 "$TEST_URL")
               echo "Final URL after redirects: $FINAL_URL"
             elif [[ "$HTTP_STATUS" == "000" ]]; then
               echo "⚠️ No response from deployment (connection failed)"
@@ -130,15 +130,15 @@ jobs:
             fi
 
             # Progressive wait times
-            if [ $i -le 3 ]; then
-              echo "Waiting 30 seconds before retry..."
-              sleep 30
-            elif [ $i -le 6 ]; then
-              echo "Waiting 45 seconds before retry..."
-              sleep 45
+            if [ $i -le 2 ]; then
+              echo "Waiting 15 seconds before retry..."
+              sleep 15
+            elif [ $i -le 4 ]; then
+              echo "Waiting 25 seconds before retry..."
+              sleep 25
             else
-              echo "Waiting 60 seconds before retry..."
-              sleep 60
+              echo "Waiting 35 seconds before retry..."
+              sleep 35
             fi
           done
 
