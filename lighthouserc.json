@@ -18,9 +18,9 @@
     },
     "assert": {
       "assertions": {
-        "categories:performance": ["warn", { "minScore": 0.6 }],
-        "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.2 }],
-        "total-blocking-time": ["warn", { "maxNumericValue": 500 }]
+        "categories:performance": ["warn", { "minScore": 0.8 }],
+        "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.1 }],
+        "total-blocking-time": ["warn", { "maxNumericValue": 250 }]
       }
     },
     "upload": { "target": "temporary-public-storage" }

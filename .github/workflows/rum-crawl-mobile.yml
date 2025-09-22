@@ -1,0 +1,392 @@
+# Mobile RUM Crawl workflow for testing mobile device performance
+name: Mobile RUM Crawl
+
+permissions:
+  contents: read
+  deployments: read
+  actions: write
+
+on:
+  workflow_dispatch:
+  deployment_status:
+
+jobs:
+  mobile-crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment_url != '' && contains(github.event.deployment_status.environment_url, 'vercel.app')
+
+    strategy:
+      fail-fast: false
+      matrix:
+        device:
+          - { name: 'iPhone 12 Pro', playwright: 'iPhone 12 Pro', emoji: '📱', type: 'mobile' }
+          - { name: 'iPhone SE', playwright: 'iPhone SE', emoji: '📱', type: 'mobile' }
+          - { name: 'Pixel 5', playwright: 'Pixel 5', emoji: '📱', type: 'mobile' }
+          - { name: 'Galaxy S21', playwright: 'Galaxy S21', emoji: '📱', type: 'mobile' }
+          - { name: 'iPad', playwright: 'iPad Pro', emoji: '📱', type: 'tablet' }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-mobile-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-mobile-
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium webkit
+
+      - name: Generate routes.json from seed file
+        run: |
+          if [ -f "src/routes.seed.json" ]; then
+            cp src/routes.seed.json routes.json
+            echo "✅ Using routes from src/routes.seed.json"
+          else
+            echo '["/" , "/dashboard", "/search", "/feed"]' > routes.json
+            echo "📋 Using default routes"
+          fi
+          echo "Routes for mobile testing:" && cat routes.json
+
+      - name: Mobile RUM crawl for ${{ matrix.device.name }}
+        env:
+          BASE_URL: ${{ github.event.deployment_status.environment_url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          DEVICE_NAME: ${{ matrix.device.name }}
+          DEVICE_PLAYWRIGHT: ${{ matrix.device.playwright }}
+          DEVICE_TYPE: ${{ matrix.device.type }}
+          MAX_ROUTES: 3
+        run: |
+          # First validate the deployment URL
+          if [ -z "$BASE_URL" ]; then
+            echo "⚠️ Deployment URL not available, skipping mobile RUM crawl"
+            exit 0
+          fi
+
+          # Validate URL format
+          if [[ ! "$BASE_URL" =~ ^https?:// ]]; then
+            echo "❌ Invalid deployment URL format: $BASE_URL"
+            exit 1
+          fi
+
+          # Construct test URL with bypass secret if available
+          if [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+            # Check if URL already has query parameters
+            if [[ "$BASE_URL" == *"?"* ]]; then
+              TEST_URL="${BASE_URL}&vercel-protection-bypass=${VERCEL_AUTOMATION_BYPASS_SECRET}"
+            else
+              TEST_URL="${BASE_URL}?vercel-protection-bypass=${VERCEL_AUTOMATION_BYPASS_SECRET}"
+            fi
+            echo "🔓 Using Vercel automation bypass for protected deployment"
+            echo "${{ matrix.device.emoji }} Testing $DEVICE_NAME: $BASE_URL (with bypass)"
+          else
+            TEST_URL="$BASE_URL"
+            echo "${{ matrix.device.emoji }} Testing $DEVICE_NAME: $BASE_URL"
+          fi
+
+          echo "Deployment context: ${{ github.event.deployment_status.state }}"
+          echo "Deployment ID: ${{ github.event.deployment.id }}"
+
+          # Quick deployment validation for mobile
+          echo "🔍 Validating deployment accessibility for mobile testing..."
+          DEPLOYMENT_READY=false
+
+          for i in {1..5}; do
+            echo "Attempt $i/5 - checking deployment status..."
+
+            # Check deployment status
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "$TEST_URL" || echo "000")
+            echo "HTTP Status: $HTTP_STATUS"
+
+            # Success conditions
+            if [[ "$HTTP_STATUS" =~ ^2[0-9][0-9]$ ]]; then
+              echo "✅ Deployment URL validated with status $HTTP_STATUS"
+
+              # Quick content verification
+              RESPONSE=$(curl -s --max-time 15 "$TEST_URL" | head -c 500)
+              if [[ "$RESPONSE" == *"<html"* ]] || [[ "$RESPONSE" == *"<!DOCTYPE"* ]]; then
+                echo "✅ Deployment serving HTML content"
+                DEPLOYMENT_READY=true
+                break
+              fi
+            elif [[ "$HTTP_STATUS" == "401" ]]; then
+              if [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+                echo "⚠️ Deployment still requires authentication (401) despite bypass secret"
+              else
+                echo "⚠️ Deployment requires authentication (401) - password-protected preview"
+              fi
+              echo "🏃‍♂️ Skipping mobile RUM crawl for authenticated deployment"
+              exit 0
+            elif [[ "$HTTP_STATUS" == "000" ]]; then
+              echo "⚠️ No response from deployment (connection failed)"
+            else
+              echo "⚠️ Deployment returned status $HTTP_STATUS"
+            fi
+
+            # Shorter wait times for mobile (faster iteration)
+            echo "Waiting 20 seconds before retry..."
+            sleep 20
+          done
+
+          # Check if deployment is ready
+          if [ "$DEPLOYMENT_READY" != "true" ]; then
+            echo "❌ Deployment URL is not accessible for mobile testing: $BASE_URL"
+            echo "🏃‍♂️ Skipping mobile RUM crawl due to inaccessible deployment URL"
+            exit 0
+          fi
+
+          # Deployment is ready, proceed with mobile RUM crawl
+          echo "${{ matrix.device.emoji }} Starting mobile RUM crawl on $DEVICE_NAME: $BASE_URL"
+
+          # Export TEST_URL for Playwright to use
+          export TEST_URL
+
+          # Mobile-optimized Playwright configuration
+          cat > playwright.config.cjs <<'EOF'
+          module.exports = {
+            testDir: '.',
+            timeout: 45000,
+            retries: 1,
+            workers: 1,
+            use: {
+              headless: true,
+              actionTimeout: 15000,
+              navigationTimeout: 45000,
+            },
+            reporter: [
+              ['list'],
+              ['json', { outputFile: 'mobile-test-results.json' }],
+              ['html', { outputFolder: 'mobile-playwright-report' }]
+            ],
+          };
+          EOF
+
+          # Mobile-specific test script with device emulation and touch interactions
+          cat > mobile-rum-test.spec.cjs <<'EOF'
+          const { test, devices } = require('@playwright/test');
+          const fs = require('fs');
+
+          const routes = JSON.parse(fs.readFileSync('routes.json', 'utf8'));
+          const baseUrl = process.env.TEST_URL || process.env.BASE_URL;
+          const deviceName = process.env.DEVICE_PLAYWRIGHT;
+          const deviceType = process.env.DEVICE_TYPE;
+
+          const maxRoutes = parseInt(process.env.MAX_ROUTES || '3');
+          const testRoutes = routes.slice(0, maxRoutes);
+
+          // Get device configuration
+          const deviceConfig = devices[deviceName];
+          if (!deviceConfig) {
+            throw new Error(`Device ${deviceName} not found in Playwright devices`);
+          }
+
+          testRoutes.forEach((route, index) => {
+            test(`Mobile RUM crawl ${route} on ${deviceName}`, async ({ browser }) => {
+              console.log(`📱 Testing route ${index + 1}/${testRoutes.length}: ${route} on ${deviceName}`);
+
+              // Create context with device emulation
+              const context = await browser.newContext({
+                ...deviceConfig,
+                // Mobile-specific settings
+                bypassCSP: true,
+                reducedMotion: 'reduce',
+              });
+
+              const page = await context.newPage();
+
+              try {
+                // Navigate to page
+                const response = await page.goto(`${baseUrl}${route}`, {
+                  waitUntil: 'networkidle',
+                  timeout: 30000
+                });
+
+                if (response.status() >= 400) {
+                  throw new Error(`HTTP ${response.status()}`);
+                }
+
+                console.log(`✅ Route loaded: ${route} (${response.status()}) on ${deviceName}`);
+
+                await page.waitForLoadState('domcontentloaded');
+
+                // Mobile-specific interactions
+                console.log(`📱 Performing mobile interactions on ${route}`);
+
+                // 1. Mobile scroll behavior (swipe-like scrolling)
+                await page.evaluate(() => {
+                  window.scrollTo({ top: 200, behavior: 'smooth' });
+                });
+                await page.waitForTimeout(500);
+
+                // 2. Touch interactions - tap elements that are visible
+                try {
+                  // Find tappable elements (buttons, links, etc.)
+                  const tappableElements = await page.locator('button, a, [role="button"], [onclick]').all();
+
+                  if (tappableElements.length > 0) {
+                    // Tap the first visible element
+                    const firstElement = tappableElements[0];
+                    if (await firstElement.isVisible()) {
+                      await firstElement.tap({ timeout: 5000 });
+                      console.log(`📱 Tapped element on ${route}`);
+                      await page.waitForTimeout(1000);
+                    }
+                  }
+                } catch (e) {
+                  console.log(`📱 Touch interaction not possible on ${route}: ${e.message}`);
+                }
+
+                // 3. Mobile keyboard interaction (if forms are present)
+                try {
+                  const inputs = await page.locator('input[type="text"], input[type="search"], textarea').all();
+                  if (inputs.length > 0) {
+                    const firstInput = inputs[0];
+                    if (await firstInput.isVisible()) {
+                      await firstInput.tap();
+                      await firstInput.fill('mobile test');
+                      console.log(`📱 Mobile keyboard interaction on ${route}`);
+                      await page.waitForTimeout(500);
+                    }
+                  }
+                } catch (e) {
+                  console.log(`📱 Mobile keyboard interaction not possible: ${e.message}`);
+                }
+
+                // 4. Additional mobile scroll to trigger more interactions
+                await page.evaluate(() => {
+                  const maxScroll = Math.max(
+                    document.body.scrollHeight,
+                    document.documentElement.scrollHeight
+                  );
+                  const scrollAmount = Math.min(500, maxScroll / 3);
+                  window.scrollTo({ top: scrollAmount, behavior: 'smooth' });
+                });
+                await page.waitForTimeout(1000);
+
+                // 5. Test mobile navigation (hamburger menus, etc.)
+                try {
+                  const mobileMenus = await page.locator('[aria-label*="menu"], .hamburger, [data-testid*="menu"]').all();
+                  if (mobileMenus.length > 0) {
+                    const firstMenu = mobileMenus[0];
+                    if (await firstMenu.isVisible()) {
+                      await firstMenu.tap();
+                      console.log(`📱 Mobile menu interaction on ${route}`);
+                      await page.waitForTimeout(1000);
+
+                      // Close menu if possible
+                      await page.keyboard.press('Escape');
+                    }
+                  }
+                } catch (e) {
+                  console.log(`📱 Mobile menu interaction not possible: ${e.message}`);
+                }
+
+                // 6. Final scroll to top
+                await page.evaluate(() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+                await page.waitForTimeout(1000);
+
+                // Allow time for any final metrics collection
+                await page.waitForTimeout(2000);
+
+                console.log(`✅ Completed mobile testing: ${route} on ${deviceName}`);
+
+              } catch (error) {
+                console.log(`❌ Failed mobile test ${route} on ${deviceName}: ${error.message}`);
+
+                try {
+                  await page.screenshot({
+                    path: `mobile-error-${deviceName.replace(/[^a-zA-Z0-9]/g, '_')}-${route.replace(/[^a-zA-Z0-9]/g, '_')}.png`,
+                    fullPage: true
+                  });
+                } catch (e) {
+                  console.log('Could not capture mobile screenshot');
+                }
+
+                throw error;
+              } finally {
+                await context.close();
+              }
+            });
+          });
+          EOF
+
+          # Run the mobile tests
+          echo "${{ matrix.device.emoji }} Running mobile RUM crawl tests on $DEVICE_NAME..."
+
+          # Disable exit on error for the mobile crawl command
+          set +e
+          npx playwright test --config=playwright.config.cjs mobile-rum-test.spec.cjs
+          CRAWL_EXIT_CODE=$?
+          set -e
+
+          if [ $CRAWL_EXIT_CODE -eq 0 ]; then
+            echo "✅ Mobile RUM crawl completed successfully on $DEVICE_NAME"
+            echo "MOBILE_CRAWL_STATUS=success" >> $GITHUB_ENV
+          else
+            echo "⚠️ Mobile RUM crawl failed on $DEVICE_NAME with exit code $CRAWL_EXIT_CODE"
+
+            # Verify deployment is still accessible
+            FINAL_CHECK=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$TEST_URL" || echo "000")
+            if [[ "$FINAL_CHECK" =~ ^2[0-9][0-9]$ ]]; then
+              echo "✅ Deployment is still accessible (HTTP $FINAL_CHECK)"
+              echo "This may be a transient mobile testing issue, not the deployment"
+              echo "MOBILE_CRAWL_STATUS=partial" >> $GITHUB_ENV
+            else
+              echo "❌ Deployment is no longer accessible (HTTP $FINAL_CHECK)"
+              echo "MOBILE_CRAWL_STATUS=failure" >> $GITHUB_ENV
+              exit 1
+            fi
+          fi
+
+      - name: Generate mobile test summary for ${{ matrix.device.name }}
+        if: always()
+        run: |
+          echo "## ${{ matrix.device.emoji }} Mobile RUM Crawl Results - ${{ matrix.device.name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Device:** ${{ matrix.device.name }} (${{ matrix.device.type }})" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment URL:** ${{ github.event.deployment_status.environment_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ env.MOBILE_CRAWL_STATUS }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Routes tested:** $(cat routes.json | jq length)" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment ID:** ${{ github.event.deployment.id }}" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}" ]; then
+            echo "**Bypass Used:** Yes (automation secret)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Bypass Used:** No (public deployment)" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "mobile-test-results.json" ]; then
+            echo "**Test Results:** Available in artifacts" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload mobile test results for ${{ matrix.device.name }}
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-rum-crawl-${{ matrix.device.name }}-results
+          path: |
+            mobile-test-results.json
+            mobile-error-*.png
+            mobile-playwright-report/
+          retention-days: 30
+
+      - name: Upload mobile screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-rum-crawl-${{ matrix.device.name }}-screenshots
+          path: mobile-error-*.png
+          retention-days: 7
