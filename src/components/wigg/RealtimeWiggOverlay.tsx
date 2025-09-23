@@ -153,7 +153,7 @@ export function RealtimeWiggOverlay({
               <Badge variant="outline" className="ml-2">
                 Live Capture
               </Badge>
-              {/* Environment indicator for non-production URLs - test failure: "Unable to find an element by: [data-testid="environment-indicator"]" */}
+              {/* Environment indicator for non-production URLs */}
               {typeof window !== 'undefined' && (
                 window.location.hostname !== 'wigg.app' &&
                 window.location.hostname !== 'www.wigg.app'
@@ -265,7 +265,7 @@ export function RealtimeWiggOverlay({
                             {formatCurrentTime(entry.pct)}
                           </span>
                         )}
-                        {/* Implementing test-indicator to fix failing test: "Unable to find an element by: [data-testid="test-indicator"]" */}
+                        {/* Display a test data indicator for entries identified as test data */}
                         {isTestData(entry) && (
                           <TestTube
                             className="h-3 w-3 text-amber-500"
