@@ -98,8 +98,7 @@ export function useUserWiggs(titleId: string): {
       // Calculate T2G (prefer personal wiggs, fallback to curve)
       const personal = firstGoodFromWiggs(data.entries, 1);
       const community = metrics?.t2g_comm_pct ?? null;
-      const curveFallback = estimateT2GFromSegments(progressData?.segments || [],       
-  2.0);
+      const curveFallback = estimateT2GFromSegments(progressData?.segments || [], 2.0);
       const pick = pickT2G(personal, community ?? curveFallback);
 
       setData(prevData => ({
