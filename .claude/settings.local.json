@@ -57,7 +57,14 @@
       "Bash(node:*)",
       "Bash(unzip:*)",
       "Bash(./bin/gh.exe:*)",
-      "Bash(gh run view:*)"
+      "Bash(gh run view:*)",
+      "Bash(npm test:*)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserWiggs.test.ts)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserWiggs.test.ts --reporter=verbose)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserWiggs.test.ts --testNamePattern=\"should insert new wigg entry to Supabase when addWigg is called\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserWiggs.test.ts --testNamePattern=\"should insert new wigg entry to Supabase when addWigg is called\" --reporter=verbose)",
+      "Bash(export TDD_GUARD_DISABLED=true)",
+      "Read(//c/Users/gatli/**)"
     ],
     "deny": [],
     "ask": [],

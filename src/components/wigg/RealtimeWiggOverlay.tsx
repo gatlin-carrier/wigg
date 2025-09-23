@@ -90,11 +90,7 @@ export function RealtimeWiggOverlay({
     try {
       const currentPct = liveData.currentPct;
       await markWigg(currentPct, note || undefined);
-      
-      // Also add to user wiggs if note provided or for persistence
-      if (note || Math.random() > 0.5) { // Mock: sometimes add to persistent storage
-        await addWigg(currentPct, note || undefined, 2); // Default to "better" rating
-      }
+      await addWigg(currentPct, note || undefined, 2); // Default to "better" rating
 
       toast({
         title: 'WIGG marked!',

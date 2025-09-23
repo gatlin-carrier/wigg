@@ -69,3 +69,119 @@ Vitest configured to:
 ### Authentication & Database Access
 
 Uses Supabase client with Row Level Security (RLS) policies. Auth context provides user state throughout the app.
+
+## TDD Guard Guidelines
+
+This project uses a TDD guard system to enforce test-driven development practices. Follow these guidelines to work effectively with the guard:
+
+### Core TDD Workflow
+
+1. **Red Phase**: Write ONE failing test that describes desired behavior
+   - The test must fail for the RIGHT reason (not syntax/import errors)
+   - Run the test to show specific failure output
+   - Only one test at a time - this is critical for TDD discipline
+
+2. **Green Phase**: Write minimal code to make the failing test pass
+   - Show the failing test output before implementing
+   - Implement only what's needed to satisfy the failing test
+   - Match established patterns for error handling and integration
+
+3. **Refactor Phase**: Improve code while keeping tests green
+   - Only allowed when tests are currently passing
+   - Requires proof that tests have been run and are green
+   - No refactoring with failing tests - fix them first
+
+### Evidence-Based Implementation Exceptions
+
+The TDD guard allows implementation without failing tests when there's clear evidence:
+
+#### Pattern-Following Implementation
+- **Existing code patterns**: If `searchMovies()` exists, adding `searchGames()` with same error handling is allowed
+- **Established integrations**: Connecting existing exported functions is permissible
+- **Configuration updates**: Adding routing rules, analytics endpoints that extend existing setups
+
+#### TODO/Documentation Evidence
+- **TODO comments**: `// TODO: Implement Supabase persistence` counts as requirements
+- **FIXME comments**: Replacing `throw new Error('not implemented')` under FIXME is allowed
+- **Documentation**: Concrete specs describing the contract are valid evidence
+
+#### Security and Bug Fixes
+- **Security improvements**: Removing exposed secrets when tests are passing
+- **Clear bug fixes**: When the bug is obvious and maintains same external API
+- **Pattern matching**: Following existing error handling, logging, analytics patterns
+
+### Working with Failing Tests
+
+When you have failing tests, use this workflow:
+
+```bash
+# 1. Run the failing test to show output
+npm run test -- path/to/test.ts --testNamePattern="specific test name"
+
+# 2. Copy the failure output to demonstrate what needs to be implemented
+# Example: "AssertionError: expected mockInsert to be called but got 0 calls"
+
+# 3. Implement only what's needed to make that specific test pass
+```
+
+### Common TDD Guard Violations to Avoid
+
+❌ **Multiple Test Addition**: Adding more than one test at once
+❌ **Over-Implementation**: Code that exceeds test requirements
+❌ **Premature Implementation**: Adding code before test fails properly
+❌ **Speculative Features**: Adding untested capabilities
+
+✅ **Single Focused Test**: One test that fails for specific reason
+✅ **Minimal Implementation**: Just enough code to make test pass
+✅ **Pattern Following**: Matching existing code structure and error handling
+✅ **Evidence-Based**: TODO comments, existing patterns, or documentation
+
+### Project-Specific Patterns
+
+#### Supabase Integration Pattern
+When implementing Supabase operations, follow this established pattern:
+```typescript
+// 1. Get current user
+const { data: { user } } = await supabase.auth.getUser();
+if (!user) {
+  throw new Error('User not authenticated');
+}
+
+// 2. Perform database operation
+const { data, error } = await supabase
+  .from('table_name')
+  .operation(params);
+
+// 3. Handle errors
+if (error) {
+  throw error;
+}
+```
+
+#### Hook Implementation Pattern
+For data hooks, follow the established pattern in `useUserWiggs`:
+- useState for data, loading, error states
+- useEffect for data fetching
+- Error handling with proper error messages
+- Integration with existing TanStack Query patterns
+
+#### Test Mocking Pattern
+For Supabase tests, use this established mocking pattern:
+```typescript
+vi.mock('@/integrations/supabase/client', () => {
+  const mockQuery = {
+    select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    order: vi.fn().mockResolvedValue({ data: [...], error: null })
+  };
+
+  return {
+    supabase: {
+      from: vi.fn().mockReturnValue(mockQuery),
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'test' } } }) }
+    }
+  };
+});
+```
+
+Remember: The TDD guard is designed to maintain code quality. When blocked, examine if you have proper test evidence or if you're following established patterns in the codebase.
