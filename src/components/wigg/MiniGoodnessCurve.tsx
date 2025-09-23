@@ -1,4 +1,9 @@
-import React, { useMemo, useRef, useEffect } from 'react';
+import React from 'react';
+import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
+import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
+
+import { smooth } from '@/lib/wigg/analysis';
+import { cn } from '@/lib/utils';
 
 export interface MiniGoodnessCurveProps {
   values: number[]; // 0..4 scale
@@ -7,11 +12,15 @@ export interface MiniGoodnessCurveProps {
   fill?: string;   // CSS color (area under)
   className?: string;
   threshold?: number; // 0..4
-  colorMode?: 'brand' | 'heat';
-  heatStyle?: 'muted' | 'vivid';
   minimal?: boolean; // no fill, no threshold, round caps
   badThreshold?: number; // draw tiny markers on x-axis where value <= threshold
   badMarkerColor?: string;
+  showPeakMarker?: boolean;
+  showPeakPlayhead?: boolean;
+  peakMarkerColor?: string;
+  gridLines?: number[];
+  gridLineColor?: string;
+  gridLineDash?: string;
 }
 
 export function MiniGoodnessCurve({
@@ -21,97 +30,213 @@ export function MiniGoodnessCurve({
   fill = 'hsl(var(--primary) / 0.12)',
   className = '',
   threshold,
-  colorMode = 'brand',
-  heatStyle = 'muted',
   minimal = false,
   badThreshold,
   badMarkerColor = 'hsl(var(--destructive))',
+  showPeakMarker = true,
+  showPeakPlayhead = true,
+  peakMarkerColor = '#8b5cf6',
+  gridLines,
+  gridLineColor = 'hsl(var(--muted-foreground) / 0.3)',
+  gridLineDash = '3 3',
 }: MiniGoodnessCurveProps) {
-  const ref = useRef<SVGSVGElement | null>(null);
-  const gradId = useMemo(() => `mgc-grad-${Math.random().toString(36).slice(2)}`, []);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const [width, setWidth] = React.useState<number>(0);
+  const chartMargin = minimal ? 0 : 4;
 
-  const { path, area, threshY } = useMemo(() => {
-    const n = Math.max(2, values.length);
-    const w = 100; // viewBox width (percent)
-    const h = height; // viewBox height in px
-    const max = 4;
-    const xs = values.map((_, i) => (i / (n - 1)) * w);
-    const ys = values.map(v => h - (Math.max(0, Math.min(max, v)) / max) * (h - 4) - 2);
-    // Build a smoother cubic bezier path using Catmull-Rom to Bezier conversion
-    const pts = xs.map((x, i) => ({ x, y: ys[i] }));
-    const segs: string[] = [];
-    if (pts.length > 0) {
-      segs.push(`M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`);
-      for (let i = 0; i < pts.length - 1; i++) {
-        const p0 = pts[Math.max(0, i - 1)];
-        const p1 = pts[i];
-        const p2 = pts[i + 1];
-        const p3 = pts[Math.min(pts.length - 1, i + 2)];
-        // Catmull-Rom to Bezier with higher tension to increase curviness
-        // Standard CR uses t=1. We go a bit higher visually by clamping control points to bounds
-        const t = minimal ? 0.9 : 1.0;
-        const c1x = p1.x + (p2.x - p0.x) * (t / 6);
-        let  c1y = p1.y + (p2.y - p0.y) * (t / 6);
-        const c2x = p2.x - (p3.x - p1.x) * (t / 6);
-        let  c2y = p2.y - (p3.y - p1.y) * (t / 6);
-        // Clamp control points vertically to avoid overshoot outside the viewbox
-        const clampY = (yy: number) => Math.max(2, Math.min(h - 2, yy));
-        c1y = clampY(c1y);
-        c2y = clampY(c2y);
-        segs.push(
-          `C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`
-        );
+  React.useEffect(() => {
+    if (!containerRef.current || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+    const observer = new ResizeObserver((entries) => {
+      if (!entries.length) return;
+      const entry = entries[0];
+      setWidth(entry.contentRect.width);
+    });
+    observer.observe(containerRef.current);
+    setWidth(containerRef.current.clientWidth);
+    return () => observer.disconnect();
+  }, []);
+
+  const areaSlotProps = React.useMemo(() => {
+    if (minimal) return undefined;
+    return {
+      filter: 'none',
+      fill,
+    } as const;
+  }, [minimal, fill]);
+
+  const lineSlotProps = React.useMemo(
+    () => ({
+      strokeWidth: minimal ? 1.25 : 1.5,
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
+      filter: 'none',
+    }),
+    [minimal]
+  );
+
+  const markerSvg = React.useMemo(() => {
+    if (typeof badThreshold !== 'number' || width <= 0) {
+      return null;
+    }
+    const n = Math.max(1, values.length - 1);
+    return (
+      <svg
+        className="pointer-events-none absolute inset-0"
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="none"
+      >
+        {values.map((v, i) => {
+          if (v > badThreshold) return null;
+          const x = values.length > 1 ? (i / n) * width : width / 2;
+          const y = height - 2;
+          return <circle key={`bad-${i}`} cx={x} cy={y} r={1} fill={badMarkerColor} />;
+        })}
+      </svg>
+    );
+  }, [badThreshold, badMarkerColor, height, values, width]);
+
+  const gridSvg = React.useMemo(() => {
+    if (!gridLines?.length || width <= 0) {
+      return null;
+    }
+    const domainMin = 0;
+    const domainMax = 4;
+    const innerWidth = Math.max(0, width - chartMargin * 2);
+    const innerHeight = Math.max(0, height - chartMargin * 2);
+    return (
+      <svg
+        className="pointer-events-none absolute inset-0"
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="none"
+      >
+        {gridLines.map((value, idx) => {
+          if (value < domainMin || value > domainMax) return null;
+          const ratio = (value - domainMin) / (domainMax - domainMin || 1);
+          const y = chartMargin + (1 - ratio) * innerHeight;
+          return (
+            <line
+              key={`grid-${idx}`}
+              x1={chartMargin}
+              x2={width - chartMargin}
+              y1={y}
+              y2={y}
+              stroke={gridLineColor}
+              strokeDasharray={gridLineDash}
+              strokeWidth={1}
+            />
+          );
+        })}
+      </svg>
+    );
+  }, [chartMargin, gridLineColor, gridLineDash, gridLines, height, width]);
+
+  const firstPeak = React.useMemo(() => {
+    const n = values.length;
+    if (n === 0) return null;
+    if (n === 1) return { index: 0, value: values[0] };
+    const window = Math.max(3, Math.round(n * 0.12));
+    const smoothed = smooth(values, window);
+    const epsilon = 0.05;
+    for (let i = 1; i < n - 1; i++) {
+      const prev = smoothed[i - 1];
+      const curr = smoothed[i];
+      const next = smoothed[i + 1];
+      if (curr >= prev && curr >= next && (curr - prev > epsilon || curr - next > epsilon)) {
+        return { index: i, value: values[i] ?? curr };
       }
     }
-    const p = segs.join(' ');
-    const a = `${p} L ${w} ${h} L 0 ${h} Z`;
-    const ty = threshold !== undefined ? (h - (Math.max(0, Math.min(max, threshold)) / max) * (h - 4) - 2) : undefined;
-    return { path: p, area: a, threshY: ty };
-  }, [values, height, threshold, minimal]);
-
-  const heatColorFor = (norm: number) => {
-    // Monochrome gradient: low values = light gray, high values = near-black
-    const n = Math.max(0, Math.min(1, norm));
-    const light = heatStyle === 'vivid'
-      ? Math.round(92 - 52 * n)   // 92% -> 40%
-      : Math.round(92 - 44 * n);  // 92% -> 48%
-    return `hsl(0 0% ${light}%)`;
-  };
-
-  useEffect(() => {
-    // nothing; placeholder for future animations
+    let maxIdx = 0;
+    for (let i = 1; i < n; i++) {
+      if (smoothed[i] > smoothed[maxIdx]) maxIdx = i;
+    }
+    return { index: maxIdx, value: values[maxIdx] ?? smoothed[maxIdx] };
   }, [values]);
 
+  const peakOverlay = React.useMemo(() => {
+    if ((!showPeakMarker && !showPeakPlayhead) || !firstPeak || width <= 0) {
+      return null;
+    }
+    const domainMin = 0;
+    const domainMax = 4;
+    const clamped = Math.min(domainMax, Math.max(domainMin, firstPeak.value));
+    const innerWidth = Math.max(0, width - chartMargin * 2);
+    const innerHeight = Math.max(0, height - chartMargin * 2);
+    const denom = Math.max(1, values.length - 1);
+    const x = values.length > 1
+      ? chartMargin + (firstPeak.index / denom) * innerWidth
+      : width / 2;
+    const ratio = (clamped - domainMin) / (domainMax - domainMin || 1);
+    const y = chartMargin + (1 - ratio) * innerHeight;
+
+    return (
+      <svg
+        className="pointer-events-none absolute inset-0"
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="none"
+      >
+        {showPeakPlayhead && (
+          <line
+            x1={x}
+            x2={x}
+            y1={chartMargin}
+            y2={height - chartMargin}
+            stroke={peakMarkerColor}
+            strokeWidth={1}
+            strokeLinecap="round"
+            opacity={0.6}
+          />
+        )}
+        {showPeakMarker && (
+          <>
+            <circle cx={x} cy={y} r={4} fill="white" opacity={0.9} />
+            <circle cx={x} cy={y} r={2.5} fill={peakMarkerColor} />
+          </>
+        )}
+      </svg>
+    );
+  }, [chartMargin, firstPeak, height, peakMarkerColor, showPeakMarker, showPeakPlayhead, values.length, width]);
+
   return (
-    <svg ref={ref} className={`w-full ${className}`} viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" role="img" aria-label="goodness curve">
-      {colorMode === 'heat' && (
-        <defs>
-          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
-            {values.map((v, i) => {
-              const offset = (i / Math.max(1, values.length - 1)) * 100;
-              const color = heatColorFor(v / 4);
-              return <stop key={i} offset={`${offset}%`} stopColor={color} stopOpacity={0.9} />;
-            })}
-          </linearGradient>
-        </defs>
-      )}
-      {!minimal && (
-        <path d={area} fill={colorMode === 'heat' ? `url(#${gradId})` : fill} />
-      )}
-      {!minimal && threshold !== undefined && (
-        <line x1={0} y1={threshY} x2={100} y2={threshY} stroke="hsl(var(--muted-foreground)/0.5)" strokeDasharray="4 4" />
-      )}
-      <path d={path} stroke={stroke} strokeWidth={minimal ? 1.25 : 1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      {typeof badThreshold === 'number' && (
-        <g>
-          {values.map((v, i) => {
-            if (v > badThreshold) return null;
-            const x = (i / Math.max(1, values.length - 1)) * 100;
-            const y = height - 1;
-            return <circle key={`bad-${i}`} cx={x} cy={y} r={1} fill={badMarkerColor} />
-          })}
-        </g>
-      )}
-    </svg>
+    <div
+      ref={containerRef}
+      className={cn('relative w-full', className)}
+      style={{ height }}
+    >
+      <SparkLineChart
+        className="h-full w-full"
+        data={values}
+        height={height}
+        width={width || undefined}
+        color={stroke}
+        curve={minimal ? 'linear' : 'catmullRom'}
+        area={!minimal}
+        baseline={0}
+        margin={chartMargin}
+        showTooltip={false}
+        showHighlight={false}
+        clipAreaOffset={{ top: 0, bottom: 0, left: 0, right: 0 }}
+        yAxis={{ min: 0, max: 4 }}
+        slotProps={{
+          area: areaSlotProps,
+          line: lineSlotProps,
+        }}
+      >
+        {!minimal && typeof threshold === 'number' && (
+          <ChartsReferenceLine
+            y={threshold}
+            lineStyle={{
+              stroke: 'hsl(var(--muted-foreground)/0.5)',
+              strokeDasharray: '4 4',
+              strokeWidth: 1,
+            }}
+          />
+        )}
+      </SparkLineChart>
+      {gridSvg}
+      {markerSvg}
+      {peakOverlay}
+    </div>
   );
 }

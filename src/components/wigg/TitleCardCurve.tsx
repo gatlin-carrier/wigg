@@ -17,10 +17,10 @@ export interface TitleCardCurveProps {
   genre?: string[];
   onTitleClick?: () => void;
   className?: string;
-  miniColorMode?: 'brand' | 'heat';
   miniMinimal?: boolean;
   miniBadThreshold?: number;
-  miniHeatStyle?: 'muted' | 'vivid';
+  miniShowPeakMarker?: boolean;
+  miniShowPeakPlayhead?: boolean;
 }
 
 export function TitleCardCurve({
@@ -33,10 +33,10 @@ export function TitleCardCurve({
   genre = [],
   onTitleClick,
   className = '',
-  miniColorMode = 'brand',
   miniMinimal = false,
   miniBadThreshold,
-  miniHeatStyle = 'muted'
+  miniShowPeakMarker = true,
+  miniShowPeakPlayhead = true,
 }: TitleCardCurveProps) {
   const { data: progressData } = useTitleProgress(titleId);
   const { data: wiggsData } = useUserWiggs(titleId);
@@ -89,10 +89,10 @@ export function TitleCardCurve({
                 values={values}
                 height={28}
                 threshold={miniMinimal ? undefined : 2}
-                colorMode={miniColorMode}
                 minimal={miniMinimal}
                 badThreshold={miniBadThreshold}
-                heatStyle={miniHeatStyle}
+                showPeakMarker={miniShowPeakMarker}
+                showPeakPlayhead={miniShowPeakPlayhead}
               />
               {wiggsData?.t2gEstimatePct && (
                 <div className="flex items-center gap-1 text-xs">

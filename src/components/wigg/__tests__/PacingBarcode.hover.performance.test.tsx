@@ -1,62 +1,39 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
+
+import type { ProgressSegment } from '@/hooks/useTitleProgress';
+
 import { PacingBarcode } from '../PacingBarcode';
 
-describe('PacingBarcode Hover Performance', () => {
-  it('should not re-render entire canvas on hover when not interactive', () => {
-    let canvasRenderCount = 0;
-
-    const mockFillRect = vi.fn(() => { canvasRenderCount++; });
-    const mockGetContext = vi.fn(() => ({
-      scale: vi.fn(),
-      clearRect: vi.fn(),
-      fillRect: mockFillRect,
-      strokeRect: vi.fn(),
-      beginPath: vi.fn(),
-      moveTo: vi.fn(),
-      lineTo: vi.fn(),
-      stroke: vi.fn(),
-      fill: vi.fn(),
-      closePath: vi.fn(),
-      arc: vi.fn(),
-      setLineDash: vi.fn(),
-      save: vi.fn(),
-      restore: vi.fn(),
-      clip: vi.fn(),
-      quadraticCurveTo: vi.fn(),
+describe('PacingBarcode interactions', () => {
+  it('ignores interactive handlers when rendered as a static sparkline', () => {
+    const segments: ProgressSegment[] = Array.from({ length: 16 }, (_, i) => ({
+      startPct: i * 6.25,
+      endPct: (i + 1) * 6.25,
+      meanScore: 1.5 + (i % 3) * 0.4,
     }));
 
-    Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
-      value: mockGetContext,
-    });
-
-    const segments = Array.from({ length: 20 }, (_, i) => ({
-      startPct: i * 5,
-      endPct: (i + 1) * 5,
-      meanScore: 2.0,
-    }));
+    const onScrub = vi.fn();
+    const onMarkWigg = vi.fn();
 
     const { container } = render(
       <PacingBarcode
-        titleId="test-title"
+        titleId="static"
         segments={segments}
-        height={60}
-        interactive={false}
-        highlightOnHover={false}
+        height={64}
+        interactive={true}
+        onScrub={onScrub}
+        onMarkWigg={onMarkWigg}
       />
     );
 
-    const initialRenderCount = canvasRenderCount;
-
-    // Simulate multiple hover events (common in dashboard scrolling)
-    const canvas = container.querySelector('canvas');
-    if (canvas) {
-      fireEvent.mouseMove(canvas, { clientX: 100 });
-      fireEvent.mouseMove(canvas, { clientX: 150 });
-      fireEvent.mouseMove(canvas, { clientX: 200 });
+    const svg = container.querySelector('svg');
+    if (svg) {
+      fireEvent.mouseMove(svg, { clientX: 120 });
+      fireEvent.click(svg, { clientX: 120 });
     }
 
-    // For non-interactive components, canvas should not re-render on hover
-    expect(canvasRenderCount).toBe(initialRenderCount);
+    expect(onScrub).not.toHaveBeenCalled();
+    expect(onMarkWigg).not.toHaveBeenCalled();
   });
 });
