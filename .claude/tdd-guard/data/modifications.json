@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\useUserWiggs.ts",
-    "old_string": "  }, [data?.entries, metrics?.t2g_comm_pct, progressData?.segments]);",
-    "new_string": "  }, [data?.entries, metrics?.t2g_comm_pct, progressData?.segments?.length]);"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\__tests__\\useUserWiggs.test.ts",
+    "old_string": "  it('should use centralized auth state instead of direct Supabase calls', async () => {\n    // Clear any previous calls to the global mock\n    mockUseAuth.mockClear();\n\n    const { result } = renderHook(() => useUserWiggs('test-id'));\n\n    await waitFor(() => {\n      expect(result.current.isLoading).toBe(false);\n    });\n\n    // Should use centralized auth state (mockUseAuth called) instead of direct supabase.auth.getUser()\n    expect(mockUseAuth).toHaveBeenCalled();\n  });",
+    "new_string": "  it('should use centralized auth state instead of direct Supabase calls', async () => {\n    // Get reference to the mocked useAuth\n    const { useAuth } = await import('../useAuth');\n    const mockUseAuth = vi.mocked(useAuth);\n\n    // Clear any previous calls to the mock\n    mockUseAuth.mockClear();\n\n    const { result } = renderHook(() => useUserWiggs('test-id'));\n\n    await waitFor(() => {\n      expect(result.current.isLoading).toBe(false);\n    });\n\n    // Should use centralized auth state (mockUseAuth called) instead of direct supabase.auth.getUser()\n    expect(mockUseAuth).toHaveBeenCalled();\n  });"
   }
 }

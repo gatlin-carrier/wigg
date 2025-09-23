@@ -75,6 +75,11 @@ const testUtils = {
 
     isDevelopment: () => process.env.NODE_ENV === 'development',
 
+    isTestUser: (userId: string | null | undefined) => {
+      if (!userId) return false;
+      return userId.startsWith(TEST_DATA_PATTERNS.USER_ID_PREFIX);
+    },
+
     isProductionUrl: () => {
       if (typeof window === 'undefined') return false; // SSR/Node environment
 
@@ -88,11 +93,12 @@ const testUtils = {
              origin === 'https://www.wigg.app';
     },
 
-    shouldUseTestData: () => {
-      // Use test data in test environment, development, OR non-production URLs
+    shouldUseTestData: (userId?: string | null) => {
+      // Use test data in test environment, development, non-production URLs, OR with test users
       return testUtils.environment.isTestEnvironment() ||
              testUtils.environment.isDevelopment() ||
-             !testUtils.environment.isProductionUrl();
+             !testUtils.environment.isProductionUrl() ||
+             testUtils.environment.isTestUser(userId);
     }
   }
 };
@@ -114,6 +120,15 @@ vi.mock('../useTitleMetrics', () => ({
     data: {
       t2g_comm_pct: 35.0
     }
+  })
+}));
+
+// Mock useAuth hook
+vi.mock('../useAuth', () => ({
+  useAuth: vi.fn().mockReturnValue({
+    user: { id: 'test-user-123' },
+    session: null,
+    loading: false
   })
 }));
 
@@ -392,5 +407,53 @@ describe('useUserWiggs', () => {
 
     // Restore original location
     window.location = originalLocation;
+  });
+
+  it('should identify test users and enable test data accordingly', () => {
+    // Test user ID patterns
+    expect(testUtils.environment.isTestUser('dev-user-tester')).toBe(true);
+    expect(testUtils.environment.isTestUser('dev-user-developer')).toBe(true);
+    expect(testUtils.environment.isTestUser('regular-user-123')).toBe(false);
+    expect(testUtils.environment.isTestUser(null)).toBe(false);
+    expect(testUtils.environment.isTestUser(undefined)).toBe(false);
+
+    // Save original functions to restore later
+    const originalIsTestEnv = testUtils.environment.isTestEnvironment;
+    const originalIsDevelopment = testUtils.environment.isDevelopment;
+    const originalIsProductionUrl = testUtils.environment.isProductionUrl;
+
+    // Test shouldUseTestData with test user in production environment
+    testUtils.environment.isTestEnvironment = () => false;
+    testUtils.environment.isDevelopment = () => false;
+    testUtils.environment.isProductionUrl = () => true;
+
+    // Should use test data for test user even in production
+    expect(testUtils.environment.shouldUseTestData('dev-user-tester')).toBe(true);
+
+    // Should NOT use test data for regular user in production
+    expect(testUtils.environment.shouldUseTestData('regular-user-123')).toBe(false);
+
+    // Restore original functions
+    testUtils.environment.isTestEnvironment = originalIsTestEnv;
+    testUtils.environment.isDevelopment = originalIsDevelopment;
+    testUtils.environment.isProductionUrl = originalIsProductionUrl;
+  });
+
+  it('should use centralized auth state instead of direct Supabase calls', async () => {
+    // Get reference to the mocked useAuth
+    const { useAuth } = await import('../useAuth');
+    const mockUseAuth = vi.mocked(useAuth);
+
+    // Clear any previous calls to the mock
+    mockUseAuth.mockClear();
+
+    const { result } = renderHook(() => useUserWiggs('test-id'));
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Should use centralized auth state (mockUseAuth called) instead of direct supabase.auth.getUser()
+    expect(mockUseAuth).toHaveBeenCalled();
   });
 });

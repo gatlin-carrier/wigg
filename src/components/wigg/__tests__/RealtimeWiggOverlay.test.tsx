@@ -5,6 +5,7 @@ import { RealtimeWiggOverlay } from '../RealtimeWiggOverlay';
 
 // Mock the hooks
 const mockAddWigg = vi.fn().mockResolvedValue(undefined);
+const mockUseAuth = vi.fn();
 
 vi.mock('@/hooks/useTitleProgress', () => ({
   useTitleProgress: () => ({
@@ -51,9 +52,24 @@ vi.mock('@/hooks/use-toast', () => ({
   })
 }));
 
+vi.mock('@/hooks/useAuth', () => ({
+  useAuth: mockUseAuth
+}));
+
 describe('RealtimeWiggOverlay', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Default mock for useAuth - regular user
+    mockUseAuth.mockReturnValue({
+      user: { id: 'regular-user-123', email: 'user@example.com' },
+      session: null,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signOut: vi.fn(),
+      cleanupAuthState: vi.fn()
+    });
   });
 
   it('should always persist WIGGs to Supabase when marking', async () => {
@@ -128,5 +144,51 @@ describe('RealtimeWiggOverlay', () => {
 
     // Restore original location
     window.location = originalLocation;
+  });
+
+  it('should show test indicators when current user is a test user', () => {
+    // This test will fail until we implement test user detection
+    // Mock a test user (dev-user-* pattern) and non-test data
+    vi.mocked(mockUseAuth).mockReturnValue({
+      user: { id: 'dev-user-tester', email: 'tester@test.com' },
+      session: null,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signOut: vi.fn(),
+      cleanupAuthState: vi.fn()
+    });
+
+    // Mock useUserWiggs to return only non-test data
+    vi.doMock('@/hooks/useUserWiggs', () => ({
+      useUserWiggs: () => ({
+        data: {
+          entries: [
+            {
+              id: 'real-wigg-456', // Regular ID, not test-*
+              pct: 50,
+              note: 'Real entry', // Regular note, no [TEST]
+              createdAt: new Date().toISOString()
+            }
+          ]
+        },
+        addWigg: mockAddWigg
+      })
+    }));
+
+    render(
+      <RealtimeWiggOverlay
+        titleId="regular-movie-123" // Regular title, not test-*
+        titleName="Regular Movie"
+        isOpen={true}
+        onClose={() => {}}
+      />
+    );
+
+    // Should show test indicators for test user even with regular content
+    const testIndicators = screen.queryAllByTestId('test-indicator');
+
+    // With test user, even regular content should show test indicators
+    expect(testIndicators.length).toBeGreaterThan(0);
   });
 });

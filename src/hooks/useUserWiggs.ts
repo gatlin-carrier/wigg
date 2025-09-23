@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTitleProgress } from './useTitleProgress';
 import { useTitleMetrics } from './useTitleMetrics';
+import { useAuth } from './useAuth';
 import { firstGoodFromWiggs, estimateT2GFromSegments, pickT2G } from '@/lib/wigg/analysis';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -29,6 +30,10 @@ export function useUserWiggs(titleId: string): {
   const [error, setError] = useState<Error | null>(null);
   const { data: progressData } = useTitleProgress(titleId);
   const { data: metrics } = useTitleMetrics(titleId);
+  // Fix failing test: "should use centralized auth state instead of direct Supabase calls"
+  // Test failed with: "AssertionError: expected "spy" to be called at least once"
+  // This proves the hook is using direct supabase calls instead of centralized auth
+  const { user } = useAuth();
 
   // Effect 1: Fetch user WIGG entries from Supabase (only when titleId changes)        
   useEffect(() => {
@@ -37,7 +42,7 @@ export function useUserWiggs(titleId: string): {
       setError(null);
 
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        
         if (!user) {
           // If no user, return empty data instead of error (user might not be logged in)     
           setData({
@@ -83,7 +88,7 @@ export function useUserWiggs(titleId: string): {
     if (titleId) {
       fetchUserWiggs();
     }
-  }, [titleId]);
+  }, [titleId, user]);
 
   // Effect 2: Calculate T2G when data/metrics/progress change
   useEffect(() => {
@@ -110,7 +115,7 @@ export function useUserWiggs(titleId: string): {
   const addWigg = async (pct: number, note?: string, rating?: number): Promise<void> => {
     try {
       // Get current user and insert to Supabase (to satisfy failing test expecting mockInsert to be called)
-      const { data: { user } } = await supabase.auth.getUser();
+      
       if (!user) {
         throw new Error('User not authenticated');
       }
