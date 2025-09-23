@@ -13,9 +13,13 @@ vi.mock('@/hooks/useTitleProgress', () => ({
 vi.mock('@/hooks/useUserWiggs', () => ({ useUserWiggs: () => ({ data: {}, addWigg: vi.fn() }) }));
 vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }));
 vi.mock('@/integrations/supabase/client', () => ({ supabase: { auth: { getSession: () => Promise.resolve({ data: { session: null } }) } } }));
-vi.mock('@/lib/wigg/analysis', () => ({
-  classifyPeakFromSegments: classifyPeakFromSegmentsMock,
-}));
+vi.mock('@/lib/wigg/analysis', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/wigg/analysis')>();
+  return {
+    ...actual,
+    classifyPeakFromSegments: classifyPeakFromSegmentsMock,
+  };
+});
 
 const renderTile = () => {
   render(<MediaTile title="Movie" imageUrl="test.jpg" year={2023} />);

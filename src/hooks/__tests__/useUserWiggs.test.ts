@@ -336,20 +336,37 @@ describe('useUserWiggs', () => {
     // Mock window.location for URL testing
     const originalLocation = window.location;
 
+    // Save original function to restore later
+    const originalIsTestEnv = testUtils.environment.isTestEnvironment;
+
     // Test production URLs (should NOT use test data)
     ['https://wigg.app', 'https://www.wigg.app', 'https://wigg.app/', 'https://www.wigg.app/some/path'].forEach(url => {
       delete (window as any).location;
       window.location = new URL(url) as any;
+
+      // Temporarily override isTestEnvironment to test URL logic
+      testUtils.environment.isTestEnvironment = () => false;
+
       expect(testUtils.environment.isProductionUrl()).toBe(true);
       expect(testUtils.environment.shouldUseTestData()).toBe(false); // Should be false for production
+
+      // Restore original function
+      testUtils.environment.isTestEnvironment = originalIsTestEnv;
     });
 
     // Test non-production URLs (should use test data)
     ['http://localhost:3000', 'https://my-branch-preview.vercel.app', 'https://staging.example.com'].forEach(url => {
       delete (window as any).location;
       window.location = new URL(url) as any;
+
+      // Temporarily override isTestEnvironment to test URL logic
+      testUtils.environment.isTestEnvironment = () => false;
+
       expect(testUtils.environment.isProductionUrl()).toBe(false);
       expect(testUtils.environment.shouldUseTestData()).toBe(true); // Should be true for non-production
+
+      // Restore original function
+      testUtils.environment.isTestEnvironment = originalIsTestEnv;
     });
 
     // Restore original location
