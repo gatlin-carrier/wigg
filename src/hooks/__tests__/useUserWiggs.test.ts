@@ -265,10 +265,6 @@ describe('useUserWiggs', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    // Debug what we actually got
-    console.log('Test data:', result.current.data);
-    console.log('Test entries:', result.current.data?.entries);
-    console.log('Test error:', result.current.error);
 
     // Should have loaded the persisted wigg from Supabase
     const persistedEntry = result.current.data?.entries.find(e => e.pct === 35.0);

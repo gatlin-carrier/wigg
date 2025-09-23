@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\wigg\\RealtimeWiggOverlay.tsx",
-    "old_string": "              <Badge variant=\"outline\" className=\"ml-2\">\n                Live Capture\n              </Badge>",
-    "new_string": "              <Badge variant=\"outline\" className=\"ml-2\">\n                Live Capture\n              </Badge>\n              {/* Environment indicator for non-production URLs - test failure: \"Unable to find an element by: [data-testid=\"environment-indicator\"]\" */}\n              {typeof window !== 'undefined' && (\n                window.location.hostname !== 'wigg.app' &&\n                window.location.hostname !== 'www.wigg.app'\n              ) && (\n                <Badge\n                  variant=\"secondary\"\n                  className=\"ml-2 bg-orange-100 text-orange-800 border-orange-300\"\n                  data-testid=\"environment-indicator\"\n                >\n                  Development\n                </Badge>\n              )}"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\useUserWiggs.ts",
+    "old_string": "      try {\n        // ... existing user and Supabase fetch logic ...\n\n        // Convert database format to UI format\n        const entries: WiggEntry[] = (wiggPoints || []).map(point => ({",
+    "new_string": "      try {\n        // Get current user\n        const { data: { user } } = await supabase.auth.getUser();\n        if (!user) {\n          // If no user, return empty data instead of error (user might not be logged in)\n          setData({\n            entries: [],\n            t2gEstimatePct: undefined,\n            t2gConfidence: undefined,\n          });\n          return;\n        }\n\n        // Fetch user's wigg points for this media\n        const { data: wiggPoints, error: wiggError } = await supabase\n          .from('wigg_points')\n          .select('*')\n          .eq('media_id', titleId)\n          .eq('user_id', user.id)\n          .order('pos_value', { ascending: true });\n\n        if (wiggError) {\n          throw wiggError;\n        }\n\n        // Convert database format to UI format\n        const entries: WiggEntry[] = (wiggPoints || []).map(point => ({"
   }
 }

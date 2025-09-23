@@ -30,16 +30,16 @@ export function useUserWiggs(titleId: string): {
   const { data: progressData } = useTitleProgress(titleId);
   const { data: metrics } = useTitleMetrics(titleId);
 
+  // Effect 1: Fetch user WIGG entries from Supabase (only when titleId changes)        
   useEffect(() => {
     const fetchUserWiggs = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        // Get current user
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
-          // If no user, return empty data instead of error (user might not be logged in)
+          // If no user, return empty data instead of error (user might not be logged in)     
           setData({
             entries: [],
             t2gEstimatePct: undefined,
@@ -59,29 +59,20 @@ export function useUserWiggs(titleId: string): {
         if (wiggError) {
           throw wiggError;
         }
-
-        // Convert database format to UI format
         const entries: WiggEntry[] = (wiggPoints || []).map(point => ({
           id: point.id,
-          pct: point.pos_kind === 'percent' ? point.pos_value : point.pos_value,
+          pct: point.pos_value, // Fix redundant ternary
           note: point.reason_short || undefined,
-          rating: undefined, // We'll derive this from tags or add to schema later
+          rating: undefined,
           createdAt: point.created_at
         }));
 
-        // Calculate T2G (prefer personal wiggs, fallback to curve)
-        const personal = firstGoodFromWiggs(entries, 1);
-        const community = metrics?.t2g_comm_pct ?? null;
-        const curveFallback = estimateT2GFromSegments(progressData?.segments || [], 2.0);
-        const pick = pickT2G(personal, community ?? curveFallback);
-
-        const userData: UserWiggsData = {
+        // Set data WITHOUT T2G calculation
+        setData({
           entries,
-          t2gEstimatePct: pick.pct,
-          t2gConfidence: pick.confidence,
-        };
-
-        setData(userData);
+          t2gEstimatePct: undefined, // Will be calculated separately
+          t2gConfidence: undefined,
+        });
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch user wiggs'));
       } finally {
@@ -92,7 +83,29 @@ export function useUserWiggs(titleId: string): {
     if (titleId) {
       fetchUserWiggs();
     }
-  }, [titleId, metrics, progressData]);
+  }, [titleId]);
+
+  // Effect 2: Calculate T2G when data/metrics/progress change
+  useEffect(() => {
+    if (!data?.entries) return; // Wait for data to be loaded
+
+    try {
+      // Calculate T2G (prefer personal wiggs, fallback to curve)
+      const personal = firstGoodFromWiggs(data.entries, 1);
+      const community = metrics?.t2g_comm_pct ?? null;
+      const curveFallback = estimateT2GFromSegments(progressData?.segments || [],       
+  2.0);
+      const pick = pickT2G(personal, community ?? curveFallback);
+
+      setData(prevData => ({
+        ...prevData!,
+        t2gEstimatePct: pick.pct,
+        t2gConfidence: pick.confidence,
+      }));
+    } catch (err) {
+      console.warn('T2G calculation failed:', err);
+    }
+  }, [data?.entries, metrics?.t2g_comm_pct, progressData?.segments]);
 
   const addWigg = async (pct: number, note?: string, rating?: number): Promise<void> => {
     try {
@@ -103,7 +116,7 @@ export function useUserWiggs(titleId: string): {
       }
 
       // Insert wigg point to Supabase (test expects insert call with specific parameters)
-      await supabase
+      const { error } = await supabase
         .from('wigg_points')
         .insert({
           media_id: titleId,
@@ -112,6 +125,7 @@ export function useUserWiggs(titleId: string): {
           pos_kind: 'percent',
           reason_short: note
         });
+      if (error) throw error;
 
       const newWigg: WiggEntry = {
         id: Date.now().toString(),
