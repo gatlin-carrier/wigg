@@ -16,7 +16,23 @@ vi.mock('@/hooks/useTitleProgress', () => ({
 
 vi.mock('@/hooks/useUserWiggs', () => ({
   useUserWiggs: () => ({
-    data: { entries: [], t2gEstimatePct: 50 },
+    data: {
+      entries: [
+        {
+          id: 'test-wigg-123',
+          pct: 25,
+          note: '[TEST] Test entry',
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 'real-wigg-456',
+          pct: 50,
+          note: 'Real entry',
+          createdAt: new Date().toISOString()
+        }
+      ],
+      t2gEstimatePct: 50
+    },
     addWigg: mockAddWigg
   })
 }));
@@ -66,5 +82,51 @@ describe('RealtimeWiggOverlay', () => {
     // Due to Math.random() > 0.5, addWigg should be called inconsistently (sometimes 0, 1, or 2 times)
     // This test will fail sometimes due to randomness, proving the bug exists
     expect(mockAddWigg).toHaveBeenCalledTimes(2); // Should ALWAYS be 2, but random behavior will make this flaky
+  });
+
+  it('should show visual indicators for test data entries', () => {
+    render(
+      <RealtimeWiggOverlay
+        titleId="test-movie-sample"
+        titleName="Test Movie"
+        isOpen={true}
+        onClose={() => {}}
+      />
+    );
+
+    // Should show both test and real entries
+    expect(screen.getByText('[TEST] Test entry')).toBeInTheDocument();
+    expect(screen.getByText('Real entry')).toBeInTheDocument();
+
+    // This test expects visual indicators for test data - currently failing
+    const testEntries = screen.getAllByText(/test/i);
+    expect(testEntries.length).toBeGreaterThan(0);
+
+    // Should have test tube icons for test entries (both entries are test data)
+    const testIndicators = screen.getAllByTestId('test-indicator');
+    expect(testIndicators.length).toBeGreaterThan(0);
+  });
+
+  it('should show environment indicator when on non-production URL', () => {
+    // Mock window.location for non-production URL
+    const originalLocation = window.location;
+    delete (window as any).location;
+    window.location = new URL('http://localhost:3000') as any;
+
+    render(
+      <RealtimeWiggOverlay
+        titleId="regular-movie-123"
+        titleName="Regular Movie"
+        isOpen={true}
+        onClose={() => {}}
+      />
+    );
+
+    // Should show development/test environment indicator
+    expect(screen.getByTestId('environment-indicator')).toBeInTheDocument();
+    expect(screen.getByText(/development/i)).toBeInTheDocument();
+
+    // Restore original location
+    window.location = originalLocation;
   });
 });

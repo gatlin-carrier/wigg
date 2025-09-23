@@ -5,7 +5,7 @@
   "tool_name": "Edit",
   "tool_input": {
     "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\wigg\\RealtimeWiggOverlay.tsx",
-    "old_string": "      // Also add to user wiggs if note provided or for persistence\n      if (note || Math.random() > 0.5) { // Mock: sometimes add to persistent storage\n        await addWigg(currentPct, note || undefined, 2); // Default to \"better\" rating\n      }",
-    "new_string": "      // Always persist WIGGs to Supabase for proper data storage\n      await addWigg(currentPct, note || undefined, 2); // Default to \"better\" rating"
+    "old_string": "              <Badge variant=\"outline\" className=\"ml-2\">\n                Live Capture\n              </Badge>",
+    "new_string": "              <Badge variant=\"outline\" className=\"ml-2\">\n                Live Capture\n              </Badge>\n              {/* Environment indicator for non-production URLs - test failure: \"Unable to find an element by: [data-testid=\"environment-indicator\"]\" */}\n              {typeof window !== 'undefined' && (\n                window.location.hostname !== 'wigg.app' &&\n                window.location.hostname !== 'www.wigg.app'\n              ) && (\n                <Badge\n                  variant=\"secondary\"\n                  className=\"ml-2 bg-orange-100 text-orange-800 border-orange-300\"\n                  data-testid=\"environment-indicator\"\n                >\n                  Development\n                </Badge>\n              )}"
   }
 }
