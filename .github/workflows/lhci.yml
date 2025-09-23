@@ -62,6 +62,25 @@ jobs:
             exit 1
           fi
 
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Run API Performance Tests
+        run: |
+          echo "Running API performance monitoring..."
+
+          # Run Playwright API monitoring tests
+          npx playwright test api-performance.spec.ts --reporter=line || {
+            echo "API performance tests failed - checking for excessive API calls"
+            if [ -f "test-results/api-performance.json" ]; then
+              echo "Test results:"
+              cat test-results/api-performance.json
+            fi
+            exit 1
+          }
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
+
       - name: Run Lighthouse CI
         run: |
           echo "Running Lighthouse CI..."
@@ -98,6 +117,14 @@ jobs:
             kill $SERVER_PID || echo "Server already stopped"
             wait $SERVER_PID 2>/dev/null || true
           fi
+
+      - name: Upload API Performance Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-performance-reports
+          path: test-results/
+          retention-days: 7
 
       - name: Upload Lighthouse artifacts
         if: always()
