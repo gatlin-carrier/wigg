@@ -75,7 +75,6 @@ const testUtils = {
 
     isDevelopment: () => process.env.NODE_ENV === 'development',
 
-    // Test failure requires isProductionUrl function: "testUtils.environment.isProductionUrl is not a function"
     isProductionUrl: () => {
       if (typeof window === 'undefined') return false; // SSR/Node environment
 
