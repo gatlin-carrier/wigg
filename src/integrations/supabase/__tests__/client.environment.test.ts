@@ -6,21 +6,17 @@ vi.mock('@supabase/supabase-js', () => ({
   createClient: mockCreateClient
 }));
 
-// Mock import.meta.env for Vite using defineProperty
-Object.defineProperty(globalThis, 'import', {
-  value: {
-    meta: {
-      env: {
-        VITE_SUPABASE_URL: 'https://prod.supabase.co',
-        VITE_SUPABASE_PUBLISHABLE_KEY: 'prod-key',
-        VITE_SUPABASE_URL_PREVIEW: 'https://preview.supabase.co',
-        VITE_SUPABASE_PUBLISHABLE_KEY_PREVIEW: 'preview-key',
-        DEV: true
-      }
+// Mock import.meta.env for Vite using vi.stubGlobal (recommended approach)
+vi.stubGlobal('import', {
+  meta: {
+    env: {
+      VITE_SUPABASE_URL: 'https://prod.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'prod-key',
+      VITE_SUPABASE_URL_PREVIEW: 'https://preview.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY_PREVIEW: 'preview-key',
+      DEV: true
     }
-  },
-  writable: true,
-  configurable: true
+  }
 });
 
 describe('Supabase Client Environment Detection', () => {
@@ -47,12 +43,8 @@ describe('Supabase Client Environment Detection', () => {
   };
 
   const updateMockEnv = (env: Record<string, any>) => {
-    Object.defineProperty(globalThis, 'import', {
-      value: {
-        meta: { env }
-      },
-      writable: true,
-      configurable: true
+    vi.stubGlobal('import', {
+      meta: { env }
     });
   };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTitleProgress } from './useTitleProgress';
 import { useTitleMetrics } from './useTitleMetrics';
 import { useAuth } from './useAuth';
@@ -30,9 +30,8 @@ export function useUserWiggs(titleId: string): {
   const [error, setError] = useState<Error | null>(null);
   const { data: progressData } = useTitleProgress(titleId);
   const { data: metrics } = useTitleMetrics(titleId);
-  // Fix failing test: "should use centralized auth state instead of direct Supabase calls"
-  // Test failed with: "AssertionError: expected "spy" to be called at least once"
-  // This proves the hook is using direct supabase calls instead of centralized auth
+  // Use centralized authentication state from useAuth hook instead of direct Supabase calls
+  // This prevents excessive API calls and ensures consistent user state across the application
   const { user } = useAuth();
 
   // Effect 1: Fetch user WIGG entries from Supabase (only when titleId changes)        
