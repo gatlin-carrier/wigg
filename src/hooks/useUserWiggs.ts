@@ -105,7 +105,7 @@ export function useUserWiggs(titleId: string): {
     } catch (err) {
       console.warn('T2G calculation failed:', err);
     }
-  }, [data?.entries, metrics?.t2g_comm_pct, progressData?.segments]);
+  }, [data?.entries, metrics?.t2g_comm_pct, progressData?.segments?.length]);
 
   const addWigg = async (pct: number, note?: string, rating?: number): Promise<void> => {
     try {
