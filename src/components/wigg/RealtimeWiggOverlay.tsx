@@ -153,7 +153,7 @@ export function RealtimeWiggOverlay({
               <Badge variant="outline" className="ml-2">
                 Live Capture
               </Badge>
-              {/* Environment indicator for non-production URLs - test failure: "Unable to find an element by: [data-testid="environment-indicator"]" */}
+              {/* Environment indicator for non-production URLs */}
               {typeof window !== 'undefined' && (
                 window.location.hostname !== 'wigg.app' &&
                 window.location.hostname !== 'www.wigg.app'
