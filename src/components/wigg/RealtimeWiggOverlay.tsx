@@ -38,7 +38,7 @@ export function RealtimeWiggOverlay({
   const { data: wiggsData, addWigg } = useUserWiggs(titleId);
   const { data: liveData, markWigg, setCurrentPct } = useLiveCapture();
 
-  // Test data detection for visual indicators - test failure: "Unable to find an element by: [data-testid="test-indicator"]"
+  // Determines if the given entry or titleId represents test data, based on specific string patterns.
   const isTestData = useCallback((entry: any): boolean => {
     return entry.id?.includes('test-') ||
            entry.note?.includes('[TEST]') ||
