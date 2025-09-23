@@ -265,7 +265,7 @@ export function RealtimeWiggOverlay({
                             {formatCurrentTime(entry.pct)}
                           </span>
                         )}
-                        {/* Implementing test-indicator to fix failing test: "Unable to find an element by: [data-testid="test-indicator"]" */}
+                        {/* Display a test data indicator for entries identified as test data */}
                         {isTestData(entry) && (
                           <TestTube
                             className="h-3 w-3 text-amber-500"
