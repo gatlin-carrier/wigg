@@ -77,7 +77,9 @@
       "Bash(gh pr list:*)",
       "Bash(gh pr view:*)",
       "Bash(gh api:*)",
-      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserWiggs.test.ts --testNamePattern=\"should return loading state|should load wigg entries|should add new wigg entry\")"
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserWiggs.test.ts --testNamePattern=\"should return loading state|should load wigg entries|should add new wigg entry\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/integrations/supabase/__tests__/client.environment.test.ts)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/integrations/supabase/__tests__/client.environment.test.ts --reporter=verbose)"
     ],
     "deny": [],
     "ask": [],
