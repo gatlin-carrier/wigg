@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
+import { VitestReporter } from 'tdd-guard-vitest';
 
 export default defineConfig({
   plugins: [react()],
@@ -20,6 +21,10 @@ export default defineConfig({
       'apps/**/__tests__/**/*.test.tsx',
       'src/**/__tests__/**/*.test.ts',
       'src/**/__tests__/**/*.test.tsx',
+    ],
+    reporters: [
+      'default',
+      new VitestReporter(path.resolve(__dirname, '.')),
     ],
   },
 });
