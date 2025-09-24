@@ -1,71 +1,6 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useAnalyticsWorker.minimal.test.ts",
-      "tests": [
-        {
-          "name": "should have a hook that can be imported",
-          "fullName": "useAnalyticsWorker minimal test > should have a hook that can be imported",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useAnalyticsWorker.test.ts",
-      "tests": [
-        {
-          "name": "should initialize with worker support detection",
-          "fullName": "useAnalyticsWorker > should initialize with worker support detection",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useStaggeredLoading.test.ts",
-      "tests": [
-        {
-          "name": "should load items progressively with delay",
-          "fullName": "useStaggeredLoading > should load items progressively with delay",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleProgress.test.ts",
-      "tests": [
-        {
-          "name": "should return loading state initially",
-          "fullName": "useTitleProgress > should return loading state initially",
-          "state": "passed"
-        },
-        {
-          "name": "should return progress data after loading completes",
-          "fullName": "useTitleProgress > should return progress data after loading completes",
-          "state": "passed"
-        },
-        {
-          "name": "should generate segments with realistic score distribution",
-          "fullName": "useTitleProgress > should generate segments with realistic score distribution",
-          "state": "passed"
-        },
-        {
-          "name": "should not load data for empty titleId",
-          "fullName": "useTitleProgress > should not load data for empty titleId",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useRecentWiggPoints.test.ts",
-      "tests": [
-        {
-          "name": "should return empty entries initially",
-          "fullName": "useRecentWiggPoints > should return empty entries initially",
-          "state": "passed"
-        }
-      ]
-    },
-    {
       "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useUserWiggs.test.ts",
       "tests": [
         {
@@ -131,51 +66,6 @@
         {
           "name": "should use centralized auth state instead of direct Supabase calls",
           "fullName": "useUserWiggs > should use centralized auth state instead of direct Supabase calls",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleMetrics.test.ts",
-      "tests": [
-        {
-          "name": "should return loading state initially",
-          "fullName": "useTitleMetrics > should return loading state initially",
-          "state": "passed"
-        },
-        {
-          "name": "should not make duplicate API calls for same titleId within 5 minutes (caching)",
-          "fullName": "useTitleMetrics > should not make duplicate API calls for same titleId within 5 minutes (caching)",
-          "state": "passed"
-        },
-        {
-          "name": "should fetch real data from Supabase when titleId is provided",
-          "fullName": "useTitleMetrics > should fetch real data from Supabase when titleId is provided",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useMediaUnits.test.tsx",
-      "tests": [
-        {
-          "name": "should return empty units for null media",
-          "fullName": "useMediaUnits > should return empty units for null media",
-          "state": "passed"
-        },
-        {
-          "name": "should generate fallback episodes for TV media without TMDB ID",
-          "fullName": "useMediaUnits > should generate fallback episodes for TV media without TMDB ID",
-          "state": "passed"
-        },
-        {
-          "name": "should generate book chapters with meaningful titles",
-          "fullName": "useMediaUnits > should generate book chapters with meaningful titles",
-          "state": "passed"
-        },
-        {
-          "name": "should generate single unit for movie media",
-          "fullName": "useMediaUnits > should generate single unit for movie media",
           "state": "passed"
         }
       ]

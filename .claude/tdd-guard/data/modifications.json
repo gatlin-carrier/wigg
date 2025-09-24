@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\main.tsx",
-    "old_string": "createRoot(document.getElementById('root')!).render(\n  <StrictMode>\n    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister, buster: 'v1', maxAge: 1000 * 60 * 60 * 24 }}>\n      <ThemeProvider attribute=\"class\" defaultTheme=\"system\" enableSystem storageKey=\"wigg-theme\">\n        <AuthProvider>\n          <App />\n          <Toaster />\n        </AuthProvider>\n      </ThemeProvider>\n    </PersistQueryClientProvider>\n  </StrictMode>,\n)",
-    "new_string": "createRoot(document.getElementById('root')!).render(\n  <StrictMode>\n    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister, buster: 'v1', maxAge: 1000 * 60 * 60 * 24 }}>\n      <ThemeProvider attribute=\"class\" defaultTheme=\"system\" enableSystem storageKey=\"wigg-theme\">\n        <AuthProvider>\n          <App />\n          <Toaster />\n        </AuthProvider>\n      </ThemeProvider>\n      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}\n    </PersistQueryClientProvider>\n  </StrictMode>,\n)"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\__tests__\\useUserWiggs.test.ts",
+    "old_string": "    const { result } = renderHook(() => useUserWiggs('test-id'));",
+    "new_string": "    const { result } = renderHook(() => useUserWiggs('test-id'), { wrapper: createWrapper() });"
   }
 }

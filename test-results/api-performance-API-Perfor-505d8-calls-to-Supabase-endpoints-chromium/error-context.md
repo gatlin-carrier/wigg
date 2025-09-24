@@ -80,7 +80,7 @@
                         - img [ref=e84] [cursor=pointer]
                         - generic [ref=e85] [cursor=pointer]:
                           - img [ref=e86] [cursor=pointer]
-                          - generic [ref=e88] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e88] [cursor=pointer]: Gets good 0%
                       - generic [ref=e89] [cursor=pointer]:
                         - generic [ref=e90] [cursor=pointer]: Action
                         - generic [ref=e91] [cursor=pointer]: Comedy
@@ -103,7 +103,7 @@
                         - img [ref=e119] [cursor=pointer]
                         - generic [ref=e120] [cursor=pointer]:
                           - img [ref=e121] [cursor=pointer]
-                          - generic [ref=e123] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e123] [cursor=pointer]: Gets good 17%
                       - generic [ref=e124] [cursor=pointer]:
                         - generic [ref=e125] [cursor=pointer]: Action
                         - generic [ref=e126] [cursor=pointer]: Drama
@@ -126,7 +126,7 @@
                         - img [ref=e154] [cursor=pointer]
                         - generic [ref=e155] [cursor=pointer]:
                           - img [ref=e156] [cursor=pointer]
-                          - generic [ref=e158] [cursor=pointer]: Gets good 30%
+                          - generic [ref=e158] [cursor=pointer]: Gets good 22%
                       - generic [ref=e159] [cursor=pointer]:
                         - generic [ref=e160] [cursor=pointer]: Action
                         - generic [ref=e161] [cursor=pointer]: Adventure
@@ -149,7 +149,7 @@
                         - img [ref=e189] [cursor=pointer]
                         - generic [ref=e190] [cursor=pointer]:
                           - img [ref=e191] [cursor=pointer]
-                          - generic [ref=e193] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e193] [cursor=pointer]: Gets good 30%
                       - generic [ref=e194] [cursor=pointer]:
                         - generic [ref=e195] [cursor=pointer]: Comedy
                         - generic [ref=e196] [cursor=pointer]: Ecchi
@@ -172,7 +172,7 @@
                         - img [ref=e224] [cursor=pointer]
                         - generic [ref=e225] [cursor=pointer]:
                           - img [ref=e226] [cursor=pointer]
-                          - generic [ref=e228] [cursor=pointer]: Gets good 35%
+                          - generic [ref=e228] [cursor=pointer]: Gets good 26%
                       - generic [ref=e229] [cursor=pointer]:
                         - generic [ref=e230] [cursor=pointer]: Comedy
                         - generic [ref=e231] [cursor=pointer]: Drama
@@ -195,7 +195,7 @@
                         - img [ref=e259] [cursor=pointer]
                         - generic [ref=e260] [cursor=pointer]:
                           - img [ref=e261] [cursor=pointer]
-                          - generic [ref=e263] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e263] [cursor=pointer]: Gets good 26%
                       - generic [ref=e264] [cursor=pointer]:
                         - generic [ref=e265] [cursor=pointer]: Comedy
                         - generic [ref=e266] [cursor=pointer]: Slice of Life
@@ -241,7 +241,7 @@
                         - img [ref=e329] [cursor=pointer]
                         - generic [ref=e330] [cursor=pointer]:
                           - img [ref=e331] [cursor=pointer]
-                          - generic [ref=e333] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e333] [cursor=pointer]: Gets good 26%
                       - generic [ref=e334] [cursor=pointer]:
                         - generic [ref=e335] [cursor=pointer]: Action
                         - generic [ref=e336] [cursor=pointer]: Sci-Fi
@@ -259,7 +259,7 @@
                         - img [ref=e358] [cursor=pointer]
                         - generic [ref=e359] [cursor=pointer]:
                           - img [ref=e360] [cursor=pointer]
-                          - generic [ref=e362] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e362] [cursor=pointer]: Gets good 17%
                       - generic [ref=e363] [cursor=pointer]:
                         - generic [ref=e364] [cursor=pointer]: Drama
                         - generic [ref=e365] [cursor=pointer]: Music
@@ -282,7 +282,7 @@
                         - img [ref=e393] [cursor=pointer]
                         - generic [ref=e394] [cursor=pointer]:
                           - img [ref=e395] [cursor=pointer]
-                          - generic [ref=e397] [cursor=pointer]: Gets good 9%
+                          - generic [ref=e397] [cursor=pointer]: Gets good 17%
                       - generic [ref=e398] [cursor=pointer]:
                         - generic [ref=e399] [cursor=pointer]: Action
                         - generic [ref=e400] [cursor=pointer]: Comedy
@@ -305,7 +305,7 @@
                         - img [ref=e428] [cursor=pointer]
                         - generic [ref=e429] [cursor=pointer]:
                           - img [ref=e430] [cursor=pointer]
-                          - generic [ref=e432] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e432] [cursor=pointer]: Gets good 0%
                       - generic [ref=e433] [cursor=pointer]:
                         - generic [ref=e434] [cursor=pointer]: Horror
                         - generic [ref=e435] [cursor=pointer]: Mystery
@@ -328,7 +328,7 @@
                         - img [ref=e463] [cursor=pointer]
                         - generic [ref=e464] [cursor=pointer]:
                           - img [ref=e465] [cursor=pointer]
-                          - generic [ref=e467] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e467] [cursor=pointer]: Gets good 17%
                       - generic [ref=e468] [cursor=pointer]:
                         - generic [ref=e469] [cursor=pointer]: Action
                         - generic [ref=e470] [cursor=pointer]: Adventure
@@ -351,7 +351,7 @@
                         - img [ref=e498] [cursor=pointer]
                         - generic [ref=e499] [cursor=pointer]:
                           - img [ref=e500] [cursor=pointer]
-                          - generic [ref=e502] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e502] [cursor=pointer]: Gets good 17%
                       - generic [ref=e503] [cursor=pointer]:
                         - generic [ref=e504] [cursor=pointer]: Comedy
                         - generic [ref=e505] [cursor=pointer]: Romance
@@ -397,7 +397,7 @@
                         - img [ref=e568] [cursor=pointer]
                         - generic [ref=e569] [cursor=pointer]:
                           - img [ref=e570] [cursor=pointer]
-                          - generic [ref=e572] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e572] [cursor=pointer]: Gets good 0%
                       - generic [ref=e573] [cursor=pointer]:
                         - generic [ref=e574] [cursor=pointer]: Comedy
                         - generic [ref=e575] [cursor=pointer]: Psychological
@@ -420,7 +420,7 @@
                         - img [ref=e603] [cursor=pointer]
                         - generic [ref=e604] [cursor=pointer]:
                           - img [ref=e605] [cursor=pointer]
-                          - generic [ref=e607] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e607] [cursor=pointer]: Gets good 22%
                       - generic [ref=e608] [cursor=pointer]:
                         - generic [ref=e609] [cursor=pointer]: Action
                         - generic [ref=e610] [cursor=pointer]: Drama
@@ -443,7 +443,7 @@
                         - img [ref=e638] [cursor=pointer]
                         - generic [ref=e639] [cursor=pointer]:
                           - img [ref=e640] [cursor=pointer]
-                          - generic [ref=e642] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e642] [cursor=pointer]: Gets good 30%
                       - generic [ref=e643] [cursor=pointer]:
                         - generic [ref=e644] [cursor=pointer]: Comedy
                         - generic [ref=e645] [cursor=pointer]: Drama
@@ -466,7 +466,7 @@
                         - img [ref=e673] [cursor=pointer]
                         - generic [ref=e674] [cursor=pointer]:
                           - img [ref=e675] [cursor=pointer]
-                          - generic [ref=e677] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e677] [cursor=pointer]: Gets good 26%
                       - generic [ref=e678] [cursor=pointer]:
                         - generic [ref=e679] [cursor=pointer]: Action
                         - generic [ref=e680] [cursor=pointer]: Adventure
@@ -489,7 +489,7 @@
                         - img [ref=e708] [cursor=pointer]
                         - generic [ref=e709] [cursor=pointer]:
                           - img [ref=e710] [cursor=pointer]
-                          - generic [ref=e712] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e712] [cursor=pointer]: Gets good 17%
                       - generic [ref=e713] [cursor=pointer]:
                         - generic [ref=e714] [cursor=pointer]: Action
                         - generic [ref=e715] [cursor=pointer]: Adventure
@@ -530,7 +530,7 @@
                         - img [ref=e772] [cursor=pointer]
                         - generic [ref=e773] [cursor=pointer]:
                           - img [ref=e774] [cursor=pointer]
-                          - generic [ref=e776] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e776] [cursor=pointer]: Gets good 0%
                       - generic [ref=e777] [cursor=pointer]:
                         - generic [ref=e778] [cursor=pointer]: Action
                         - generic [ref=e779] [cursor=pointer]: Adventure
@@ -553,7 +553,7 @@
                         - img [ref=e807] [cursor=pointer]
                         - generic [ref=e808] [cursor=pointer]:
                           - img [ref=e809] [cursor=pointer]
-                          - generic [ref=e811] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e811] [cursor=pointer]: Gets good 13%
                       - generic [ref=e812] [cursor=pointer]:
                         - generic [ref=e813] [cursor=pointer]: Action
                         - generic [ref=e814] [cursor=pointer]: Drama
@@ -576,7 +576,7 @@
                         - img [ref=e842] [cursor=pointer]
                         - generic [ref=e843] [cursor=pointer]:
                           - img [ref=e844] [cursor=pointer]
-                          - generic [ref=e846] [cursor=pointer]: Gets good 13%
+                          - generic [ref=e846] [cursor=pointer]: Gets good 22%
                       - generic [ref=e847] [cursor=pointer]:
                         - generic [ref=e848] [cursor=pointer]: Adventure
                         - generic [ref=e849] [cursor=pointer]: Fantasy
@@ -631,7 +631,7 @@
                         - img [ref=e920] [cursor=pointer]
                         - generic [ref=e921] [cursor=pointer]:
                           - img [ref=e922] [cursor=pointer]
-                          - generic [ref=e924] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e924] [cursor=pointer]: Gets good 0%
                       - generic [ref=e925] [cursor=pointer]:
                         - generic [ref=e926] [cursor=pointer]: Action
                         - generic [ref=e927] [cursor=pointer]: Comedy
@@ -654,7 +654,7 @@
                         - img [ref=e955] [cursor=pointer]
                         - generic [ref=e956] [cursor=pointer]:
                           - img [ref=e957] [cursor=pointer]
-                          - generic [ref=e959] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e959] [cursor=pointer]: Gets good 39%
                       - generic [ref=e960] [cursor=pointer]:
                         - generic [ref=e961] [cursor=pointer]: Action
                         - generic [ref=e962] [cursor=pointer]: Drama
@@ -677,7 +677,7 @@
                         - img [ref=e990] [cursor=pointer]
                         - generic [ref=e991] [cursor=pointer]:
                           - img [ref=e992] [cursor=pointer]
-                          - generic [ref=e994] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e994] [cursor=pointer]: Gets good 22%
                       - generic [ref=e995] [cursor=pointer]:
                         - generic [ref=e996] [cursor=pointer]: Action
                         - generic [ref=e997] [cursor=pointer]: Adventure
@@ -723,7 +723,7 @@
                         - img [ref=e1060] [cursor=pointer]
                         - generic [ref=e1061] [cursor=pointer]:
                           - img [ref=e1062] [cursor=pointer]
-                          - generic [ref=e1064] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e1064] [cursor=pointer]: Gets good 9%
                       - generic [ref=e1065] [cursor=pointer]:
                         - generic [ref=e1066] [cursor=pointer]: Action
                         - generic [ref=e1067] [cursor=pointer]: Adventure
@@ -746,7 +746,7 @@
                         - img [ref=e1095] [cursor=pointer]
                         - generic [ref=e1096] [cursor=pointer]:
                           - img [ref=e1097] [cursor=pointer]
-                          - generic [ref=e1099] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e1099] [cursor=pointer]: Gets good 30%
                       - generic [ref=e1100] [cursor=pointer]:
                         - generic [ref=e1101] [cursor=pointer]: Action
                         - generic [ref=e1102] [cursor=pointer]: Adventure
@@ -769,7 +769,7 @@
                         - img [ref=e1130] [cursor=pointer]
                         - generic [ref=e1131] [cursor=pointer]:
                           - img [ref=e1132] [cursor=pointer]
-                          - generic [ref=e1134] [cursor=pointer]: Gets good 30%
+                          - generic [ref=e1134] [cursor=pointer]: Gets good 26%
                       - generic [ref=e1135] [cursor=pointer]:
                         - generic [ref=e1136] [cursor=pointer]: Action
                         - generic [ref=e1137] [cursor=pointer]: Horror
@@ -815,7 +815,7 @@
                         - img [ref=e1200] [cursor=pointer]
                         - generic [ref=e1201] [cursor=pointer]:
                           - img [ref=e1202] [cursor=pointer]
-                          - generic [ref=e1204] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e1204] [cursor=pointer]: Gets good 22%
                       - generic [ref=e1205] [cursor=pointer]:
                         - generic [ref=e1206] [cursor=pointer]: Drama
                         - generic [ref=e1207] [cursor=pointer]: Psychological
@@ -838,7 +838,7 @@
                         - img [ref=e1235] [cursor=pointer]
                         - generic [ref=e1236] [cursor=pointer]:
                           - img [ref=e1237] [cursor=pointer]
-                          - generic [ref=e1239] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e1239] [cursor=pointer]: Gets good 13%
                       - generic [ref=e1240] [cursor=pointer]:
                         - generic [ref=e1241] [cursor=pointer]: Action
                         - generic [ref=e1242] [cursor=pointer]: Comedy
@@ -861,7 +861,7 @@
                         - img [ref=e1270] [cursor=pointer]
                         - generic [ref=e1271] [cursor=pointer]:
                           - img [ref=e1272] [cursor=pointer]
-                          - generic [ref=e1274] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e1274] [cursor=pointer]: Gets good 26%
                       - generic [ref=e1275] [cursor=pointer]:
                         - generic [ref=e1276] [cursor=pointer]: Action
                         - generic [ref=e1277] [cursor=pointer]: Comedy
@@ -884,7 +884,7 @@
                         - img [ref=e1305] [cursor=pointer]
                         - generic [ref=e1306] [cursor=pointer]:
                           - img [ref=e1307] [cursor=pointer]
-                          - generic [ref=e1309] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e1309] [cursor=pointer]: Gets good 26%
                       - generic [ref=e1310] [cursor=pointer]:
                         - generic [ref=e1311] [cursor=pointer]: Action
                         - generic [ref=e1312] [cursor=pointer]: Adventure
@@ -907,7 +907,7 @@
                         - img [ref=e1340] [cursor=pointer]
                         - generic [ref=e1341] [cursor=pointer]:
                           - img [ref=e1342] [cursor=pointer]
-                          - generic [ref=e1344] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e1344] [cursor=pointer]: Gets good 17%
                       - generic [ref=e1345] [cursor=pointer]:
                         - generic [ref=e1346] [cursor=pointer]: Drama
                         - generic [ref=e1347] [cursor=pointer]: Fantasy
@@ -930,7 +930,7 @@
                         - img [ref=e1375] [cursor=pointer]
                         - generic [ref=e1376] [cursor=pointer]:
                           - img [ref=e1377] [cursor=pointer]
-                          - generic [ref=e1379] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e1379] [cursor=pointer]: Gets good 9%
                       - generic [ref=e1380] [cursor=pointer]:
                         - generic [ref=e1381] [cursor=pointer]: Action
                         - generic [ref=e1382] [cursor=pointer]: Adventure
@@ -953,7 +953,7 @@
                         - img [ref=e1410] [cursor=pointer]
                         - generic [ref=e1411] [cursor=pointer]:
                           - img [ref=e1412] [cursor=pointer]
-                          - generic [ref=e1414] [cursor=pointer]: Gets good 0%
+                          - generic [ref=e1414] [cursor=pointer]: Gets good 9%
                       - generic [ref=e1415] [cursor=pointer]:
                         - generic [ref=e1416] [cursor=pointer]: Comedy
                         - generic [ref=e1417] [cursor=pointer]: Romance
@@ -976,7 +976,7 @@
                         - img [ref=e1445] [cursor=pointer]
                         - generic [ref=e1446] [cursor=pointer]:
                           - img [ref=e1447] [cursor=pointer]
-                          - generic [ref=e1449] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e1449] [cursor=pointer]: Gets good 22%
                       - generic [ref=e1450] [cursor=pointer]:
                         - generic [ref=e1451] [cursor=pointer]: Action
                         - generic [ref=e1452] [cursor=pointer]: Drama
@@ -999,7 +999,7 @@
                         - img [ref=e1480] [cursor=pointer]
                         - generic [ref=e1481] [cursor=pointer]:
                           - img [ref=e1482] [cursor=pointer]
-                          - generic [ref=e1484] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e1484] [cursor=pointer]: Gets good 26%
                       - generic [ref=e1485] [cursor=pointer]:
                         - generic [ref=e1486] [cursor=pointer]: Comedy
                         - generic [ref=e1487] [cursor=pointer]: Psychological
@@ -1022,7 +1022,7 @@
                         - img [ref=e1515] [cursor=pointer]
                         - generic [ref=e1516] [cursor=pointer]:
                           - img [ref=e1517] [cursor=pointer]
-                          - generic [ref=e1519] [cursor=pointer]: Gets good 35%
+                          - generic [ref=e1519] [cursor=pointer]: Gets good 22%
                       - generic [ref=e1520] [cursor=pointer]:
                         - generic [ref=e1521] [cursor=pointer]: Action
                         - generic [ref=e1522] [cursor=pointer]: Drama
@@ -1045,7 +1045,7 @@
                         - img [ref=e1550] [cursor=pointer]
                         - generic [ref=e1551] [cursor=pointer]:
                           - img [ref=e1552] [cursor=pointer]
-                          - generic [ref=e1554] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e1554] [cursor=pointer]: Gets good 0%
                       - generic [ref=e1555] [cursor=pointer]:
                         - generic [ref=e1556] [cursor=pointer]: Action
                         - generic [ref=e1557] [cursor=pointer]: Adventure
@@ -1068,7 +1068,7 @@
                         - img [ref=e1585] [cursor=pointer]
                         - generic [ref=e1586] [cursor=pointer]:
                           - img [ref=e1587] [cursor=pointer]
-                          - generic [ref=e1589] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e1589] [cursor=pointer]: Gets good 26%
                       - generic [ref=e1590] [cursor=pointer]:
                         - generic [ref=e1591] [cursor=pointer]: Comedy
                         - generic [ref=e1592] [cursor=pointer]: Romance
@@ -1091,7 +1091,7 @@
                         - img [ref=e1620] [cursor=pointer]
                         - generic [ref=e1621] [cursor=pointer]:
                           - img [ref=e1622] [cursor=pointer]
-                          - generic [ref=e1624] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e1624] [cursor=pointer]: Gets good 22%
                       - generic [ref=e1625] [cursor=pointer]:
                         - generic [ref=e1626] [cursor=pointer]: Action
                         - generic [ref=e1627] [cursor=pointer]: Comedy
@@ -1114,7 +1114,7 @@
                         - img [ref=e1655] [cursor=pointer]
                         - generic [ref=e1656] [cursor=pointer]:
                           - img [ref=e1657] [cursor=pointer]
-                          - generic [ref=e1659] [cursor=pointer]: Gets good 13%
+                          - generic [ref=e1659] [cursor=pointer]: Gets good 22%
                       - generic [ref=e1660] [cursor=pointer]:
                         - generic [ref=e1661] [cursor=pointer]: Action
                         - generic [ref=e1662] [cursor=pointer]: Comedy
@@ -1151,7 +1151,7 @@
                         - img [ref=e1703] [cursor=pointer]
                         - generic [ref=e1704] [cursor=pointer]:
                           - img [ref=e1705] [cursor=pointer]
-                          - generic [ref=e1707] [cursor=pointer]: Gets good 0%
+                          - generic [ref=e1707] [cursor=pointer]: Gets good 22%
                       - generic [ref=e1708] [cursor=pointer]:
                         - generic [ref=e1709] [cursor=pointer]: Action
                         - generic [ref=e1710] [cursor=pointer]: Adventure
@@ -1174,7 +1174,7 @@
                         - img [ref=e1738] [cursor=pointer]
                         - generic [ref=e1739] [cursor=pointer]:
                           - img [ref=e1740] [cursor=pointer]
-                          - generic [ref=e1742] [cursor=pointer]: Gets good 13%
+                          - generic [ref=e1742] [cursor=pointer]: Gets good 0%
                       - generic [ref=e1743] [cursor=pointer]:
                         - generic [ref=e1744] [cursor=pointer]: Action
                         - generic [ref=e1745] [cursor=pointer]: Adventure
@@ -1197,7 +1197,7 @@
                         - img [ref=e1773] [cursor=pointer]
                         - generic [ref=e1774] [cursor=pointer]:
                           - img [ref=e1775] [cursor=pointer]
-                          - generic [ref=e1777] [cursor=pointer]: Gets good 13%
+                          - generic [ref=e1777] [cursor=pointer]: Gets good 26%
                       - generic [ref=e1778] [cursor=pointer]:
                         - generic [ref=e1779] [cursor=pointer]: Action
                         - generic [ref=e1780] [cursor=pointer]: Adventure
@@ -1220,7 +1220,7 @@
                         - img [ref=e1808] [cursor=pointer]
                         - generic [ref=e1809] [cursor=pointer]:
                           - img [ref=e1810] [cursor=pointer]
-                          - generic [ref=e1812] [cursor=pointer]: Gets good 13%
+                          - generic [ref=e1812] [cursor=pointer]: Gets good 26%
                       - generic [ref=e1813] [cursor=pointer]:
                         - generic [ref=e1814] [cursor=pointer]: Drama
                         - generic [ref=e1815] [cursor=pointer]: Horror
@@ -1243,7 +1243,7 @@
                         - img [ref=e1843] [cursor=pointer]
                         - generic [ref=e1844] [cursor=pointer]:
                           - img [ref=e1845] [cursor=pointer]
-                          - generic [ref=e1847] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e1847] [cursor=pointer]: Gets good 26%
                       - generic [ref=e1848] [cursor=pointer]:
                         - generic [ref=e1849] [cursor=pointer]: Adventure
                         - generic [ref=e1850] [cursor=pointer]: Drama
@@ -1266,7 +1266,7 @@
                         - img [ref=e1878] [cursor=pointer]
                         - generic [ref=e1879] [cursor=pointer]:
                           - img [ref=e1880] [cursor=pointer]
-                          - generic [ref=e1882] [cursor=pointer]: Gets good 9%
+                          - generic [ref=e1882] [cursor=pointer]: Gets good 26%
                       - generic [ref=e1883] [cursor=pointer]:
                         - generic [ref=e1884] [cursor=pointer]: Action
                         - generic [ref=e1885] [cursor=pointer]: Adventure
@@ -1289,7 +1289,7 @@
                         - img [ref=e1913] [cursor=pointer]
                         - generic [ref=e1914] [cursor=pointer]:
                           - img [ref=e1915] [cursor=pointer]
-                          - generic [ref=e1917] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e1917] [cursor=pointer]: Gets good 22%
                       - generic [ref=e1918] [cursor=pointer]:
                         - generic [ref=e1919] [cursor=pointer]: Drama
                         - generic [ref=e1920] [cursor=pointer]: Horror
@@ -1312,7 +1312,7 @@
                         - img [ref=e1948] [cursor=pointer]
                         - generic [ref=e1949] [cursor=pointer]:
                           - img [ref=e1950] [cursor=pointer]
-                          - generic [ref=e1952] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e1952] [cursor=pointer]: Gets good 17%
                       - generic [ref=e1953] [cursor=pointer]:
                         - generic [ref=e1954] [cursor=pointer]: Action
                         - generic [ref=e1955] [cursor=pointer]: Adventure
@@ -1335,7 +1335,7 @@
                         - img [ref=e1983] [cursor=pointer]
                         - generic [ref=e1984] [cursor=pointer]:
                           - img [ref=e1985] [cursor=pointer]
-                          - generic [ref=e1987] [cursor=pointer]: Gets good 39%
+                          - generic [ref=e1987] [cursor=pointer]: Gets good 17%
                       - generic [ref=e1988] [cursor=pointer]:
                         - generic [ref=e1989] [cursor=pointer]: Action
                         - generic [ref=e1990] [cursor=pointer]: Drama
@@ -1358,7 +1358,7 @@
                         - img [ref=e2018] [cursor=pointer]
                         - generic [ref=e2019] [cursor=pointer]:
                           - img [ref=e2020] [cursor=pointer]
-                          - generic [ref=e2022] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e2022] [cursor=pointer]: Gets good 17%
                       - generic [ref=e2023] [cursor=pointer]:
                         - generic [ref=e2024] [cursor=pointer]: Action
                         - generic [ref=e2025] [cursor=pointer]: Adventure
@@ -1381,7 +1381,7 @@
                         - img [ref=e2053] [cursor=pointer]
                         - generic [ref=e2054] [cursor=pointer]:
                           - img [ref=e2055] [cursor=pointer]
-                          - generic [ref=e2057] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e2057] [cursor=pointer]: Gets good 17%
                       - generic [ref=e2058] [cursor=pointer]:
                         - generic [ref=e2059] [cursor=pointer]: Adventure
                         - generic [ref=e2060] [cursor=pointer]: Comedy
@@ -1404,7 +1404,7 @@
                         - img [ref=e2088] [cursor=pointer]
                         - generic [ref=e2089] [cursor=pointer]:
                           - img [ref=e2090] [cursor=pointer]
-                          - generic [ref=e2092] [cursor=pointer]: Gets good 30%
+                          - generic [ref=e2092] [cursor=pointer]: Gets good 26%
                       - generic [ref=e2093] [cursor=pointer]:
                         - generic [ref=e2094] [cursor=pointer]: Action
                         - generic [ref=e2095] [cursor=pointer]: Fantasy
@@ -1427,7 +1427,7 @@
                         - img [ref=e2123] [cursor=pointer]
                         - generic [ref=e2124] [cursor=pointer]:
                           - img [ref=e2125] [cursor=pointer]
-                          - generic [ref=e2127] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e2127] [cursor=pointer]: Gets good 9%
                       - generic [ref=e2128] [cursor=pointer]:
                         - generic [ref=e2129] [cursor=pointer]: Action
                         - generic [ref=e2130] [cursor=pointer]: Adventure
@@ -1496,7 +1496,7 @@
                         - img [ref=e2228] [cursor=pointer]
                         - generic [ref=e2229] [cursor=pointer]:
                           - img [ref=e2230] [cursor=pointer]
-                          - generic [ref=e2232] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e2232] [cursor=pointer]: Gets good 35%
                       - generic [ref=e2233] [cursor=pointer]:
                         - generic [ref=e2234] [cursor=pointer]: Action
                         - generic [ref=e2235] [cursor=pointer]: Adventure
@@ -1519,7 +1519,7 @@
                         - img [ref=e2263] [cursor=pointer]
                         - generic [ref=e2264] [cursor=pointer]:
                           - img [ref=e2265] [cursor=pointer]
-                          - generic [ref=e2267] [cursor=pointer]: Gets good 0%
+                          - generic [ref=e2267] [cursor=pointer]: Gets good 26%
                       - generic [ref=e2268] [cursor=pointer]:
                         - generic [ref=e2269] [cursor=pointer]: Action
                         - generic [ref=e2270] [cursor=pointer]: Comedy
@@ -1542,7 +1542,7 @@
                         - img [ref=e2298] [cursor=pointer]
                         - generic [ref=e2299] [cursor=pointer]:
                           - img [ref=e2300] [cursor=pointer]
-                          - generic [ref=e2302] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e2302] [cursor=pointer]: Gets good 17%
                       - generic [ref=e2303] [cursor=pointer]:
                         - generic [ref=e2304] [cursor=pointer]: Action
                         - generic [ref=e2305] [cursor=pointer]: Drama
@@ -1565,7 +1565,7 @@
                         - img [ref=e2333] [cursor=pointer]
                         - generic [ref=e2334] [cursor=pointer]:
                           - img [ref=e2335] [cursor=pointer]
-                          - generic [ref=e2337] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e2337] [cursor=pointer]: Gets good 0%
                       - generic [ref=e2338] [cursor=pointer]:
                         - generic [ref=e2339] [cursor=pointer]: Action
                         - generic [ref=e2340] [cursor=pointer]: Adventure
@@ -1588,7 +1588,7 @@
                         - img [ref=e2368] [cursor=pointer]
                         - generic [ref=e2369] [cursor=pointer]:
                           - img [ref=e2370] [cursor=pointer]
-                          - generic [ref=e2372] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e2372] [cursor=pointer]: Gets good 22%
                       - generic [ref=e2373] [cursor=pointer]:
                         - generic [ref=e2374] [cursor=pointer]: Action
                         - generic [ref=e2375] [cursor=pointer]: Adventure
@@ -1611,7 +1611,7 @@
                         - img [ref=e2403] [cursor=pointer]
                         - generic [ref=e2404] [cursor=pointer]:
                           - img [ref=e2405] [cursor=pointer]
-                          - generic [ref=e2407] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e2407] [cursor=pointer]: Gets good 30%
                       - generic [ref=e2408] [cursor=pointer]:
                         - generic [ref=e2409] [cursor=pointer]: Action
                         - generic [ref=e2410] [cursor=pointer]: Comedy
@@ -1657,7 +1657,7 @@
                         - img [ref=e2473] [cursor=pointer]
                         - generic [ref=e2474] [cursor=pointer]:
                           - img [ref=e2475] [cursor=pointer]
-                          - generic [ref=e2477] [cursor=pointer]: Gets good 35%
+                          - generic [ref=e2477] [cursor=pointer]: Gets good 26%
                       - generic [ref=e2478] [cursor=pointer]:
                         - generic [ref=e2479] [cursor=pointer]: Action
                         - generic [ref=e2480] [cursor=pointer]: Adventure
@@ -1680,7 +1680,7 @@
                         - img [ref=e2508] [cursor=pointer]
                         - generic [ref=e2509] [cursor=pointer]:
                           - img [ref=e2510] [cursor=pointer]
-                          - generic [ref=e2512] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e2512] [cursor=pointer]: Gets good 13%
                       - generic [ref=e2513] [cursor=pointer]:
                         - generic [ref=e2514] [cursor=pointer]: Action
                         - generic [ref=e2515] [cursor=pointer]: Fantasy
@@ -1703,7 +1703,7 @@
                         - img [ref=e2543] [cursor=pointer]
                         - generic [ref=e2544] [cursor=pointer]:
                           - img [ref=e2545] [cursor=pointer]
-                          - generic [ref=e2547] [cursor=pointer]: Gets good 13%
+                          - generic [ref=e2547] [cursor=pointer]: Gets good 26%
                       - generic [ref=e2548] [cursor=pointer]:
                         - generic [ref=e2549] [cursor=pointer]: Comedy
                         - generic [ref=e2550] [cursor=pointer]: Fantasy
@@ -1726,7 +1726,7 @@
                         - img [ref=e2578] [cursor=pointer]
                         - generic [ref=e2579] [cursor=pointer]:
                           - img [ref=e2580] [cursor=pointer]
-                          - generic [ref=e2582] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e2582] [cursor=pointer]: Gets good 4%
                       - generic [ref=e2583] [cursor=pointer]:
                         - generic [ref=e2584] [cursor=pointer]: Action
                         - generic [ref=e2585] [cursor=pointer]: Adventure
@@ -1749,7 +1749,7 @@
                         - img [ref=e2613] [cursor=pointer]
                         - generic [ref=e2614] [cursor=pointer]:
                           - img [ref=e2615] [cursor=pointer]
-                          - generic [ref=e2617] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e2617] [cursor=pointer]: Gets good 30%
                       - generic [ref=e2618] [cursor=pointer]:
                         - generic [ref=e2619] [cursor=pointer]: Drama
                         - generic [ref=e2620] [cursor=pointer]: Romance
@@ -1818,7 +1818,7 @@
                         - img [ref=e2718] [cursor=pointer]
                         - generic [ref=e2719] [cursor=pointer]:
                           - img [ref=e2720] [cursor=pointer]
-                          - generic [ref=e2722] [cursor=pointer]: Gets good 0%
+                          - generic [ref=e2722] [cursor=pointer]: Gets good 22%
                       - generic [ref=e2723] [cursor=pointer]:
                         - generic [ref=e2724] [cursor=pointer]: Action
                         - generic [ref=e2725] [cursor=pointer]: Fantasy
@@ -1841,7 +1841,7 @@
                         - img [ref=e2753] [cursor=pointer]
                         - generic [ref=e2754] [cursor=pointer]:
                           - img [ref=e2755] [cursor=pointer]
-                          - generic [ref=e2757] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e2757] [cursor=pointer]: Gets good 26%
                       - generic [ref=e2758] [cursor=pointer]:
                         - generic [ref=e2759] [cursor=pointer]: Comedy
                         - generic [ref=e2760] [cursor=pointer]: Slice of Life
@@ -1864,7 +1864,7 @@
                         - img [ref=e2788] [cursor=pointer]
                         - generic [ref=e2789] [cursor=pointer]:
                           - img [ref=e2790] [cursor=pointer]
-                          - generic [ref=e2792] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e2792] [cursor=pointer]: Gets good 22%
                       - generic [ref=e2793] [cursor=pointer]:
                         - generic [ref=e2794] [cursor=pointer]: Adventure
                         - generic [ref=e2795] [cursor=pointer]: Drama
@@ -1887,7 +1887,7 @@
                         - img [ref=e2823] [cursor=pointer]
                         - generic [ref=e2824] [cursor=pointer]:
                           - img [ref=e2825] [cursor=pointer]
-                          - generic [ref=e2827] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e2827] [cursor=pointer]: Gets good 22%
                       - generic [ref=e2828] [cursor=pointer]:
                         - generic [ref=e2829] [cursor=pointer]: Action
                         - generic [ref=e2830] [cursor=pointer]: Adventure
@@ -1910,7 +1910,7 @@
                         - img [ref=e2858] [cursor=pointer]
                         - generic [ref=e2859] [cursor=pointer]:
                           - img [ref=e2860] [cursor=pointer]
-                          - generic [ref=e2862] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e2862] [cursor=pointer]: Gets good 22%
                       - generic [ref=e2863] [cursor=pointer]:
                         - generic [ref=e2864] [cursor=pointer]: Action
                         - generic [ref=e2865] [cursor=pointer]: Adventure
@@ -1933,7 +1933,7 @@
                         - img [ref=e2893] [cursor=pointer]
                         - generic [ref=e2894] [cursor=pointer]:
                           - img [ref=e2895] [cursor=pointer]
-                          - generic [ref=e2897] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e2897] [cursor=pointer]: Gets good 22%
                       - generic [ref=e2898] [cursor=pointer]:
                         - generic [ref=e2899] [cursor=pointer]: Action
                         - generic [ref=e2900] [cursor=pointer]: Fantasy
@@ -1956,7 +1956,7 @@
                         - img [ref=e2928] [cursor=pointer]
                         - generic [ref=e2929] [cursor=pointer]:
                           - img [ref=e2930] [cursor=pointer]
-                          - generic [ref=e2932] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e2932] [cursor=pointer]: Gets good 26%
                       - generic [ref=e2933] [cursor=pointer]:
                         - generic [ref=e2934] [cursor=pointer]: Action
                         - generic [ref=e2935] [cursor=pointer]: Adventure
@@ -1979,7 +1979,7 @@
                         - img [ref=e2963] [cursor=pointer]
                         - generic [ref=e2964] [cursor=pointer]:
                           - img [ref=e2965] [cursor=pointer]
-                          - generic [ref=e2967] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e2967] [cursor=pointer]: Gets good 22%
                       - generic [ref=e2968] [cursor=pointer]:
                         - generic [ref=e2969] [cursor=pointer]: Action
                         - generic [ref=e2970] [cursor=pointer]: Adventure
@@ -2002,7 +2002,7 @@
                         - img [ref=e2998] [cursor=pointer]
                         - generic [ref=e2999] [cursor=pointer]:
                           - img [ref=e3000] [cursor=pointer]
-                          - generic [ref=e3002] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e3002] [cursor=pointer]: Gets good 22%
                       - generic [ref=e3003] [cursor=pointer]:
                         - generic [ref=e3004] [cursor=pointer]: Action
                         - generic [ref=e3005] [cursor=pointer]: Drama
@@ -2048,7 +2048,7 @@
                         - img [ref=e3068] [cursor=pointer]
                         - generic [ref=e3069] [cursor=pointer]:
                           - img [ref=e3070] [cursor=pointer]
-                          - generic [ref=e3072] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e3072] [cursor=pointer]: Gets good 26%
                       - generic [ref=e3073] [cursor=pointer]:
                         - generic [ref=e3074] [cursor=pointer]: Action
                         - generic [ref=e3075] [cursor=pointer]: Comedy
@@ -2071,7 +2071,7 @@
                         - img [ref=e3103] [cursor=pointer]
                         - generic [ref=e3104] [cursor=pointer]:
                           - img [ref=e3105] [cursor=pointer]
-                          - generic [ref=e3107] [cursor=pointer]: Gets good 0%
+                          - generic [ref=e3107] [cursor=pointer]: Gets good 22%
                       - generic [ref=e3108] [cursor=pointer]:
                         - generic [ref=e3109] [cursor=pointer]: Comedy
                         - generic [ref=e3110] [cursor=pointer]: Slice of Life
@@ -2186,7 +2186,7 @@
                         - img [ref=e3278] [cursor=pointer]
                         - generic [ref=e3279] [cursor=pointer]:
                           - img [ref=e3280] [cursor=pointer]
-                          - generic [ref=e3282] [cursor=pointer]: Gets good 30%
+                          - generic [ref=e3282] [cursor=pointer]: Gets good 17%
                       - generic [ref=e3283] [cursor=pointer]:
                         - generic [ref=e3284] [cursor=pointer]: Action
                         - generic [ref=e3285] [cursor=pointer]: Adventure
@@ -2255,7 +2255,7 @@
                         - img [ref=e3383] [cursor=pointer]
                         - generic [ref=e3384] [cursor=pointer]:
                           - img [ref=e3385] [cursor=pointer]
-                          - generic [ref=e3387] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e3387] [cursor=pointer]: Gets good 22%
                       - generic [ref=e3388] [cursor=pointer]:
                         - generic [ref=e3389] [cursor=pointer]: Action
                         - generic [ref=e3390] [cursor=pointer]: Adventure
@@ -2278,7 +2278,7 @@
                         - img [ref=e3418] [cursor=pointer]
                         - generic [ref=e3419] [cursor=pointer]:
                           - img [ref=e3420] [cursor=pointer]
-                          - generic [ref=e3422] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e3422] [cursor=pointer]: Gets good 26%
                       - generic [ref=e3423] [cursor=pointer]:
                         - generic [ref=e3424] [cursor=pointer]: Comedy
                         - generic [ref=e3425] [cursor=pointer]: Drama
@@ -2301,7 +2301,7 @@
                         - img [ref=e3453] [cursor=pointer]
                         - generic [ref=e3454] [cursor=pointer]:
                           - img [ref=e3455] [cursor=pointer]
-                          - generic [ref=e3457] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e3457] [cursor=pointer]: Gets good 26%
                       - generic [ref=e3458] [cursor=pointer]:
                         - generic [ref=e3459] [cursor=pointer]: Action
                         - generic [ref=e3460] [cursor=pointer]: Drama
@@ -2324,7 +2324,7 @@
                         - img [ref=e3488] [cursor=pointer]
                         - generic [ref=e3489] [cursor=pointer]:
                           - img [ref=e3490] [cursor=pointer]
-                          - generic [ref=e3492] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e3492] [cursor=pointer]: Gets good 0%
                       - generic [ref=e3493] [cursor=pointer]:
                         - generic [ref=e3494] [cursor=pointer]: Romance
                         - generic [ref=e3495] [cursor=pointer]: Slice of Life
@@ -2347,7 +2347,7 @@
                         - img [ref=e3523] [cursor=pointer]
                         - generic [ref=e3524] [cursor=pointer]:
                           - img [ref=e3525] [cursor=pointer]
-                          - generic [ref=e3527] [cursor=pointer]: Gets good 30%
+                          - generic [ref=e3527] [cursor=pointer]: Gets good 26%
                       - generic [ref=e3528] [cursor=pointer]:
                         - generic [ref=e3529] [cursor=pointer]: Action
                         - generic [ref=e3530] [cursor=pointer]: Comedy
@@ -2370,7 +2370,7 @@
                         - img [ref=e3558] [cursor=pointer]
                         - generic [ref=e3559] [cursor=pointer]:
                           - img [ref=e3560] [cursor=pointer]
-                          - generic [ref=e3562] [cursor=pointer]: Gets good 13%
+                          - generic [ref=e3562] [cursor=pointer]: Gets good 17%
                       - generic [ref=e3563] [cursor=pointer]:
                         - generic [ref=e3564] [cursor=pointer]: Comedy
                         - generic [ref=e3565] [cursor=pointer]: Slice of Life
@@ -2393,7 +2393,7 @@
                         - img [ref=e3593] [cursor=pointer]
                         - generic [ref=e3594] [cursor=pointer]:
                           - img [ref=e3595] [cursor=pointer]
-                          - generic [ref=e3597] [cursor=pointer]: Gets good 35%
+                          - generic [ref=e3597] [cursor=pointer]: Gets good 4%
                       - generic [ref=e3598] [cursor=pointer]:
                         - generic [ref=e3599] [cursor=pointer]: Romance
                         - generic [ref=e3600] [cursor=pointer]: Slice of Life
@@ -2416,7 +2416,7 @@
                         - img [ref=e3628] [cursor=pointer]
                         - generic [ref=e3629] [cursor=pointer]:
                           - img [ref=e3630] [cursor=pointer]
-                          - generic [ref=e3632] [cursor=pointer]: Gets good 35%
+                          - generic [ref=e3632] [cursor=pointer]: Gets good 26%
                       - generic [ref=e3633] [cursor=pointer]:
                         - generic [ref=e3634] [cursor=pointer]: Drama
                         - generic [ref=e3635] [cursor=pointer]: Romance
@@ -2439,7 +2439,7 @@
                         - img [ref=e3663] [cursor=pointer]
                         - generic [ref=e3664] [cursor=pointer]:
                           - img [ref=e3665] [cursor=pointer]
-                          - generic [ref=e3667] [cursor=pointer]: Gets good 30%
+                          - generic [ref=e3667] [cursor=pointer]: Gets good 22%
                       - generic [ref=e3668] [cursor=pointer]:
                         - generic [ref=e3669] [cursor=pointer]: Drama
                         - generic [ref=e3670] [cursor=pointer]: Romance
@@ -2462,7 +2462,7 @@
                         - img [ref=e3698] [cursor=pointer]
                         - generic [ref=e3699] [cursor=pointer]:
                           - img [ref=e3700] [cursor=pointer]
-                          - generic [ref=e3702] [cursor=pointer]: Gets good 13%
+                          - generic [ref=e3702] [cursor=pointer]: Gets good 0%
                       - generic [ref=e3703] [cursor=pointer]:
                         - generic [ref=e3704] [cursor=pointer]: Romance
                         - generic [ref=e3705] [cursor=pointer]: Slice of Life
@@ -2485,7 +2485,7 @@
                         - img [ref=e3733] [cursor=pointer]
                         - generic [ref=e3734] [cursor=pointer]:
                           - img [ref=e3735] [cursor=pointer]
-                          - generic [ref=e3737] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e3737] [cursor=pointer]: Gets good 17%
                       - generic [ref=e3738] [cursor=pointer]:
                         - generic [ref=e3739] [cursor=pointer]: Comedy
                         - generic [ref=e3740] [cursor=pointer]: Romance
@@ -2508,7 +2508,7 @@
                         - img [ref=e3768] [cursor=pointer]
                         - generic [ref=e3769] [cursor=pointer]:
                           - img [ref=e3770] [cursor=pointer]
-                          - generic [ref=e3772] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e3772] [cursor=pointer]: Gets good 17%
                       - generic [ref=e3773] [cursor=pointer]:
                         - generic [ref=e3774] [cursor=pointer]: Drama
                         - generic [ref=e3775] [cursor=pointer]: Slice of Life
@@ -2527,7 +2527,7 @@
                         - img [ref=e3799] [cursor=pointer]
                         - generic [ref=e3800] [cursor=pointer]:
                           - img [ref=e3801] [cursor=pointer]
-                          - generic [ref=e3803] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e3803] [cursor=pointer]: Gets good 22%
                       - generic [ref=e3804] [cursor=pointer]:
                         - generic [ref=e3805] [cursor=pointer]: Action
                         - generic [ref=e3806] [cursor=pointer]: Adventure
@@ -2550,7 +2550,7 @@
                         - img [ref=e3834] [cursor=pointer]
                         - generic [ref=e3835] [cursor=pointer]:
                           - img [ref=e3836] [cursor=pointer]
-                          - generic [ref=e3838] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e3838] [cursor=pointer]: Gets good 13%
                       - generic [ref=e3839] [cursor=pointer]:
                         - generic [ref=e3840] [cursor=pointer]: Comedy
                         - generic [ref=e3841] [cursor=pointer]: Drama
@@ -2573,7 +2573,7 @@
                         - img [ref=e3869] [cursor=pointer]
                         - generic [ref=e3870] [cursor=pointer]:
                           - img [ref=e3871] [cursor=pointer]
-                          - generic [ref=e3873] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e3873] [cursor=pointer]: Gets good 22%
                       - generic [ref=e3874] [cursor=pointer]:
                         - generic [ref=e3875] [cursor=pointer]: Action
                         - generic [ref=e3876] [cursor=pointer]: Drama
@@ -2596,7 +2596,7 @@
                         - img [ref=e3904] [cursor=pointer]
                         - generic [ref=e3905] [cursor=pointer]:
                           - img [ref=e3906] [cursor=pointer]
-                          - generic [ref=e3908] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e3908] [cursor=pointer]: Gets good 22%
                       - generic [ref=e3909] [cursor=pointer]:
                         - generic [ref=e3910] [cursor=pointer]: Drama
                         - generic [ref=e3911] [cursor=pointer]: Music
@@ -2615,7 +2615,7 @@
                         - img [ref=e3935] [cursor=pointer]
                         - generic [ref=e3936] [cursor=pointer]:
                           - img [ref=e3937] [cursor=pointer]
-                          - generic [ref=e3939] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e3939] [cursor=pointer]: Gets good 0%
                       - generic [ref=e3940] [cursor=pointer]:
                         - generic [ref=e3941] [cursor=pointer]: Drama
                         - generic [ref=e3942] [cursor=pointer]: Romance
@@ -2661,7 +2661,7 @@
                         - img [ref=e4005] [cursor=pointer]
                         - generic [ref=e4006] [cursor=pointer]:
                           - img [ref=e4007] [cursor=pointer]
-                          - generic [ref=e4009] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e4009] [cursor=pointer]: Gets good 30%
                       - generic [ref=e4010] [cursor=pointer]:
                         - generic [ref=e4011] [cursor=pointer]: Adventure
                         - generic [ref=e4012] [cursor=pointer]: Drama
@@ -2680,7 +2680,7 @@
                         - img [ref=e4036] [cursor=pointer]
                         - generic [ref=e4037] [cursor=pointer]:
                           - img [ref=e4038] [cursor=pointer]
-                          - generic [ref=e4040] [cursor=pointer]: Gets good 26%
+                          - generic [ref=e4040] [cursor=pointer]: Gets good 9%
                       - generic [ref=e4041] [cursor=pointer]:
                         - generic [ref=e4042] [cursor=pointer]: Action
                         - generic [ref=e4043] [cursor=pointer]: Drama
@@ -2703,7 +2703,7 @@
                         - img [ref=e4071] [cursor=pointer]
                         - generic [ref=e4072] [cursor=pointer]:
                           - img [ref=e4073] [cursor=pointer]
-                          - generic [ref=e4075] [cursor=pointer]: Gets good 22%
+                          - generic [ref=e4075] [cursor=pointer]: Gets good 17%
                       - generic [ref=e4076] [cursor=pointer]:
                         - generic [ref=e4077] [cursor=pointer]: Comedy
                         - generic [ref=e4078] [cursor=pointer]: TW
@@ -2726,7 +2726,7 @@
                         - img [ref=e4106] [cursor=pointer]
                         - generic [ref=e4107] [cursor=pointer]:
                           - img [ref=e4108] [cursor=pointer]
-                          - generic [ref=e4110] [cursor=pointer]: Gets good 17%
+                          - generic [ref=e4110] [cursor=pointer]: Gets good 22%
                       - generic [ref=e4111] [cursor=pointer]:
                         - generic [ref=e4112] [cursor=pointer]: Drama
                         - generic [ref=e4113] [cursor=pointer]: Romance
@@ -2749,7 +2749,7 @@
                         - img [ref=e4141] [cursor=pointer]
                         - generic [ref=e4142] [cursor=pointer]:
                           - img [ref=e4143] [cursor=pointer]
-                          - generic [ref=e4145] [cursor=pointer]: Gets good 9%
+                          - generic [ref=e4145] [cursor=pointer]: Gets good 0%
                       - generic [ref=e4146] [cursor=pointer]:
                         - generic [ref=e4147] [cursor=pointer]: Comedy
                         - generic [ref=e4148] [cursor=pointer]: Drama
@@ -2766,48 +2766,48 @@
                         - img
                       - generic [ref=e4170] [cursor=pointer]:
                         - img [ref=e4172] [cursor=pointer]
-                        - generic [ref=e4175] [cursor=pointer]:
-                          - img [ref=e4176] [cursor=pointer]
-                          - generic [ref=e4178] [cursor=pointer]: Gets good 13%
-                      - generic [ref=e4179] [cursor=pointer]:
-                        - generic [ref=e4180] [cursor=pointer]: Horror
-                        - generic [ref=e4181] [cursor=pointer]: Mystery
-              - generic [ref=e4182]:
-                - heading "Popular Games" [level=2] [ref=e4184]
-                - generic [ref=e4185]:
-                  - paragraph [ref=e4186]: Edge Function returned a non-2xx status code
-                  - button "Try Again" [ref=e4187] [cursor=pointer]
-              - generic [ref=e4188]:
-                - generic [ref=e4189]:
-                  - heading "Popular Podcasts" [level=3] [ref=e4190]
-                  - generic [ref=e4191]:
-                    - button "Previous" [ref=e4192] [cursor=pointer]:
+                        - generic [ref=e4173] [cursor=pointer]:
+                          - img [ref=e4174] [cursor=pointer]
+                          - generic [ref=e4176] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e4177] [cursor=pointer]:
+                        - generic [ref=e4178] [cursor=pointer]: Horror
+                        - generic [ref=e4179] [cursor=pointer]: Mystery
+              - generic [ref=e4180]:
+                - heading "Popular Games" [level=2] [ref=e4182]
+                - generic [ref=e4183]:
+                  - paragraph [ref=e4184]: Edge Function returned a non-2xx status code
+                  - button "Try Again" [ref=e4185] [cursor=pointer]
+              - generic [ref=e4186]:
+                - generic [ref=e4187]:
+                  - heading "Popular Podcasts" [level=3] [ref=e4188]
+                  - generic [ref=e4189]:
+                    - button "Previous" [ref=e4190] [cursor=pointer]:
                       - img
-                    - button "Next" [ref=e4193] [cursor=pointer]:
+                    - button "Next" [ref=e4191] [cursor=pointer]:
                       - img
-                - generic [ref=e4194]: Edge Function returned a non-2xx status code. Ensure Podcast Index secrets are set on the Supabase function.
-              - heading "Trending Books" [level=2] [ref=e4197]
-      - contentinfo [ref=e4266]:
-        - generic [ref=e4267]:
-          - heading "WIGG" [level=3] [ref=e4268]
-          - paragraph [ref=e4269]: When It Gets Good - Track media worth your time
+                - generic [ref=e4192]: Edge Function returned a non-2xx status code. Ensure Podcast Index secrets are set on the Supabase function.
+              - heading "Trending Books" [level=2] [ref=e4195]
+      - contentinfo [ref=e4264]:
+        - generic [ref=e4265]:
+          - heading "WIGG" [level=3] [ref=e4266]
+          - paragraph [ref=e4267]: When It Gets Good - Track media worth your time
     - region "Notifications (F8)":
       - list
-  - dialog "Welcome to WIGG" [ref=e4270]:
-    - generic [ref=e4271]:
-      - img [ref=e4273]
-      - generic [ref=e4275]:
-        - paragraph [ref=e4276]: Step 1 of 5
-        - heading "Welcome to WIGG" [level=2] [ref=e4277]
-    - paragraph [ref=e4278]: WIGG shows you the exact moment movies, shows, games, and books finally click so you can skip the slog and jump to the good part.
-    - list [ref=e4279]:
-      - listitem [ref=e4280]:
-        - generic [ref=e4282]: Community-sourced “When It Gets Good” (WIGG) markers
-      - listitem [ref=e4283]:
-        - generic [ref=e4285]: Time-to-Get-Good (T2G) snapshots that set expectations
-      - listitem [ref=e4286]:
-        - generic [ref=e4288]: Pacing visuals that show the ride before you commit
-    - generic [ref=e4292]:
-      - button "Skip tour" [ref=e4293] [cursor=pointer]
-      - button "Next" [ref=e4301] [cursor=pointer]
+  - dialog "Welcome to WIGG" [ref=e4268]:
+    - generic [ref=e4269]:
+      - img [ref=e4271]
+      - generic [ref=e4273]:
+        - paragraph [ref=e4274]: Step 1 of 5
+        - heading "Welcome to WIGG" [level=2] [ref=e4275]
+    - paragraph [ref=e4276]: WIGG shows you the exact moment movies, shows, games, and books finally click so you can skip the slog and jump to the good part.
+    - list [ref=e4277]:
+      - listitem [ref=e4278]:
+        - generic [ref=e4280]: Community-sourced “When It Gets Good” (WIGG) markers
+      - listitem [ref=e4281]:
+        - generic [ref=e4283]: Time-to-Get-Good (T2G) snapshots that set expectations
+      - listitem [ref=e4284]:
+        - generic [ref=e4286]: Pacing visuals that show the ride before you commit
+    - generic [ref=e4290]:
+      - button "Skip tour" [ref=e4291] [cursor=pointer]
+      - button "Next" [ref=e4299] [cursor=pointer]
 ```
