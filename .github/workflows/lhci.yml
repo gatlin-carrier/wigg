@@ -63,7 +63,22 @@ jobs:
           fi
 
       - name: Install Playwright browsers
-        run: npx playwright install chromium
+        run: |
+          echo "Installing Playwright browsers..."
+          export PLAYWRIGHT_BROWSERS_PATH=${{ github.workspace }}/ms-playwright
+          npx playwright install chromium
+
+          # Verify browser installation
+          echo "Verifying browser installation..."
+          if [ -d "$PLAYWRIGHT_BROWSERS_PATH" ]; then
+            echo "✅ Browsers installed at $PLAYWRIGHT_BROWSERS_PATH"
+            ls -la "$PLAYWRIGHT_BROWSERS_PATH"
+          else
+            echo "❌ Browser installation failed"
+            exit 1
+          fi
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ms-playwright
 
       - name: Run API Performance Tests
         run: |
