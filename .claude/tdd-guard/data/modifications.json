@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\__tests__\\useAnalyticsWorker.minimal.test.ts",
-    "old_string": "    // This test will fail because the file doesn't exist",
-    "new_string": "    // Verifies that the useAnalyticsWorker hook can be imported and is properly defined"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\vite.config.ts",
+    "old_string": "  plugins: [\n    react(),\n    mode === 'development' &&\n    componentTagger(),\n  ].filter(Boolean),",
+    "new_string": "  plugins: [\n    react(),\n    mode === 'development' && componentTagger(),\n    mode === 'production' && sentryVitePlugin({\n      org: process.env.SENTRY_ORG,\n      project: process.env.SENTRY_PROJECT,\n    }),\n  ].filter(Boolean),"
   }
 }

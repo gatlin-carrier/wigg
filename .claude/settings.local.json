@@ -84,7 +84,8 @@
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserWiggs.test.ts --testNamePattern=\"should use centralized auth state instead of direct Supabase calls\" --reporter=verbose)",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/)",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/wigg/__tests__/RealtimeWiggOverlay.test.tsx)",
-      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserWiggs.test.ts --testNamePattern=\"should use centralized auth state\")"
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserWiggs.test.ts --testNamePattern=\"should use centralized auth state\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/monitoring/__tests__/sentry.test.ts --run)"
     ],
     "deny": [],
     "ask": [],
