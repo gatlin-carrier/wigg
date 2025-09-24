@@ -43,7 +43,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run preview -- --port 4173 --host',
+    command: 'npm run build && npm run preview -- --port 4173 --host',
     url: 'http://localhost:4173',
     reuseExistingServer: true, // Always reuse existing server to avoid port conflicts in CI
     timeout: 120 * 1000, // 2 minutes

@@ -456,4 +456,70 @@ describe('useUserWiggs', () => {
     // Should use centralized auth state (mockUseAuth called) instead of direct supabase.auth.getUser()
     expect(mockUseAuth).toHaveBeenCalled();
   });
+
+  it('should preserve rating when persisting wiggs to Supabase', async () => {
+    // This test demonstrates the issue: ratings are not persisted and loaded from Supabase
+    const titleId = 'test-rating-persistence';
+    const mockUserId = 'dev-user-rating-tester';
+
+    // Mock Supabase operations with rating data
+    const mockQuery = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockResolvedValue({
+        data: [
+          {
+            id: 'wigg-with-rating',
+            pos_value: 30.0,
+            reason_short: 'Good moment',
+            created_at: new Date().toISOString(),
+            rating: 3, // This should be preserved
+            pos_kind: 'percent'
+          }
+        ],
+        error: null
+      })
+    };
+
+    const mockInsert = vi.fn().mockResolvedValue({ error: null });
+    const mockFrom = vi.fn().mockReturnValue({
+      ...mockQuery,
+      insert: mockInsert
+    });
+
+    vi.doMock('@/integrations/supabase/client', () => ({
+      supabase: {
+        from: mockFrom,
+        auth: {
+          getUser: vi.fn().mockResolvedValue({
+            data: { user: { id: mockUserId } },
+            error: null
+          })
+        }
+      }
+    }));
+
+    const { result } = renderHook(() => useUserWiggs(titleId));
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // The loaded entry should preserve the rating from Supabase
+    const loadedEntry = result.current.data?.entries[0];
+    expect(loadedEntry?.rating).toBe(3); // This will fail because rating is set to undefined
+
+    // Personal T2G should work with entries that have ratings
+    expect(result.current.data?.t2gEstimatePct).toBe(30.0); // This will fail because firstGoodFromWiggs requires rating >= 1
+
+    // Test adding a wigg with rating
+    await act(async () => {
+      await result.current.addWigg(45.0, 'Another good moment', 2);
+    });
+
+    // The insert should include the rating field
+    expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
+      rating: 2 // This will fail because addWigg doesn't store ratings
+    }));
+  });
 });
