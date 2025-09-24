@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface TitleMetricsRow {
@@ -11,37 +11,30 @@ export interface TitleMetricsRow {
   updated_at: string | null;
 }
 
-export function useTitleMetrics(titleId: string | null | undefined) {
-  const [data, setData] = useState<TitleMetricsRow | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+async function fetchTitleMetrics(titleId: string): Promise<TitleMetricsRow | null> {
+  const { data: rows, error } = await supabase
+    .from('title_metrics')
+    .select('*')
+    .eq('title_id', titleId)
+    .limit(1);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function run() {
-      if (!titleId) return;
-      setLoading(true);
-      setError(null);
-      try {
-        const { data: rows, error } = await supabase
-          .from('title_metrics')
-          .select('*')
-          .eq('title_id', titleId)
-          .limit(1);
-        if (error) throw error;
-        if (!cancelled) setData(rows?.[0] ?? null);
-      } catch (e) {
-        if (!cancelled) setError(e as Error);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    run();
-    return () => {
-      cancelled = true;
-    };
-  }, [titleId]);
-
-  return { data, loading, error } as const;
+  if (error) throw error;
+  return rows?.[0] ?? null;
 }
 
+export function useTitleMetrics(titleId: string | null | undefined) {
+  const queryResult = useQuery({
+    queryKey: ['titleMetrics', titleId],
+    queryFn: () => fetchTitleMetrics(titleId!),
+    enabled: !!titleId,
+    staleTime: 5 * 60 * 1000, // 5 minutes - prevents excessive refetching that caused 118 API calls
+    gcTime: 10 * 60 * 1000,   // 10 minutes - keep in cache longer for better performance
+  });
+
+  // Maintain backward compatibility with existing interface
+  return {
+    data: queryResult.data ?? null,
+    loading: queryResult.isLoading,
+    error: queryResult.error as Error | null,
+  } as const;
+}

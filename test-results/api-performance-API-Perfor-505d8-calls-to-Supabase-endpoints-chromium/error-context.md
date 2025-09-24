@@ -1,0 +1,2813 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - region "Notifications alt+T"
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e6]:
+          - generic [ref=e8]:
+            - button "WIGG Logo" [ref=e9] [cursor=pointer]:
+              - img "WIGG Logo" [ref=e10] [cursor=pointer]
+            - generic [ref=e11]:
+              - heading "WIGG Dashboard" [level=1] [ref=e12]
+              - paragraph [ref=e13]: Discover when media gets good and track your own entries
+          - generic [ref=e14]:
+            - textbox "Search movies, TV, books…" [ref=e16]
+            - button "Toggle theme" [ref=e18] [cursor=pointer]:
+              - img
+              - img
+              - generic [ref=e19] [cursor=pointer]: Toggle theme
+      - generic [ref=e22]:
+        - tablist [ref=e23]:
+          - tab "Feed" [ref=e24] [cursor=pointer]
+          - tab "Browse" [selected] [ref=e25] [cursor=pointer]:
+            - img [ref=e26] [cursor=pointer]
+            - text: Browse
+          - tab "Add WIGG" [ref=e27] [cursor=pointer]:
+            - img [ref=e28] [cursor=pointer]
+            - text: Add WIGG
+        - tabpanel "Browse" [ref=e29]:
+          - generic [ref=e30]:
+            - generic [ref=e31]:
+              - heading "Discover New Media" [level=2] [ref=e32]
+              - paragraph [ref=e33]: Find your next favorite show, game, book, or movie
+            - generic [ref=e34]:
+              - generic [ref=e35]:
+                - generic [ref=e36]:
+                  - heading "Trending Movies (day)" [level=3] [ref=e37]
+                  - generic [ref=e38]:
+                    - button "Previous" [ref=e39] [cursor=pointer]:
+                      - img
+                    - button "Next" [ref=e40] [cursor=pointer]:
+                      - img
+                - generic [ref=e41]: "TMDB 401: {\"code\":401,\"message\":\"Invalid JWT\"}. Set VITE_TMDB_API_KEY in .env or deploy the 'tmdb' Edge Function."
+              - generic [ref=e42]:
+                - generic [ref=e43]:
+                  - heading "Popular TV Shows" [level=3] [ref=e44]
+                  - generic [ref=e45]:
+                    - button "Previous" [ref=e46] [cursor=pointer]:
+                      - img
+                    - button "Next" [ref=e47] [cursor=pointer]:
+                      - img
+                - generic [ref=e48]: "TMDB 401: {\"code\":401,\"message\":\"Invalid JWT\"}. Set VITE_TMDB_API_KEY in .env or deploy the 'tmdb' Edge Function."
+              - generic [ref=e49]:
+                - generic [ref=e50]:
+                  - heading "Popular Anime" [level=3] [ref=e51]
+                  - generic [ref=e52]:
+                    - button "Previous" [ref=e53] [cursor=pointer]:
+                      - img
+                    - button "Next" [ref=e54] [cursor=pointer]:
+                      - img
+                - generic [ref=e56]:
+                  - generic [ref=e58] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e59] [cursor=pointer]:
+                      - img
+                    - img "DAN DA DAN Season 2 (ダンダダン 第2期)" [ref=e61] [cursor=pointer]
+                    - generic [ref=e62] [cursor=pointer]:
+                      - heading "DAN DA DAN Season 2 (ダンダダン 第2期)" [level=3] [ref=e64] [cursor=pointer]
+                      - generic [ref=e65] [cursor=pointer]:
+                        - generic [ref=e66] [cursor=pointer]:
+                          - img [ref=e67] [cursor=pointer]
+                          - generic [ref=e69] [cursor=pointer]: 8.4/10
+                        - generic [ref=e70] [cursor=pointer]: "2025"
+                      - generic [ref=e72] [cursor=pointer]:
+                        - img [ref=e73] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e82] [cursor=pointer]:
+                        - img [ref=e84] [cursor=pointer]
+                        - generic [ref=e85] [cursor=pointer]:
+                          - img [ref=e86] [cursor=pointer]
+                          - generic [ref=e88] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e89] [cursor=pointer]:
+                        - generic [ref=e90] [cursor=pointer]: Action
+                        - generic [ref=e91] [cursor=pointer]: Comedy
+                  - generic [ref=e93] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e94] [cursor=pointer]:
+                      - img
+                    - img "Gachiakuta (ガチアクタ)" [ref=e96] [cursor=pointer]
+                    - generic [ref=e97] [cursor=pointer]:
+                      - heading "Gachiakuta (ガチアクタ)" [level=3] [ref=e99] [cursor=pointer]
+                      - generic [ref=e100] [cursor=pointer]:
+                        - generic [ref=e101] [cursor=pointer]:
+                          - img [ref=e102] [cursor=pointer]
+                          - generic [ref=e104] [cursor=pointer]: 7.9/10
+                        - generic [ref=e105] [cursor=pointer]: "2025"
+                      - generic [ref=e107] [cursor=pointer]:
+                        - img [ref=e108] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e117] [cursor=pointer]:
+                        - img [ref=e119] [cursor=pointer]
+                        - generic [ref=e120] [cursor=pointer]:
+                          - img [ref=e121] [cursor=pointer]
+                          - generic [ref=e123] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e124] [cursor=pointer]:
+                        - generic [ref=e125] [cursor=pointer]: Action
+                        - generic [ref=e126] [cursor=pointer]: Drama
+                  - generic [ref=e128] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e129] [cursor=pointer]:
+                      - img
+                    - img "ONE PIECE" [ref=e131] [cursor=pointer]
+                    - generic [ref=e132] [cursor=pointer]:
+                      - heading "ONE PIECE" [level=3] [ref=e134] [cursor=pointer]
+                      - generic [ref=e135] [cursor=pointer]:
+                        - generic [ref=e136] [cursor=pointer]:
+                          - img [ref=e137] [cursor=pointer]
+                          - generic [ref=e139] [cursor=pointer]: 8.8/10
+                        - generic [ref=e140] [cursor=pointer]: "1999"
+                      - generic [ref=e142] [cursor=pointer]:
+                        - img [ref=e143] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e152] [cursor=pointer]:
+                        - img [ref=e154] [cursor=pointer]
+                        - generic [ref=e155] [cursor=pointer]:
+                          - img [ref=e156] [cursor=pointer]
+                          - generic [ref=e158] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e159] [cursor=pointer]:
+                        - generic [ref=e160] [cursor=pointer]: Action
+                        - generic [ref=e161] [cursor=pointer]: Adventure
+                  - generic [ref=e163] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e164] [cursor=pointer]:
+                      - img
+                    - img "My Dress-Up Darling Season 2 (その着せ替え人形は恋をする Season 2)" [ref=e166] [cursor=pointer]
+                    - generic [ref=e167] [cursor=pointer]:
+                      - heading "My Dress-Up Darling Season 2 (その着せ替え人形は恋をする Season 2)" [level=3] [ref=e169] [cursor=pointer]
+                      - generic [ref=e170] [cursor=pointer]:
+                        - generic [ref=e171] [cursor=pointer]:
+                          - img [ref=e172] [cursor=pointer]
+                          - generic [ref=e174] [cursor=pointer]: 8.3/10
+                        - generic [ref=e175] [cursor=pointer]: "2025"
+                      - generic [ref=e177] [cursor=pointer]:
+                        - img [ref=e178] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e187] [cursor=pointer]:
+                        - img [ref=e189] [cursor=pointer]
+                        - generic [ref=e190] [cursor=pointer]:
+                          - img [ref=e191] [cursor=pointer]
+                          - generic [ref=e193] [cursor=pointer]: Gets good 30%
+                      - generic [ref=e194] [cursor=pointer]:
+                        - generic [ref=e195] [cursor=pointer]: Comedy
+                        - generic [ref=e196] [cursor=pointer]: Ecchi
+                  - generic [ref=e198] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e199] [cursor=pointer]:
+                      - img
+                    - img "The Fragrant Flower Blooms With Dignity (薫る花は凛と咲く)" [ref=e201] [cursor=pointer]
+                    - generic [ref=e202] [cursor=pointer]:
+                      - heading "The Fragrant Flower Blooms With Dignity (薫る花は凛と咲く)" [level=3] [ref=e204] [cursor=pointer]
+                      - generic [ref=e205] [cursor=pointer]:
+                        - generic [ref=e206] [cursor=pointer]:
+                          - img [ref=e207] [cursor=pointer]
+                          - generic [ref=e209] [cursor=pointer]: 8.6/10
+                        - generic [ref=e210] [cursor=pointer]: "2025"
+                      - generic [ref=e212] [cursor=pointer]:
+                        - img [ref=e213] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e222] [cursor=pointer]:
+                        - img [ref=e224] [cursor=pointer]
+                        - generic [ref=e225] [cursor=pointer]:
+                          - img [ref=e226] [cursor=pointer]
+                          - generic [ref=e228] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e229] [cursor=pointer]:
+                        - generic [ref=e230] [cursor=pointer]: Comedy
+                        - generic [ref=e231] [cursor=pointer]: Drama
+                  - generic [ref=e233] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e234] [cursor=pointer]:
+                      - img
+                    - img "Grand Blue Dreaming Season 2 (ぐらんぶる Season 2)" [ref=e236] [cursor=pointer]
+                    - generic [ref=e237] [cursor=pointer]:
+                      - heading "Grand Blue Dreaming Season 2 (ぐらんぶる Season 2)" [level=3] [ref=e239] [cursor=pointer]
+                      - generic [ref=e240] [cursor=pointer]:
+                        - generic [ref=e241] [cursor=pointer]:
+                          - img [ref=e242] [cursor=pointer]
+                          - generic [ref=e244] [cursor=pointer]: 8.3/10
+                        - generic [ref=e245] [cursor=pointer]: "2025"
+                      - generic [ref=e247] [cursor=pointer]:
+                        - img [ref=e248] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e257] [cursor=pointer]:
+                        - img [ref=e259] [cursor=pointer]
+                        - generic [ref=e260] [cursor=pointer]:
+                          - img [ref=e261] [cursor=pointer]
+                          - generic [ref=e263] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e264] [cursor=pointer]:
+                        - generic [ref=e265] [cursor=pointer]: Comedy
+                        - generic [ref=e266] [cursor=pointer]: Slice of Life
+                  - generic [ref=e268] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e269] [cursor=pointer]:
+                      - img
+                    - img "A Couple of Cuckoos Season 2 (カッコウの許嫁 Season2)" [ref=e271] [cursor=pointer]
+                    - generic [ref=e272] [cursor=pointer]:
+                      - heading "A Couple of Cuckoos Season 2 (カッコウの許嫁 Season2)" [level=3] [ref=e274] [cursor=pointer]
+                      - generic [ref=e275] [cursor=pointer]:
+                        - generic [ref=e276] [cursor=pointer]:
+                          - img [ref=e277] [cursor=pointer]
+                          - generic [ref=e279] [cursor=pointer]: 6.6/10
+                        - generic [ref=e280] [cursor=pointer]: "2025"
+                      - generic [ref=e282] [cursor=pointer]:
+                        - img [ref=e283] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e292] [cursor=pointer]:
+                        - img [ref=e294] [cursor=pointer]
+                        - generic [ref=e295] [cursor=pointer]:
+                          - img [ref=e296] [cursor=pointer]
+                          - generic [ref=e298] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e299] [cursor=pointer]:
+                        - generic [ref=e300] [cursor=pointer]: Comedy
+                        - generic [ref=e301] [cursor=pointer]: Romance
+                  - generic [ref=e303] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e304] [cursor=pointer]:
+                      - img
+                    - img "Kaiju No. 8 Season 2 (怪獣８号 第２期)" [ref=e306] [cursor=pointer]
+                    - generic [ref=e307] [cursor=pointer]:
+                      - heading "Kaiju No. 8 Season 2 (怪獣８号 第２期)" [level=3] [ref=e309] [cursor=pointer]
+                      - generic [ref=e310] [cursor=pointer]:
+                        - generic [ref=e311] [cursor=pointer]:
+                          - img [ref=e312] [cursor=pointer]
+                          - generic [ref=e314] [cursor=pointer]: 7.8/10
+                        - generic [ref=e315] [cursor=pointer]: "2025"
+                      - generic [ref=e317] [cursor=pointer]:
+                        - img [ref=e318] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e327] [cursor=pointer]:
+                        - img [ref=e329] [cursor=pointer]
+                        - generic [ref=e330] [cursor=pointer]:
+                          - img [ref=e331] [cursor=pointer]
+                          - generic [ref=e333] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e334] [cursor=pointer]:
+                        - generic [ref=e335] [cursor=pointer]: Action
+                        - generic [ref=e336] [cursor=pointer]: Sci-Fi
+                  - generic [ref=e338] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e339] [cursor=pointer]:
+                      - img
+                    - img "GIRLS BAND CRY (Shinsaku Eiga) (ガールズバンドクライ (新作映画))" [ref=e341] [cursor=pointer]
+                    - generic [ref=e342] [cursor=pointer]:
+                      - heading "GIRLS BAND CRY (Shinsaku Eiga) (ガールズバンドクライ (新作映画))" [level=3] [ref=e344] [cursor=pointer]
+                      - generic [ref=e346] [cursor=pointer]:
+                        - img [ref=e347] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e356] [cursor=pointer]:
+                        - img [ref=e358] [cursor=pointer]
+                        - generic [ref=e359] [cursor=pointer]:
+                          - img [ref=e360] [cursor=pointer]
+                          - generic [ref=e362] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e363] [cursor=pointer]:
+                        - generic [ref=e364] [cursor=pointer]: Drama
+                        - generic [ref=e365] [cursor=pointer]: Music
+                  - generic [ref=e367] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e368] [cursor=pointer]:
+                      - img
+                    - img "SAKAMOTO DAYS Part 2 (SAKAMOTO DAYS 第２クール)" [ref=e370] [cursor=pointer]
+                    - generic [ref=e371] [cursor=pointer]:
+                      - heading "SAKAMOTO DAYS Part 2 (SAKAMOTO DAYS 第２クール)" [level=3] [ref=e373] [cursor=pointer]
+                      - generic [ref=e374] [cursor=pointer]:
+                        - generic [ref=e375] [cursor=pointer]:
+                          - img [ref=e376] [cursor=pointer]
+                          - generic [ref=e378] [cursor=pointer]: 7.9/10
+                        - generic [ref=e379] [cursor=pointer]: "2025"
+                      - generic [ref=e381] [cursor=pointer]:
+                        - img [ref=e382] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e391] [cursor=pointer]:
+                        - img [ref=e393] [cursor=pointer]
+                        - generic [ref=e394] [cursor=pointer]:
+                          - img [ref=e395] [cursor=pointer]
+                          - generic [ref=e397] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e398] [cursor=pointer]:
+                        - generic [ref=e399] [cursor=pointer]: Action
+                        - generic [ref=e400] [cursor=pointer]: Comedy
+                  - generic [ref=e402] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e403] [cursor=pointer]:
+                      - img
+                    - img "The Summer Hikaru Died (光が死んだ夏)" [ref=e405] [cursor=pointer]
+                    - generic [ref=e406] [cursor=pointer]:
+                      - heading "The Summer Hikaru Died (光が死んだ夏)" [level=3] [ref=e408] [cursor=pointer]
+                      - generic [ref=e409] [cursor=pointer]:
+                        - generic [ref=e410] [cursor=pointer]:
+                          - img [ref=e411] [cursor=pointer]
+                          - generic [ref=e413] [cursor=pointer]: 8.0/10
+                        - generic [ref=e414] [cursor=pointer]: "2025"
+                      - generic [ref=e416] [cursor=pointer]:
+                        - img [ref=e417] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e426] [cursor=pointer]:
+                        - img [ref=e428] [cursor=pointer]
+                        - generic [ref=e429] [cursor=pointer]:
+                          - img [ref=e430] [cursor=pointer]
+                          - generic [ref=e432] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e433] [cursor=pointer]:
+                        - generic [ref=e434] [cursor=pointer]: Horror
+                        - generic [ref=e435] [cursor=pointer]: Mystery
+                  - generic [ref=e437] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e438] [cursor=pointer]:
+                      - img
+                    - 'img "Demon Slayer: Kimetsu no Yaiba Infinity Castle (劇場版「鬼滅の刃」無限城編 第一章 猗窩座再来)" [ref=e440] [cursor=pointer]'
+                    - generic [ref=e441] [cursor=pointer]:
+                      - 'heading "Demon Slayer: Kimetsu no Yaiba Infinity Castle (劇場版「鬼滅の刃」無限城編 第一章 猗窩座再来)" [level=3] [ref=e443] [cursor=pointer]'
+                      - generic [ref=e444] [cursor=pointer]:
+                        - generic [ref=e445] [cursor=pointer]:
+                          - img [ref=e446] [cursor=pointer]
+                          - generic [ref=e448] [cursor=pointer]: 8.7/10
+                        - generic [ref=e449] [cursor=pointer]: "2025"
+                      - generic [ref=e451] [cursor=pointer]:
+                        - img [ref=e452] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e461] [cursor=pointer]:
+                        - img [ref=e463] [cursor=pointer]
+                        - generic [ref=e464] [cursor=pointer]:
+                          - img [ref=e465] [cursor=pointer]
+                          - generic [ref=e467] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e468] [cursor=pointer]:
+                        - generic [ref=e469] [cursor=pointer]: Action
+                        - generic [ref=e470] [cursor=pointer]: Adventure
+                  - generic [ref=e472] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e473] [cursor=pointer]:
+                      - img
+                    - img "There's No Freaking Way I'll Be Your Lover! Unless… (わたしが恋人になれるわけないじゃん、ムリムリ! (※ムリじゃなかった!?))" [ref=e475] [cursor=pointer]
+                    - generic [ref=e476] [cursor=pointer]:
+                      - heading "There's No Freaking Way I'll Be Your Lover! Unless… (わたしが恋人になれるわけないじゃん、ムリムリ! (※ムリじゃなかった!?))" [level=3] [ref=e478] [cursor=pointer]
+                      - generic [ref=e479] [cursor=pointer]:
+                        - generic [ref=e480] [cursor=pointer]:
+                          - img [ref=e481] [cursor=pointer]
+                          - generic [ref=e483] [cursor=pointer]: 7.5/10
+                        - generic [ref=e484] [cursor=pointer]: "2025"
+                      - generic [ref=e486] [cursor=pointer]:
+                        - img [ref=e487] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e496] [cursor=pointer]:
+                        - img [ref=e498] [cursor=pointer]
+                        - generic [ref=e499] [cursor=pointer]:
+                          - img [ref=e500] [cursor=pointer]
+                          - generic [ref=e502] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e503] [cursor=pointer]:
+                        - generic [ref=e504] [cursor=pointer]: Comedy
+                        - generic [ref=e505] [cursor=pointer]: Romance
+                  - generic [ref=e507] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e508] [cursor=pointer]:
+                      - img
+                    - img "Turkey! Time to Strike (Turkey!)" [ref=e510] [cursor=pointer]
+                    - generic [ref=e511] [cursor=pointer]:
+                      - heading "Turkey! Time to Strike (Turkey!)" [level=3] [ref=e513] [cursor=pointer]
+                      - generic [ref=e514] [cursor=pointer]:
+                        - generic [ref=e515] [cursor=pointer]:
+                          - img [ref=e516] [cursor=pointer]
+                          - generic [ref=e518] [cursor=pointer]: 5.8/10
+                        - generic [ref=e519] [cursor=pointer]: "2025"
+                      - generic [ref=e521] [cursor=pointer]:
+                        - img [ref=e522] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e531] [cursor=pointer]:
+                        - img [ref=e533] [cursor=pointer]
+                        - generic [ref=e534] [cursor=pointer]:
+                          - img [ref=e535] [cursor=pointer]
+                          - generic [ref=e537] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e538] [cursor=pointer]:
+                        - generic [ref=e539] [cursor=pointer]: Adventure
+                        - generic [ref=e540] [cursor=pointer]: Sports
+                  - generic [ref=e542] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e543] [cursor=pointer]:
+                      - img
+                    - img "Call of the Night Season 2 (よふかしのうた Season 2)" [ref=e545] [cursor=pointer]
+                    - generic [ref=e546] [cursor=pointer]:
+                      - heading "Call of the Night Season 2 (よふかしのうた Season 2)" [level=3] [ref=e548] [cursor=pointer]
+                      - generic [ref=e549] [cursor=pointer]:
+                        - generic [ref=e550] [cursor=pointer]:
+                          - img [ref=e551] [cursor=pointer]
+                          - generic [ref=e553] [cursor=pointer]: 8.3/10
+                        - generic [ref=e554] [cursor=pointer]: "2025"
+                      - generic [ref=e556] [cursor=pointer]:
+                        - img [ref=e557] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e566] [cursor=pointer]:
+                        - img [ref=e568] [cursor=pointer]
+                        - generic [ref=e569] [cursor=pointer]:
+                          - img [ref=e570] [cursor=pointer]
+                          - generic [ref=e572] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e573] [cursor=pointer]:
+                        - generic [ref=e574] [cursor=pointer]: Comedy
+                        - generic [ref=e575] [cursor=pointer]: Psychological
+                  - generic [ref=e577] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e578] [cursor=pointer]:
+                      - img
+                    - img "To Be Hero X (凸变英雄X)" [ref=e580] [cursor=pointer]
+                    - generic [ref=e581] [cursor=pointer]:
+                      - heading "To Be Hero X (凸变英雄X)" [level=3] [ref=e583] [cursor=pointer]
+                      - generic [ref=e584] [cursor=pointer]:
+                        - generic [ref=e585] [cursor=pointer]:
+                          - img [ref=e586] [cursor=pointer]
+                          - generic [ref=e588] [cursor=pointer]: 8.5/10
+                        - generic [ref=e589] [cursor=pointer]: "2025"
+                      - generic [ref=e591] [cursor=pointer]:
+                        - img [ref=e592] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e601] [cursor=pointer]:
+                        - img [ref=e603] [cursor=pointer]
+                        - generic [ref=e604] [cursor=pointer]:
+                          - img [ref=e605] [cursor=pointer]
+                          - generic [ref=e607] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e608] [cursor=pointer]:
+                        - generic [ref=e609] [cursor=pointer]: Action
+                        - generic [ref=e610] [cursor=pointer]: Drama
+                  - generic [ref=e612] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e613] [cursor=pointer]:
+                      - img
+                    - img "WITCH WATCH (ウィッチウォッチ)" [ref=e615] [cursor=pointer]
+                    - generic [ref=e616] [cursor=pointer]:
+                      - heading "WITCH WATCH (ウィッチウォッチ)" [level=3] [ref=e618] [cursor=pointer]
+                      - generic [ref=e619] [cursor=pointer]:
+                        - generic [ref=e620] [cursor=pointer]:
+                          - img [ref=e621] [cursor=pointer]
+                          - generic [ref=e623] [cursor=pointer]: 7.2/10
+                        - generic [ref=e624] [cursor=pointer]: "2025"
+                      - generic [ref=e626] [cursor=pointer]:
+                        - img [ref=e627] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e636] [cursor=pointer]:
+                        - img [ref=e638] [cursor=pointer]
+                        - generic [ref=e639] [cursor=pointer]:
+                          - img [ref=e640] [cursor=pointer]
+                          - generic [ref=e642] [cursor=pointer]: Gets good 30%
+                      - generic [ref=e643] [cursor=pointer]:
+                        - generic [ref=e644] [cursor=pointer]: Comedy
+                        - generic [ref=e645] [cursor=pointer]: Drama
+                  - generic [ref=e647] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e648] [cursor=pointer]:
+                      - img
+                    - img "Dr. STONE SCIENCE FUTURE Cour 2 (Dr.STONE SCIENCE FUTURE 2クール)" [ref=e650] [cursor=pointer]
+                    - generic [ref=e651] [cursor=pointer]:
+                      - heading "Dr. STONE SCIENCE FUTURE Cour 2 (Dr.STONE SCIENCE FUTURE 2クール)" [level=3] [ref=e653] [cursor=pointer]
+                      - generic [ref=e654] [cursor=pointer]:
+                        - generic [ref=e655] [cursor=pointer]:
+                          - img [ref=e656] [cursor=pointer]
+                          - generic [ref=e658] [cursor=pointer]: 8.3/10
+                        - generic [ref=e659] [cursor=pointer]: "2025"
+                      - generic [ref=e661] [cursor=pointer]:
+                        - img [ref=e662] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e671] [cursor=pointer]:
+                        - img [ref=e673] [cursor=pointer]
+                        - generic [ref=e674] [cursor=pointer]:
+                          - img [ref=e675] [cursor=pointer]
+                          - generic [ref=e677] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e678] [cursor=pointer]:
+                        - generic [ref=e679] [cursor=pointer]: Action
+                        - generic [ref=e680] [cursor=pointer]: Adventure
+                  - generic [ref=e682] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e683] [cursor=pointer]:
+                      - img
+                    - 'img "Apocalypse Bringer Mynoghra: World Conquest Starts with the Civilization of Ruin (異世界黙示録マイノグーラ ～破滅の文明で始める世界征服～)" [ref=e685] [cursor=pointer]'
+                    - generic [ref=e686] [cursor=pointer]:
+                      - 'heading "Apocalypse Bringer Mynoghra: World Conquest Starts with the Civilization of Ruin (異世界黙示録マイノグーラ ～破滅の文明で始める世界征服～)" [level=3] [ref=e688] [cursor=pointer]'
+                      - generic [ref=e689] [cursor=pointer]:
+                        - generic [ref=e690] [cursor=pointer]:
+                          - img [ref=e691] [cursor=pointer]
+                          - generic [ref=e693] [cursor=pointer]: 6.7/10
+                        - generic [ref=e694] [cursor=pointer]: "2025"
+                      - generic [ref=e696] [cursor=pointer]:
+                        - img [ref=e697] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e706] [cursor=pointer]:
+                        - img [ref=e708] [cursor=pointer]
+                        - generic [ref=e709] [cursor=pointer]:
+                          - img [ref=e710] [cursor=pointer]
+                          - generic [ref=e712] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e713] [cursor=pointer]:
+                        - generic [ref=e714] [cursor=pointer]: Action
+                        - generic [ref=e715] [cursor=pointer]: Adventure
+                  - generic [ref=e717] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e718] [cursor=pointer]:
+                      - img
+                    - img "Grand Blue Season 3 (ぐらんぶる Season 3)" [ref=e720] [cursor=pointer]
+                    - generic [ref=e721] [cursor=pointer]:
+                      - heading "Grand Blue Season 3 (ぐらんぶる Season 3)" [level=3] [ref=e723] [cursor=pointer]
+                      - generic [ref=e725] [cursor=pointer]:
+                        - img [ref=e726] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e735] [cursor=pointer]:
+                        - img [ref=e737] [cursor=pointer]
+                        - generic [ref=e738] [cursor=pointer]:
+                          - img [ref=e739] [cursor=pointer]
+                          - generic [ref=e741] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e742] [cursor=pointer]:
+                        - generic [ref=e743] [cursor=pointer]: Comedy
+                        - generic [ref=e744] [cursor=pointer]: Slice of Life
+                  - generic [ref=e746] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e747] [cursor=pointer]:
+                      - img
+                    - img "The Water Magician (水属性の魔法使い)" [ref=e749] [cursor=pointer]
+                    - generic [ref=e750] [cursor=pointer]:
+                      - heading "The Water Magician (水属性の魔法使い)" [level=3] [ref=e752] [cursor=pointer]
+                      - generic [ref=e753] [cursor=pointer]:
+                        - generic [ref=e754] [cursor=pointer]:
+                          - img [ref=e755] [cursor=pointer]
+                          - generic [ref=e757] [cursor=pointer]: 6.8/10
+                        - generic [ref=e758] [cursor=pointer]: "2025"
+                      - generic [ref=e760] [cursor=pointer]:
+                        - img [ref=e761] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e770] [cursor=pointer]:
+                        - img [ref=e772] [cursor=pointer]
+                        - generic [ref=e773] [cursor=pointer]:
+                          - img [ref=e774] [cursor=pointer]
+                          - generic [ref=e776] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e777] [cursor=pointer]:
+                        - generic [ref=e778] [cursor=pointer]: Action
+                        - generic [ref=e779] [cursor=pointer]: Adventure
+                  - generic [ref=e781] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e782] [cursor=pointer]:
+                      - img
+                    - img "Clevatess (クレバテス-魔獣の王と赤子と屍の勇者)" [ref=e784] [cursor=pointer]
+                    - generic [ref=e785] [cursor=pointer]:
+                      - heading "Clevatess (クレバテス-魔獣の王と赤子と屍の勇者)" [level=3] [ref=e787] [cursor=pointer]
+                      - generic [ref=e788] [cursor=pointer]:
+                        - generic [ref=e789] [cursor=pointer]:
+                          - img [ref=e790] [cursor=pointer]
+                          - generic [ref=e792] [cursor=pointer]: 7.8/10
+                        - generic [ref=e793] [cursor=pointer]: "2025"
+                      - generic [ref=e795] [cursor=pointer]:
+                        - img [ref=e796] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e805] [cursor=pointer]:
+                        - img [ref=e807] [cursor=pointer]
+                        - generic [ref=e808] [cursor=pointer]:
+                          - img [ref=e809] [cursor=pointer]
+                          - generic [ref=e811] [cursor=pointer]: Gets good 13%
+                      - generic [ref=e812] [cursor=pointer]:
+                        - generic [ref=e813] [cursor=pointer]: Action
+                        - generic [ref=e814] [cursor=pointer]: Drama
+                  - generic [ref=e816] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e817] [cursor=pointer]:
+                      - img
+                    - img "Secrets of the Silent Witch (サイレント・ウィッチ 沈黙の魔女の隠しごと)" [ref=e819] [cursor=pointer]
+                    - generic [ref=e820] [cursor=pointer]:
+                      - heading "Secrets of the Silent Witch (サイレント・ウィッチ 沈黙の魔女の隠しごと)" [level=3] [ref=e822] [cursor=pointer]
+                      - generic [ref=e823] [cursor=pointer]:
+                        - generic [ref=e824] [cursor=pointer]:
+                          - img [ref=e825] [cursor=pointer]
+                          - generic [ref=e827] [cursor=pointer]: 7.8/10
+                        - generic [ref=e828] [cursor=pointer]: "2025"
+                      - generic [ref=e830] [cursor=pointer]:
+                        - img [ref=e831] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e840] [cursor=pointer]:
+                        - img [ref=e842] [cursor=pointer]
+                        - generic [ref=e843] [cursor=pointer]:
+                          - img [ref=e844] [cursor=pointer]
+                          - generic [ref=e846] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e847] [cursor=pointer]:
+                        - generic [ref=e848] [cursor=pointer]: Adventure
+                        - generic [ref=e849] [cursor=pointer]: Fantasy
+                  - generic [ref=e851] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e852] [cursor=pointer]:
+                      - img
+                    - img "Rascal Does Not Dream of Santa Claus (青春ブタ野郎はサンタクロースの夢を見ない)" [ref=e854] [cursor=pointer]
+                    - generic [ref=e855] [cursor=pointer]:
+                      - heading "Rascal Does Not Dream of Santa Claus (青春ブタ野郎はサンタクロースの夢を見ない)" [level=3] [ref=e857] [cursor=pointer]
+                      - generic [ref=e858] [cursor=pointer]:
+                        - generic [ref=e859] [cursor=pointer]:
+                          - img [ref=e860] [cursor=pointer]
+                          - generic [ref=e862] [cursor=pointer]: 8.0/10
+                        - generic [ref=e863] [cursor=pointer]: "2025"
+                      - generic [ref=e865] [cursor=pointer]:
+                        - img [ref=e866] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e875] [cursor=pointer]:
+                        - img [ref=e877] [cursor=pointer]
+                        - generic [ref=e878] [cursor=pointer]:
+                          - img [ref=e879] [cursor=pointer]
+                          - generic [ref=e881] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e882] [cursor=pointer]:
+                        - generic [ref=e883] [cursor=pointer]: Drama
+                        - generic [ref=e884] [cursor=pointer]: Mystery
+              - generic [ref=e885]:
+                - generic [ref=e886]:
+                  - heading "Popular Manga" [level=3] [ref=e887]
+                  - generic [ref=e888]:
+                    - button "Previous" [ref=e889] [cursor=pointer]:
+                      - img
+                    - button "Next" [ref=e890] [cursor=pointer]:
+                      - img
+                - generic [ref=e892]:
+                  - generic [ref=e894] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e895] [cursor=pointer]:
+                      - img
+                    - img "Chainsaw Man (チェンソーマン)" [ref=e897] [cursor=pointer]
+                    - generic [ref=e898] [cursor=pointer]:
+                      - heading "Chainsaw Man (チェンソーマン)" [level=3] [ref=e900] [cursor=pointer]
+                      - generic [ref=e901] [cursor=pointer]:
+                        - generic [ref=e902] [cursor=pointer]:
+                          - img [ref=e903] [cursor=pointer]
+                          - generic [ref=e905] [cursor=pointer]: 8.5/10
+                        - generic [ref=e906] [cursor=pointer]: "2018"
+                      - generic [ref=e908] [cursor=pointer]:
+                        - img [ref=e909] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e918] [cursor=pointer]:
+                        - img [ref=e920] [cursor=pointer]
+                        - generic [ref=e921] [cursor=pointer]:
+                          - img [ref=e922] [cursor=pointer]
+                          - generic [ref=e924] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e925] [cursor=pointer]:
+                        - generic [ref=e926] [cursor=pointer]: Action
+                        - generic [ref=e927] [cursor=pointer]: Comedy
+                  - generic [ref=e929] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e930] [cursor=pointer]:
+                      - img
+                    - img "Jujutsu Kaisen (呪術廻戦)" [ref=e932] [cursor=pointer]
+                    - generic [ref=e933] [cursor=pointer]:
+                      - heading "Jujutsu Kaisen (呪術廻戦)" [level=3] [ref=e935] [cursor=pointer]
+                      - generic [ref=e936] [cursor=pointer]:
+                        - generic [ref=e937] [cursor=pointer]:
+                          - img [ref=e938] [cursor=pointer]
+                          - generic [ref=e940] [cursor=pointer]: 8.0/10
+                        - generic [ref=e941] [cursor=pointer]: "2018"
+                      - generic [ref=e943] [cursor=pointer]:
+                        - img [ref=e944] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e953] [cursor=pointer]:
+                        - img [ref=e955] [cursor=pointer]
+                        - generic [ref=e956] [cursor=pointer]:
+                          - img [ref=e957] [cursor=pointer]
+                          - generic [ref=e959] [cursor=pointer]: Gets good 39%
+                      - generic [ref=e960] [cursor=pointer]:
+                        - generic [ref=e961] [cursor=pointer]: Action
+                        - generic [ref=e962] [cursor=pointer]: Drama
+                  - generic [ref=e964] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e965] [cursor=pointer]:
+                      - img
+                    - img "Berserk (ベルセルク)" [ref=e967] [cursor=pointer]
+                    - generic [ref=e968] [cursor=pointer]:
+                      - heading "Berserk (ベルセルク)" [level=3] [ref=e970] [cursor=pointer]
+                      - generic [ref=e971] [cursor=pointer]:
+                        - generic [ref=e972] [cursor=pointer]:
+                          - img [ref=e973] [cursor=pointer]
+                          - generic [ref=e975] [cursor=pointer]: 9.2/10
+                        - generic [ref=e976] [cursor=pointer]: "1989"
+                      - generic [ref=e978] [cursor=pointer]:
+                        - img [ref=e979] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e988] [cursor=pointer]:
+                        - img [ref=e990] [cursor=pointer]
+                        - generic [ref=e991] [cursor=pointer]:
+                          - img [ref=e992] [cursor=pointer]
+                          - generic [ref=e994] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e995] [cursor=pointer]:
+                        - generic [ref=e996] [cursor=pointer]: Action
+                        - generic [ref=e997] [cursor=pointer]: Adventure
+                  - generic [ref=e999] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1000] [cursor=pointer]:
+                      - img
+                    - img "Attack on Titan (進撃の巨人)" [ref=e1002] [cursor=pointer]
+                    - generic [ref=e1003] [cursor=pointer]:
+                      - heading "Attack on Titan (進撃の巨人)" [level=3] [ref=e1005] [cursor=pointer]
+                      - generic [ref=e1006] [cursor=pointer]:
+                        - generic [ref=e1007] [cursor=pointer]:
+                          - img [ref=e1008] [cursor=pointer]
+                          - generic [ref=e1010] [cursor=pointer]: 8.4/10
+                        - generic [ref=e1011] [cursor=pointer]: "2009"
+                      - generic [ref=e1013] [cursor=pointer]:
+                        - img [ref=e1014] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1023] [cursor=pointer]:
+                        - img [ref=e1025] [cursor=pointer]
+                        - generic [ref=e1026] [cursor=pointer]:
+                          - img [ref=e1027] [cursor=pointer]
+                          - generic [ref=e1029] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1030] [cursor=pointer]:
+                        - generic [ref=e1031] [cursor=pointer]: Action
+                        - generic [ref=e1032] [cursor=pointer]: Drama
+                  - generic [ref=e1034] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1035] [cursor=pointer]:
+                      - img
+                    - img "One Piece (ONE PIECE)" [ref=e1037] [cursor=pointer]
+                    - generic [ref=e1038] [cursor=pointer]:
+                      - heading "One Piece (ONE PIECE)" [level=3] [ref=e1040] [cursor=pointer]
+                      - generic [ref=e1041] [cursor=pointer]:
+                        - generic [ref=e1042] [cursor=pointer]:
+                          - img [ref=e1043] [cursor=pointer]
+                          - generic [ref=e1045] [cursor=pointer]: 9.1/10
+                        - generic [ref=e1046] [cursor=pointer]: "1997"
+                      - generic [ref=e1048] [cursor=pointer]:
+                        - img [ref=e1049] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1058] [cursor=pointer]:
+                        - img [ref=e1060] [cursor=pointer]
+                        - generic [ref=e1061] [cursor=pointer]:
+                          - img [ref=e1062] [cursor=pointer]
+                          - generic [ref=e1064] [cursor=pointer]: Gets good 9%
+                      - generic [ref=e1065] [cursor=pointer]:
+                        - generic [ref=e1066] [cursor=pointer]: Action
+                        - generic [ref=e1067] [cursor=pointer]: Adventure
+                  - generic [ref=e1069] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1070] [cursor=pointer]:
+                      - img
+                    - 'img "Demon Slayer: Kimetsu no Yaiba (鬼滅の刃)" [ref=e1072] [cursor=pointer]'
+                    - generic [ref=e1073] [cursor=pointer]:
+                      - 'heading "Demon Slayer: Kimetsu no Yaiba (鬼滅の刃)" [level=3] [ref=e1075] [cursor=pointer]'
+                      - generic [ref=e1076] [cursor=pointer]:
+                        - generic [ref=e1077] [cursor=pointer]:
+                          - img [ref=e1078] [cursor=pointer]
+                          - generic [ref=e1080] [cursor=pointer]: 7.9/10
+                        - generic [ref=e1081] [cursor=pointer]: "2016"
+                      - generic [ref=e1083] [cursor=pointer]:
+                        - img [ref=e1084] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1093] [cursor=pointer]:
+                        - img [ref=e1095] [cursor=pointer]
+                        - generic [ref=e1096] [cursor=pointer]:
+                          - img [ref=e1097] [cursor=pointer]
+                          - generic [ref=e1099] [cursor=pointer]: Gets good 30%
+                      - generic [ref=e1100] [cursor=pointer]:
+                        - generic [ref=e1101] [cursor=pointer]: Action
+                        - generic [ref=e1102] [cursor=pointer]: Adventure
+                  - generic [ref=e1104] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1105] [cursor=pointer]:
+                      - img
+                    - img "Tokyo Ghoul (東京喰種 トーキョーグール)" [ref=e1107] [cursor=pointer]
+                    - generic [ref=e1108] [cursor=pointer]:
+                      - heading "Tokyo Ghoul (東京喰種 トーキョーグール)" [level=3] [ref=e1110] [cursor=pointer]
+                      - generic [ref=e1111] [cursor=pointer]:
+                        - generic [ref=e1112] [cursor=pointer]:
+                          - img [ref=e1113] [cursor=pointer]
+                          - generic [ref=e1115] [cursor=pointer]: 8.4/10
+                        - generic [ref=e1116] [cursor=pointer]: "2011"
+                      - generic [ref=e1118] [cursor=pointer]:
+                        - img [ref=e1119] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1128] [cursor=pointer]:
+                        - img [ref=e1130] [cursor=pointer]
+                        - generic [ref=e1131] [cursor=pointer]:
+                          - img [ref=e1132] [cursor=pointer]
+                          - generic [ref=e1134] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1135] [cursor=pointer]:
+                        - generic [ref=e1136] [cursor=pointer]: Action
+                        - generic [ref=e1137] [cursor=pointer]: Horror
+                  - generic [ref=e1139] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1140] [cursor=pointer]:
+                      - img
+                    - img "My Hero Academia (僕のヒーローアカデミア)" [ref=e1142] [cursor=pointer]
+                    - generic [ref=e1143] [cursor=pointer]:
+                      - heading "My Hero Academia (僕のヒーローアカデミア)" [level=3] [ref=e1145] [cursor=pointer]
+                      - generic [ref=e1146] [cursor=pointer]:
+                        - generic [ref=e1147] [cursor=pointer]:
+                          - img [ref=e1148] [cursor=pointer]
+                          - generic [ref=e1150] [cursor=pointer]: 7.7/10
+                        - generic [ref=e1151] [cursor=pointer]: "2014"
+                      - generic [ref=e1153] [cursor=pointer]:
+                        - img [ref=e1154] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1163] [cursor=pointer]:
+                        - img [ref=e1165] [cursor=pointer]
+                        - generic [ref=e1166] [cursor=pointer]:
+                          - img [ref=e1167] [cursor=pointer]
+                          - generic [ref=e1169] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1170] [cursor=pointer]:
+                        - generic [ref=e1171] [cursor=pointer]: Action
+                        - generic [ref=e1172] [cursor=pointer]: Adventure
+                  - generic [ref=e1174] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1175] [cursor=pointer]:
+                      - img
+                    - img "Goodnight Punpun (おやすみプンプン)" [ref=e1177] [cursor=pointer]
+                    - generic [ref=e1178] [cursor=pointer]:
+                      - heading "Goodnight Punpun (おやすみプンプン)" [level=3] [ref=e1180] [cursor=pointer]
+                      - generic [ref=e1181] [cursor=pointer]:
+                        - generic [ref=e1182] [cursor=pointer]:
+                          - img [ref=e1183] [cursor=pointer]
+                          - generic [ref=e1185] [cursor=pointer]: 8.8/10
+                        - generic [ref=e1186] [cursor=pointer]: "2007"
+                      - generic [ref=e1188] [cursor=pointer]:
+                        - img [ref=e1189] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1198] [cursor=pointer]:
+                        - img [ref=e1200] [cursor=pointer]
+                        - generic [ref=e1201] [cursor=pointer]:
+                          - img [ref=e1202] [cursor=pointer]
+                          - generic [ref=e1204] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e1205] [cursor=pointer]:
+                        - generic [ref=e1206] [cursor=pointer]: Drama
+                        - generic [ref=e1207] [cursor=pointer]: Psychological
+                  - generic [ref=e1209] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1210] [cursor=pointer]:
+                      - img
+                    - img "One-Punch Man (ワンパンマン)" [ref=e1212] [cursor=pointer]
+                    - generic [ref=e1213] [cursor=pointer]:
+                      - heading "One-Punch Man (ワンパンマン)" [level=3] [ref=e1215] [cursor=pointer]
+                      - generic [ref=e1216] [cursor=pointer]:
+                        - generic [ref=e1217] [cursor=pointer]:
+                          - img [ref=e1218] [cursor=pointer]
+                          - generic [ref=e1220] [cursor=pointer]: 8.5/10
+                        - generic [ref=e1221] [cursor=pointer]: "2012"
+                      - generic [ref=e1223] [cursor=pointer]:
+                        - img [ref=e1224] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1233] [cursor=pointer]:
+                        - img [ref=e1235] [cursor=pointer]
+                        - generic [ref=e1236] [cursor=pointer]:
+                          - img [ref=e1237] [cursor=pointer]
+                          - generic [ref=e1239] [cursor=pointer]: Gets good 13%
+                      - generic [ref=e1240] [cursor=pointer]:
+                        - generic [ref=e1241] [cursor=pointer]: Action
+                        - generic [ref=e1242] [cursor=pointer]: Comedy
+                  - generic [ref=e1244] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1245] [cursor=pointer]:
+                      - img
+                    - img "SPY x FAMILY (SPY×FAMILY)" [ref=e1247] [cursor=pointer]
+                    - generic [ref=e1248] [cursor=pointer]:
+                      - heading "SPY x FAMILY (SPY×FAMILY)" [level=3] [ref=e1250] [cursor=pointer]
+                      - generic [ref=e1251] [cursor=pointer]:
+                        - generic [ref=e1252] [cursor=pointer]:
+                          - img [ref=e1253] [cursor=pointer]
+                          - generic [ref=e1255] [cursor=pointer]: 8.3/10
+                        - generic [ref=e1256] [cursor=pointer]: "2019"
+                      - generic [ref=e1258] [cursor=pointer]:
+                        - img [ref=e1259] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1268] [cursor=pointer]:
+                        - img [ref=e1270] [cursor=pointer]
+                        - generic [ref=e1271] [cursor=pointer]:
+                          - img [ref=e1272] [cursor=pointer]
+                          - generic [ref=e1274] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1275] [cursor=pointer]:
+                        - generic [ref=e1276] [cursor=pointer]: Action
+                        - generic [ref=e1277] [cursor=pointer]: Comedy
+                  - generic [ref=e1279] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1280] [cursor=pointer]:
+                      - img
+                    - img "Vagabond (バガボンド)" [ref=e1282] [cursor=pointer]
+                    - generic [ref=e1283] [cursor=pointer]:
+                      - heading "Vagabond (バガボンド)" [level=3] [ref=e1285] [cursor=pointer]
+                      - generic [ref=e1286] [cursor=pointer]:
+                        - generic [ref=e1287] [cursor=pointer]:
+                          - img [ref=e1288] [cursor=pointer]
+                          - generic [ref=e1290] [cursor=pointer]: 9.1/10
+                        - generic [ref=e1291] [cursor=pointer]: "1998"
+                      - generic [ref=e1293] [cursor=pointer]:
+                        - img [ref=e1294] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1303] [cursor=pointer]:
+                        - img [ref=e1305] [cursor=pointer]
+                        - generic [ref=e1306] [cursor=pointer]:
+                          - img [ref=e1307] [cursor=pointer]
+                          - generic [ref=e1309] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1310] [cursor=pointer]:
+                        - generic [ref=e1311] [cursor=pointer]: Action
+                        - generic [ref=e1312] [cursor=pointer]: Adventure
+                  - generic [ref=e1314] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1315] [cursor=pointer]:
+                      - img
+                    - img "The Promised Neverland (約束のネバーランド)" [ref=e1317] [cursor=pointer]
+                    - generic [ref=e1318] [cursor=pointer]:
+                      - heading "The Promised Neverland (約束のネバーランド)" [level=3] [ref=e1320] [cursor=pointer]
+                      - generic [ref=e1321] [cursor=pointer]:
+                        - generic [ref=e1322] [cursor=pointer]:
+                          - img [ref=e1323] [cursor=pointer]
+                          - generic [ref=e1325] [cursor=pointer]: 7.9/10
+                        - generic [ref=e1326] [cursor=pointer]: "2016"
+                      - generic [ref=e1328] [cursor=pointer]:
+                        - img [ref=e1329] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1338] [cursor=pointer]:
+                        - img [ref=e1340] [cursor=pointer]
+                        - generic [ref=e1341] [cursor=pointer]:
+                          - img [ref=e1342] [cursor=pointer]
+                          - generic [ref=e1344] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e1345] [cursor=pointer]:
+                        - generic [ref=e1346] [cursor=pointer]: Drama
+                        - generic [ref=e1347] [cursor=pointer]: Fantasy
+                  - generic [ref=e1349] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1350] [cursor=pointer]:
+                      - img
+                    - img "Vinland Saga (ヴィンランド・サガ)" [ref=e1352] [cursor=pointer]
+                    - generic [ref=e1353] [cursor=pointer]:
+                      - heading "Vinland Saga (ヴィンランド・サガ)" [level=3] [ref=e1355] [cursor=pointer]
+                      - generic [ref=e1356] [cursor=pointer]:
+                        - generic [ref=e1357] [cursor=pointer]:
+                          - img [ref=e1358] [cursor=pointer]
+                          - generic [ref=e1360] [cursor=pointer]: 9.0/10
+                        - generic [ref=e1361] [cursor=pointer]: "2005"
+                      - generic [ref=e1363] [cursor=pointer]:
+                        - img [ref=e1364] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1373] [cursor=pointer]:
+                        - img [ref=e1375] [cursor=pointer]
+                        - generic [ref=e1376] [cursor=pointer]:
+                          - img [ref=e1377] [cursor=pointer]
+                          - generic [ref=e1379] [cursor=pointer]: Gets good 9%
+                      - generic [ref=e1380] [cursor=pointer]:
+                        - generic [ref=e1381] [cursor=pointer]: Action
+                        - generic [ref=e1382] [cursor=pointer]: Adventure
+                  - generic [ref=e1384] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1385] [cursor=pointer]:
+                      - img
+                    - img "Horimiya (ホリミヤ)" [ref=e1387] [cursor=pointer]
+                    - generic [ref=e1388] [cursor=pointer]:
+                      - heading "Horimiya (ホリミヤ)" [level=3] [ref=e1390] [cursor=pointer]
+                      - generic [ref=e1391] [cursor=pointer]:
+                        - generic [ref=e1392] [cursor=pointer]:
+                          - img [ref=e1393] [cursor=pointer]
+                          - generic [ref=e1395] [cursor=pointer]: 8.2/10
+                        - generic [ref=e1396] [cursor=pointer]: "2011"
+                      - generic [ref=e1398] [cursor=pointer]:
+                        - img [ref=e1399] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1408] [cursor=pointer]:
+                        - img [ref=e1410] [cursor=pointer]
+                        - generic [ref=e1411] [cursor=pointer]:
+                          - img [ref=e1412] [cursor=pointer]
+                          - generic [ref=e1414] [cursor=pointer]: Gets good 9%
+                      - generic [ref=e1415] [cursor=pointer]:
+                        - generic [ref=e1416] [cursor=pointer]: Comedy
+                        - generic [ref=e1417] [cursor=pointer]: Romance
+                  - generic [ref=e1419] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1420] [cursor=pointer]:
+                      - img
+                    - img "Tokyo Revengers (東京卍リベンジャーズ)" [ref=e1422] [cursor=pointer]
+                    - generic [ref=e1423] [cursor=pointer]:
+                      - heading "Tokyo Revengers (東京卍リベンジャーズ)" [level=3] [ref=e1425] [cursor=pointer]
+                      - generic [ref=e1426] [cursor=pointer]:
+                        - generic [ref=e1427] [cursor=pointer]:
+                          - img [ref=e1428] [cursor=pointer]
+                          - generic [ref=e1430] [cursor=pointer]: 7.4/10
+                        - generic [ref=e1431] [cursor=pointer]: "2017"
+                      - generic [ref=e1433] [cursor=pointer]:
+                        - img [ref=e1434] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1443] [cursor=pointer]:
+                        - img [ref=e1445] [cursor=pointer]
+                        - generic [ref=e1446] [cursor=pointer]:
+                          - img [ref=e1447] [cursor=pointer]
+                          - generic [ref=e1449] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e1450] [cursor=pointer]:
+                        - generic [ref=e1451] [cursor=pointer]: Action
+                        - generic [ref=e1452] [cursor=pointer]: Drama
+                  - generic [ref=e1454] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1455] [cursor=pointer]:
+                      - img
+                    - 'img "Kaguya-sama: Love is War (かぐや様は告らせたい～天才たちの恋愛頭脳戦～)" [ref=e1457] [cursor=pointer]'
+                    - generic [ref=e1458] [cursor=pointer]:
+                      - 'heading "Kaguya-sama: Love is War (かぐや様は告らせたい～天才たちの恋愛頭脳戦～)" [level=3] [ref=e1460] [cursor=pointer]'
+                      - generic [ref=e1461] [cursor=pointer]:
+                        - generic [ref=e1462] [cursor=pointer]:
+                          - img [ref=e1463] [cursor=pointer]
+                          - generic [ref=e1465] [cursor=pointer]: 8.8/10
+                        - generic [ref=e1466] [cursor=pointer]: "2015"
+                      - generic [ref=e1468] [cursor=pointer]:
+                        - img [ref=e1469] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1478] [cursor=pointer]:
+                        - img [ref=e1480] [cursor=pointer]
+                        - generic [ref=e1481] [cursor=pointer]:
+                          - img [ref=e1482] [cursor=pointer]
+                          - generic [ref=e1484] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1485] [cursor=pointer]:
+                        - generic [ref=e1486] [cursor=pointer]: Comedy
+                        - generic [ref=e1487] [cursor=pointer]: Psychological
+                  - generic [ref=e1489] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1490] [cursor=pointer]:
+                      - img
+                    - img "Blue Lock (ブルーロック)" [ref=e1492] [cursor=pointer]
+                    - generic [ref=e1493] [cursor=pointer]:
+                      - heading "Blue Lock (ブルーロック)" [level=3] [ref=e1495] [cursor=pointer]
+                      - generic [ref=e1496] [cursor=pointer]:
+                        - generic [ref=e1497] [cursor=pointer]:
+                          - img [ref=e1498] [cursor=pointer]
+                          - generic [ref=e1500] [cursor=pointer]: 8.2/10
+                        - generic [ref=e1501] [cursor=pointer]: "2018"
+                      - generic [ref=e1503] [cursor=pointer]:
+                        - img [ref=e1504] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1513] [cursor=pointer]:
+                        - img [ref=e1515] [cursor=pointer]
+                        - generic [ref=e1516] [cursor=pointer]:
+                          - img [ref=e1517] [cursor=pointer]
+                          - generic [ref=e1519] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e1520] [cursor=pointer]:
+                        - generic [ref=e1521] [cursor=pointer]: Action
+                        - generic [ref=e1522] [cursor=pointer]: Drama
+                  - generic [ref=e1524] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1525] [cursor=pointer]:
+                      - img
+                    - img "Bleach (BLEACH)" [ref=e1527] [cursor=pointer]
+                    - generic [ref=e1528] [cursor=pointer]:
+                      - heading "Bleach (BLEACH)" [level=3] [ref=e1530] [cursor=pointer]
+                      - generic [ref=e1531] [cursor=pointer]:
+                        - generic [ref=e1532] [cursor=pointer]:
+                          - img [ref=e1533] [cursor=pointer]
+                          - generic [ref=e1535] [cursor=pointer]: 7.9/10
+                        - generic [ref=e1536] [cursor=pointer]: "2001"
+                      - generic [ref=e1538] [cursor=pointer]:
+                        - img [ref=e1539] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1548] [cursor=pointer]:
+                        - img [ref=e1550] [cursor=pointer]
+                        - generic [ref=e1551] [cursor=pointer]:
+                          - img [ref=e1552] [cursor=pointer]
+                          - generic [ref=e1554] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e1555] [cursor=pointer]:
+                        - generic [ref=e1556] [cursor=pointer]: Action
+                        - generic [ref=e1557] [cursor=pointer]: Adventure
+                  - generic [ref=e1559] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1560] [cursor=pointer]:
+                      - img
+                    - img "Komi Can't Communicate (古見さんは、コミュ症です。)" [ref=e1562] [cursor=pointer]
+                    - generic [ref=e1563] [cursor=pointer]:
+                      - heading "Komi Can't Communicate (古見さんは、コミュ症です。)" [level=3] [ref=e1565] [cursor=pointer]
+                      - generic [ref=e1566] [cursor=pointer]:
+                        - generic [ref=e1567] [cursor=pointer]:
+                          - img [ref=e1568] [cursor=pointer]
+                          - generic [ref=e1570] [cursor=pointer]: 7.7/10
+                        - generic [ref=e1571] [cursor=pointer]: "2016"
+                      - generic [ref=e1573] [cursor=pointer]:
+                        - img [ref=e1574] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1583] [cursor=pointer]:
+                        - img [ref=e1585] [cursor=pointer]
+                        - generic [ref=e1586] [cursor=pointer]:
+                          - img [ref=e1587] [cursor=pointer]
+                          - generic [ref=e1589] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1590] [cursor=pointer]:
+                        - generic [ref=e1591] [cursor=pointer]: Comedy
+                        - generic [ref=e1592] [cursor=pointer]: Romance
+                  - generic [ref=e1594] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1595] [cursor=pointer]:
+                      - img
+                    - img "Dandadan (ダンダダン)" [ref=e1597] [cursor=pointer]
+                    - generic [ref=e1598] [cursor=pointer]:
+                      - heading "Dandadan (ダンダダン)" [level=3] [ref=e1600] [cursor=pointer]
+                      - generic [ref=e1601] [cursor=pointer]:
+                        - generic [ref=e1602] [cursor=pointer]:
+                          - img [ref=e1603] [cursor=pointer]
+                          - generic [ref=e1605] [cursor=pointer]: 8.3/10
+                        - generic [ref=e1606] [cursor=pointer]: "2021"
+                      - generic [ref=e1608] [cursor=pointer]:
+                        - img [ref=e1609] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1618] [cursor=pointer]:
+                        - img [ref=e1620] [cursor=pointer]
+                        - generic [ref=e1621] [cursor=pointer]:
+                          - img [ref=e1622] [cursor=pointer]
+                          - generic [ref=e1624] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e1625] [cursor=pointer]:
+                        - generic [ref=e1626] [cursor=pointer]: Action
+                        - generic [ref=e1627] [cursor=pointer]: Comedy
+                  - generic [ref=e1629] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1630] [cursor=pointer]:
+                      - img
+                    - img "Black Clover (ブラッククローバー)" [ref=e1632] [cursor=pointer]
+                    - generic [ref=e1633] [cursor=pointer]:
+                      - heading "Black Clover (ブラッククローバー)" [level=3] [ref=e1635] [cursor=pointer]
+                      - generic [ref=e1636] [cursor=pointer]:
+                        - generic [ref=e1637] [cursor=pointer]:
+                          - img [ref=e1638] [cursor=pointer]
+                          - generic [ref=e1640] [cursor=pointer]: 7.7/10
+                        - generic [ref=e1641] [cursor=pointer]: "2015"
+                      - generic [ref=e1643] [cursor=pointer]:
+                        - img [ref=e1644] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1653] [cursor=pointer]:
+                        - img [ref=e1655] [cursor=pointer]
+                        - generic [ref=e1656] [cursor=pointer]:
+                          - img [ref=e1657] [cursor=pointer]
+                          - generic [ref=e1659] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e1660] [cursor=pointer]:
+                        - generic [ref=e1661] [cursor=pointer]: Action
+                        - generic [ref=e1662] [cursor=pointer]: Comedy
+              - generic [ref=e1663]:
+                - generic [ref=e1664]:
+                  - heading "Popular Webtoons" [level=3] [ref=e1665]
+                  - generic [ref=e1666]:
+                    - button "Previous" [ref=e1667] [cursor=pointer]:
+                      - img
+                    - button "Next" [ref=e1668] [cursor=pointer]:
+                      - img
+                - generic [ref=e1669]:
+                  - button "All" [ref=e1670] [cursor=pointer]
+                  - button "KR" [ref=e1671] [cursor=pointer]
+                  - button "CN" [ref=e1672] [cursor=pointer]
+                  - button "TW" [ref=e1673] [cursor=pointer]
+                - generic [ref=e1675]:
+                  - generic [ref=e1677] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1678] [cursor=pointer]:
+                      - img
+                    - img "Solo Leveling (나 혼자만 레벨업)" [ref=e1680] [cursor=pointer]
+                    - generic [ref=e1681] [cursor=pointer]:
+                      - heading "Solo Leveling (나 혼자만 레벨업)" [level=3] [ref=e1683] [cursor=pointer]
+                      - generic [ref=e1684] [cursor=pointer]:
+                        - generic [ref=e1685] [cursor=pointer]:
+                          - img [ref=e1686] [cursor=pointer]
+                          - generic [ref=e1688] [cursor=pointer]: 8.4/10
+                        - generic [ref=e1689] [cursor=pointer]: "2018"
+                      - generic [ref=e1691] [cursor=pointer]:
+                        - img [ref=e1692] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1701] [cursor=pointer]:
+                        - img [ref=e1703] [cursor=pointer]
+                        - generic [ref=e1704] [cursor=pointer]:
+                          - img [ref=e1705] [cursor=pointer]
+                          - generic [ref=e1707] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e1708] [cursor=pointer]:
+                        - generic [ref=e1709] [cursor=pointer]: Action
+                        - generic [ref=e1710] [cursor=pointer]: Adventure
+                  - generic [ref=e1712] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1713] [cursor=pointer]:
+                      - img
+                    - img "Omniscient Reader (전지적 독자 시점)" [ref=e1715] [cursor=pointer]
+                    - generic [ref=e1716] [cursor=pointer]:
+                      - heading "Omniscient Reader (전지적 독자 시점)" [level=3] [ref=e1718] [cursor=pointer]
+                      - generic [ref=e1719] [cursor=pointer]:
+                        - generic [ref=e1720] [cursor=pointer]:
+                          - img [ref=e1721] [cursor=pointer]
+                          - generic [ref=e1723] [cursor=pointer]: 8.6/10
+                        - generic [ref=e1724] [cursor=pointer]: "2020"
+                      - generic [ref=e1726] [cursor=pointer]:
+                        - img [ref=e1727] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1736] [cursor=pointer]:
+                        - img [ref=e1738] [cursor=pointer]
+                        - generic [ref=e1739] [cursor=pointer]:
+                          - img [ref=e1740] [cursor=pointer]
+                          - generic [ref=e1742] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e1743] [cursor=pointer]:
+                        - generic [ref=e1744] [cursor=pointer]: Action
+                        - generic [ref=e1745] [cursor=pointer]: Adventure
+                  - generic [ref=e1747] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1748] [cursor=pointer]:
+                      - img
+                    - img "Tower of God (신의 탑)" [ref=e1750] [cursor=pointer]
+                    - generic [ref=e1751] [cursor=pointer]:
+                      - heading "Tower of God (신의 탑)" [level=3] [ref=e1753] [cursor=pointer]
+                      - generic [ref=e1754] [cursor=pointer]:
+                        - generic [ref=e1755] [cursor=pointer]:
+                          - img [ref=e1756] [cursor=pointer]
+                          - generic [ref=e1758] [cursor=pointer]: 8.1/10
+                        - generic [ref=e1759] [cursor=pointer]: "2010"
+                      - generic [ref=e1761] [cursor=pointer]:
+                        - img [ref=e1762] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1771] [cursor=pointer]:
+                        - img [ref=e1773] [cursor=pointer]
+                        - generic [ref=e1774] [cursor=pointer]:
+                          - img [ref=e1775] [cursor=pointer]
+                          - generic [ref=e1777] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1778] [cursor=pointer]:
+                        - generic [ref=e1779] [cursor=pointer]: Action
+                        - generic [ref=e1780] [cursor=pointer]: Adventure
+                  - generic [ref=e1782] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1783] [cursor=pointer]:
+                      - img
+                    - img "Bastard (후레자식)" [ref=e1785] [cursor=pointer]
+                    - generic [ref=e1786] [cursor=pointer]:
+                      - heading "Bastard (후레자식)" [level=3] [ref=e1788] [cursor=pointer]
+                      - generic [ref=e1789] [cursor=pointer]:
+                        - generic [ref=e1790] [cursor=pointer]:
+                          - img [ref=e1791] [cursor=pointer]
+                          - generic [ref=e1793] [cursor=pointer]: 8.3/10
+                        - generic [ref=e1794] [cursor=pointer]: "2014"
+                      - generic [ref=e1796] [cursor=pointer]:
+                        - img [ref=e1797] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1806] [cursor=pointer]:
+                        - img [ref=e1808] [cursor=pointer]
+                        - generic [ref=e1809] [cursor=pointer]:
+                          - img [ref=e1810] [cursor=pointer]
+                          - generic [ref=e1812] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1813] [cursor=pointer]:
+                        - generic [ref=e1814] [cursor=pointer]: Drama
+                        - generic [ref=e1815] [cursor=pointer]: Horror
+                  - generic [ref=e1817] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1818] [cursor=pointer]:
+                      - img
+                    - img "The Horizon (수평선)" [ref=e1820] [cursor=pointer]
+                    - generic [ref=e1821] [cursor=pointer]:
+                      - heading "The Horizon (수평선)" [level=3] [ref=e1823] [cursor=pointer]
+                      - generic [ref=e1824] [cursor=pointer]:
+                        - generic [ref=e1825] [cursor=pointer]:
+                          - img [ref=e1826] [cursor=pointer]
+                          - generic [ref=e1828] [cursor=pointer]: 8.5/10
+                        - generic [ref=e1829] [cursor=pointer]: "2016"
+                      - generic [ref=e1831] [cursor=pointer]:
+                        - img [ref=e1832] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1841] [cursor=pointer]:
+                        - img [ref=e1843] [cursor=pointer]
+                        - generic [ref=e1844] [cursor=pointer]:
+                          - img [ref=e1845] [cursor=pointer]
+                          - generic [ref=e1847] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1848] [cursor=pointer]:
+                        - generic [ref=e1849] [cursor=pointer]: Adventure
+                        - generic [ref=e1850] [cursor=pointer]: Drama
+                  - generic [ref=e1852] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1853] [cursor=pointer]:
+                      - img
+                    - img "SSS-Class Revival Hunter (SSS급 죽어야 사는 헌터)" [ref=e1855] [cursor=pointer]
+                    - generic [ref=e1856] [cursor=pointer]:
+                      - heading "SSS-Class Revival Hunter (SSS급 죽어야 사는 헌터)" [level=3] [ref=e1858] [cursor=pointer]
+                      - generic [ref=e1859] [cursor=pointer]:
+                        - generic [ref=e1860] [cursor=pointer]:
+                          - img [ref=e1861] [cursor=pointer]
+                          - generic [ref=e1863] [cursor=pointer]: 8.2/10
+                        - generic [ref=e1864] [cursor=pointer]: "2020"
+                      - generic [ref=e1866] [cursor=pointer]:
+                        - img [ref=e1867] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1876] [cursor=pointer]:
+                        - img [ref=e1878] [cursor=pointer]
+                        - generic [ref=e1879] [cursor=pointer]:
+                          - img [ref=e1880] [cursor=pointer]
+                          - generic [ref=e1882] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e1883] [cursor=pointer]:
+                        - generic [ref=e1884] [cursor=pointer]: Action
+                        - generic [ref=e1885] [cursor=pointer]: Adventure
+                  - generic [ref=e1887] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1888] [cursor=pointer]:
+                      - img
+                    - img "Sweet Home (스위트홈)" [ref=e1890] [cursor=pointer]
+                    - generic [ref=e1891] [cursor=pointer]:
+                      - heading "Sweet Home (스위트홈)" [level=3] [ref=e1893] [cursor=pointer]
+                      - generic [ref=e1894] [cursor=pointer]:
+                        - generic [ref=e1895] [cursor=pointer]:
+                          - img [ref=e1896] [cursor=pointer]
+                          - generic [ref=e1898] [cursor=pointer]: 8.1/10
+                        - generic [ref=e1899] [cursor=pointer]: "2017"
+                      - generic [ref=e1901] [cursor=pointer]:
+                        - img [ref=e1902] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1911] [cursor=pointer]:
+                        - img [ref=e1913] [cursor=pointer]
+                        - generic [ref=e1914] [cursor=pointer]:
+                          - img [ref=e1915] [cursor=pointer]
+                          - generic [ref=e1917] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e1918] [cursor=pointer]:
+                        - generic [ref=e1919] [cursor=pointer]: Drama
+                        - generic [ref=e1920] [cursor=pointer]: Horror
+                  - generic [ref=e1922] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1923] [cursor=pointer]:
+                      - img
+                    - img "The God of High School (갓 오브 하이스쿨)" [ref=e1925] [cursor=pointer]
+                    - generic [ref=e1926] [cursor=pointer]:
+                      - heading "The God of High School (갓 오브 하이스쿨)" [level=3] [ref=e1928] [cursor=pointer]
+                      - generic [ref=e1929] [cursor=pointer]:
+                        - generic [ref=e1930] [cursor=pointer]:
+                          - img [ref=e1931] [cursor=pointer]
+                          - generic [ref=e1933] [cursor=pointer]: 7.6/10
+                        - generic [ref=e1934] [cursor=pointer]: "2011"
+                      - generic [ref=e1936] [cursor=pointer]:
+                        - img [ref=e1937] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1946] [cursor=pointer]:
+                        - img [ref=e1948] [cursor=pointer]
+                        - generic [ref=e1949] [cursor=pointer]:
+                          - img [ref=e1950] [cursor=pointer]
+                          - generic [ref=e1952] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e1953] [cursor=pointer]:
+                        - generic [ref=e1954] [cursor=pointer]: Action
+                        - generic [ref=e1955] [cursor=pointer]: Adventure
+                  - generic [ref=e1957] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1958] [cursor=pointer]:
+                      - img
+                    - img "Teenage Mercenary (입학용병)" [ref=e1960] [cursor=pointer]
+                    - generic [ref=e1961] [cursor=pointer]:
+                      - heading "Teenage Mercenary (입학용병)" [level=3] [ref=e1963] [cursor=pointer]
+                      - generic [ref=e1964] [cursor=pointer]:
+                        - generic [ref=e1965] [cursor=pointer]:
+                          - img [ref=e1966] [cursor=pointer]
+                          - generic [ref=e1968] [cursor=pointer]: 8.0/10
+                        - generic [ref=e1969] [cursor=pointer]: "2020"
+                      - generic [ref=e1971] [cursor=pointer]:
+                        - img [ref=e1972] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e1981] [cursor=pointer]:
+                        - img [ref=e1983] [cursor=pointer]
+                        - generic [ref=e1984] [cursor=pointer]:
+                          - img [ref=e1985] [cursor=pointer]
+                          - generic [ref=e1987] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e1988] [cursor=pointer]:
+                        - generic [ref=e1989] [cursor=pointer]: Action
+                        - generic [ref=e1990] [cursor=pointer]: Drama
+                  - generic [ref=e1992] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e1993] [cursor=pointer]:
+                      - img
+                    - img "A Returner's Magic Should Be Special (귀환자의 마법은 특별해야 합니다)" [ref=e1995] [cursor=pointer]
+                    - generic [ref=e1996] [cursor=pointer]:
+                      - heading "A Returner's Magic Should Be Special (귀환자의 마법은 특별해야 합니다)" [level=3] [ref=e1998] [cursor=pointer]
+                      - generic [ref=e1999] [cursor=pointer]:
+                        - generic [ref=e2000] [cursor=pointer]:
+                          - img [ref=e2001] [cursor=pointer]
+                          - generic [ref=e2003] [cursor=pointer]: 7.6/10
+                        - generic [ref=e2004] [cursor=pointer]: "2018"
+                      - generic [ref=e2006] [cursor=pointer]:
+                        - img [ref=e2007] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2016] [cursor=pointer]:
+                        - img [ref=e2018] [cursor=pointer]
+                        - generic [ref=e2019] [cursor=pointer]:
+                          - img [ref=e2020] [cursor=pointer]
+                          - generic [ref=e2022] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e2023] [cursor=pointer]:
+                        - generic [ref=e2024] [cursor=pointer]: Action
+                        - generic [ref=e2025] [cursor=pointer]: Adventure
+                  - generic [ref=e2027] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2028] [cursor=pointer]:
+                      - img
+                    - img "The Greatest Estate Developer (역대급 영지 설계사)" [ref=e2030] [cursor=pointer]
+                    - generic [ref=e2031] [cursor=pointer]:
+                      - heading "The Greatest Estate Developer (역대급 영지 설계사)" [level=3] [ref=e2033] [cursor=pointer]
+                      - generic [ref=e2034] [cursor=pointer]:
+                        - generic [ref=e2035] [cursor=pointer]:
+                          - img [ref=e2036] [cursor=pointer]
+                          - generic [ref=e2038] [cursor=pointer]: 8.7/10
+                        - generic [ref=e2039] [cursor=pointer]: "2021"
+                      - generic [ref=e2041] [cursor=pointer]:
+                        - img [ref=e2042] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2051] [cursor=pointer]:
+                        - img [ref=e2053] [cursor=pointer]
+                        - generic [ref=e2054] [cursor=pointer]:
+                          - img [ref=e2055] [cursor=pointer]
+                          - generic [ref=e2057] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e2058] [cursor=pointer]:
+                        - generic [ref=e2059] [cursor=pointer]: Adventure
+                        - generic [ref=e2060] [cursor=pointer]: Comedy
+                  - generic [ref=e2062] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2063] [cursor=pointer]:
+                      - img
+                    - img "I’m the Max-Level Newbie (나 혼자 만렙 뉴비)" [ref=e2065] [cursor=pointer]
+                    - generic [ref=e2066] [cursor=pointer]:
+                      - heading "I’m the Max-Level Newbie (나 혼자 만렙 뉴비)" [level=3] [ref=e2068] [cursor=pointer]
+                      - generic [ref=e2069] [cursor=pointer]:
+                        - generic [ref=e2070] [cursor=pointer]:
+                          - img [ref=e2071] [cursor=pointer]
+                          - generic [ref=e2073] [cursor=pointer]: 7.7/10
+                        - generic [ref=e2074] [cursor=pointer]: "2021"
+                      - generic [ref=e2076] [cursor=pointer]:
+                        - img [ref=e2077] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2086] [cursor=pointer]:
+                        - img [ref=e2088] [cursor=pointer]
+                        - generic [ref=e2089] [cursor=pointer]:
+                          - img [ref=e2090] [cursor=pointer]
+                          - generic [ref=e2092] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e2093] [cursor=pointer]:
+                        - generic [ref=e2094] [cursor=pointer]: Action
+                        - generic [ref=e2095] [cursor=pointer]: Fantasy
+                  - generic [ref=e2097] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2098] [cursor=pointer]:
+                      - img
+                    - img "Second Life Ranker (두번사는랭커)" [ref=e2100] [cursor=pointer]
+                    - generic [ref=e2101] [cursor=pointer]:
+                      - heading "Second Life Ranker (두번사는랭커)" [level=3] [ref=e2103] [cursor=pointer]
+                      - generic [ref=e2104] [cursor=pointer]:
+                        - generic [ref=e2105] [cursor=pointer]:
+                          - img [ref=e2106] [cursor=pointer]
+                          - generic [ref=e2108] [cursor=pointer]: 7.7/10
+                        - generic [ref=e2109] [cursor=pointer]: "2019"
+                      - generic [ref=e2111] [cursor=pointer]:
+                        - img [ref=e2112] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2121] [cursor=pointer]:
+                        - img [ref=e2123] [cursor=pointer]
+                        - generic [ref=e2124] [cursor=pointer]:
+                          - img [ref=e2125] [cursor=pointer]
+                          - generic [ref=e2127] [cursor=pointer]: Gets good 9%
+                      - generic [ref=e2128] [cursor=pointer]:
+                        - generic [ref=e2129] [cursor=pointer]: Action
+                        - generic [ref=e2130] [cursor=pointer]: Adventure
+                  - generic [ref=e2132] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2133] [cursor=pointer]:
+                      - img
+                    - img "Wind Breaker (윈드브레이커)" [ref=e2135] [cursor=pointer]
+                    - generic [ref=e2136] [cursor=pointer]:
+                      - heading "Wind Breaker (윈드브레이커)" [level=3] [ref=e2138] [cursor=pointer]
+                      - generic [ref=e2139] [cursor=pointer]:
+                        - generic [ref=e2140] [cursor=pointer]:
+                          - img [ref=e2141] [cursor=pointer]
+                          - generic [ref=e2143] [cursor=pointer]: 8.5/10
+                        - generic [ref=e2144] [cursor=pointer]: "2013"
+                      - generic [ref=e2146] [cursor=pointer]:
+                        - img [ref=e2147] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2156] [cursor=pointer]:
+                        - img [ref=e2158] [cursor=pointer]
+                        - generic [ref=e2159] [cursor=pointer]:
+                          - img [ref=e2160] [cursor=pointer]
+                          - generic [ref=e2162] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2163] [cursor=pointer]:
+                        - generic [ref=e2164] [cursor=pointer]: Action
+                        - generic [ref=e2165] [cursor=pointer]: Comedy
+                  - generic [ref=e2167] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2168] [cursor=pointer]:
+                      - img
+                    - img "Lookism (외모지상주의)" [ref=e2170] [cursor=pointer]
+                    - generic [ref=e2171] [cursor=pointer]:
+                      - heading "Lookism (외모지상주의)" [level=3] [ref=e2173] [cursor=pointer]
+                      - generic [ref=e2174] [cursor=pointer]:
+                        - generic [ref=e2175] [cursor=pointer]:
+                          - img [ref=e2176] [cursor=pointer]
+                          - generic [ref=e2178] [cursor=pointer]: 7.8/10
+                        - generic [ref=e2179] [cursor=pointer]: "2014"
+                      - generic [ref=e2181] [cursor=pointer]:
+                        - img [ref=e2182] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2191] [cursor=pointer]:
+                        - img [ref=e2193] [cursor=pointer]
+                        - generic [ref=e2194] [cursor=pointer]:
+                          - img [ref=e2195] [cursor=pointer]
+                          - generic [ref=e2197] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2198] [cursor=pointer]:
+                        - generic [ref=e2199] [cursor=pointer]: Action
+                        - generic [ref=e2200] [cursor=pointer]: Comedy
+                  - generic [ref=e2202] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2203] [cursor=pointer]:
+                      - img
+                    - img "Nano Machine (나노마신)" [ref=e2205] [cursor=pointer]
+                    - generic [ref=e2206] [cursor=pointer]:
+                      - heading "Nano Machine (나노마신)" [level=3] [ref=e2208] [cursor=pointer]
+                      - generic [ref=e2209] [cursor=pointer]:
+                        - generic [ref=e2210] [cursor=pointer]:
+                          - img [ref=e2211] [cursor=pointer]
+                          - generic [ref=e2213] [cursor=pointer]: 8.2/10
+                        - generic [ref=e2214] [cursor=pointer]: "2020"
+                      - generic [ref=e2216] [cursor=pointer]:
+                        - img [ref=e2217] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2226] [cursor=pointer]:
+                        - img [ref=e2228] [cursor=pointer]
+                        - generic [ref=e2229] [cursor=pointer]:
+                          - img [ref=e2230] [cursor=pointer]
+                          - generic [ref=e2232] [cursor=pointer]: Gets good 35%
+                      - generic [ref=e2233] [cursor=pointer]:
+                        - generic [ref=e2234] [cursor=pointer]: Action
+                        - generic [ref=e2235] [cursor=pointer]: Adventure
+                  - generic [ref=e2237] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2238] [cursor=pointer]:
+                      - img
+                    - img "Eleceed (일렉시드)" [ref=e2240] [cursor=pointer]
+                    - generic [ref=e2241] [cursor=pointer]:
+                      - heading "Eleceed (일렉시드)" [level=3] [ref=e2243] [cursor=pointer]
+                      - generic [ref=e2244] [cursor=pointer]:
+                        - generic [ref=e2245] [cursor=pointer]:
+                          - img [ref=e2246] [cursor=pointer]
+                          - generic [ref=e2248] [cursor=pointer]: 8.5/10
+                        - generic [ref=e2249] [cursor=pointer]: "2018"
+                      - generic [ref=e2251] [cursor=pointer]:
+                        - img [ref=e2252] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2261] [cursor=pointer]:
+                        - img [ref=e2263] [cursor=pointer]
+                        - generic [ref=e2264] [cursor=pointer]:
+                          - img [ref=e2265] [cursor=pointer]
+                          - generic [ref=e2267] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e2268] [cursor=pointer]:
+                        - generic [ref=e2269] [cursor=pointer]: Action
+                        - generic [ref=e2270] [cursor=pointer]: Comedy
+                  - generic [ref=e2272] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2273] [cursor=pointer]:
+                      - img
+                    - img "The Boxer (더 복서)" [ref=e2275] [cursor=pointer]
+                    - generic [ref=e2276] [cursor=pointer]:
+                      - heading "The Boxer (더 복서)" [level=3] [ref=e2278] [cursor=pointer]
+                      - generic [ref=e2279] [cursor=pointer]:
+                        - generic [ref=e2280] [cursor=pointer]:
+                          - img [ref=e2281] [cursor=pointer]
+                          - generic [ref=e2283] [cursor=pointer]: 8.3/10
+                        - generic [ref=e2284] [cursor=pointer]: "2019"
+                      - generic [ref=e2286] [cursor=pointer]:
+                        - img [ref=e2287] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2296] [cursor=pointer]:
+                        - img [ref=e2298] [cursor=pointer]
+                        - generic [ref=e2299] [cursor=pointer]:
+                          - img [ref=e2300] [cursor=pointer]
+                          - generic [ref=e2302] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e2303] [cursor=pointer]:
+                        - generic [ref=e2304] [cursor=pointer]: Action
+                        - generic [ref=e2305] [cursor=pointer]: Drama
+                  - generic [ref=e2307] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2308] [cursor=pointer]:
+                      - img
+                    - img "Lout of Count’s Family (백작가의 망나니가 되었다)" [ref=e2310] [cursor=pointer]
+                    - generic [ref=e2311] [cursor=pointer]:
+                      - heading "Lout of Count’s Family (백작가의 망나니가 되었다)" [level=3] [ref=e2313] [cursor=pointer]
+                      - generic [ref=e2314] [cursor=pointer]:
+                        - generic [ref=e2315] [cursor=pointer]:
+                          - img [ref=e2316] [cursor=pointer]
+                          - generic [ref=e2318] [cursor=pointer]: 7.8/10
+                        - generic [ref=e2319] [cursor=pointer]: "2020"
+                      - generic [ref=e2321] [cursor=pointer]:
+                        - img [ref=e2322] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2331] [cursor=pointer]:
+                        - img [ref=e2333] [cursor=pointer]
+                        - generic [ref=e2334] [cursor=pointer]:
+                          - img [ref=e2335] [cursor=pointer]
+                          - generic [ref=e2337] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e2338] [cursor=pointer]:
+                        - generic [ref=e2339] [cursor=pointer]: Action
+                        - generic [ref=e2340] [cursor=pointer]: Adventure
+                  - generic [ref=e2342] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2343] [cursor=pointer]:
+                      - img
+                    - img "The Legend of the Northern Blade (북검전기)" [ref=e2345] [cursor=pointer]
+                    - generic [ref=e2346] [cursor=pointer]:
+                      - heading "The Legend of the Northern Blade (북검전기)" [level=3] [ref=e2348] [cursor=pointer]
+                      - generic [ref=e2349] [cursor=pointer]:
+                        - generic [ref=e2350] [cursor=pointer]:
+                          - img [ref=e2351] [cursor=pointer]
+                          - generic [ref=e2353] [cursor=pointer]: 8.5/10
+                        - generic [ref=e2354] [cursor=pointer]: "2019"
+                      - generic [ref=e2356] [cursor=pointer]:
+                        - img [ref=e2357] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2366] [cursor=pointer]:
+                        - img [ref=e2368] [cursor=pointer]
+                        - generic [ref=e2369] [cursor=pointer]:
+                          - img [ref=e2370] [cursor=pointer]
+                          - generic [ref=e2372] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2373] [cursor=pointer]:
+                        - generic [ref=e2374] [cursor=pointer]: Action
+                        - generic [ref=e2375] [cursor=pointer]: Adventure
+                  - generic [ref=e2377] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2378] [cursor=pointer]:
+                      - img
+                    - img "THE BREAKER (브레이커)" [ref=e2380] [cursor=pointer]
+                    - generic [ref=e2381] [cursor=pointer]:
+                      - heading "THE BREAKER (브레이커)" [level=3] [ref=e2383] [cursor=pointer]
+                      - generic [ref=e2384] [cursor=pointer]:
+                        - generic [ref=e2385] [cursor=pointer]:
+                          - img [ref=e2386] [cursor=pointer]
+                          - generic [ref=e2388] [cursor=pointer]: 8.0/10
+                        - generic [ref=e2389] [cursor=pointer]: "2007"
+                      - generic [ref=e2391] [cursor=pointer]:
+                        - img [ref=e2392] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2401] [cursor=pointer]:
+                        - img [ref=e2403] [cursor=pointer]
+                        - generic [ref=e2404] [cursor=pointer]:
+                          - img [ref=e2405] [cursor=pointer]
+                          - generic [ref=e2407] [cursor=pointer]: Gets good 30%
+                      - generic [ref=e2408] [cursor=pointer]:
+                        - generic [ref=e2409] [cursor=pointer]: Action
+                        - generic [ref=e2410] [cursor=pointer]: Comedy
+                  - generic [ref=e2412] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2413] [cursor=pointer]:
+                      - img
+                    - img "Tamen De Gushi (她们的故事)" [ref=e2415] [cursor=pointer]
+                    - generic [ref=e2416] [cursor=pointer]:
+                      - heading "Tamen De Gushi (她们的故事)" [level=3] [ref=e2418] [cursor=pointer]
+                      - generic [ref=e2419] [cursor=pointer]:
+                        - generic [ref=e2420] [cursor=pointer]:
+                          - img [ref=e2421] [cursor=pointer]
+                          - generic [ref=e2423] [cursor=pointer]: 8.2/10
+                        - generic [ref=e2424] [cursor=pointer]: "2014"
+                      - generic [ref=e2426] [cursor=pointer]:
+                        - img [ref=e2427] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2436] [cursor=pointer]:
+                        - img [ref=e2438] [cursor=pointer]
+                        - generic [ref=e2439] [cursor=pointer]:
+                          - img [ref=e2440] [cursor=pointer]
+                          - generic [ref=e2442] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2443] [cursor=pointer]:
+                        - generic [ref=e2444] [cursor=pointer]: Comedy
+                        - generic [ref=e2445] [cursor=pointer]: Romance
+                  - generic [ref=e2447] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2448] [cursor=pointer]:
+                      - img
+                    - img "The World After the Fall (멸망 이후의 세계)" [ref=e2450] [cursor=pointer]
+                    - generic [ref=e2451] [cursor=pointer]:
+                      - heading "The World After the Fall (멸망 이후의 세계)" [level=3] [ref=e2453] [cursor=pointer]
+                      - generic [ref=e2454] [cursor=pointer]:
+                        - generic [ref=e2455] [cursor=pointer]:
+                          - img [ref=e2456] [cursor=pointer]
+                          - generic [ref=e2458] [cursor=pointer]: 7.7/10
+                        - generic [ref=e2459] [cursor=pointer]: "2022"
+                      - generic [ref=e2461] [cursor=pointer]:
+                        - img [ref=e2462] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2471] [cursor=pointer]:
+                        - img [ref=e2473] [cursor=pointer]
+                        - generic [ref=e2474] [cursor=pointer]:
+                          - img [ref=e2475] [cursor=pointer]
+                          - generic [ref=e2477] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e2478] [cursor=pointer]:
+                        - generic [ref=e2479] [cursor=pointer]: Action
+                        - generic [ref=e2480] [cursor=pointer]: Adventure
+                  - generic [ref=e2482] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2483] [cursor=pointer]:
+                      - img
+                    - img "Doom Breaker (투신전생기)" [ref=e2485] [cursor=pointer]
+                    - generic [ref=e2486] [cursor=pointer]:
+                      - heading "Doom Breaker (투신전생기)" [level=3] [ref=e2488] [cursor=pointer]
+                      - generic [ref=e2489] [cursor=pointer]:
+                        - generic [ref=e2490] [cursor=pointer]:
+                          - img [ref=e2491] [cursor=pointer]
+                          - generic [ref=e2493] [cursor=pointer]: 7.9/10
+                        - generic [ref=e2494] [cursor=pointer]: "2021"
+                      - generic [ref=e2496] [cursor=pointer]:
+                        - img [ref=e2497] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2506] [cursor=pointer]:
+                        - img [ref=e2508] [cursor=pointer]
+                        - generic [ref=e2509] [cursor=pointer]:
+                          - img [ref=e2510] [cursor=pointer]
+                          - generic [ref=e2512] [cursor=pointer]: Gets good 13%
+                      - generic [ref=e2513] [cursor=pointer]:
+                        - generic [ref=e2514] [cursor=pointer]: Action
+                        - generic [ref=e2515] [cursor=pointer]: Fantasy
+                  - generic [ref=e2517] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2518] [cursor=pointer]:
+                      - img
+                    - img "Who Made Me a Princess (어느 날 공주가 되어버렸다)" [ref=e2520] [cursor=pointer]
+                    - generic [ref=e2521] [cursor=pointer]:
+                      - heading "Who Made Me a Princess (어느 날 공주가 되어버렸다)" [level=3] [ref=e2523] [cursor=pointer]
+                      - generic [ref=e2524] [cursor=pointer]:
+                        - generic [ref=e2525] [cursor=pointer]:
+                          - img [ref=e2526] [cursor=pointer]
+                          - generic [ref=e2528] [cursor=pointer]: 8.3/10
+                        - generic [ref=e2529] [cursor=pointer]: "2017"
+                      - generic [ref=e2531] [cursor=pointer]:
+                        - img [ref=e2532] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2541] [cursor=pointer]:
+                        - img [ref=e2543] [cursor=pointer]
+                        - generic [ref=e2544] [cursor=pointer]:
+                          - img [ref=e2545] [cursor=pointer]
+                          - generic [ref=e2547] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e2548] [cursor=pointer]:
+                        - generic [ref=e2549] [cursor=pointer]: Comedy
+                        - generic [ref=e2550] [cursor=pointer]: Fantasy
+                  - generic [ref=e2552] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2553] [cursor=pointer]:
+                      - img
+                    - img "Tales of Demons and Gods (妖神记)" [ref=e2555] [cursor=pointer]
+                    - generic [ref=e2556] [cursor=pointer]:
+                      - heading "Tales of Demons and Gods (妖神记)" [level=3] [ref=e2558] [cursor=pointer]
+                      - generic [ref=e2559] [cursor=pointer]:
+                        - generic [ref=e2560] [cursor=pointer]:
+                          - img [ref=e2561] [cursor=pointer]
+                          - generic [ref=e2563] [cursor=pointer]: 7.7/10
+                        - generic [ref=e2564] [cursor=pointer]: "2015"
+                      - generic [ref=e2566] [cursor=pointer]:
+                        - img [ref=e2567] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2576] [cursor=pointer]:
+                        - img [ref=e2578] [cursor=pointer]
+                        - generic [ref=e2579] [cursor=pointer]:
+                          - img [ref=e2580] [cursor=pointer]
+                          - generic [ref=e2582] [cursor=pointer]: Gets good 4%
+                      - generic [ref=e2583] [cursor=pointer]:
+                        - generic [ref=e2584] [cursor=pointer]: Action
+                        - generic [ref=e2585] [cursor=pointer]: Adventure
+                  - generic [ref=e2587] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2588] [cursor=pointer]:
+                      - img
+                    - img "Here U Are" [ref=e2590] [cursor=pointer]
+                    - generic [ref=e2591] [cursor=pointer]:
+                      - heading "Here U Are" [level=3] [ref=e2593] [cursor=pointer]
+                      - generic [ref=e2594] [cursor=pointer]:
+                        - generic [ref=e2595] [cursor=pointer]:
+                          - img [ref=e2596] [cursor=pointer]
+                          - generic [ref=e2598] [cursor=pointer]: 8.5/10
+                        - generic [ref=e2599] [cursor=pointer]: "2017"
+                      - generic [ref=e2601] [cursor=pointer]:
+                        - img [ref=e2602] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2611] [cursor=pointer]:
+                        - img [ref=e2613] [cursor=pointer]
+                        - generic [ref=e2614] [cursor=pointer]:
+                          - img [ref=e2615] [cursor=pointer]
+                          - generic [ref=e2617] [cursor=pointer]: Gets good 30%
+                      - generic [ref=e2618] [cursor=pointer]:
+                        - generic [ref=e2619] [cursor=pointer]: Drama
+                        - generic [ref=e2620] [cursor=pointer]: Romance
+                  - generic [ref=e2622] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2623] [cursor=pointer]:
+                      - img
+                    - img "19 Tian (19天)" [ref=e2625] [cursor=pointer]
+                    - generic [ref=e2626] [cursor=pointer]:
+                      - heading "19 Tian (19天)" [level=3] [ref=e2628] [cursor=pointer]
+                      - generic [ref=e2629] [cursor=pointer]:
+                        - generic [ref=e2630] [cursor=pointer]:
+                          - img [ref=e2631] [cursor=pointer]
+                          - generic [ref=e2633] [cursor=pointer]: 8.4/10
+                        - generic [ref=e2634] [cursor=pointer]: "2014"
+                      - generic [ref=e2636] [cursor=pointer]:
+                        - img [ref=e2637] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2646] [cursor=pointer]:
+                        - img [ref=e2648] [cursor=pointer]
+                        - generic [ref=e2649] [cursor=pointer]:
+                          - img [ref=e2650] [cursor=pointer]
+                          - generic [ref=e2652] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2653] [cursor=pointer]:
+                        - generic [ref=e2654] [cursor=pointer]: Comedy
+                        - generic [ref=e2655] [cursor=pointer]: Romance
+                  - generic [ref=e2657] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2658] [cursor=pointer]:
+                      - img
+                    - img "Martial Peak (武炼巅峰)" [ref=e2660] [cursor=pointer]
+                    - generic [ref=e2661] [cursor=pointer]:
+                      - heading "Martial Peak (武炼巅峰)" [level=3] [ref=e2663] [cursor=pointer]
+                      - generic [ref=e2664] [cursor=pointer]:
+                        - generic [ref=e2665] [cursor=pointer]:
+                          - img [ref=e2666] [cursor=pointer]
+                          - generic [ref=e2668] [cursor=pointer]: 7.3/10
+                        - generic [ref=e2669] [cursor=pointer]: "2018"
+                      - generic [ref=e2671] [cursor=pointer]:
+                        - img [ref=e2672] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2681] [cursor=pointer]:
+                        - img [ref=e2683] [cursor=pointer]
+                        - generic [ref=e2684] [cursor=pointer]:
+                          - img [ref=e2685] [cursor=pointer]
+                          - generic [ref=e2687] [cursor=pointer]: Gets good 30%
+                      - generic [ref=e2688] [cursor=pointer]:
+                        - generic [ref=e2689] [cursor=pointer]: Action
+                        - generic [ref=e2690] [cursor=pointer]: Adventure
+                  - generic [ref=e2692] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2693] [cursor=pointer]:
+                      - img
+                    - img "The Devil Butler (魔皇大管家)" [ref=e2695] [cursor=pointer]
+                    - generic [ref=e2696] [cursor=pointer]:
+                      - heading "The Devil Butler (魔皇大管家)" [level=3] [ref=e2698] [cursor=pointer]
+                      - generic [ref=e2699] [cursor=pointer]:
+                        - generic [ref=e2700] [cursor=pointer]:
+                          - img [ref=e2701] [cursor=pointer]
+                          - generic [ref=e2703] [cursor=pointer]: 8.1/10
+                        - generic [ref=e2704] [cursor=pointer]: "2019"
+                      - generic [ref=e2706] [cursor=pointer]:
+                        - img [ref=e2707] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2716] [cursor=pointer]:
+                        - img [ref=e2718] [cursor=pointer]
+                        - generic [ref=e2719] [cursor=pointer]:
+                          - img [ref=e2720] [cursor=pointer]
+                          - generic [ref=e2722] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2723] [cursor=pointer]:
+                        - generic [ref=e2724] [cursor=pointer]: Action
+                        - generic [ref=e2725] [cursor=pointer]: Fantasy
+                  - generic [ref=e2727] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2728] [cursor=pointer]:
+                      - img
+                    - img "Nan Hao Shang Feng (南号尚风)" [ref=e2730] [cursor=pointer]
+                    - generic [ref=e2731] [cursor=pointer]:
+                      - heading "Nan Hao Shang Feng (南号尚风)" [level=3] [ref=e2733] [cursor=pointer]
+                      - generic [ref=e2734] [cursor=pointer]:
+                        - generic [ref=e2735] [cursor=pointer]:
+                          - img [ref=e2736] [cursor=pointer]
+                          - generic [ref=e2738] [cursor=pointer]: 8.3/10
+                        - generic [ref=e2739] [cursor=pointer]: "2019"
+                      - generic [ref=e2741] [cursor=pointer]:
+                        - img [ref=e2742] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2751] [cursor=pointer]:
+                        - img [ref=e2753] [cursor=pointer]
+                        - generic [ref=e2754] [cursor=pointer]:
+                          - img [ref=e2755] [cursor=pointer]
+                          - generic [ref=e2757] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e2758] [cursor=pointer]:
+                        - generic [ref=e2759] [cursor=pointer]: Comedy
+                        - generic [ref=e2760] [cursor=pointer]: Slice of Life
+                  - generic [ref=e2762] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2763] [cursor=pointer]:
+                      - img
+                    - img "Heaven Official's Blessing (天官赐福)" [ref=e2765] [cursor=pointer]
+                    - generic [ref=e2766] [cursor=pointer]:
+                      - heading "Heaven Official's Blessing (天官赐福)" [level=3] [ref=e2768] [cursor=pointer]
+                      - generic [ref=e2769] [cursor=pointer]:
+                        - generic [ref=e2770] [cursor=pointer]:
+                          - img [ref=e2771] [cursor=pointer]
+                          - generic [ref=e2773] [cursor=pointer]: 8.7/10
+                        - generic [ref=e2774] [cursor=pointer]: "2019"
+                      - generic [ref=e2776] [cursor=pointer]:
+                        - img [ref=e2777] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2786] [cursor=pointer]:
+                        - img [ref=e2788] [cursor=pointer]
+                        - generic [ref=e2789] [cursor=pointer]:
+                          - img [ref=e2790] [cursor=pointer]
+                          - generic [ref=e2792] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2793] [cursor=pointer]:
+                        - generic [ref=e2794] [cursor=pointer]: Adventure
+                        - generic [ref=e2795] [cursor=pointer]: Drama
+                  - generic [ref=e2797] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2798] [cursor=pointer]:
+                      - img
+                    - img "My Wife is the Demon Queen (我老婆是魔王大人)" [ref=e2800] [cursor=pointer]
+                    - generic [ref=e2801] [cursor=pointer]:
+                      - heading "My Wife is the Demon Queen (我老婆是魔王大人)" [level=3] [ref=e2803] [cursor=pointer]
+                      - generic [ref=e2804] [cursor=pointer]:
+                        - generic [ref=e2805] [cursor=pointer]:
+                          - img [ref=e2806] [cursor=pointer]
+                          - generic [ref=e2808] [cursor=pointer]: 7.1/10
+                        - generic [ref=e2809] [cursor=pointer]: "2019"
+                      - generic [ref=e2811] [cursor=pointer]:
+                        - img [ref=e2812] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2821] [cursor=pointer]:
+                        - img [ref=e2823] [cursor=pointer]
+                        - generic [ref=e2824] [cursor=pointer]:
+                          - img [ref=e2825] [cursor=pointer]
+                          - generic [ref=e2827] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2828] [cursor=pointer]:
+                        - generic [ref=e2829] [cursor=pointer]: Action
+                        - generic [ref=e2830] [cursor=pointer]: Adventure
+                  - generic [ref=e2832] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2833] [cursor=pointer]:
+                      - img
+                    - 'img "Grandmaster of Demonic Cultivation: Mo Dao Zu Shi (魔道祖师)" [ref=e2835] [cursor=pointer]'
+                    - generic [ref=e2836] [cursor=pointer]:
+                      - 'heading "Grandmaster of Demonic Cultivation: Mo Dao Zu Shi (魔道祖师)" [level=3] [ref=e2838] [cursor=pointer]'
+                      - generic [ref=e2839] [cursor=pointer]:
+                        - generic [ref=e2840] [cursor=pointer]:
+                          - img [ref=e2841] [cursor=pointer]
+                          - generic [ref=e2843] [cursor=pointer]: 8.4/10
+                        - generic [ref=e2844] [cursor=pointer]: "2017"
+                      - generic [ref=e2846] [cursor=pointer]:
+                        - img [ref=e2847] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2856] [cursor=pointer]:
+                        - img [ref=e2858] [cursor=pointer]
+                        - generic [ref=e2859] [cursor=pointer]:
+                          - img [ref=e2860] [cursor=pointer]
+                          - generic [ref=e2862] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2863] [cursor=pointer]:
+                        - generic [ref=e2864] [cursor=pointer]: Action
+                        - generic [ref=e2865] [cursor=pointer]: Adventure
+                  - generic [ref=e2867] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2868] [cursor=pointer]:
+                      - img
+                    - img "Your Talent Is Mine (我能复制天赋)" [ref=e2870] [cursor=pointer]
+                    - generic [ref=e2871] [cursor=pointer]:
+                      - heading "Your Talent Is Mine (我能复制天赋)" [level=3] [ref=e2873] [cursor=pointer]
+                      - generic [ref=e2874] [cursor=pointer]:
+                        - generic [ref=e2875] [cursor=pointer]:
+                          - img [ref=e2876] [cursor=pointer]
+                          - generic [ref=e2878] [cursor=pointer]: 7.1/10
+                        - generic [ref=e2879] [cursor=pointer]: "2021"
+                      - generic [ref=e2881] [cursor=pointer]:
+                        - img [ref=e2882] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2891] [cursor=pointer]:
+                        - img [ref=e2893] [cursor=pointer]
+                        - generic [ref=e2894] [cursor=pointer]:
+                          - img [ref=e2895] [cursor=pointer]
+                          - generic [ref=e2897] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2898] [cursor=pointer]:
+                        - generic [ref=e2899] [cursor=pointer]: Action
+                        - generic [ref=e2900] [cursor=pointer]: Fantasy
+                  - generic [ref=e2902] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2903] [cursor=pointer]:
+                      - img
+                    - img "I Am The Fated Villain (我！天命大反派)" [ref=e2905] [cursor=pointer]
+                    - generic [ref=e2906] [cursor=pointer]:
+                      - heading "I Am The Fated Villain (我！天命大反派)" [level=3] [ref=e2908] [cursor=pointer]
+                      - generic [ref=e2909] [cursor=pointer]:
+                        - generic [ref=e2910] [cursor=pointer]:
+                          - img [ref=e2911] [cursor=pointer]
+                          - generic [ref=e2913] [cursor=pointer]: 7.7/10
+                        - generic [ref=e2914] [cursor=pointer]: "2021"
+                      - generic [ref=e2916] [cursor=pointer]:
+                        - img [ref=e2917] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2926] [cursor=pointer]:
+                        - img [ref=e2928] [cursor=pointer]
+                        - generic [ref=e2929] [cursor=pointer]:
+                          - img [ref=e2930] [cursor=pointer]
+                          - generic [ref=e2932] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e2933] [cursor=pointer]:
+                        - generic [ref=e2934] [cursor=pointer]: Action
+                        - generic [ref=e2935] [cursor=pointer]: Adventure
+                  - generic [ref=e2937] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2938] [cursor=pointer]:
+                      - img
+                    - 'img "Principles of Heavens: Zen’s Cultivation of Immortality (百炼成神)" [ref=e2940] [cursor=pointer]'
+                    - generic [ref=e2941] [cursor=pointer]:
+                      - 'heading "Principles of Heavens: Zen’s Cultivation of Immortality (百炼成神)" [level=3] [ref=e2943] [cursor=pointer]'
+                      - generic [ref=e2944] [cursor=pointer]:
+                        - generic [ref=e2945] [cursor=pointer]:
+                          - img [ref=e2946] [cursor=pointer]
+                          - generic [ref=e2948] [cursor=pointer]: 7.5/10
+                        - generic [ref=e2949] [cursor=pointer]: "2015"
+                      - generic [ref=e2951] [cursor=pointer]:
+                        - img [ref=e2952] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2961] [cursor=pointer]:
+                        - img [ref=e2963] [cursor=pointer]
+                        - generic [ref=e2964] [cursor=pointer]:
+                          - img [ref=e2965] [cursor=pointer]
+                          - generic [ref=e2967] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e2968] [cursor=pointer]:
+                        - generic [ref=e2969] [cursor=pointer]: Action
+                        - generic [ref=e2970] [cursor=pointer]: Adventure
+                  - generic [ref=e2972] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e2973] [cursor=pointer]:
+                      - img
+                    - img "Log Into The Future (高武：登陆未来一万年)" [ref=e2975] [cursor=pointer]
+                    - generic [ref=e2976] [cursor=pointer]:
+                      - heading "Log Into The Future (高武：登陆未来一万年)" [level=3] [ref=e2978] [cursor=pointer]
+                      - generic [ref=e2979] [cursor=pointer]:
+                        - generic [ref=e2980] [cursor=pointer]:
+                          - img [ref=e2981] [cursor=pointer]
+                          - generic [ref=e2983] [cursor=pointer]: 7.2/10
+                        - generic [ref=e2984] [cursor=pointer]: "2023"
+                      - generic [ref=e2986] [cursor=pointer]:
+                        - img [ref=e2987] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e2996] [cursor=pointer]:
+                        - img [ref=e2998] [cursor=pointer]
+                        - generic [ref=e2999] [cursor=pointer]:
+                          - img [ref=e3000] [cursor=pointer]
+                          - generic [ref=e3002] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e3003] [cursor=pointer]:
+                        - generic [ref=e3004] [cursor=pointer]: Action
+                        - generic [ref=e3005] [cursor=pointer]: Drama
+                  - generic [ref=e3007] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3008] [cursor=pointer]:
+                      - img
+                    - img "Release that Witch (放开那个女巫)" [ref=e3010] [cursor=pointer]
+                    - generic [ref=e3011] [cursor=pointer]:
+                      - heading "Release that Witch (放开那个女巫)" [level=3] [ref=e3013] [cursor=pointer]
+                      - generic [ref=e3014] [cursor=pointer]:
+                        - generic [ref=e3015] [cursor=pointer]:
+                          - img [ref=e3016] [cursor=pointer]
+                          - generic [ref=e3018] [cursor=pointer]: 7.2/10
+                        - generic [ref=e3019] [cursor=pointer]: "2017"
+                      - generic [ref=e3021] [cursor=pointer]:
+                        - img [ref=e3022] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3031] [cursor=pointer]:
+                        - img [ref=e3033] [cursor=pointer]
+                        - generic [ref=e3034] [cursor=pointer]:
+                          - img [ref=e3035] [cursor=pointer]
+                          - generic [ref=e3037] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e3038] [cursor=pointer]:
+                        - generic [ref=e3039] [cursor=pointer]: Action
+                        - generic [ref=e3040] [cursor=pointer]: Adventure
+                  - generic [ref=e3042] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3043] [cursor=pointer]:
+                      - img
+                    - img "Versatile Mage (全职法师)" [ref=e3045] [cursor=pointer]
+                    - generic [ref=e3046] [cursor=pointer]:
+                      - heading "Versatile Mage (全职法师)" [level=3] [ref=e3048] [cursor=pointer]
+                      - generic [ref=e3049] [cursor=pointer]:
+                        - generic [ref=e3050] [cursor=pointer]:
+                          - img [ref=e3051] [cursor=pointer]
+                          - generic [ref=e3053] [cursor=pointer]: 6.6/10
+                        - generic [ref=e3054] [cursor=pointer]: "2018"
+                      - generic [ref=e3056] [cursor=pointer]:
+                        - img [ref=e3057] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3066] [cursor=pointer]:
+                        - img [ref=e3068] [cursor=pointer]
+                        - generic [ref=e3069] [cursor=pointer]:
+                          - img [ref=e3070] [cursor=pointer]
+                          - generic [ref=e3072] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e3073] [cursor=pointer]:
+                        - generic [ref=e3074] [cursor=pointer]: Action
+                        - generic [ref=e3075] [cursor=pointer]: Comedy
+                  - generic [ref=e3077] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3078] [cursor=pointer]:
+                      - img
+                    - img "She Is Also Cute Today (今天的她也是如此可爱)" [ref=e3080] [cursor=pointer]
+                    - generic [ref=e3081] [cursor=pointer]:
+                      - heading "She Is Also Cute Today (今天的她也是如此可爱)" [level=3] [ref=e3083] [cursor=pointer]
+                      - generic [ref=e3084] [cursor=pointer]:
+                        - generic [ref=e3085] [cursor=pointer]:
+                          - img [ref=e3086] [cursor=pointer]
+                          - generic [ref=e3088] [cursor=pointer]: 7.7/10
+                        - generic [ref=e3089] [cursor=pointer]: "2019"
+                      - generic [ref=e3091] [cursor=pointer]:
+                        - img [ref=e3092] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3101] [cursor=pointer]:
+                        - img [ref=e3103] [cursor=pointer]
+                        - generic [ref=e3104] [cursor=pointer]:
+                          - img [ref=e3105] [cursor=pointer]
+                          - generic [ref=e3107] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e3108] [cursor=pointer]:
+                        - generic [ref=e3109] [cursor=pointer]: Comedy
+                        - generic [ref=e3110] [cursor=pointer]: Slice of Life
+                  - generic [ref=e3112] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3113] [cursor=pointer]:
+                      - img
+                    - img "Mortals of the Doom (末世凡人)" [ref=e3115] [cursor=pointer]
+                    - generic [ref=e3116] [cursor=pointer]:
+                      - heading "Mortals of the Doom (末世凡人)" [level=3] [ref=e3118] [cursor=pointer]
+                      - generic [ref=e3119] [cursor=pointer]:
+                        - generic [ref=e3120] [cursor=pointer]:
+                          - img [ref=e3121] [cursor=pointer]
+                          - generic [ref=e3123] [cursor=pointer]: 6.7/10
+                        - generic [ref=e3124] [cursor=pointer]: "2018"
+                      - generic [ref=e3126] [cursor=pointer]:
+                        - img [ref=e3127] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3136] [cursor=pointer]:
+                        - img [ref=e3138] [cursor=pointer]
+                        - generic [ref=e3139] [cursor=pointer]:
+                          - img [ref=e3140] [cursor=pointer]
+                          - generic [ref=e3142] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e3143] [cursor=pointer]:
+                        - generic [ref=e3144] [cursor=pointer]: Action
+                        - generic [ref=e3145] [cursor=pointer]: Adventure
+                  - generic [ref=e3147] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3148] [cursor=pointer]:
+                      - img
+                    - img "Astral Sutra (星武神诀)" [ref=e3150] [cursor=pointer]
+                    - generic [ref=e3151] [cursor=pointer]:
+                      - heading "Astral Sutra (星武神诀)" [level=3] [ref=e3153] [cursor=pointer]
+                      - generic [ref=e3154] [cursor=pointer]:
+                        - generic [ref=e3155] [cursor=pointer]:
+                          - img [ref=e3156] [cursor=pointer]
+                          - generic [ref=e3158] [cursor=pointer]: 6.9/10
+                        - generic [ref=e3159] [cursor=pointer]: "2016"
+                      - generic [ref=e3161] [cursor=pointer]:
+                        - img [ref=e3162] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3171] [cursor=pointer]:
+                        - img [ref=e3173] [cursor=pointer]
+                        - generic [ref=e3174] [cursor=pointer]:
+                          - img [ref=e3175] [cursor=pointer]
+                          - generic [ref=e3177] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e3178] [cursor=pointer]:
+                        - generic [ref=e3179] [cursor=pointer]: Action
+                        - generic [ref=e3180] [cursor=pointer]: Adventure
+                  - generic [ref=e3182] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3183] [cursor=pointer]:
+                      - img
+                    - img "Sword King In A Women's World (本剑仙绝不吃软饭)" [ref=e3185] [cursor=pointer]
+                    - generic [ref=e3186] [cursor=pointer]:
+                      - heading "Sword King In A Women's World (本剑仙绝不吃软饭)" [level=3] [ref=e3188] [cursor=pointer]
+                      - generic [ref=e3189] [cursor=pointer]:
+                        - generic [ref=e3190] [cursor=pointer]:
+                          - img [ref=e3191] [cursor=pointer]
+                          - generic [ref=e3193] [cursor=pointer]: 6.2/10
+                        - generic [ref=e3194] [cursor=pointer]: "2019"
+                      - generic [ref=e3196] [cursor=pointer]:
+                        - img [ref=e3197] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3206] [cursor=pointer]:
+                        - img [ref=e3208] [cursor=pointer]
+                        - generic [ref=e3209] [cursor=pointer]:
+                          - img [ref=e3210] [cursor=pointer]
+                          - generic [ref=e3212] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e3213] [cursor=pointer]:
+                        - generic [ref=e3214] [cursor=pointer]: Action
+                        - generic [ref=e3215] [cursor=pointer]: Adventure
+                  - generic [ref=e3217] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3218] [cursor=pointer]:
+                      - img
+                    - img "Battle Through the Heavens (斗破蒼穹)" [ref=e3220] [cursor=pointer]
+                    - generic [ref=e3221] [cursor=pointer]:
+                      - heading "Battle Through the Heavens (斗破蒼穹)" [level=3] [ref=e3223] [cursor=pointer]
+                      - generic [ref=e3224] [cursor=pointer]:
+                        - generic [ref=e3225] [cursor=pointer]:
+                          - img [ref=e3226] [cursor=pointer]
+                          - generic [ref=e3228] [cursor=pointer]: 7.4/10
+                        - generic [ref=e3229] [cursor=pointer]: "2012"
+                      - generic [ref=e3231] [cursor=pointer]:
+                        - img [ref=e3232] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3241] [cursor=pointer]:
+                        - img [ref=e3243] [cursor=pointer]
+                        - generic [ref=e3244] [cursor=pointer]:
+                          - img [ref=e3245] [cursor=pointer]
+                          - generic [ref=e3247] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e3248] [cursor=pointer]:
+                        - generic [ref=e3249] [cursor=pointer]: Action
+                        - generic [ref=e3250] [cursor=pointer]: Adventure
+                  - generic [ref=e3252] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3253] [cursor=pointer]:
+                      - img
+                    - img "Chang Ge Xing (長歌行)" [ref=e3255] [cursor=pointer]
+                    - generic [ref=e3256] [cursor=pointer]:
+                      - heading "Chang Ge Xing (長歌行)" [level=3] [ref=e3258] [cursor=pointer]
+                      - generic [ref=e3259] [cursor=pointer]:
+                        - generic [ref=e3260] [cursor=pointer]:
+                          - img [ref=e3261] [cursor=pointer]
+                          - generic [ref=e3263] [cursor=pointer]: 8.1/10
+                        - generic [ref=e3264] [cursor=pointer]: "2011"
+                      - generic [ref=e3266] [cursor=pointer]:
+                        - img [ref=e3267] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3276] [cursor=pointer]:
+                        - img [ref=e3278] [cursor=pointer]
+                        - generic [ref=e3279] [cursor=pointer]:
+                          - img [ref=e3280] [cursor=pointer]
+                          - generic [ref=e3282] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e3283] [cursor=pointer]:
+                        - generic [ref=e3284] [cursor=pointer]: Action
+                        - generic [ref=e3285] [cursor=pointer]: Adventure
+                  - generic [ref=e3287] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3288] [cursor=pointer]:
+                      - img
+                    - img "Genshin Impact (原神PROJECT)" [ref=e3290] [cursor=pointer]
+                    - generic [ref=e3291] [cursor=pointer]:
+                      - heading "Genshin Impact (原神PROJECT)" [level=3] [ref=e3293] [cursor=pointer]
+                      - generic [ref=e3294] [cursor=pointer]:
+                        - generic [ref=e3295] [cursor=pointer]:
+                          - img [ref=e3296] [cursor=pointer]
+                          - generic [ref=e3298] [cursor=pointer]: 7.5/10
+                        - generic [ref=e3299] [cursor=pointer]: "2018"
+                      - generic [ref=e3301] [cursor=pointer]:
+                        - img [ref=e3302] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3311] [cursor=pointer]:
+                        - img [ref=e3313] [cursor=pointer]
+                        - generic [ref=e3314] [cursor=pointer]:
+                          - img [ref=e3315] [cursor=pointer]
+                          - generic [ref=e3317] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e3318] [cursor=pointer]:
+                        - generic [ref=e3319] [cursor=pointer]: Fantasy
+                        - generic [ref=e3320] [cursor=pointer]: CN
+                  - generic [ref=e3322] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3323] [cursor=pointer]:
+                      - img
+                    - img "I’m Really Not the Devil’s Lackey (我真不是邪神走狗)" [ref=e3325] [cursor=pointer]
+                    - generic [ref=e3326] [cursor=pointer]:
+                      - heading "I’m Really Not the Devil’s Lackey (我真不是邪神走狗)" [level=3] [ref=e3328] [cursor=pointer]
+                      - generic [ref=e3329] [cursor=pointer]:
+                        - generic [ref=e3330] [cursor=pointer]:
+                          - img [ref=e3331] [cursor=pointer]
+                          - generic [ref=e3333] [cursor=pointer]: 7.7/10
+                        - generic [ref=e3334] [cursor=pointer]: "2021"
+                      - generic [ref=e3336] [cursor=pointer]:
+                        - img [ref=e3337] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3346] [cursor=pointer]:
+                        - img [ref=e3348] [cursor=pointer]
+                        - generic [ref=e3349] [cursor=pointer]:
+                          - img [ref=e3350] [cursor=pointer]
+                          - generic [ref=e3352] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e3353] [cursor=pointer]:
+                        - generic [ref=e3354] [cursor=pointer]: Action
+                        - generic [ref=e3355] [cursor=pointer]: Fantasy
+                  - generic [ref=e3357] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3358] [cursor=pointer]:
+                      - img
+                    - img "1/2 Prince (½ 王子)" [ref=e3360] [cursor=pointer]
+                    - generic [ref=e3361] [cursor=pointer]:
+                      - heading "1/2 Prince (½ 王子)" [level=3] [ref=e3363] [cursor=pointer]
+                      - generic [ref=e3364] [cursor=pointer]:
+                        - generic [ref=e3365] [cursor=pointer]:
+                          - img [ref=e3366] [cursor=pointer]
+                          - generic [ref=e3368] [cursor=pointer]: 7.1/10
+                        - generic [ref=e3369] [cursor=pointer]: "2007"
+                      - generic [ref=e3371] [cursor=pointer]:
+                        - img [ref=e3372] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3381] [cursor=pointer]:
+                        - img [ref=e3383] [cursor=pointer]
+                        - generic [ref=e3384] [cursor=pointer]:
+                          - img [ref=e3385] [cursor=pointer]
+                          - generic [ref=e3387] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e3388] [cursor=pointer]:
+                        - generic [ref=e3389] [cursor=pointer]: Action
+                        - generic [ref=e3390] [cursor=pointer]: Adventure
+                  - generic [ref=e3392] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3393] [cursor=pointer]:
+                      - img
+                    - img "Dulingfengsao (獨領風騷)" [ref=e3395] [cursor=pointer]
+                    - generic [ref=e3396] [cursor=pointer]:
+                      - heading "Dulingfengsao (獨領風騷)" [level=3] [ref=e3398] [cursor=pointer]
+                      - generic [ref=e3399] [cursor=pointer]:
+                        - generic [ref=e3400] [cursor=pointer]:
+                          - img [ref=e3401] [cursor=pointer]
+                          - generic [ref=e3403] [cursor=pointer]: 7.4/10
+                        - generic [ref=e3404] [cursor=pointer]: "2005"
+                      - generic [ref=e3406] [cursor=pointer]:
+                        - img [ref=e3407] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3416] [cursor=pointer]:
+                        - img [ref=e3418] [cursor=pointer]
+                        - generic [ref=e3419] [cursor=pointer]:
+                          - img [ref=e3420] [cursor=pointer]
+                          - generic [ref=e3422] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e3423] [cursor=pointer]:
+                        - generic [ref=e3424] [cursor=pointer]: Comedy
+                        - generic [ref=e3425] [cursor=pointer]: Drama
+                  - generic [ref=e3427] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3428] [cursor=pointer]:
+                      - img
+                    - img "Oldman (奧德曼)" [ref=e3430] [cursor=pointer]
+                    - generic [ref=e3431] [cursor=pointer]:
+                      - heading "Oldman (奧德曼)" [level=3] [ref=e3433] [cursor=pointer]
+                      - generic [ref=e3434] [cursor=pointer]:
+                        - generic [ref=e3435] [cursor=pointer]:
+                          - img [ref=e3436] [cursor=pointer]
+                          - generic [ref=e3438] [cursor=pointer]: 6.3/10
+                        - generic [ref=e3439] [cursor=pointer]: "2013"
+                      - generic [ref=e3441] [cursor=pointer]:
+                        - img [ref=e3442] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3451] [cursor=pointer]:
+                        - img [ref=e3453] [cursor=pointer]
+                        - generic [ref=e3454] [cursor=pointer]:
+                          - img [ref=e3455] [cursor=pointer]
+                          - generic [ref=e3457] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e3458] [cursor=pointer]:
+                        - generic [ref=e3459] [cursor=pointer]: Action
+                        - generic [ref=e3460] [cursor=pointer]: Drama
+                  - generic [ref=e3462] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3463] [cursor=pointer]:
+                      - img
+                    - img "Day Off" [ref=e3465] [cursor=pointer]
+                    - generic [ref=e3466] [cursor=pointer]:
+                      - heading "Day Off" [level=3] [ref=e3468] [cursor=pointer]
+                      - generic [ref=e3469] [cursor=pointer]:
+                        - generic [ref=e3470] [cursor=pointer]:
+                          - img [ref=e3471] [cursor=pointer]
+                          - generic [ref=e3473] [cursor=pointer]: 7.1/10
+                        - generic [ref=e3474] [cursor=pointer]: "2020"
+                      - generic [ref=e3476] [cursor=pointer]:
+                        - img [ref=e3477] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3486] [cursor=pointer]:
+                        - img [ref=e3488] [cursor=pointer]
+                        - generic [ref=e3489] [cursor=pointer]:
+                          - img [ref=e3490] [cursor=pointer]
+                          - generic [ref=e3492] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e3493] [cursor=pointer]:
+                        - generic [ref=e3494] [cursor=pointer]: Romance
+                        - generic [ref=e3495] [cursor=pointer]: Slice of Life
+                  - generic [ref=e3497] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3498] [cursor=pointer]:
+                      - img
+                    - img "Tuixiu de Yongzhemen (退休的勇者們)" [ref=e3500] [cursor=pointer]
+                    - generic [ref=e3501] [cursor=pointer]:
+                      - heading "Tuixiu de Yongzhemen (退休的勇者們)" [level=3] [ref=e3503] [cursor=pointer]
+                      - generic [ref=e3504] [cursor=pointer]:
+                        - generic [ref=e3505] [cursor=pointer]:
+                          - img [ref=e3506] [cursor=pointer]
+                          - generic [ref=e3508] [cursor=pointer]: 6.4/10
+                        - generic [ref=e3509] [cursor=pointer]: "2016"
+                      - generic [ref=e3511] [cursor=pointer]:
+                        - img [ref=e3512] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3521] [cursor=pointer]:
+                        - img [ref=e3523] [cursor=pointer]
+                        - generic [ref=e3524] [cursor=pointer]:
+                          - img [ref=e3525] [cursor=pointer]
+                          - generic [ref=e3527] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e3528] [cursor=pointer]:
+                        - generic [ref=e3529] [cursor=pointer]: Action
+                        - generic [ref=e3530] [cursor=pointer]: Comedy
+                  - generic [ref=e3532] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3533] [cursor=pointer]:
+                      - img
+                    - img "Vtuber Kongzi (Vtuber孔子)" [ref=e3535] [cursor=pointer]
+                    - generic [ref=e3536] [cursor=pointer]:
+                      - heading "Vtuber Kongzi (Vtuber孔子)" [level=3] [ref=e3538] [cursor=pointer]
+                      - generic [ref=e3539] [cursor=pointer]:
+                        - generic [ref=e3540] [cursor=pointer]:
+                          - img [ref=e3541] [cursor=pointer]
+                          - generic [ref=e3543] [cursor=pointer]: 6.1/10
+                        - generic [ref=e3544] [cursor=pointer]: "2023"
+                      - generic [ref=e3546] [cursor=pointer]:
+                        - img [ref=e3547] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3556] [cursor=pointer]:
+                        - img [ref=e3558] [cursor=pointer]
+                        - generic [ref=e3559] [cursor=pointer]:
+                          - img [ref=e3560] [cursor=pointer]
+                          - generic [ref=e3562] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e3563] [cursor=pointer]:
+                        - generic [ref=e3564] [cursor=pointer]: Comedy
+                        - generic [ref=e3565] [cursor=pointer]: Slice of Life
+                  - generic [ref=e3567] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3568] [cursor=pointer]:
+                      - img
+                    - img "Fenhong Duandai (粉紅緞帶)" [ref=e3570] [cursor=pointer]
+                    - generic [ref=e3571] [cursor=pointer]:
+                      - heading "Fenhong Duandai (粉紅緞帶)" [level=3] [ref=e3573] [cursor=pointer]
+                      - generic [ref=e3574] [cursor=pointer]:
+                        - generic [ref=e3575] [cursor=pointer]:
+                          - img [ref=e3576] [cursor=pointer]
+                          - generic [ref=e3578] [cursor=pointer]: 7.0/10
+                        - generic [ref=e3579] [cursor=pointer]: "2018"
+                      - generic [ref=e3581] [cursor=pointer]:
+                        - img [ref=e3582] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3591] [cursor=pointer]:
+                        - img [ref=e3593] [cursor=pointer]
+                        - generic [ref=e3594] [cursor=pointer]:
+                          - img [ref=e3595] [cursor=pointer]
+                          - generic [ref=e3597] [cursor=pointer]: Gets good 4%
+                      - generic [ref=e3598] [cursor=pointer]:
+                        - generic [ref=e3599] [cursor=pointer]: Romance
+                        - generic [ref=e3600] [cursor=pointer]: Slice of Life
+                  - generic [ref=e3602] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3603] [cursor=pointer]:
+                      - img
+                    - img "Di Wu Ci Xiang Yu (第五次相遇)" [ref=e3605] [cursor=pointer]
+                    - generic [ref=e3606] [cursor=pointer]:
+                      - heading "Di Wu Ci Xiang Yu (第五次相遇)" [level=3] [ref=e3608] [cursor=pointer]
+                      - generic [ref=e3609] [cursor=pointer]:
+                        - generic [ref=e3610] [cursor=pointer]:
+                          - img [ref=e3611] [cursor=pointer]
+                          - generic [ref=e3613] [cursor=pointer]: 6.2/10
+                        - generic [ref=e3614] [cursor=pointer]: "2018"
+                      - generic [ref=e3616] [cursor=pointer]:
+                        - img [ref=e3617] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3626] [cursor=pointer]:
+                        - img [ref=e3628] [cursor=pointer]
+                        - generic [ref=e3629] [cursor=pointer]:
+                          - img [ref=e3630] [cursor=pointer]
+                          - generic [ref=e3632] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e3633] [cursor=pointer]:
+                        - generic [ref=e3634] [cursor=pointer]: Drama
+                        - generic [ref=e3635] [cursor=pointer]: Romance
+                  - generic [ref=e3637] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3638] [cursor=pointer]:
+                      - img
+                    - img "The Other Side of the Mirror (鏡子的另一邊)" [ref=e3640] [cursor=pointer]
+                    - generic [ref=e3641] [cursor=pointer]:
+                      - heading "The Other Side of the Mirror (鏡子的另一邊)" [level=3] [ref=e3643] [cursor=pointer]
+                      - generic [ref=e3644] [cursor=pointer]:
+                        - generic [ref=e3645] [cursor=pointer]:
+                          - img [ref=e3646] [cursor=pointer]
+                          - generic [ref=e3648] [cursor=pointer]: 5.8/10
+                        - generic [ref=e3649] [cursor=pointer]: "1998"
+                      - generic [ref=e3651] [cursor=pointer]:
+                        - img [ref=e3652] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3661] [cursor=pointer]:
+                        - img [ref=e3663] [cursor=pointer]
+                        - generic [ref=e3664] [cursor=pointer]:
+                          - img [ref=e3665] [cursor=pointer]
+                          - generic [ref=e3667] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e3668] [cursor=pointer]:
+                        - generic [ref=e3669] [cursor=pointer]: Drama
+                        - generic [ref=e3670] [cursor=pointer]: Romance
+                  - generic [ref=e3672] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3673] [cursor=pointer]:
+                      - img
+                    - img "Qing Ting Wo De Shengyin!! (請聽我的聲音！！)" [ref=e3675] [cursor=pointer]
+                    - generic [ref=e3676] [cursor=pointer]:
+                      - heading "Qing Ting Wo De Shengyin!! (請聽我的聲音！！)" [level=3] [ref=e3678] [cursor=pointer]
+                      - generic [ref=e3679] [cursor=pointer]:
+                        - generic [ref=e3680] [cursor=pointer]:
+                          - img [ref=e3681] [cursor=pointer]
+                          - generic [ref=e3683] [cursor=pointer]: 5.4/10
+                        - generic [ref=e3684] [cursor=pointer]: "2020"
+                      - generic [ref=e3686] [cursor=pointer]:
+                        - img [ref=e3687] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3696] [cursor=pointer]:
+                        - img [ref=e3698] [cursor=pointer]
+                        - generic [ref=e3699] [cursor=pointer]:
+                          - img [ref=e3700] [cursor=pointer]
+                          - generic [ref=e3702] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e3703] [cursor=pointer]:
+                        - generic [ref=e3704] [cursor=pointer]: Romance
+                        - generic [ref=e3705] [cursor=pointer]: Slice of Life
+                  - generic [ref=e3707] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3708] [cursor=pointer]:
+                      - img
+                    - img "Lovely Everywhere (Lovely 無所不在)" [ref=e3710] [cursor=pointer]
+                    - generic [ref=e3711] [cursor=pointer]:
+                      - heading "Lovely Everywhere (Lovely 無所不在)" [level=3] [ref=e3713] [cursor=pointer]
+                      - generic [ref=e3714] [cursor=pointer]:
+                        - generic [ref=e3715] [cursor=pointer]:
+                          - img [ref=e3716] [cursor=pointer]
+                          - generic [ref=e3718] [cursor=pointer]: 6.4/10
+                        - generic [ref=e3719] [cursor=pointer]: "2004"
+                      - generic [ref=e3721] [cursor=pointer]:
+                        - img [ref=e3722] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3731] [cursor=pointer]:
+                        - img [ref=e3733] [cursor=pointer]
+                        - generic [ref=e3734] [cursor=pointer]:
+                          - img [ref=e3735] [cursor=pointer]
+                          - generic [ref=e3737] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e3738] [cursor=pointer]:
+                        - generic [ref=e3739] [cursor=pointer]: Comedy
+                        - generic [ref=e3740] [cursor=pointer]: Romance
+                  - generic [ref=e3742] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3743] [cursor=pointer]:
+                      - img
+                    - img "Mao Yu Hai De Bi Duan (貓與海的彼端)" [ref=e3745] [cursor=pointer]
+                    - generic [ref=e3746] [cursor=pointer]:
+                      - heading "Mao Yu Hai De Bi Duan (貓與海的彼端)" [level=3] [ref=e3748] [cursor=pointer]
+                      - generic [ref=e3749] [cursor=pointer]:
+                        - generic [ref=e3750] [cursor=pointer]:
+                          - img [ref=e3751] [cursor=pointer]
+                          - generic [ref=e3753] [cursor=pointer]: 6.9/10
+                        - generic [ref=e3754] [cursor=pointer]: "2021"
+                      - generic [ref=e3756] [cursor=pointer]:
+                        - img [ref=e3757] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3766] [cursor=pointer]:
+                        - img [ref=e3768] [cursor=pointer]
+                        - generic [ref=e3769] [cursor=pointer]:
+                          - img [ref=e3770] [cursor=pointer]
+                          - generic [ref=e3772] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e3773] [cursor=pointer]:
+                        - generic [ref=e3774] [cursor=pointer]: Drama
+                        - generic [ref=e3775] [cursor=pointer]: Slice of Life
+                  - generic [ref=e3777] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3778] [cursor=pointer]:
+                      - img
+                    - 'img "Guai ke Tegong: BEAUTIFUL LEGENDS (怪客特攻 BEAUTIFUL LEGENDS)" [ref=e3780] [cursor=pointer]'
+                    - generic [ref=e3781] [cursor=pointer]:
+                      - 'heading "Guai ke Tegong: BEAUTIFUL LEGENDS (怪客特攻 BEAUTIFUL LEGENDS)" [level=3] [ref=e3783] [cursor=pointer]'
+                      - generic [ref=e3785] [cursor=pointer]: "2015"
+                      - generic [ref=e3787] [cursor=pointer]:
+                        - img [ref=e3788] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3797] [cursor=pointer]:
+                        - img [ref=e3799] [cursor=pointer]
+                        - generic [ref=e3800] [cursor=pointer]:
+                          - img [ref=e3801] [cursor=pointer]
+                          - generic [ref=e3803] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e3804] [cursor=pointer]:
+                        - generic [ref=e3805] [cursor=pointer]: Action
+                        - generic [ref=e3806] [cursor=pointer]: Adventure
+                  - generic [ref=e3808] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3809] [cursor=pointer]:
+                      - img
+                    - img "Qiang Qian Nushen (搶錢女神)" [ref=e3811] [cursor=pointer]
+                    - generic [ref=e3812] [cursor=pointer]:
+                      - heading "Qiang Qian Nushen (搶錢女神)" [level=3] [ref=e3814] [cursor=pointer]
+                      - generic [ref=e3815] [cursor=pointer]:
+                        - generic [ref=e3816] [cursor=pointer]:
+                          - img [ref=e3817] [cursor=pointer]
+                          - generic [ref=e3819] [cursor=pointer]: 6.3/10
+                        - generic [ref=e3820] [cursor=pointer]: "2004"
+                      - generic [ref=e3822] [cursor=pointer]:
+                        - img [ref=e3823] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3832] [cursor=pointer]:
+                        - img [ref=e3834] [cursor=pointer]
+                        - generic [ref=e3835] [cursor=pointer]:
+                          - img [ref=e3836] [cursor=pointer]
+                          - generic [ref=e3838] [cursor=pointer]: Gets good 13%
+                      - generic [ref=e3839] [cursor=pointer]:
+                        - generic [ref=e3840] [cursor=pointer]: Comedy
+                        - generic [ref=e3841] [cursor=pointer]: Drama
+                  - generic [ref=e3843] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3844] [cursor=pointer]:
+                      - img
+                    - img "BABY." [ref=e3846] [cursor=pointer]
+                    - generic [ref=e3847] [cursor=pointer]:
+                      - heading "BABY." [level=3] [ref=e3849] [cursor=pointer]
+                      - generic [ref=e3850] [cursor=pointer]:
+                        - generic [ref=e3851] [cursor=pointer]:
+                          - img [ref=e3852] [cursor=pointer]
+                          - generic [ref=e3854] [cursor=pointer]: 5.5/10
+                        - generic [ref=e3855] [cursor=pointer]: "2008"
+                      - generic [ref=e3857] [cursor=pointer]:
+                        - img [ref=e3858] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3867] [cursor=pointer]:
+                        - img [ref=e3869] [cursor=pointer]
+                        - generic [ref=e3870] [cursor=pointer]:
+                          - img [ref=e3871] [cursor=pointer]
+                          - generic [ref=e3873] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e3874] [cursor=pointer]:
+                        - generic [ref=e3875] [cursor=pointer]: Action
+                        - generic [ref=e3876] [cursor=pointer]: Drama
+                  - generic [ref=e3878] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3879] [cursor=pointer]:
+                      - img
+                    - img "Yao Gun Kuang Chao (搖滾狂潮)" [ref=e3881] [cursor=pointer]
+                    - generic [ref=e3882] [cursor=pointer]:
+                      - heading "Yao Gun Kuang Chao (搖滾狂潮)" [level=3] [ref=e3884] [cursor=pointer]
+                      - generic [ref=e3885] [cursor=pointer]:
+                        - generic [ref=e3886] [cursor=pointer]:
+                          - img [ref=e3887] [cursor=pointer]
+                          - generic [ref=e3889] [cursor=pointer]: 5.8/10
+                        - generic [ref=e3890] [cursor=pointer]: "1997"
+                      - generic [ref=e3892] [cursor=pointer]:
+                        - img [ref=e3893] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3902] [cursor=pointer]:
+                        - img [ref=e3904] [cursor=pointer]
+                        - generic [ref=e3905] [cursor=pointer]:
+                          - img [ref=e3906] [cursor=pointer]
+                          - generic [ref=e3908] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e3909] [cursor=pointer]:
+                        - generic [ref=e3910] [cursor=pointer]: Drama
+                        - generic [ref=e3911] [cursor=pointer]: Music
+                  - generic [ref=e3913] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3914] [cursor=pointer]:
+                      - img
+                    - img "Mofa Hunyue (魔法婚约)" [ref=e3916] [cursor=pointer]
+                    - generic [ref=e3917] [cursor=pointer]:
+                      - heading "Mofa Hunyue (魔法婚约)" [level=3] [ref=e3919] [cursor=pointer]
+                      - generic [ref=e3921] [cursor=pointer]: "2015"
+                      - generic [ref=e3923] [cursor=pointer]:
+                        - img [ref=e3924] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3933] [cursor=pointer]:
+                        - img [ref=e3935] [cursor=pointer]
+                        - generic [ref=e3936] [cursor=pointer]:
+                          - img [ref=e3937] [cursor=pointer]
+                          - generic [ref=e3939] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e3940] [cursor=pointer]:
+                        - generic [ref=e3941] [cursor=pointer]: Drama
+                        - generic [ref=e3942] [cursor=pointer]: Romance
+                  - generic [ref=e3944] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3945] [cursor=pointer]:
+                      - img
+                    - img "Bowling King (滾球王)" [ref=e3947] [cursor=pointer]
+                    - generic [ref=e3948] [cursor=pointer]:
+                      - heading "Bowling King (滾球王)" [level=3] [ref=e3950] [cursor=pointer]
+                      - generic [ref=e3951] [cursor=pointer]:
+                        - generic [ref=e3952] [cursor=pointer]:
+                          - img [ref=e3953] [cursor=pointer]
+                          - generic [ref=e3955] [cursor=pointer]: 5.8/10
+                        - generic [ref=e3956] [cursor=pointer]: "1997"
+                      - generic [ref=e3958] [cursor=pointer]:
+                        - img [ref=e3959] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e3968] [cursor=pointer]:
+                        - img [ref=e3970] [cursor=pointer]
+                        - generic [ref=e3971] [cursor=pointer]:
+                          - img [ref=e3972] [cursor=pointer]
+                          - generic [ref=e3974] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e3975] [cursor=pointer]:
+                        - generic [ref=e3976] [cursor=pointer]: Comedy
+                        - generic [ref=e3977] [cursor=pointer]: Drama
+                  - generic [ref=e3979] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e3980] [cursor=pointer]:
+                      - img
+                    - img "Feng Yu Jiu Tian (鳳于九天)" [ref=e3982] [cursor=pointer]
+                    - generic [ref=e3983] [cursor=pointer]:
+                      - heading "Feng Yu Jiu Tian (鳳于九天)" [level=3] [ref=e3985] [cursor=pointer]
+                      - generic [ref=e3986] [cursor=pointer]:
+                        - generic [ref=e3987] [cursor=pointer]:
+                          - img [ref=e3988] [cursor=pointer]
+                          - generic [ref=e3990] [cursor=pointer]: 5.7/10
+                        - generic [ref=e3991] [cursor=pointer]: "2010"
+                      - generic [ref=e3993] [cursor=pointer]:
+                        - img [ref=e3994] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e4003] [cursor=pointer]:
+                        - img [ref=e4005] [cursor=pointer]
+                        - generic [ref=e4006] [cursor=pointer]:
+                          - img [ref=e4007] [cursor=pointer]
+                          - generic [ref=e4009] [cursor=pointer]: Gets good 30%
+                      - generic [ref=e4010] [cursor=pointer]:
+                        - generic [ref=e4011] [cursor=pointer]: Adventure
+                        - generic [ref=e4012] [cursor=pointer]: Drama
+                  - generic [ref=e4014] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e4015] [cursor=pointer]:
+                      - img
+                    - img "YAN (閻鐵花)" [ref=e4017] [cursor=pointer]
+                    - generic [ref=e4018] [cursor=pointer]:
+                      - heading "YAN (閻鐵花)" [level=3] [ref=e4020] [cursor=pointer]
+                      - generic [ref=e4022] [cursor=pointer]: "2020"
+                      - generic [ref=e4024] [cursor=pointer]:
+                        - img [ref=e4025] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e4034] [cursor=pointer]:
+                        - img [ref=e4036] [cursor=pointer]
+                        - generic [ref=e4037] [cursor=pointer]:
+                          - img [ref=e4038] [cursor=pointer]
+                          - generic [ref=e4040] [cursor=pointer]: Gets good 9%
+                      - generic [ref=e4041] [cursor=pointer]:
+                        - generic [ref=e4042] [cursor=pointer]: Action
+                        - generic [ref=e4043] [cursor=pointer]: Drama
+                  - generic [ref=e4045] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e4046] [cursor=pointer]:
+                      - img
+                    - img "BugCat-Capoo (貓貓蟲咖波)" [ref=e4048] [cursor=pointer]
+                    - generic [ref=e4049] [cursor=pointer]:
+                      - heading "BugCat-Capoo (貓貓蟲咖波)" [level=3] [ref=e4051] [cursor=pointer]
+                      - generic [ref=e4052] [cursor=pointer]:
+                        - generic [ref=e4053] [cursor=pointer]:
+                          - img [ref=e4054] [cursor=pointer]
+                          - generic [ref=e4056] [cursor=pointer]: 5.8/10
+                        - generic [ref=e4057] [cursor=pointer]: "2015"
+                      - generic [ref=e4059] [cursor=pointer]:
+                        - img [ref=e4060] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e4069] [cursor=pointer]:
+                        - img [ref=e4071] [cursor=pointer]
+                        - generic [ref=e4072] [cursor=pointer]:
+                          - img [ref=e4073] [cursor=pointer]
+                          - generic [ref=e4075] [cursor=pointer]: Gets good 17%
+                      - generic [ref=e4076] [cursor=pointer]:
+                        - generic [ref=e4077] [cursor=pointer]: Comedy
+                        - generic [ref=e4078] [cursor=pointer]: TW
+                  - generic [ref=e4080] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e4081] [cursor=pointer]:
+                      - img
+                    - img "Aiqing Ling Yao Diaopei Zhong (愛情靈藥調配中)" [ref=e4083] [cursor=pointer]
+                    - generic [ref=e4084] [cursor=pointer]:
+                      - heading "Aiqing Ling Yao Diaopei Zhong (愛情靈藥調配中)" [level=3] [ref=e4086] [cursor=pointer]
+                      - generic [ref=e4087] [cursor=pointer]:
+                        - generic [ref=e4088] [cursor=pointer]:
+                          - img [ref=e4089] [cursor=pointer]
+                          - generic [ref=e4091] [cursor=pointer]: 5.6/10
+                        - generic [ref=e4092] [cursor=pointer]: "2015"
+                      - generic [ref=e4094] [cursor=pointer]:
+                        - img [ref=e4095] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e4104] [cursor=pointer]:
+                        - img [ref=e4106] [cursor=pointer]
+                        - generic [ref=e4107] [cursor=pointer]:
+                          - img [ref=e4108] [cursor=pointer]
+                          - generic [ref=e4110] [cursor=pointer]: Gets good 22%
+                      - generic [ref=e4111] [cursor=pointer]:
+                        - generic [ref=e4112] [cursor=pointer]: Drama
+                        - generic [ref=e4113] [cursor=pointer]: Romance
+                  - generic [ref=e4115] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e4116] [cursor=pointer]:
+                      - img
+                    - img "Lian Ying Tianshi (戀影天使)" [ref=e4118] [cursor=pointer]
+                    - generic [ref=e4119] [cursor=pointer]:
+                      - heading "Lian Ying Tianshi (戀影天使)" [level=3] [ref=e4121] [cursor=pointer]
+                      - generic [ref=e4122] [cursor=pointer]:
+                        - generic [ref=e4123] [cursor=pointer]:
+                          - img [ref=e4124] [cursor=pointer]
+                          - generic [ref=e4126] [cursor=pointer]: 5.8/10
+                        - generic [ref=e4127] [cursor=pointer]: "1998"
+                      - generic [ref=e4129] [cursor=pointer]:
+                        - img [ref=e4130] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e4139] [cursor=pointer]:
+                        - img [ref=e4141] [cursor=pointer]
+                        - generic [ref=e4142] [cursor=pointer]:
+                          - img [ref=e4143] [cursor=pointer]
+                          - generic [ref=e4145] [cursor=pointer]: Gets good 0%
+                      - generic [ref=e4146] [cursor=pointer]:
+                        - generic [ref=e4147] [cursor=pointer]: Comedy
+                        - generic [ref=e4148] [cursor=pointer]: Drama
+                  - generic [ref=e4150] [cursor=pointer]:
+                    - button "Add WIGG point" [ref=e4151] [cursor=pointer]:
+                      - img
+                    - img "Shou Niang (守娘)" [ref=e4153] [cursor=pointer]
+                    - generic [ref=e4154] [cursor=pointer]:
+                      - heading "Shou Niang (守娘)" [level=3] [ref=e4156] [cursor=pointer]
+                      - generic [ref=e4158] [cursor=pointer]: "2019"
+                      - generic [ref=e4160] [cursor=pointer]:
+                        - img [ref=e4161] [cursor=pointer]
+                        - img
+                        - img
+                      - generic [ref=e4170] [cursor=pointer]:
+                        - img [ref=e4172] [cursor=pointer]
+                        - generic [ref=e4173] [cursor=pointer]:
+                          - img [ref=e4174] [cursor=pointer]
+                          - generic [ref=e4176] [cursor=pointer]: Gets good 26%
+                      - generic [ref=e4177] [cursor=pointer]:
+                        - generic [ref=e4178] [cursor=pointer]: Horror
+                        - generic [ref=e4179] [cursor=pointer]: Mystery
+              - generic [ref=e4180]:
+                - heading "Popular Games" [level=2] [ref=e4182]
+                - generic [ref=e4183]:
+                  - paragraph [ref=e4184]: Edge Function returned a non-2xx status code
+                  - button "Try Again" [ref=e4185] [cursor=pointer]
+              - generic [ref=e4186]:
+                - generic [ref=e4187]:
+                  - heading "Popular Podcasts" [level=3] [ref=e4188]
+                  - generic [ref=e4189]:
+                    - button "Previous" [ref=e4190] [cursor=pointer]:
+                      - img
+                    - button "Next" [ref=e4191] [cursor=pointer]:
+                      - img
+                - generic [ref=e4192]: Edge Function returned a non-2xx status code. Ensure Podcast Index secrets are set on the Supabase function.
+              - heading "Trending Books" [level=2] [ref=e4195]
+      - contentinfo [ref=e4264]:
+        - generic [ref=e4265]:
+          - heading "WIGG" [level=3] [ref=e4266]
+          - paragraph [ref=e4267]: When It Gets Good - Track media worth your time
+    - region "Notifications (F8)":
+      - list
+  - dialog "Welcome to WIGG" [ref=e4268]:
+    - generic [ref=e4269]:
+      - img [ref=e4271]
+      - generic [ref=e4273]:
+        - paragraph [ref=e4274]: Step 1 of 5
+        - heading "Welcome to WIGG" [level=2] [ref=e4275]
+    - paragraph [ref=e4276]: WIGG shows you the exact moment movies, shows, games, and books finally click so you can skip the slog and jump to the good part.
+    - list [ref=e4277]:
+      - listitem [ref=e4278]:
+        - generic [ref=e4280]: Community-sourced “When It Gets Good” (WIGG) markers
+      - listitem [ref=e4281]:
+        - generic [ref=e4283]: Time-to-Get-Good (T2G) snapshots that set expectations
+      - listitem [ref=e4284]:
+        - generic [ref=e4286]: Pacing visuals that show the ride before you commit
+    - generic [ref=e4290]:
+      - button "Skip tour" [ref=e4291] [cursor=pointer]
+      - button "Next" [ref=e4299] [cursor=pointer]
+```

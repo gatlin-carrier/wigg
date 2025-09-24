@@ -1,0 +1,76 @@
+{
+  "testModules": [
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useUserWiggs.test.ts",
+      "tests": [
+        {
+          "name": "should return loading state initially",
+          "fullName": "useUserWiggs > should return loading state initially",
+          "state": "passed"
+        },
+        {
+          "name": "should load wigg entries and calculate T2G after loading completes",
+          "fullName": "useUserWiggs > should load wigg entries and calculate T2G after loading completes",
+          "state": "passed"
+        },
+        {
+          "name": "should add new wigg entry and update T2G estimate",
+          "fullName": "useUserWiggs > should add new wigg entry and update T2G estimate",
+          "state": "passed"
+        },
+        {
+          "name": "should not load data for empty titleId",
+          "fullName": "useUserWiggs > should not load data for empty titleId",
+          "state": "passed"
+        },
+        {
+          "name": "should persist wigg entries to Supabase and restore them on reload",
+          "fullName": "useUserWiggs > should persist wigg entries to Supabase and restore them on reload",
+          "state": "passed"
+        },
+        {
+          "name": "should insert new wigg entry to Supabase when addWigg is called",
+          "fullName": "useUserWiggs > should insert new wigg entry to Supabase when addWigg is called",
+          "state": "passed"
+        },
+        {
+          "name": "should identify test data correctly using test utilities",
+          "fullName": "useUserWiggs > should identify test data correctly using test utilities",
+          "state": "passed"
+        },
+        {
+          "name": "should filter test entries from data arrays using cleanup helpers",
+          "fullName": "useUserWiggs > should filter test entries from data arrays using cleanup helpers",
+          "state": "passed"
+        },
+        {
+          "name": "should detect test environment correctly for safety features",
+          "fullName": "useUserWiggs > should detect test environment correctly for safety features",
+          "state": "passed"
+        },
+        {
+          "name": "should detect production vs non-production URLs correctly",
+          "fullName": "useUserWiggs > should detect production vs non-production URLs correctly",
+          "state": "passed"
+        },
+        {
+          "name": "should correctly identify wigg.app production URLs only",
+          "fullName": "useUserWiggs > should correctly identify wigg.app production URLs only",
+          "state": "passed"
+        },
+        {
+          "name": "should identify test users and enable test data accordingly",
+          "fullName": "useUserWiggs > should identify test users and enable test data accordingly",
+          "state": "passed"
+        },
+        {
+          "name": "should use centralized auth state instead of direct Supabase calls",
+          "fullName": "useUserWiggs > should use centralized auth state instead of direct Supabase calls",
+          "state": "passed"
+        }
+      ]
+    }
+  ],
+  "unhandledErrors": [],
+  "reason": "passed"
+}

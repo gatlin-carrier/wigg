@@ -36,80 +36,57 @@ export function useUserWiggs(titleId: string): {
 
   // Effect 1: Fetch user WIGG entries from Supabase (only when titleId changes)        
   useEffect(() => {
-    let isCancelled = false;
-
     const fetchUserWiggs = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-
+        
         if (!user) {
-          // If no user, return empty data instead of error (user might not be logged in)
-          if (!isCancelled) {
-            setData({
-              entries: [],
-              t2gEstimatePct: undefined,
-              t2gConfidence: undefined,
-            });
-          }
+          // If no user, return empty data instead of error (user might not be logged in)     
+          setData({
+            entries: [],
+            t2gEstimatePct: undefined,
+            t2gConfidence: undefined,
+          });
           return;
         }
-
-        // Store the current user ID to check against when response comes back
-        const currentUserId = user.id;
 
         // Fetch user's wigg points for this media
         const { data: wiggPoints, error: wiggError } = await supabase
           .from('wigg_points')
           .select('*')
           .eq('media_id', titleId)
-          .eq('user_id', currentUserId)
+          .eq('user_id', user.id)
           .order('pos_value', { ascending: true });
-
-        // Guard against stale responses - only update state if request is still relevant
-        if (isCancelled || user?.id !== currentUserId) {
-          return;
-        }
 
         if (wiggError) {
           throw wiggError;
         }
         const entries: WiggEntry[] = (wiggPoints || []).map(point => ({
           id: point.id,
-          pct: point.pos_value,
+          pct: point.pos_value, // Fix redundant ternary
           note: point.reason_short || undefined,
-          rating: point.rating ?? 1, // Default to minimum positive rating for T2G calculation
+          rating: undefined,
           createdAt: point.created_at
         }));
 
-        // Set data WITHOUT T2G calculation, only if not cancelled
-        if (!isCancelled) {
-          setData({
-            entries,
-            t2gEstimatePct: undefined, // Will be calculated separately
-            t2gConfidence: undefined,
-          });
-        }
+        // Set data WITHOUT T2G calculation
+        setData({
+          entries,
+          t2gEstimatePct: undefined, // Will be calculated separately
+          t2gConfidence: undefined,
+        });
       } catch (err) {
-        if (!isCancelled) {
-          setError(err instanceof Error ? err : new Error('Failed to fetch user wiggs'));
-        }
+        setError(err instanceof Error ? err : new Error('Failed to fetch user wiggs'));
       } finally {
-        if (!isCancelled) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     };
 
     if (titleId) {
       fetchUserWiggs();
     }
-
-    // Cleanup function to cancel the request
-    return () => {
-      isCancelled = true;
-    };
   }, [titleId, user]);
 
   // Effect 2: Calculate T2G when data/metrics/progress change
