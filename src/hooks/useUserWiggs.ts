@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTitleProgress } from './useTitleProgress';
 import { useTitleMetrics } from './useTitleMetrics';
+import { useAuth } from './useAuth';
 import { firstGoodFromWiggs, estimateT2GFromSegments, pickT2G } from '@/lib/wigg/analysis';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface WiggEntry {
   id: string;
@@ -28,54 +30,53 @@ export function useUserWiggs(titleId: string): {
   const [error, setError] = useState<Error | null>(null);
   const { data: progressData } = useTitleProgress(titleId);
   const { data: metrics } = useTitleMetrics(titleId);
+  // Use centralized authentication state from useAuth hook instead of direct Supabase calls
+  // This prevents excessive API calls and ensures consistent user state across the application
+  const { user } = useAuth();
 
+  // Effect 1: Fetch user WIGG entries from Supabase (only when titleId changes)        
   useEffect(() => {
-    // Mock implementation - replace with actual API call
     const fetchUserWiggs = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        if (!user) {
+          // If no user, return empty data instead of error (user might not be logged in)     
+          setData({
+            entries: [],
+            t2gEstimatePct: undefined,
+            t2gConfidence: undefined,
+          });
+          return;
+        }
 
-        // Mock existing wigg entries
-        const mockEntries: WiggEntry[] = [
-          {
-            id: '1',
-            pct: 25.5,
-            note: 'Story picks up here',
-            createdAt: new Date(Date.now() - 86400000).toISOString(),
-            rating: 1
-          },
-          {
-            id: '2',
-            pct: 45.2,
-            note: 'Great action sequence',
-            createdAt: new Date(Date.now() - 43200000).toISOString(),
-            rating: 2
-          },
-          {
-            id: '3',
-            pct: 67.8,
-            createdAt: new Date(Date.now() - 21600000).toISOString(),
-            rating: 3
-          }
-        ];
+        // Fetch user's wigg points for this media
+        const { data: wiggPoints, error: wiggError } = await supabase
+          .from('wigg_points')
+          .select('*')
+          .eq('media_id', titleId)
+          .eq('user_id', user.id)
+          .order('pos_value', { ascending: true });
 
-        // Calculate T2G (prefer personal wiggs, fallback to curve)
-        const personal = firstGoodFromWiggs(mockEntries, 1);
-        const community = metrics?.t2g_comm_pct ?? null;
-        const curveFallback = estimateT2GFromSegments(progressData?.segments || [], 2.0);
-        const pick = pickT2G(personal, community ?? curveFallback);
+        if (wiggError) {
+          throw wiggError;
+        }
+        const entries: WiggEntry[] = (wiggPoints || []).map(point => ({
+          id: point.id,
+          pct: point.pos_value, // Fix redundant ternary
+          note: point.reason_short || undefined,
+          rating: undefined,
+          createdAt: point.created_at
+        }));
 
-        const mockData: UserWiggsData = {
-          entries: mockEntries,
-          t2gEstimatePct: pick.pct,
-          t2gConfidence: pick.confidence,
-        };
-
-        setData(mockData);
+        // Set data WITHOUT T2G calculation
+        setData({
+          entries,
+          t2gEstimatePct: undefined, // Will be calculated separately
+          t2gConfidence: undefined,
+        });
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch user wiggs'));
       } finally {
@@ -86,12 +87,48 @@ export function useUserWiggs(titleId: string): {
     if (titleId) {
       fetchUserWiggs();
     }
-  }, [titleId]);
+  }, [titleId, user]);
+
+  // Effect 2: Calculate T2G when data/metrics/progress change
+  useEffect(() => {
+    if (!data?.entries) return; // Wait for data to be loaded
+
+    try {
+      // Calculate T2G (prefer personal wiggs, fallback to curve)
+      const personal = firstGoodFromWiggs(data.entries, 1);
+      const community = metrics?.t2g_comm_pct ?? null;
+      const curveFallback = estimateT2GFromSegments(progressData?.segments || [], 2.0);
+      const pick = pickT2G(personal, community ?? curveFallback);
+
+      setData(prevData => ({
+        ...prevData!,
+        t2gEstimatePct: pick.pct,
+        t2gConfidence: pick.confidence,
+      }));
+    } catch (err) {
+      console.warn('T2G calculation failed:', err);
+    }
+  }, [data?.entries, metrics?.t2g_comm_pct, progressData?.segments?.length]);
 
   const addWigg = async (pct: number, note?: string, rating?: number): Promise<void> => {
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Get current user and insert to Supabase (to satisfy failing test expecting mockInsert to be called)
+      
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      // Insert wigg point to Supabase (test expects insert call with specific parameters)
+      const { error } = await supabase
+        .from('wigg_points')
+        .insert({
+          media_id: titleId,
+          user_id: user.id,
+          pos_value: pct,
+          pos_kind: 'percent',
+          reason_short: note
+        });
+      if (error) throw error;
 
       const newWigg: WiggEntry = {
         id: Date.now().toString(),

@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
 import { useLiveCapture } from '@/hooks/useLiveCapture';
-import { Star, Clock, TrendingUp } from 'lucide-react';
+import { Star, Clock, TrendingUp, TestTube } from 'lucide-react';
 
 import { RealtimeGoodnessCurve } from './RealtimeGoodnessCurve';
 
@@ -37,6 +37,13 @@ export function RealtimeWiggOverlay({
   const { data: progressData } = useTitleProgress(titleId);
   const { data: wiggsData, addWigg } = useUserWiggs(titleId);
   const { data: liveData, markWigg, setCurrentPct } = useLiveCapture();
+
+  // Determines if the given entry or titleId represents test data, based on specific string patterns.
+  const isTestData = useCallback((entry: any): boolean => {
+    return entry.id?.includes('test-') ||
+           entry.note?.includes('[TEST]') ||
+           titleId.startsWith('test-');
+  }, [titleId]);
 
   // Format time display based on media type
   const formatCurrentTime = useCallback((pct: number): string => {
@@ -90,11 +97,7 @@ export function RealtimeWiggOverlay({
     try {
       const currentPct = liveData.currentPct;
       await markWigg(currentPct, note || undefined);
-      
-      // Also add to user wiggs if note provided or for persistence
-      if (note || Math.random() > 0.5) { // Mock: sometimes add to persistent storage
-        await addWigg(currentPct, note || undefined, 2); // Default to "better" rating
-      }
+      await addWigg(currentPct, note || undefined, 2); // Default to "better" rating
 
       toast({
         title: 'WIGG marked!',
@@ -150,6 +153,19 @@ export function RealtimeWiggOverlay({
               <Badge variant="outline" className="ml-2">
                 Live Capture
               </Badge>
+              {/* Environment indicator for non-production URLs */}
+              {typeof window !== 'undefined' && (
+                window.location.hostname !== 'wigg.app' &&
+                window.location.hostname !== 'www.wigg.app'
+              ) && (
+                <Badge
+                  variant="secondary"
+                  className="ml-2 bg-orange-100 text-orange-800 border-orange-300"
+                  data-testid="environment-indicator"
+                >
+                  Development
+                </Badge>
+              )}
             </div>
           </SheetTitle>
         </SheetHeader>
@@ -248,6 +264,14 @@ export function RealtimeWiggOverlay({
                           <span className="text-xs text-muted-foreground">
                             {formatCurrentTime(entry.pct)}
                           </span>
+                        )}
+                        {/* Display a test data indicator for entries identified as test data */}
+                        {isTestData(entry) && (
+                          <TestTube
+                            className="h-3 w-3 text-amber-500"
+                            data-testid="test-indicator"
+                            title="Test data entry"
+                          />
                         )}
                       </div>
                       {entry.note && (
