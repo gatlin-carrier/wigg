@@ -25,6 +25,8 @@ function ErrorButton() {
   );
 }
 
+const isDevelopment = import.meta.env.DEV;
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -42,7 +44,7 @@ createRoot(document.getElementById('root')!).render(
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="wigg-theme">
         <AuthProvider>
           <Sentry.ErrorBoundary fallback={<div>Something went wrong</div>}>
-            <ErrorButton />
+            {isDevelopment && <ErrorButton />}
             <App />
           </Sentry.ErrorBoundary>
           <Toaster />
@@ -51,3 +53,4 @@ createRoot(document.getElementById('root')!).render(
     </PersistQueryClientProvider>
   </StrictMode>,
 )
+
