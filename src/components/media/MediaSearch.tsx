@@ -227,6 +227,10 @@ export function MediaSearch({ onMediaSelect, className = "" }: MediaSearchProps)
                         src={media.coverImage}
                         alt={media.title}
                         className="w-12 h-16 object-cover rounded"
+                        width="48"
+                        height="64"
+                        loading="lazy"
+                        decoding="async"
                       />
                     )}
                     <div className="flex-1 min-w-0">

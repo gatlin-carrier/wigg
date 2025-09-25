@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Bell, Check, Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
@@ -30,6 +30,15 @@ export function NotificationBell() {
     pushSupported,
   } = useNotifications();
   const [open, setOpen] = useState(false);
+
+  const notificationsForDisplay = useMemo(
+    () =>
+      notifications.map((notification) => ({
+        notification,
+        relativeTime: formatTimestamp(notification.createdAt),
+      })),
+    [notifications]
+  );
 
   const handleNotificationClick = async (notification: typeof notifications[number]) => {
     if (!notification.readAt) {
@@ -87,7 +96,7 @@ export function NotificationBell() {
         ) : (
           <ScrollArea className="max-h-72">
             <ul className="divide-y divide-border">
-              {notifications.map((notification) => (
+              {notificationsForDisplay.map(({ notification, relativeTime }) => (
                 <li key={notification.id}>
                   <button
                     onClick={() => handleNotificationClick(notification)}
@@ -101,7 +110,7 @@ export function NotificationBell() {
                         {notification.title}
                       </p>
                       <span className="whitespace-nowrap text-[11px] text-muted-foreground">
-                        {formatTimestamp(notification.createdAt)}
+                        {relativeTime}
                       </span>
                     </div>
                     {notification.body && (

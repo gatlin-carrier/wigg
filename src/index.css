@@ -19,14 +19,16 @@ All colors MUST be HSL.
     --theme-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* GPU-accelerated theme transitions */
-  * {
-    transition: background-color var(--theme-transition-duration) var(--theme-transition-easing),
-                border-color var(--theme-transition-duration) var(--theme-transition-easing),
-                color var(--theme-transition-duration) var(--theme-transition-easing),
-                fill var(--theme-transition-duration) var(--theme-transition-easing),
-                stroke var(--theme-transition-duration) var(--theme-transition-easing),
-                box-shadow var(--theme-transition-duration) var(--theme-transition-easing);
+  /* Opt-in theme transitions to avoid recalculating styles for every element */
+  @media (prefers-reduced-motion: no-preference) {
+    .theme-transition * {
+      transition: background-color var(--theme-transition-duration) var(--theme-transition-easing),
+                  border-color var(--theme-transition-duration) var(--theme-transition-easing),
+                  color var(--theme-transition-duration) var(--theme-transition-easing),
+                  fill var(--theme-transition-duration) var(--theme-transition-easing),
+                  stroke var(--theme-transition-duration) var(--theme-transition-easing),
+                  box-shadow var(--theme-transition-duration) var(--theme-transition-easing);
+    }
   }
 
   /* Font optimization for reduced layout shift */

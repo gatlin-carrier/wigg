@@ -115,7 +115,7 @@ export default function GlobalHeader() {
                 ? 'md:flex w-0 opacity-0 scale-x-0' 
                 : 'flex w-auto opacity-100 scale-x-100'
             }`}>
-              <button 
+              <button
                 onClick={handleHome}
                 data-onboarding-target="home-button"
                 className={`w-8 h-8 rounded-full object-cover flex-shrink-0 hover:opacity-80 transition-all duration-300 ease-out ${
@@ -123,10 +123,14 @@ export default function GlobalHeader() {
                 }`}
                 title="Go to dashboard"
               >
-                <img 
-                  src="/favicon.png" 
-                  alt="WIGG Logo" 
+                <img
+                  src="/favicon.png"
+                  alt="WIGG Logo"
                   className="w-full h-full rounded-full object-cover"
+                  width="32"
+                  height="32"
+                  loading="eager"
+                  decoding="async"
                 />
               </button>
               {(title || subtitle) && (

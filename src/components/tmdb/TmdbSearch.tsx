@@ -37,7 +37,15 @@ export function TmdbSearch({ onSelect, mode = 'movie' }: Props) {
             >
               <div className="w-[46px] h-[69px] flex-shrink-0 rounded overflow-hidden bg-muted">
                 {poster ? (
-                  <img src={poster} alt="poster" className="w-full h-full object-cover" />
+                  <img
+                    src={poster}
+                    alt="poster"
+                    className="w-full h-full object-cover"
+                    width="46"
+                    height="69"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 ) : (
                   <div className="w-full h-full" />
                 )}
