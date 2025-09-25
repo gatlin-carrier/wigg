@@ -85,7 +85,13 @@
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/)",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/wigg/__tests__/RealtimeWiggOverlay.test.tsx)",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserWiggs.test.ts --testNamePattern=\"should use centralized auth state\")",
-      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/monitoring/__tests__/sentry.test.ts --run)"
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/monitoring/__tests__/sentry.test.ts --run)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/monitoring/__tests__/sentry.test.ts --reporter=verbose)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/monitoring/__tests__/sentry.test.ts --testNamePattern=\"should not call Sentry.init when DSN is not provided\" --reporter=verbose)",
+      "Bash(TDD_GUARD_DISABLED=true)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/monitoring/__tests__/sentry.test.ts)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/media/__tests__/MediaTile.auth.test.tsx)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/media/__tests__/)"
     ],
     "deny": [],
     "ask": [],

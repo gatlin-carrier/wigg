@@ -5,51 +5,62 @@ import { componentTagger } from "lovable-tagger";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  server: {
-    host: "::",
-    port: 8080,
-  },
-  plugins: [
-    react(),
-    mode === 'development' && componentTagger(),
-    mode === 'production' && sentryVitePlugin({
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-    }),
-  ].filter(Boolean),
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "@shared": path.resolve(__dirname, "./packages/shared"),
+export default defineConfig(({ mode }) => {
+  const shouldUploadSourceMaps =
+    mode === 'production' &&
+    process.env.SENTRY_AUTH_TOKEN &&
+    process.env.SENTRY_ORG &&
+    process.env.SENTRY_PROJECT;
+
+  return {
+    server: {
+      host: "::",
+      port: 8080,
     },
-  },
-  worker: {
-    format: 'es',
-  },
-  build: {
-    // Optimize bundle for better loading performance
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-select'],
-          charts: ['recharts'],
-          motion: ['framer-motion'],
-          query: ['@tanstack/react-query'],
-        },
+    plugins: [
+      react(),
+      mode === 'development' && componentTagger(),
+      shouldUploadSourceMaps &&
+        sentryVitePlugin({
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+          org: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
+        }),
+    ].filter(Boolean),
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+        "@shared": path.resolve(__dirname, "./packages/shared"),
       },
     },
-    // Optimize chunk size warnings
-    chunkSizeWarningLimit: 1000,
-  },
-  // Optimize dependencies
-  optimizeDeps: {
-    include: [
-      'react',
-      'react-dom',
-      '@tanstack/react-query',
-      'lucide-react',
-    ],
-  },
-}));
+    worker: {
+      format: 'es',
+    },
+    build: {
+      // Optimize bundle for better loading performance
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom'],
+            ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-select'],
+            charts: ['recharts'],
+            motion: ['framer-motion'],
+            query: ['@tanstack/react-query'],
+          },
+        },
+      },
+      // Optimize chunk size warnings
+      chunkSizeWarningLimit: 1000,
+      sourcemap: true, // Source map generation must be turned on
+    },
+    // Optimize dependencies
+    optimizeDeps: {
+      include: [
+        'react',
+        'react-dom',
+        '@tanstack/react-query',
+        'lucide-react',
+      ],
+    },
+  };
+});

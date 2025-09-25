@@ -31,33 +31,6 @@ interface MediaEntry {
   timestamp: string;
 }
 
-const mockEntries: MediaEntry[] = [
-  {
-    id: "1",
-    title: "The Wire",
-    type: "TV Show",
-    timeToGetGood: { hours: 4, minutes: 30 },
-    author: "Sarah",
-    timestamp: "2 hours ago"
-  },
-  {
-    id: "2", 
-    title: "Dune",
-    type: "Book",
-    timeToGetGood: { hours: 2, minutes: 0 },
-    author: "Mike",
-    timestamp: "1 day ago"
-  },
-  {
-    id: "3",
-    title: "The Sopranos",
-    type: "TV Show", 
-    timeToGetGood: { hours: 1, minutes: 45 },
-    author: "Emma",
-    timestamp: "3 days ago"
-  }
-];
-
 const Dashboard = () => {
   const { user } = useAuth();
   const [userPreferences, setUserPreferences] = useState<string[]>([]);
