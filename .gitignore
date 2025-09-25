@@ -39,3 +39,6 @@ storybook-static
 .env.*
 **/.env
 .vercel
+
+# Sentry Config File
+.env.sentry-build-plugin

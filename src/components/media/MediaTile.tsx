@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
+import { useAuth } from '@/hooks/useAuth';
 import { formatT2G } from '@/lib/wigg/format';
 import { classifyPeakFromSegments, resampleSegments } from '@/lib/wigg/analysis';
 import QuickWiggModal, { type QuickWiggVariant, type QuickWiggMedia, type QuickWiggUnits, type QuickWiggResult } from '@/components/wigg/QuickWiggModal';
@@ -41,6 +42,7 @@ type Props = {
 
 export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onClick, className, t2gLabelMode = 'percent+detail', mediaData, quickWiggEnabled = true, quickWiggVariant = 'dialog', quickWiggUnits }: Props) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const titleKey = useMemo(() => (mediaData ? `${mediaData.source}:${mediaData.id}` : title), [mediaData, title]);
   const { data: progressData } = useTitleProgress(titleKey);
   const { data: wiggsData, addWigg: addWiggLocal } = useUserWiggs(titleKey);
@@ -64,6 +66,18 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
   const handleAddWigg = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Check authentication first
+    if (!user) {
+      navigate('/auth', {
+        state: {
+          returnTo: window.location.pathname + window.location.search,
+          message: 'Sign in to create your first WIGG point',
+        },
+      });
+      return;
+    }
+
     // Prototype: prefer quick modal when enabled
     if (quickWiggEnabled) {
       setQuickOpen(true);

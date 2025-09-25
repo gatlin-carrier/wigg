@@ -17,6 +17,11 @@ export default defineConfig(({ mode }) => ({
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
     }),
+    sentryVitePlugin({
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      org: "gatlin-5o",
+      project: "wigg",
+    }),
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -42,6 +47,7 @@ export default defineConfig(({ mode }) => ({
     },
     // Optimize chunk size warnings
     chunkSizeWarningLimit: 1000,
+    sourcemap: true, // Source map generation must be turned on
   },
   // Optimize dependencies
   optimizeDeps: {
