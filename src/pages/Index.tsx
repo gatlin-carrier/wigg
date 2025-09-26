@@ -12,15 +12,15 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="bg-gradient-hero relative overflow-hidden hero-section">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <section className="bg-gradient-hero relative overflow-hidden hero-section" aria-labelledby="hero-heading">
+        <div className="absolute inset-0 bg-black/10" aria-hidden="true"></div>
         <div className="relative container mx-auto px-4 py-16 md:py-24">
           <div className="absolute right-4 top-4 z-10 flex items-center gap-3">
             <HeaderSearch />
             <ThemeToggle />
           </div>
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 id="hero-heading" className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
               When does it get good?
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
@@ -37,65 +37,68 @@ const Index = () => {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               {user ? (
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="lg"
                   className="text-lg px-8 py-4 h-auto bg-white/10 text-white border-white/20 hover:bg-white/20"
                   onClick={signOut}
                 >
-                  <User className="mr-2 h-5 w-5" />
+                  <User className="mr-2 h-5 w-5" aria-hidden />
                   Sign Out
                 </Button>
               ) : (
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="lg"
                   className="text-lg px-8 py-4 h-auto bg-white/10 text-white border-white/20 hover:bg-white/20"
                   onClick={() => navigate("/auth")}
                 >
-                  <User className="mr-2 h-5 w-5" />
+                  <User className="mr-2 h-5 w-5" aria-hidden />
                   Sign In
                 </Button>
               )}
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Stats Section */}
-      <div className="py-16 border-b border-border/50">
+      <section className="py-16 border-b border-border/50" aria-labelledby="stats-heading">
         <div className="container mx-auto px-4">
+          <h2 id="stats-heading" className="sr-only">
+            Why WIGG helps you choose what to watch
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="bg-gradient-primary bg-clip-text text-transparent">
-                <Clock className="h-12 w-12 mx-auto mb-4 text-primary" />
+                <Clock className="h-12 w-12 mx-auto mb-4 text-primary" aria-hidden />
               </div>
               <h3 className="font-semibold text-xl mb-2">Save Time</h3>
               <p className="text-muted-foreground">Know before you commit hours to new media</p>
             </div>
             <div className="text-center">
               <div className="bg-gradient-primary bg-clip-text text-transparent">
-                <TrendingUp className="h-12 w-12 mx-auto mb-4 text-primary" />
+                <TrendingUp className="h-12 w-12 mx-auto mb-4 text-primary" aria-hidden />
               </div>
               <h3 className="font-semibold text-xl mb-2">Find Quality</h3>
               <p className="text-muted-foreground">Discover which shows are worth the investment</p>
             </div>
             <div className="text-center">
               <div className="bg-gradient-primary bg-clip-text text-transparent">
-                <Users className="h-12 w-12 mx-auto mb-4 text-primary" />
+                <Users className="h-12 w-12 mx-auto mb-4 text-primary" aria-hidden />
               </div>
               <h3 className="font-semibold text-xl mb-2">Share Insights</h3>
               <p className="text-muted-foreground">Help others with your viewing experience</p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Features Section */}
-      <div className="py-16">
+      <section className="py-16" aria-labelledby="features-heading">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 id="features-heading" className="text-3xl md:text-4xl font-bold mb-6">
               How It Works
             </h2>
             <p className="text-xl text-muted-foreground mb-12">
@@ -145,12 +148,12 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* CTA Section */}
-      <div className="py-16 bg-gradient-subtle">
+      <section className="py-16 bg-gradient-subtle" aria-labelledby="cta-heading">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 id="cta-heading" className="text-3xl md:text-4xl font-bold mb-4">
             Ready to discover when it gets good?
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
@@ -165,7 +168,7 @@ const Index = () => {
             Get Started Now
           </Button>
         </div>
-      </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-border/50 py-8">

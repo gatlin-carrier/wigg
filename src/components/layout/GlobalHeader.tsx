@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, User } from 'lucide-react';
@@ -15,20 +15,21 @@ export default function GlobalHeader() {
   const { user } = useAuth();
   const [isMobileSearchExpanded, setIsMobileSearchExpanded] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
-  
-  const { 
-    title, 
-    subtitle, 
-    showBackButton = true, 
-    showHomeButton = true, 
-    rightContent 
+  const searchInputId = useId();
+
+  const {
+    title,
+    subtitle,
+    showBackButton = true,
+    showHomeButton = true,
+    rightContent
   } = config;
-  
+
   // Determine if we should show navigation buttons based on current route
   const isHomePage = location.pathname === '/';
   const isDashboardPage = location.pathname === '/dashboard';
-  const canGoBack = window.history.length > 1;
-  
+  const canGoBack = typeof window !== 'undefined' && window.history.length > 1;
+
   const handleBack = () => {
     if (canGoBack) {
       navigate(-1);
@@ -36,7 +37,7 @@ export default function GlobalHeader() {
       navigate('/');
     }
   };
-  
+
   const handleHome = () => {
     navigate('/dashboard');
   };
@@ -80,20 +81,23 @@ export default function GlobalHeader() {
       clearTimeout(timeoutId);
     };
   }, [isMobileSearchExpanded]);
-  
+
   // Don't show header on home page to preserve the hero design
   if (isHomePage) {
     return null;
   }
-  
+
   return (
-    <header ref={headerRef} className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 left-0 right-0 z-[100] relative">
+    <header
+      ref={headerRef}
+      className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 left-0 right-0 z-[100] relative"
+    >
       <div className="container mx-auto px-4 py-2.5">
         <div className="flex items-center justify-between">
           {/* Left: Navigation and Title */}
           <div className="flex items-center gap-4 flex-1">
             {/* Navigation Buttons */}
-            <div className="flex items-center gap-2">
+            <nav className="flex items-center gap-2" aria-label="Primary">
               {showBackButton && !isHomePage && !isDashboardPage && (
                 <Button
                   variant="outline"
@@ -102,40 +106,44 @@ export default function GlobalHeader() {
                   className="flex items-center gap-2"
                   title="Go back"
                 >
-                  <ArrowLeft className="h-4 w-4" />
+                  <ArrowLeft className="h-4 w-4" aria-hidden />
                   <span className="hidden sm:inline">Back</span>
                 </Button>
               )}
-              
-            </div>
-            
+            </nav>
+
             {/* Page Title with smooth compression animation */}
-            <div className={`flex items-center gap-3 min-w-0 transition-all duration-300 ease-out overflow-hidden ${
-              isMobileSearchExpanded 
-                ? 'md:flex w-0 opacity-0 scale-x-0' 
-                : 'flex w-auto opacity-100 scale-x-100'
-            }`}>
-              <button
-                onClick={handleHome}
-                data-onboarding-target="home-button"
-                className={`w-8 h-8 rounded-full object-cover flex-shrink-0 hover:opacity-80 transition-all duration-300 ease-out ${
-                  isMobileSearchExpanded ? 'scale-75 opacity-0' : 'scale-100 opacity-100'
-                }`}
-                title="Go to dashboard"
-              >
-                <img
-                  src="/favicon.png"
-                  alt="WIGG Logo"
-                  className="w-full h-full rounded-full object-cover"
-                  width="32"
-                  height="32"
-                  decoding="async"
-                />
-              </button>
+            <div
+              className={`flex items-center gap-3 min-w-0 transition-all duration-300 ease-out overflow-hidden ${
+                isMobileSearchExpanded
+                  ? 'md:flex w-0 opacity-0 scale-x-0'
+                  : 'flex w-auto opacity-100 scale-x-100'
+              }`}
+            >
+              {showHomeButton && (
+                <button
+                  onClick={handleHome}
+                  data-onboarding-target="home-button"
+                  className={`w-8 h-8 rounded-full object-cover flex-shrink-0 hover:opacity-80 transition-all duration-300 ease-out ${
+                    isMobileSearchExpanded ? 'scale-75 opacity-0' : 'scale-100 opacity-100'
+                  }`}
+                  type="button"
+                  aria-label="Go to dashboard"
+                  title="Go to dashboard"
+                >
+                  <img
+                    src="/favicon.png"
+                    alt="WIGG Logo"
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                </button>
+              )}
               {(title || subtitle) && (
-                <div className={`min-w-0 transition-all duration-300 ease-out ${
-                  isMobileSearchExpanded ? 'w-0 opacity-0 scale-x-0' : 'w-auto opacity-100 scale-x-100'
-                }`}>
+                <div
+                  className={`min-w-0 transition-all duration-300 ease-out ${
+                    isMobileSearchExpanded ? 'w-0 opacity-0 scale-x-0' : 'w-auto opacity-100 scale-x-100'
+                  }`}
+                >
                   {title && (
                     <h1 className="text-lg sm:text-xl font-bold bg-gradient-primary bg-clip-text text-transparent truncate whitespace-nowrap">
                       {title}
@@ -149,32 +157,36 @@ export default function GlobalHeader() {
                 </div>
               )}
             </div>
-            
+
             {/* Mobile search with smooth expansion animation */}
-            <div className={`md:hidden transition-all duration-300 ease-out overflow-hidden ${
-              isMobileSearchExpanded 
-                ? 'flex-1 opacity-100 scale-x-100' 
-                : 'w-0 opacity-0 scale-x-0'
-            }`}>
+            <div
+              className={`md:hidden transition-all duration-300 ease-out overflow-hidden ${
+                isMobileSearchExpanded
+                  ? 'flex-1 opacity-100 scale-x-100'
+                  : 'w-0 opacity-0 scale-x-0'
+              }`}
+            >
               {isMobileSearchExpanded && (
-                <HeaderSearch 
-                  isExpanded={isMobileSearchExpanded} 
+                <HeaderSearch
+                  isExpanded={isMobileSearchExpanded}
                   onToggle={setIsMobileSearchExpanded}
+                  inputId={searchInputId}
                 />
               )}
             </div>
           </div>
-          
+
           {/* Right: Search, Custom Content, and Theme Toggle */}
           <div className="flex items-center gap-3">
             {!isMobileSearchExpanded && (
-              <HeaderSearch 
-                isExpanded={isMobileSearchExpanded} 
+              <HeaderSearch
+                isExpanded={isMobileSearchExpanded}
                 onToggle={setIsMobileSearchExpanded}
+                inputId={searchInputId}
               />
             )}
             {rightContent}
-            
+
             {user && <NotificationBell />}
             {/* Profile button - only show when logged in */}
             {user && (
@@ -184,11 +196,11 @@ export default function GlobalHeader() {
                 onClick={() => navigate('/profile')}
                 className="flex items-center gap-1"
               >
-                <User className="h-4 w-4" />
+                <User className="h-4 w-4" aria-hidden />
                 <span className="hidden sm:inline">Profile</span>
               </Button>
             )}
-            
+
             <div className="hidden sm:block">
               <ThemeToggle />
             </div>
@@ -198,4 +210,3 @@ export default function GlobalHeader() {
     </header>
   );
 }
-
