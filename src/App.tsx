@@ -29,22 +29,30 @@ const App = () => (
         <OnboardingProvider>
           <NotificationProvider>
             <div className="min-h-screen bg-background">
+              <a
+                href="#main-content"
+                className="skip-link"
+              >
+                Skip to main content
+              </a>
               <GlobalHeader />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/wigg-demo" element={<WiggDemo />} />
-                <Route path="/add-wigg" element={<AddWigg />} />
-                <Route path="/add-wigg/:mode" element={<AddWigg />} />
-                <Route path="/tmdb" element={<TmdbDemo />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/feed" element={<Feed />} />
-                <Route path="/test-nav" element={<TestNavigation />} />
-                <Route path="/media/:source/:id" element={<MediaDetails />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <main id="main-content" tabIndex={-1} className="focus:outline-none">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/wigg-demo" element={<WiggDemo />} />
+                  <Route path="/add-wigg" element={<AddWigg />} />
+                  <Route path="/add-wigg/:mode" element={<AddWigg />} />
+                  <Route path="/tmdb" element={<TmdbDemo />} />
+                  <Route path="/search" element={<SearchPage />} />
+                  <Route path="/feed" element={<Feed />} />
+                  <Route path="/test-nav" element={<TestNavigation />} />
+                  <Route path="/media/:source/:id" element={<MediaDetails />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
               <OnboardingFlow />
               <Analytics />
               <SpeedInsights />
