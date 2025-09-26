@@ -288,7 +288,7 @@ export default function MediaDetails() {
           // Display image backdrop when available
           <>
             {isGame ? (
-              <picture 
+              <picture
                 className="cursor-pointer"
                 onClick={() => setEnlargedImage({ url: resizeIgdbImage(backdropUrl, 't_original') || backdropUrl, alt: title })}
               >
@@ -298,15 +298,19 @@ export default function MediaDetails() {
                   src={resizeIgdbImage(backdropUrl, 't_original') || backdropUrl}
                   alt={title}
                   className="w-full h-full object-cover"
+                  width="1280"
+                  height="720"
                   decoding="async"
                   onError={() => setBgError(true)}
                 />
               </picture>
             ) : (
-              <img 
-                src={backdropUrl} 
-                alt={title} 
-                className="w-full h-full object-cover cursor-pointer" 
+              <img
+                src={backdropUrl}
+                alt={title}
+                className="w-full h-full object-cover cursor-pointer"
+                width="1280"
+                height="720"
                 onError={() => setBgError(true)}
                 onClick={() => setEnlargedImage({ url: backdropUrl, alt: title })}
               />
@@ -339,6 +343,10 @@ export default function MediaDetails() {
                       src={posterUrl}
                       alt={title}
                       className="w-full aspect-[2/3] object-cover cursor-pointer"
+                      width="400"
+                      height="600"
+                      loading="lazy"
+                      decoding="async"
                       onClick={() => setEnlargedImage({ url: posterUrl, alt: title })}
                     />
                   ) : (
@@ -488,6 +496,10 @@ export default function MediaDetails() {
                   src={posterUrl}
                   alt={title}
                   className="w-full aspect-[2/3] object-cover cursor-pointer"
+                  width="400"
+                  height="600"
+                  loading="lazy"
+                  decoding="async"
                   onClick={() => setEnlargedImage({ url: posterUrl, alt: title })}
                 />
               ) : (
@@ -508,6 +520,8 @@ export default function MediaDetails() {
               src={enlargedImage.url}
               alt={enlargedImage.alt}
               className="max-w-full max-h-[95vh] object-contain"
+              loading="eager"
+              decoding="async"
             />
           )}
         </DialogContent>

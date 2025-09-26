@@ -87,6 +87,16 @@
 
         // Optimize theme transitions
         document.documentElement.style.setProperty('--theme-transition-duration', '300ms');
+
+        const enableThemeTransitions = () => {
+          document.body?.classList.add('theme-transition');
+        };
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(enableThemeTransitions), { once: true });
+        } else {
+          requestAnimationFrame(enableThemeTransitions);
+        }
       })();
     </script>
 
