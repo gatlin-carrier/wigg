@@ -130,6 +130,25 @@ All colors MUST be HSL.
     contain: layout style;
   }
 
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: 0.75rem;
+    transform: translateY(-150%);
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    z-index: 999;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+    box-shadow: 0 0 0 3px hsl(var(--background)), 0 0 0 6px hsl(var(--primary));
+  }
+
   /* Prevent unnecessary repaints during theme transitions */
   .theme-container {
     contain: layout style paint;
