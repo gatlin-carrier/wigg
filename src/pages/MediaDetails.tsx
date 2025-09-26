@@ -520,7 +520,7 @@ export default function MediaDetails() {
               src={enlargedImage.url}
               alt={enlargedImage.alt}
               className="max-w-full max-h-[95vh] object-contain"
-              loading="lazy"
+              loading="eager"
               decoding="async"
             />
           )}
