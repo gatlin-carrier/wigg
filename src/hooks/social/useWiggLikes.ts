@@ -1,5 +1,5 @@
 ﻿import { useCallback, useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { socialService } from '@/lib/api/services/social';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { notifyWiggLiked } from '@/services/notificationTriggers';
@@ -20,14 +20,14 @@ export function useWiggLikes(pointId?: string, ownerUserId?: string, mediaTitle?
     (async () => {
       try {
         const [likeRes, hasRes] = await Promise.all([
-          supabase.rpc('get_wigg_point_like_count', { point_id: pointId }),
-          supabase.rpc('user_liked_wigg_point', { point_id: pointId, user_id: user.id }),
+          socialService.getLikeCount(pointId),
+          socialService.hasUserLiked(pointId, user.id),
         ]);
         if (!active) return;
-        if (!likeRes.error && typeof likeRes.data === 'number') {
+        if (likeRes.success && typeof likeRes.data === 'number') {
           setCount(likeRes.data);
         }
-        if (!hasRes.error && typeof hasRes.data === 'boolean') {
+        if (hasRes.success && typeof hasRes.data === 'boolean') {
           setLiked(hasRes.data);
         }
       } catch (error) {
@@ -42,8 +42,8 @@ export function useWiggLikes(pointId?: string, ownerUserId?: string, mediaTitle?
   const refreshCount = useCallback(async () => {
     if (!pointId) return;
     try {
-      const { data, error } = await supabase.rpc('get_wigg_point_like_count', { point_id: pointId });
-      if (!error && typeof data === 'number') setCount(data);
+      const result = await socialService.getLikeCount(pointId);
+      if (result.success && typeof result.data === 'number') setCount(result.data);
     } catch (error) {
       console.error('Error refreshing like count:', error);
     }
@@ -55,35 +55,48 @@ export function useWiggLikes(pointId?: string, ownerUserId?: string, mediaTitle?
       return;
     }
     setLoading(true);
-    if (liked) {
-      const { error } = await supabase
-        .from('wigg_point_likes')
-        .delete()
-        .eq('point_id', pointId)
-        .eq('user_id', user.id);
-      setLoading(false);
-      if (error) {
-        toast({ title: 'Could not remove like', description: error.message, variant: 'destructive' });
+
+    try {
+      const result = await socialService.toggleLike({
+        pointId,
+        userId: user.id,
+        isLiked: liked
+      });
+
+      if (!result.success) {
+        toast({
+          title: liked ? 'Could not remove like' : 'Could not like this WIGG',
+          description: result.error.message,
+          variant: 'destructive'
+        });
         return;
       }
-      setLiked(false);
-      setCount((c) => Math.max(0, c - 1));
-    } else {
-      const { error } = await supabase
-        .from('wigg_point_likes')
-        .insert({ point_id: pointId, user_id: user.id });
+
+      if (liked) {
+        setLiked(false);
+        setCount((c) => Math.max(0, c - 1));
+      } else {
+        setLiked(true);
+        setCount((c) => c + 1);
+        if (ownerUserId && ownerUserId !== user.id) {
+          notifyWiggLiked({
+            likerName: user.user_metadata?.username ?? user.email ?? 'Someone',
+            ownerUserId,
+            mediaTitle,
+            wiggPointId: pointId
+          }).catch(() => undefined);
+        }
+      }
+    } catch (error: any) {
+      toast({
+        title: liked ? 'Could not remove like' : 'Could not like this WIGG',
+        description: error.message,
+        variant: 'destructive'
+      });
+    } finally {
       setLoading(false);
-      if (error) {
-        toast({ title: 'Could not like this WIGG', description: error.message, variant: 'destructive' });
-        return;
-      }
-      setLiked(true);
-      setCount((c) => c + 1);
-      if (ownerUserId && ownerUserId !== user.id) {
-        notifyWiggLiked({ likerName: user.user_metadata?.username ?? user.email ?? 'Someone', ownerUserId, mediaTitle, wiggPointId: pointId }).catch(() => undefined);
-      }
     }
-  }, [user?.id, user?.user_metadata?.username, user?.email, pointId, liked, toast, ownerUserId]);
+  }, [user?.id, user?.user_metadata?.username, user?.email, pointId, liked, toast, ownerUserId, mediaTitle]);
 
   return {
     liked,

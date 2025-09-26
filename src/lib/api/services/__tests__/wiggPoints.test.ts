@@ -51,4 +51,24 @@ describe('WIGG Point Service', () => {
       p_spoiler: 1
     });
   });
+
+  it('should handle errors in media creation with standardized error response', async () => {
+    const errorMessage = 'Media creation failed';
+    (supabase.rpc as any).mockResolvedValueOnce({ data: null, error: { message: errorMessage } });
+
+    const result = await wiggPointService.createWiggPoint({
+      mediaTitle: 'Test Game',
+      mediaType: 'game',
+      posKind: 'min',
+      posValue: 30,
+      spoilerLevel: 1,
+      reasonShort: 'Gets exciting here',
+      tags: ['action', 'combat'],
+      userId: 'user-456'
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.error.message).toBe(errorMessage);
+    expect(result.data).toBe(null);
+  });
 });

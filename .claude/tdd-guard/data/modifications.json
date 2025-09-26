@@ -2,9 +2,10 @@
   "session_id": "06c13c01-6085-43da-8da6-9d7c4d441f8b",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\06c13c01-6085-43da-8da6-9d7c4d441f8b.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Write",
+  "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\lib\\api\\__tests__\\types.test.ts",
-    "content": "import { describe, it, expect } from 'vitest';\nimport { socialService } from '../services/social';\nimport type { FollowerCountsResponse } from '../types';\n\ndescribe('API Type Safety', () => {\n  it('should provide proper TypeScript interfaces for API responses', async () => {\n    // This test should fail because FollowerCountsResponse doesn't exist yet\n    const mockResponse: FollowerCountsResponse = {\n      success: true,\n      data: { followers: 100, following: 50 },\n      error: null\n    };\n\n    expect(mockResponse.data?.followers).toBe(100);\n    expect(mockResponse.data?.following).toBe(50);\n  });\n});"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\useUserPreferences.ts",
+    "old_string": "import { useState, useEffect, useCallback } from 'react';\nimport { useAuth } from '@/hooks/useAuth';\nimport { supabase } from '@/integrations/supabase/client';\nimport { userProfileService } from '@/lib/api/services/userProfile';\nimport { type GraphType } from '@/components/ui/GraphTypeSelector';",
+    "new_string": "import { useState, useEffect, useCallback } from 'react';\nimport { useAuth } from '@/hooks/useAuth';\nimport { userProfileService } from '@/lib/api/services/userProfile';\nimport { type GraphType } from '@/components/ui/GraphTypeSelector';"
   }
 }

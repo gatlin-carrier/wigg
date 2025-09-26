@@ -10,6 +10,14 @@ vi.mock('@/integrations/supabase/client', () => ({
   }
 }));
 
+vi.mock('@/lib/api/services/social', () => ({
+  socialService: {
+    getLikeCount: vi.fn(),
+    hasUserLiked: vi.fn(),
+    toggleLike: vi.fn()
+  }
+}));
+
 vi.mock('@/hooks/useAuth', () => ({
   useAuth: vi.fn()
 }));
@@ -23,6 +31,7 @@ vi.mock('@/services/notificationTriggers', () => ({
 }));
 
 import { supabase } from '@/integrations/supabase/client';
+import { socialService } from '@/lib/api/services/social';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
@@ -54,5 +63,17 @@ describe('useWiggLikes', () => {
     // expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Error fetching like data'));
 
     consoleSpy.mockRestore();
+  });
+
+  it('should use social service instead of direct Supabase calls', async () => {
+    // Set up mock responses
+    (socialService.getLikeCount as any).mockResolvedValue({ success: true, data: 5 });
+    (socialService.hasUserLiked as any).mockResolvedValue({ success: true, data: false });
+
+    renderHook(() => useWiggLikes('point-123', 'owner-456', 'Test Movie'));
+
+    // Should use social service instead of direct Supabase RPC calls
+    expect(socialService.getLikeCount).toHaveBeenCalledWith('point-123');
+    expect(socialService.hasUserLiked).toHaveBeenCalledWith('point-123', 'user-123');
   });
 });

@@ -1,11 +1,16 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/__tests__/types.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useUserPreferences.test.ts",
       "tests": [
         {
-          "name": "should provide proper TypeScript interfaces for API responses",
-          "fullName": "API Type Safety > should provide proper TypeScript interfaces for API responses",
+          "name": "should use shared optimistic update logic for both single and batch operations",
+          "fullName": "useUserPreferences > should use shared optimistic update logic for both single and batch operations",
+          "state": "passed"
+        },
+        {
+          "name": "should use User Profile Service instead of direct Supabase calls",
+          "fullName": "useUserPreferences > should use User Profile Service instead of direct Supabase calls",
           "state": "passed"
         }
       ]
