@@ -89,7 +89,7 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
       // First, upsert the media
       const { data: mediaId, error: mediaError } = await supabase
         .rpc('upsert_media', {
-          p_type: data.mediaType.toLowerCase() as any,
+          p_type: data.mediaType.toLowerCase() as 'game' | 'movie' | 'tv show' | 'book' | 'podcast',
           p_title: data.mediaTitle,
           p_year: null
         });
@@ -108,11 +108,11 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
           p_media_id: mediaId,
           p_episode_id: null,
           p_user_id: user.id,
-          p_pos_kind: data.posKind as any,
+          p_pos_kind: data.posKind as 'sec' | 'min' | 'hour' | 'page' | 'chapter' | 'episode',
           p_pos_value: posValue,
           p_tags: [...customTags, ...(data.tags ? [data.tags] : [])].filter(Boolean),
           p_reason_short: data.reasonShort || null,
-          p_spoiler: data.spoilerLevel as any
+          p_spoiler: parseInt(data.spoilerLevel, 10) as 0 | 1 | 2
         });
 
       if (wiggError) throw wiggError;

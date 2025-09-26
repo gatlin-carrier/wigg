@@ -18,16 +18,20 @@ export function useWiggLikes(pointId?: string, ownerUserId?: string, mediaTitle?
     }
     let active = true;
     (async () => {
-      const [likeRes, hasRes] = await Promise.all([
-        supabase.rpc('get_wigg_point_like_count', { point_id: pointId }),
-        supabase.rpc('user_liked_wigg_point', { point_id: pointId, user_id: user.id }),
-      ]);
-      if (!active) return;
-      if (!likeRes.error && typeof likeRes.data === 'number') {
-        setCount(likeRes.data);
-      }
-      if (!hasRes.error && typeof hasRes.data === 'boolean') {
-        setLiked(hasRes.data);
+      try {
+        const [likeRes, hasRes] = await Promise.all([
+          supabase.rpc('get_wigg_point_like_count', { point_id: pointId }),
+          supabase.rpc('user_liked_wigg_point', { point_id: pointId, user_id: user.id }),
+        ]);
+        if (!active) return;
+        if (!likeRes.error && typeof likeRes.data === 'number') {
+          setCount(likeRes.data);
+        }
+        if (!hasRes.error && typeof hasRes.data === 'boolean') {
+          setLiked(hasRes.data);
+        }
+      } catch (error) {
+        console.error('Error fetching like data:', error);
       }
     })();
     return () => {
@@ -37,8 +41,12 @@ export function useWiggLikes(pointId?: string, ownerUserId?: string, mediaTitle?
 
   const refreshCount = useCallback(async () => {
     if (!pointId) return;
-    const { data, error } = await supabase.rpc('get_wigg_point_like_count', { point_id: pointId });
-    if (!error && typeof data === 'number') setCount(data);
+    try {
+      const { data, error } = await supabase.rpc('get_wigg_point_like_count', { point_id: pointId });
+      if (!error && typeof data === 'number') setCount(data);
+    } catch (error) {
+      console.error('Error refreshing like count:', error);
+    }
   }, [pointId]);
 
   const toggleLike = useCallback(async () => {

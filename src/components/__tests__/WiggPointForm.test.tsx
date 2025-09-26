@@ -106,32 +106,75 @@ describe('WiggPointForm', () => {
 
   it('should handle tag addition and removal', async () => {
     const user = userEvent.setup();
-    
+
     render(<WiggPointForm />);
-    
+
     const tagInput = screen.getByLabelText('Tags (press Enter to add)');
-    
+
     // Add first tag
     await user.type(tagInput, 'plot-twist');
     await user.keyboard('{Enter}');
-    
+
     expect(screen.getByText('plot-twist')).toBeInTheDocument();
     expect(tagInput).toHaveValue('');
-    
+
     // Add second tag
     await user.type(tagInput, 'character-development');
     await user.keyboard('{Enter}');
-    
+
     expect(screen.getByText('plot-twist')).toBeInTheDocument();
     expect(screen.getByText('character-development')).toBeInTheDocument();
-    
+
     // Remove first tag
     const removeButton = screen.getByText('plot-twist').parentElement?.querySelector('svg');
     if (removeButton) {
       await user.click(removeButton);
     }
-    
+
     expect(screen.queryByText('plot-twist')).not.toBeInTheDocument();
     expect(screen.getByText('character-development')).toBeInTheDocument();
+  });
+
+  it('should pass spoiler level as proper numeric type not any', async () => {
+    const user = userEvent.setup();
+
+    // Mock successful RPC calls
+    const mockRpc = vi.fn()
+      .mockResolvedValueOnce({ data: 'mock-media-id', error: null }) // upsert_media
+      .mockResolvedValueOnce({ data: null, error: null }); // add_wigg
+    (supabase.rpc as any).mockImplementation(mockRpc);
+
+    render(<WiggPointForm />);
+
+    // Fill in required fields
+    await user.type(screen.getByLabelText('Media Title'), 'Test Movie');
+    await user.type(screen.getByLabelText('When it gets good'), '30');
+
+    const submitButton = screen.getByRole('button', { name: 'Add WIGG Point' });
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      // With current implementation using "as any", this will pass the string "0"
+      // After fix, it should pass the number 0
+      expect(mockRpc).toHaveBeenCalledWith('add_wigg', expect.objectContaining({
+        p_spoiler: 0, // Should be number 0, not string "0"
+      }));
+    });
+  });
+
+  it('should properly handle form state without manual getValues/setValue calls', async () => {
+    const user = userEvent.setup();
+
+    render(<WiggPointForm />);
+
+    const tagInput = screen.getByLabelText('Tags (press Enter to add)');
+
+    // Type a tag and press Enter
+    await user.type(tagInput, 'test-tag');
+    await user.keyboard('{Enter}');
+
+    // The form should clear the input properly using React Hook Form's mechanisms
+    expect(tagInput).toHaveValue('');
+    expect(screen.getByText('test-tag')).toBeInTheDocument();
   });
 });
