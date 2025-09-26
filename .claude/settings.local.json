@@ -116,7 +116,13 @@
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/userProfile.test.ts --testNamePattern=\"should get user preferences successfully\")",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/userProfile.test.ts --testNamePattern=\"should update user preferences successfully\")",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/userProfile.test.ts)",
-      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserPreferences.test.ts --testNamePattern=\"should use User Profile Service instead of direct Supabase calls\")"
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/__tests__/useUserPreferences.test.ts --testNamePattern=\"should use User Profile Service instead of direct Supabase calls\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should get comments for WIGG point\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should add comment to WIGG point\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should delete comment from WIGG point\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should check if user is following target user\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should follow a user\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should unfollow a user\")"
     ],
     "deny": [],
     "ask": [],

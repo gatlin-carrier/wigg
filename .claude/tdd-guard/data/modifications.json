@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\useUserPreferences.ts",
-    "old_string": "import { useState, useEffect, useCallback } from 'react';\nimport { useAuth } from '@/hooks/useAuth';\nimport { supabase } from '@/integrations/supabase/client';\nimport { userProfileService } from '@/lib/api/services/userProfile';\nimport { type GraphType } from '@/components/ui/GraphTypeSelector';",
-    "new_string": "import { useState, useEffect, useCallback } from 'react';\nimport { useAuth } from '@/hooks/useAuth';\nimport { userProfileService } from '@/lib/api/services/userProfile';\nimport { type GraphType } from '@/components/ui/GraphTypeSelector';"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\lib\\api\\services\\wiggPersistence.ts",
+    "old_string": "export const wiggPersistenceService = {};",
+    "new_string": "export const wiggPersistenceService = {\n  saveWiggRating: async () => {}\n};"
   }
 }

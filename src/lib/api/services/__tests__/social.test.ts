@@ -141,4 +141,151 @@ describe('Social Service', () => {
     expect(result.error.message).toBe(errorMessage);
     expect(result.data).toBe(null);
   });
+
+  it('should get comments for WIGG point', async () => {
+    const mockComments = [
+      {
+        id: 'comment-1',
+        user_id: 'user-123',
+        point_id: 'point-456',
+        content: 'Great point!',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z',
+        profiles: { username: 'testuser' }
+      }
+    ];
+
+    const mockFrom = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockResolvedValue({ data: mockComments, error: null })
+    };
+    (supabase.from as any).mockReturnValue(mockFrom);
+
+    const result = await socialService.getComments('point-456');
+
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual([{
+      id: 'comment-1',
+      userId: 'user-123',
+      username: 'testuser',
+      content: 'Great point!',
+      createdAt: '2024-01-01T00:00:00Z'
+    }]);
+    expect(supabase.from).toHaveBeenCalledWith('wigg_point_comments');
+    expect(mockFrom.select).toHaveBeenCalledWith('id, user_id, point_id, content, created_at, updated_at, profiles(username)');
+    expect(mockFrom.eq).toHaveBeenCalledWith('point_id', 'point-456');
+    expect(mockFrom.order).toHaveBeenCalledWith('created_at', { ascending: true });
+  });
+
+  it('should add comment to WIGG point', async () => {
+    const mockFrom = {
+      insert: vi.fn().mockResolvedValue({ error: null })
+    };
+    (supabase.from as any).mockReturnValue(mockFrom);
+
+    const result = await socialService.addComment({
+      pointId: 'point-456',
+      userId: 'user-123',
+      content: 'Great insight!'
+    });
+
+    expect(result.success).toBe(true);
+    expect(supabase.from).toHaveBeenCalledWith('wigg_point_comments');
+    expect(mockFrom.insert).toHaveBeenCalledWith({
+      point_id: 'point-456',
+      user_id: 'user-123',
+      content: 'Great insight!'
+    });
+  });
+
+  it('should delete comment from WIGG point', async () => {
+    const mockDeleteChain = {
+      eq: vi.fn().mockReturnThis()
+    };
+    mockDeleteChain.eq
+      .mockReturnValueOnce(mockDeleteChain)
+      .mockResolvedValueOnce({ error: null });
+
+    const mockFrom = {
+      delete: vi.fn().mockReturnValue(mockDeleteChain)
+    };
+    (supabase.from as any).mockReturnValue(mockFrom);
+
+    const result = await socialService.deleteComment({
+      commentId: 'comment-123',
+      userId: 'user-123'
+    });
+
+    expect(result.success).toBe(true);
+    expect(supabase.from).toHaveBeenCalledWith('wigg_point_comments');
+    expect(mockFrom.delete).toHaveBeenCalled();
+    expect(mockDeleteChain.eq).toHaveBeenCalledWith('id', 'comment-123');
+    expect(mockDeleteChain.eq).toHaveBeenCalledWith('user_id', 'user-123');
+  });
+
+  it('should check if user is following target user', async () => {
+    const mockFrom = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn().mockResolvedValue({ data: { id: 'follow-123' }, error: null })
+    };
+    (supabase.from as any).mockReturnValue(mockFrom);
+
+    const result = await socialService.checkFollowing({
+      followerId: 'user-123',
+      targetUserId: 'user-456'
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBe(true);
+    expect(supabase.from).toHaveBeenCalledWith('user_follows');
+    expect(mockFrom.select).toHaveBeenCalledWith('id');
+    expect(mockFrom.eq).toHaveBeenCalledWith('follower_id', 'user-123');
+    expect(mockFrom.eq).toHaveBeenCalledWith('following_id', 'user-456');
+  });
+
+  it('should follow a user', async () => {
+    const mockFrom = {
+      insert: vi.fn().mockResolvedValue({ error: null })
+    };
+    (supabase.from as any).mockReturnValue(mockFrom);
+
+    const result = await socialService.followUser({
+      followerId: 'user-123',
+      targetUserId: 'user-456'
+    });
+
+    expect(result.success).toBe(true);
+    expect(supabase.from).toHaveBeenCalledWith('user_follows');
+    expect(mockFrom.insert).toHaveBeenCalledWith({
+      follower_id: 'user-123',
+      following_id: 'user-456'
+    });
+  });
+
+  it('should unfollow a user', async () => {
+    const mockDeleteChain = {
+      eq: vi.fn().mockReturnThis()
+    };
+    mockDeleteChain.eq
+      .mockReturnValueOnce(mockDeleteChain)
+      .mockResolvedValueOnce({ error: null });
+
+    const mockFrom = {
+      delete: vi.fn().mockReturnValue(mockDeleteChain)
+    };
+    (supabase.from as any).mockReturnValue(mockFrom);
+
+    const result = await socialService.unfollowUser({
+      followerId: 'user-123',
+      targetUserId: 'user-456'
+    });
+
+    expect(result.success).toBe(true);
+    expect(supabase.from).toHaveBeenCalledWith('user_follows');
+    expect(mockFrom.delete).toHaveBeenCalled();
+    expect(mockDeleteChain.eq).toHaveBeenCalledWith('follower_id', 'user-123');
+    expect(mockDeleteChain.eq).toHaveBeenCalledWith('following_id', 'user-456');
+  });
 });
