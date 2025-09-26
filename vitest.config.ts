@@ -15,6 +15,15 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
+    environmentMatchGlobs: [
+      ['src/data/__tests__/**', 'node'],
+    ],
+    poolOptions: {
+      threads: {
+        minThreads: 1,
+        maxThreads: 1,
+      },
+    },
     include: [
       'packages/**/__tests__/**/*.test.ts',
       'packages/**/__tests__/**/*.test.tsx',

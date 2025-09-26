@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { WiggPointCard } from "./WiggPointCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,22 +6,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Filter } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { ListWiggPointsParams, MediaType, useWiggPoints } from "@/data";
 
-interface WiggPoint {
-  id: string;
-  media_title: string;
-  type: string;
-  pos_kind: string;
-  pos_value: number;
-  reason_short?: string;
-  tags: string[];
-  spoiler: string;
-  created_at: string;
-  username?: string;
-  user_id: string;
-}
+export type MediaFilter = "all" | MediaType;
+export type SortOption = "newest" | "oldest" | "position_asc" | "position_desc";
 
 interface WiggPointsListProps {
   limit?: number;
@@ -29,103 +18,36 @@ interface WiggPointsListProps {
   userId?: string; // If provided, only show points from this user
 }
 
-export const WiggPointsList = ({ 
-  limit = 20, 
-  showFilters = true, 
-  userId 
+export const WiggPointsList = ({
+  limit = 20,
+  showFilters = true,
+  userId,
 }: WiggPointsListProps) => {
   const { user } = useAuth();
-  const [points, setPoints] = useState<WiggPoint[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [mediaTypeFilter, setMediaTypeFilter] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<string>("newest");
+  const [mediaTypeFilter, setMediaTypeFilter] = useState<MediaFilter>("all");
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [effectiveLimit, setEffectiveLimit] = useState(limit);
 
-  const fetchWiggPoints = async () => {
-    setLoading(true);
-    
-    try {
-      // Use the media_lookup view for better performance
-      let query = supabase
-        .from('wigg_points')
-        .select(`
-          id,
-          pos_kind,
-          pos_value,
-          reason_short,
-          tags,
-          spoiler,
-          created_at,
-          user_id,
-          media:media!inner(title, type),
-          profiles:profiles(username)
-        `);
+  const queryParams = useMemo<ListWiggPointsParams>(() => ({
+    limit: effectiveLimit,
+    searchTerm: searchTerm.trim() || undefined,
+    mediaType: mediaTypeFilter,
+    sortBy,
+    userId,
+  }), [effectiveLimit, mediaTypeFilter, searchTerm, sortBy, userId]);
 
-      // Remove user vote filtering for now to fix the database error
+  const { data: points = [], isLoading, isFetching, refetch } = useWiggPoints(queryParams, {
+    keepPreviousData: true,
+    enabled: userId ? Boolean(user?.id) : true,
+  });
 
-      // Apply filters
-      if (userId) {
-        query = query.eq('user_id', userId);
-      }
-
-      if (mediaTypeFilter !== "all") {
-        query = query.eq('media.type', mediaTypeFilter as any);
-      }
-
-      if (searchTerm) {
-        query = query.ilike('media.title', `%${searchTerm}%`);
-      }
-
-      // Apply sorting
-      switch (sortBy) {
-        case "newest":
-          query = query.order('created_at', { ascending: false });
-          break;
-        case "oldest":
-          query = query.order('created_at', { ascending: true });
-          break;        case "position_asc":
-          query = query.order('pos_value', { ascending: true });
-          break;
-        case "position_desc":
-          query = query.order('pos_value', { ascending: false });
-          break;
-      }
-
-      query = query.limit(limit);
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-
-      // Transform the data
-      let transformedPoints: WiggPoint[] = (data || []).map((point: any) => ({
-        id: point.id,
-        media_title: point.media?.title || "Unknown",
-        type: point.media?.type || "Unknown",
-        pos_kind: point.pos_kind,
-        pos_value: point.pos_value,
-        reason_short: point.reason_short,
-        tags: point.tags || [],
-        spoiler: point.spoiler,
-        created_at: point.created_at,
-        username: point.profiles?.username,
-        user_id: point.user_id,
-      }));
-      setPoints(transformedPoints);
-
-    } catch (error) {
-      console.error('Error fetching WIGG points:', error);
-    } finally {
-      setLoading(false);
-    }
+  const handleLoadMore = () => {
+    setEffectiveLimit(prev => prev + limit);
+    refetch();
   };
 
-  useEffect(() => {
-    fetchWiggPoints();
-  }, [searchTerm, mediaTypeFilter, sortBy, userId, user?.id]);
-
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="space-y-4">
         {Array.from({ length: 4 }).map((_, index) => {
@@ -173,7 +95,7 @@ export const WiggPointsList = ({
               </div>
 
               {/* Media Type Filter */}
-              <Select value={mediaTypeFilter} onValueChange={setMediaTypeFilter}>
+              <Select value={mediaTypeFilter} onValueChange={(value: MediaFilter) => setMediaTypeFilter(value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="All types" />
                 </SelectTrigger>
@@ -188,13 +110,14 @@ export const WiggPointsList = ({
               </Select>
 
               {/* Sort */}
-              <Select value={sortBy} onValueChange={setSortBy}>
+              <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="oldest">Oldest First</SelectItem>                  <SelectItem value="position_asc">Position (Low to High)</SelectItem>
+                  <SelectItem value="oldest">Oldest First</SelectItem>
+                  <SelectItem value="position_asc">Position (Low to High)</SelectItem>
                   <SelectItem value="position_desc">Position (High to Low)</SelectItem>
                 </SelectContent>
               </Select>
@@ -205,14 +128,13 @@ export const WiggPointsList = ({
 
       {/* Results */}
       <div className="space-y-4">
-        {points.length === 0 ? (
+        {points.length === 0 && !isFetching ? (
           <Card>
             <CardContent className="p-12 text-center">
               <p className="text-muted-foreground">
-                {searchTerm || mediaTypeFilter !== "all" 
-                  ? "No WIGG points found matching your filters" 
-                  : "No WIGG points yet. Be the first to add one!"
-                }
+                {searchTerm || mediaTypeFilter !== "all"
+                  ? "No WIGG points found matching your filters"
+                  : "No WIGG points yet. Be the first to add one!"}
               </p>
             </CardContent>
           </Card>
@@ -226,16 +148,13 @@ export const WiggPointsList = ({
         )}
       </div>
 
-      {points.length === limit && (
+      {points.length >= effectiveLimit && (
         <div className="text-center">
-          <Button variant="outline" onClick={fetchWiggPoints}>
-            Load More
+          <Button variant="outline" onClick={handleLoadMore} disabled={isFetching}>
+            {isFetching ? "Loading..." : "Load More"}
           </Button>
         </div>
       )}
     </div>
   );
 };
-
-
-
