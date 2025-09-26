@@ -10,9 +10,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Star, X, Tag } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
+import { MediaTypeSchema, useCreateWiggPoint } from "@/data";
 
 const wiggPointSchema = z.object({
   mediaTitle: z.string().min(1, "Media title is required"),
@@ -36,8 +36,8 @@ interface WiggPointFormProps {
 
 export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) => {
   const { user } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [customTags, setCustomTags] = useState<string[]>([]);
+  const createWiggPoint = useCreateWiggPoint();
 
   const form = useForm<WiggPointForm>({
     resolver: zodResolver(wiggPointSchema),
@@ -83,39 +83,28 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
       return;
     }
 
-    setIsSubmitting(true);
-
     try {
-      // First, upsert the media
-      const { data: mediaId, error: mediaError } = await supabase
-        .rpc('upsert_media', {
-          p_type: data.mediaType.toLowerCase() as any,
-          p_title: data.mediaTitle,
-          p_year: null
-        });
-
-      if (mediaError) throw mediaError;
-
-      // Convert position value to number
       const posValue = parseFloat(data.posValue);
       if (isNaN(posValue)) {
         throw new Error("Position value must be a valid number");
       }
 
-      // Add the WIGG point
-      const { error: wiggError } = await supabase
-        .rpc('add_wigg', {
-          p_media_id: mediaId,
-          p_episode_id: null,
-          p_user_id: user.id,
-          p_pos_kind: data.posKind as any,
-          p_pos_value: posValue,
-          p_tags: [...customTags, ...(data.tags ? [data.tags] : [])].filter(Boolean),
-          p_reason_short: data.reasonShort || null,
-          p_spoiler: data.spoilerLevel as any
-        });
+      const mediaType = MediaTypeSchema.parse(data.mediaType.toLowerCase());
+      const tags = [...customTags, ...(data.tags ? [data.tags] : [])]
+        .map(tag => tag.trim())
+        .filter(Boolean);
 
-      if (wiggError) throw wiggError;
+      await createWiggPoint.mutateAsync({
+        mediaTitle: data.mediaTitle,
+        mediaType,
+        posKind: data.posKind,
+        posValue,
+        reasonShort: data.reasonShort?.trim() || null,
+        tags,
+        spoilerLevel: data.spoilerLevel,
+        userId: user.id,
+        username: user.user_metadata?.username ?? user.email ?? null,
+      });
 
       toast({
         title: "WIGG point added!",
@@ -133,8 +122,6 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
         description: error.message || "Failed to add WIGG point",
         variant: "destructive"
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -227,11 +214,11 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                       When it gets good
                     </FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
-                        step="0.1" 
-                        placeholder="e.g. 30" 
-                        {...field} 
+                      <Input
+                        type="number"
+                        step="0.1"
+                        placeholder="e.g. 30"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -248,13 +235,13 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue placeholder="Select unit" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
+                        <SelectItem value="sec">Seconds</SelectItem>
                         <SelectItem value="min">Minutes</SelectItem>
                         <SelectItem value="hour">Hours</SelectItem>
-                        <SelectItem value="sec">Seconds</SelectItem>
                         <SelectItem value="page">Pages</SelectItem>
                         <SelectItem value="chapter">Chapters</SelectItem>
                         <SelectItem value="episode">Episodes</SelectItem>
@@ -264,64 +251,6 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                   </FormItem>
                 )}
               />
-            </div>
-
-            {/* Reason */}
-            <FormField
-              control={form.control}
-              name="reasonShort"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Why does it get good? (optional)</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Brief explanation of what makes this the turning point..."
-                      className="resize-none"
-                      rows={3}
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Tags */}
-            <div className="space-y-3">
-              <FormField
-                control={form.control}
-                name="tags"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Tag className="h-4 w-4" />
-                      Tags (press Enter to add)
-                    </FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="e.g. plot-twist, character-development"
-                        onKeyPress={handleKeyPress}
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {customTags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {customTags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
-                      {tag}
-                      <X 
-                        className="h-3 w-3 cursor-pointer" 
-                        onClick={() => removeTag(tag)}
-                      />
-                    </Badge>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* Spoiler Level */}
@@ -334,7 +263,7 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder="Spoiler level" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -344,27 +273,75 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {getSpoilerDescription(form.watch("spoilerLevel"))}
+                    {getSpoilerDescription(field.value)}
                   </p>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Submit */}
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isSubmitting || !user}
-            >
-              {isSubmitting ? "Adding WIGG Point..." : "Add WIGG Point"}
-            </Button>
+            {/* Reason */}
+            <FormField
+              control={form.control}
+              name="reasonShort"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Why does it get good?</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Share a short reason (optional)"
+                      rows={4}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            {!user && (
-              <p className="text-center text-sm text-muted-foreground">
-                Please log in to submit WIGG points
-              </p>
-            )}
+            {/* Tags */}
+            <div className="space-y-3">
+              <FormLabel className="flex items-center gap-2">
+                <Tag className="h-4 w-4" />
+                Tags
+              </FormLabel>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Add a tag and press Enter"
+                  {...form.register('tags')}
+                  onKeyDown={handleKeyPress}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const tag = form.getValues('tags')?.trim();
+                    if (tag) {
+                      addTag(tag);
+                      form.setValue('tags', '');
+                    }
+                  }}
+                >
+                  Add
+                </Button>
+              </div>
+              {customTags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {customTags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                      {tag}
+                      <button type="button" onClick={() => removeTag(tag)} aria-label={`Remove tag ${tag}`}>
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Button type="submit" disabled={createWiggPoint.isPending}>
+              {createWiggPoint.isPending ? "Saving..." : "Submit WIGG Point"}
+            </Button>
           </form>
         </Form>
       </CardContent>

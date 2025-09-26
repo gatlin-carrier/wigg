@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,20 +12,7 @@ import { cn } from '@/lib/utils';
 import FollowButton from '@/components/social/FollowButton';
 import { useWiggLikes } from '@/hooks/social/useWiggLikes';
 import { useWiggComments } from '@/hooks/social/useWiggComments';
-
-interface WiggPoint {
-  id: string;
-  media_title: string;
-  type: string;
-  pos_kind: string;
-  pos_value: number;
-  reason_short?: string;
-  tags: string[];
-  spoiler: string;
-  created_at: string;
-  username?: string;
-  user_id: string;
-}
+import { MediaType, PositionKind, SpoilerLevel, WiggPoint } from '@/data';
 
 interface WiggPointCardProps {
   point: WiggPoint;
@@ -37,7 +24,9 @@ export const WiggPointCard = ({ point }: WiggPointCardProps) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [commentText, setCommentText] = useState('');
 
-  const { liked, count: likeCount, loading: likeLoading, toggleLike } = useWiggLikes(point.id, point.user_id, point.media_title);
+  const displayMediaType = useMemo(() => formatMediaType(point.mediaType), [point.mediaType]);
+
+  const { liked, count: likeCount, loading: likeLoading, toggleLike } = useWiggLikes(point.id, point.userId, point.mediaTitle);
   const {
     comments,
     loading: commentsLoading,
@@ -53,7 +42,7 @@ export const WiggPointCard = ({ point }: WiggPointCardProps) => {
     }
   }, [commentOpen, refreshComments]);
 
-  const formatPosition = useCallback((value: number, kind: string) => {
+  const formatPosition = useCallback((value: number, kind: PositionKind) => {
     const unit = kind === 'sec' ? 'second'
       : kind === 'min' ? 'minute'
       : kind === 'hour' ? 'hour'
@@ -65,7 +54,7 @@ export const WiggPointCard = ({ point }: WiggPointCardProps) => {
     return `${value} ${unit}${plural}`;
   }, []);
 
-  const getSpoilerBadge = (level: string) => {
+  const getSpoilerBadge = (level: SpoilerLevel) => {
     switch (level) {
       case '1':
         return <Badge variant="outline" className="text-yellow-600">Minor Spoilers</Badge>;
@@ -110,7 +99,7 @@ export const WiggPointCard = ({ point }: WiggPointCardProps) => {
     const shareUrl = `${window.location.origin}/wigg/${point.id}`;
     try {
       if (navigator.share) {
-        await navigator.share({ title: point.media_title, url: shareUrl });
+        await navigator.share({ title: point.mediaTitle, url: shareUrl });
       } else {
         await navigator.clipboard.writeText(shareUrl);
         toast({ title: 'Link copied', description: 'Share it with your friends!' });
@@ -133,21 +122,21 @@ export const WiggPointCard = ({ point }: WiggPointCardProps) => {
           <div className="space-y-4">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
-                <h3 className="text-lg font-semibold">{point.media_title}</h3>
+                <h3 className="text-lg font-semibold">{point.mediaTitle}</h3>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Badge variant="outline">{point.type}</Badge>
+                  <Badge variant="outline">{displayMediaType}</Badge>
                   <span>•</span>
                   <div className="flex items-center gap-1">
                     <User className="h-3 w-3" />
                     {point.username || 'Anonymous'}
                   </div>
                   <span>•</span>
-                  <span>{new Date(point.created_at).toLocaleDateString()}</span>
+                  <span>{point.createdAt.toLocaleDateString()}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {point.user_id && <FollowButton targetUserId={point.user_id} targetUsername={point.username} />}
-                {getSpoilerBadge(point.spoiler)}
+                {point.userId && <FollowButton targetUserId={point.userId} targetUsername={point.username ?? undefined} />}
+                {getSpoilerBadge(point.spoilerLevel)}
               </div>
             </div>
 
@@ -158,16 +147,16 @@ export const WiggPointCard = ({ point }: WiggPointCardProps) => {
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <span className="text-lg font-semibold text-primary">
-                    {formatPosition(point.pos_value, point.pos_kind)}
+                    {formatPosition(point.posValue, point.posKind)}
                   </span>
                 </div>
               </div>
             </div>
 
-            {point.reason_short && (
+            {point.reasonShort && (
               <div className="rounded-lg bg-muted/50 p-4">
                 <p className="mb-2 text-sm font-medium">Why it gets good:</p>
-                <p className="text-sm text-muted-foreground">{point.reason_short}</p>
+                <p className="text-sm text-muted-foreground">{point.reasonShort}</p>
               </div>
             )}
 
@@ -225,7 +214,7 @@ export const WiggPointCard = ({ point }: WiggPointCardProps) => {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Comments</DialogTitle>
-            <DialogDescription>Join the discussion for {point.media_title}.</DialogDescription>
+            <DialogDescription>Join the discussion for {point.mediaTitle}.</DialogDescription>
           </DialogHeader>
           <div className="max-h-60 space-y-2 overflow-y-auto pr-1">
             {commentsLoading ? (
@@ -273,3 +262,7 @@ export const WiggPointCard = ({ point }: WiggPointCardProps) => {
   );
 };
 
+function formatMediaType(type: MediaType): string {
+  if (type === 'tv show') return 'TV Show';
+  return type.charAt(0).toUpperCase() + type.slice(1);
+}

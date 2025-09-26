@@ -7,7 +7,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config({ ignores: ["dist"] }, {
+export default tseslint.config({ ignores: ["dist", "**/.next/**", "apps/wigg-admin/.next/**", "apps/**/storybook-static/**"] }, {
   extends: [js.configs.recommended, ...tseslint.configs.recommended],
   files: ["**/*.{ts,tsx}"],
   languageOptions: {
@@ -29,5 +29,41 @@ export default tseslint.config({ ignores: ["dist"] }, {
     "@typescript-eslint/no-require-imports": "warn",
     "storybook/no-renderer-packages": "off",
     "react-hooks/exhaustive-deps": "warn",
+  },
+}, {
+  files: [
+    "src/components/**/*.{ts,tsx}",
+    "src/pages/**/*.{ts,tsx}",
+    "src/App.tsx",
+  ],
+  rules: {
+    "no-restricted-globals": [
+      "error",
+      {
+        name: "fetch",
+        message: "Use the shared data layer hooks from '@/data' instead of direct fetch calls in UI components.",
+      },
+    ],
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: [
+          {
+            group: ["axios", "node-fetch"],
+            message: "HTTP clients must live in '@/data'; expose hooks/services there for UI consumption.",
+          },
+        ],
+      },
+    ],
+  },
+}, {
+  files: ["src/data/**/*.{ts,tsx}"],
+  rules: {
+    "no-restricted-globals": "off",
+  },
+}, {
+  files: ["**/*.stories.{ts,tsx}", "**/*.stories.ts"],
+  rules: {
+    "storybook/no-renderer-packages": "off",
   },
 }, storybook.configs["flat/recommended"]);
