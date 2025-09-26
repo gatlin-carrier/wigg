@@ -101,7 +101,9 @@
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/media.test.ts)",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/wiggPoints.test.ts)",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/__tests__/WiggPointForm.test.tsx --testNamePattern=\"should use WIGG Point Service instead of direct Supabase calls\")",
-      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/__tests__/WiggPointForm.test.tsx --testNamePattern=\"should submit form successfully with valid data\")"
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/__tests__/WiggPointForm.test.tsx --testNamePattern=\"should submit form successfully with valid data\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/__tests__/types.test.ts)"
     ],
     "deny": [],
     "ask": [],
