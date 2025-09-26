@@ -1,16 +1,18 @@
 import { supabase } from '@/integrations/supabase/client';
+import { createApiResponse, createApiError } from '../base';
 
 export const mediaService = {
   createMedia: async (params: any) => {
-    await supabase.rpc('upsert_media', {
+    const { data, error } = await supabase.rpc('upsert_media', {
       p_title: params.title,
       p_type: params.type,
-      p_year: params.year
+      p_year: params.year || null
     });
 
-    return {
-      success: true,
-      data: 'media-123'
-    };
+    if (error) {
+      return createApiError(error.message);
+    }
+
+    return createApiResponse(data);
   }
 };

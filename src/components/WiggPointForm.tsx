@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Star, X, Tag } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { wiggPointService } from "@/lib/api/services/wiggPoints";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 
@@ -86,36 +86,27 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
     setIsSubmitting(true);
 
     try {
-      // First, upsert the media
-      const { data: mediaId, error: mediaError } = await supabase
-        .rpc('upsert_media', {
-          p_type: data.mediaType.toLowerCase() as 'game' | 'movie' | 'tv show' | 'book' | 'podcast',
-          p_title: data.mediaTitle,
-          p_year: null
-        });
-
-      if (mediaError) throw mediaError;
-
       // Convert position value to number
       const posValue = parseFloat(data.posValue);
       if (isNaN(posValue)) {
         throw new Error("Position value must be a valid number");
       }
 
-      // Add the WIGG point
-      const { error: wiggError } = await supabase
-        .rpc('add_wigg', {
-          p_media_id: mediaId,
-          p_episode_id: null,
-          p_user_id: user.id,
-          p_pos_kind: data.posKind as 'sec' | 'min' | 'hour' | 'page' | 'chapter' | 'episode',
-          p_pos_value: posValue,
-          p_tags: [...customTags, ...(data.tags ? [data.tags] : [])].filter(Boolean),
-          p_reason_short: data.reasonShort || null,
-          p_spoiler: parseInt(data.spoilerLevel, 10) as 0 | 1 | 2
-        });
+      // Use the WIGG Point Service
+      const result = await wiggPointService.createWiggPoint({
+        mediaTitle: data.mediaTitle,
+        mediaType: data.mediaType.toLowerCase() as 'game' | 'movie' | 'tv show' | 'book' | 'podcast',
+        posKind: data.posKind as 'sec' | 'min' | 'hour' | 'page' | 'chapter' | 'episode',
+        posValue: posValue,
+        tags: [...customTags, ...(data.tags ? [data.tags] : [])].filter(Boolean),
+        reasonShort: data.reasonShort || null,
+        spoilerLevel: parseInt(data.spoilerLevel, 10) as 0 | 1 | 2,
+        userId: user.id
+      });
 
-      if (wiggError) throw wiggError;
+      if (!result.success) {
+        throw new Error(result.error.message);
+      }
 
       toast({
         title: "WIGG point added!",

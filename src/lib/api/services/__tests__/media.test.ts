@@ -36,4 +36,20 @@ describe('Media Service', () => {
       p_year: 2023
     });
   });
+
+  it('should handle media creation errors', async () => {
+    const mockError = new Error('Database connection failed');
+    (supabase.rpc as any).mockResolvedValue({
+      data: null,
+      error: mockError
+    });
+
+    const result = await mediaService.createMedia({
+      title: 'Test Movie',
+      type: 'movie'
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.error.message).toBe('Database connection failed');
+  });
 });

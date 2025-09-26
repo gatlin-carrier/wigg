@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\lib\\api\\services\\media.ts",
-    "old_string": "export const mediaService = {\n  createMedia: async () => {\n    return {\n      success: true,\n      data: 'media-123'\n    };\n  }\n};",
-    "new_string": "import { supabase } from '@/integrations/supabase/client';\n\nexport const mediaService = {\n  createMedia: async (params: any) => {\n    await supabase.rpc('upsert_media', {\n      p_title: params.title,\n      p_type: params.type,\n      p_year: params.year\n    });\n\n    return {\n      success: true,\n      data: 'media-123'\n    };\n  }\n};"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\__tests__\\WiggPointForm.test.tsx",
+    "old_string": "      expect(mockRpc).toHaveBeenCalledWith('add_wigg', {\n        p_media_id: 'mock-media-id',\n        p_episode_id: null,\n        p_user_id: 'test-user-id',\n        p_pos_kind: 'min',\n        p_pos_value: 30,\n        p_tags: [],\n        p_reason_short: 'Great action scene',\n        p_spoiler: '0'\n      });",
+    "new_string": "      expect(mockRpc).toHaveBeenCalledWith('add_wigg', {\n        p_media_id: 'mock-media-id',\n        p_episode_id: null,\n        p_user_id: 'test-user-id',\n        p_pos_kind: 'min',\n        p_pos_value: 30,\n        p_tags: [],\n        p_reason_short: 'Great action scene',\n        p_spoiler: 0\n      });"
   }
 }

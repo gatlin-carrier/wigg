@@ -92,7 +92,7 @@ describe('WiggPointForm', () => {
         p_pos_value: 30,
         p_tags: [],
         p_reason_short: 'Great action scene',
-        p_spoiler: '0'
+        p_spoiler: 0
       });
       
       expect(toast).toHaveBeenCalledWith({
@@ -176,5 +176,43 @@ describe('WiggPointForm', () => {
     // The form should clear the input properly using React Hook Form's mechanisms
     expect(tagInput).toHaveValue('');
     expect(screen.getByText('test-tag')).toBeInTheDocument();
+  });
+
+  it('should use WIGG Point Service instead of direct Supabase calls', async () => {
+    const user = userEvent.setup();
+
+    // Mock the WIGG Point Service
+    const mockCreateWiggPoint = vi.fn().mockResolvedValue({
+      success: true,
+      data: { mediaId: 'media-789' }
+    });
+
+    vi.doMock('@/lib/api/services/wiggPoints', () => ({
+      wiggPointService: {
+        createWiggPoint: mockCreateWiggPoint
+      }
+    }));
+
+    render(<WiggPointForm />);
+
+    // Fill form and submit
+    await user.type(screen.getByLabelText('Media Title'), 'API Service Test');
+    await user.type(screen.getByLabelText('When it gets good'), '25');
+    await user.type(screen.getByLabelText('Why does it get good? (optional)'), 'Amazing plot twist');
+
+    const submitButton = screen.getByRole('button', { name: 'Add WIGG Point' });
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockCreateWiggPoint).toHaveBeenCalledWith(expect.objectContaining({
+        mediaTitle: 'API Service Test',
+        mediaType: 'game',
+        posKind: 'min',
+        posValue: 25,
+        reasonShort: 'Amazing plot twist',
+        spoilerLevel: 0,
+        tags: []
+      }));
+    });
   });
 });

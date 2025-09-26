@@ -1,12 +1,42 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/services/__tests__/media.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/__tests__/WiggPointForm.test.tsx",
       "tests": [
         {
-          "name": "should create media entry successfully",
-          "fullName": "Media Service > should create media entry successfully",
+          "name": "should render form fields correctly",
+          "fullName": "WiggPointForm > should render form fields correctly",
+          "state": "skipped"
+        },
+        {
+          "name": "should show validation errors for required fields",
+          "fullName": "WiggPointForm > should show validation errors for required fields",
+          "state": "skipped"
+        },
+        {
+          "name": "should submit form successfully with valid data",
+          "fullName": "WiggPointForm > should submit form successfully with valid data",
           "state": "passed"
+        },
+        {
+          "name": "should handle tag addition and removal",
+          "fullName": "WiggPointForm > should handle tag addition and removal",
+          "state": "skipped"
+        },
+        {
+          "name": "should pass spoiler level as proper numeric type not any",
+          "fullName": "WiggPointForm > should pass spoiler level as proper numeric type not any",
+          "state": "skipped"
+        },
+        {
+          "name": "should properly handle form state without manual getValues/setValue calls",
+          "fullName": "WiggPointForm > should properly handle form state without manual getValues/setValue calls",
+          "state": "skipped"
+        },
+        {
+          "name": "should use WIGG Point Service instead of direct Supabase calls",
+          "fullName": "WiggPointForm > should use WIGG Point Service instead of direct Supabase calls",
+          "state": "skipped"
         }
       ]
     }
