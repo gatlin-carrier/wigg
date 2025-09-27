@@ -132,7 +132,10 @@
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/wiggPersistence.test.ts --testNamePattern=\"should save WIGG rating successfully\")",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/wiggPersistence.test.ts --testNamePattern=\"should save moment successfully\")",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/social/__tests__/useWiggComments.test.ts --testNamePattern=\"should use social service instead of direct Supabase calls\")",
-      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/social/__tests__/useWiggComments.test.ts)"
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/social/__tests__/useWiggComments.test.ts)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/__tests__/featureFlags.test.ts)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/__tests__/featureFlags.test.ts --testNamePattern=\"should return true when feature flag is enabled via defaultValue\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/pages/__tests__/MediaDetails.migration.test.tsx)"
     ],
     "deny": [],
     "ask": [],

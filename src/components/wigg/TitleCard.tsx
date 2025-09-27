@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
+import { useUserWiggsDataLayer } from '@/data/hooks/useUserWiggsDataLayer';
+import { useFeatureFlag } from '@/lib/featureFlags';
 import { PacingBarcode } from './PacingBarcode';
 import { RealtimeWiggOverlay } from './RealtimeWiggOverlay';
 import { Star, Clock, TrendingUp, Play } from 'lucide-react';
@@ -32,9 +34,14 @@ export function TitleCard({
   className = ''
 }: TitleCardProps) {
   const [showOverlay, setShowOverlay] = useState(false);
-  
+
   const { data: progressData, isLoading: progressLoading } = useTitleProgress(titleId);
-  const { data: wiggsData, isLoading: wiggsLoading } = useUserWiggs(titleId);
+
+  // Feature flag for data layer coexistence
+  const useNewDataLayer = useFeatureFlag('title-card-data-layer');
+  const legacyWiggsData = useUserWiggs(titleId, { enabled: !useNewDataLayer });
+  const newWiggsData = useUserWiggsDataLayer(titleId, { enabled: useNewDataLayer });
+  const { data: wiggsData, isLoading: wiggsLoading } = useNewDataLayer ? newWiggsData : legacyWiggsData;
 
   const isLoading = progressLoading || wiggsLoading;
 

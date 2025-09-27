@@ -148,4 +148,51 @@ describe('socialClient', () => {
     expect(supabase.from).toHaveBeenCalledWith('user_follows');
     expect(mockDelete).toHaveBeenCalled();
   });
+
+  it('should add comment to a wigg point', async () => {
+    const mockInsert = vi.fn().mockReturnValue({ error: null });
+    vi.mocked(supabase.from).mockReturnValueOnce({
+      insert: mockInsert
+    } as any);
+
+    const result = await socialClient.addComment({
+      pointId: 'point-123',
+      userId: 'user-456',
+      content: 'Great point!'
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: null
+    });
+    expect(supabase.from).toHaveBeenCalledWith('wigg_point_comments');
+    expect(mockInsert).toHaveBeenCalledWith({
+      point_id: 'point-123',
+      user_id: 'user-456',
+      content: 'Great point!'
+    });
+  });
+
+  it('should delete comment from a wigg point', async () => {
+    const mockDelete = vi.fn(() => ({
+      eq: vi.fn(() => ({
+        eq: vi.fn(() => ({ error: null }))
+      }))
+    }));
+    vi.mocked(supabase.from).mockReturnValueOnce({
+      delete: mockDelete
+    } as any);
+
+    const result = await socialClient.deleteComment({
+      commentId: 'comment-123',
+      userId: 'user-456'
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: null
+    });
+    expect(supabase.from).toHaveBeenCalledWith('wigg_point_comments');
+    expect(mockDelete).toHaveBeenCalled();
+  });
 });

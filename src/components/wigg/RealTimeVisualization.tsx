@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { PacingBarcode } from "./PacingBarcode";
 import { useTitleProgress } from "@/hooks/useTitleProgress";
 import { useUserWiggs } from "@/hooks/useUserWiggs";
+import { useUserWiggsDataLayer } from "@/data/hooks/useUserWiggsDataLayer";
+import { useFeatureFlag } from "@/lib/featureFlags";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useUserPreferences } from "@/hooks/useUserPreferences";
 import { type SwipeValue } from "./SwipeRating";
@@ -36,7 +38,11 @@ export function RealTimeVisualization({
 }: RealTimeVisualizationProps) {
   const isMobile = useIsMobile();
   const { data: progressData } = useTitleProgress(titleId);
-  const { data: wiggsData } = useUserWiggs(titleId);
+  // Feature flag for data layer coexistence
+  const useNewDataLayer = useFeatureFlag('real-time-visualization-data-layer');
+  const legacyWiggsData = useUserWiggs(titleId, { enabled: !useNewDataLayer });
+  const newWiggsData = useUserWiggsDataLayer(titleId, { enabled: useNewDataLayer });
+  const { data: wiggsData } = useNewDataLayer ? newWiggsData : legacyWiggsData;
   const { preferences } = useUserPreferences();
   
   // Use user preference if variant is not explicitly provided

@@ -1,5 +1,7 @@
 ﻿import { Button } from '@/components/ui/button';
 import { useFollowUser } from '@/hooks/social/useFollowUser';
+import { useFollowUserDataLayer } from '@/hooks/social/useFollowUserDataLayer';
+import { useFeatureFlag } from '@/lib/featureFlags';
 import { Loader2, UserPlus, UserCheck } from 'lucide-react';
 
 interface FollowButtonProps {
@@ -8,7 +10,11 @@ interface FollowButtonProps {
 }
 
 export function FollowButton({ targetUserId, targetUsername }: FollowButtonProps) {
-  const { isFollowing, toggle, loading, isOwnProfile } = useFollowUser(targetUserId);
+  // Feature flag for data layer coexistence
+  const useNewDataLayer = useFeatureFlag('follow-button-data-layer');
+  const legacyFollowData = useFollowUser(targetUserId);
+  const newFollowData = useFollowUserDataLayer(targetUserId);
+  const { isFollowing, toggle, loading, isOwnProfile } = useNewDataLayer ? newFollowData : legacyFollowData;
 
   if (isOwnProfile) return null;
 

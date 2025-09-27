@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
+import { useUserWiggsDataLayer } from '@/data/hooks/useUserWiggsDataLayer';
+import { useFeatureFlag } from '@/lib/featureFlags';
 import { useAuth } from '@/hooks/useAuth';
 import { formatT2G } from '@/lib/wigg/format';
 import { classifyPeakFromSegments, resampleSegments } from '@/lib/wigg/analysis';
@@ -45,7 +47,12 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
   const { user } = useAuth();
   const titleKey = useMemo(() => (mediaData ? `${mediaData.source}:${mediaData.id}` : title), [mediaData, title]);
   const { data: progressData } = useTitleProgress(titleKey);
-  const { data: wiggsData, addWigg: addWiggLocal } = useUserWiggs(titleKey);
+
+  // Feature flag for data layer coexistence
+  const useNewDataLayer = useFeatureFlag('media-tile-data-layer');
+  const legacyWiggsData = useUserWiggs(titleKey, { enabled: !useNewDataLayer });
+  const newWiggsData = useUserWiggsDataLayer(titleKey, { enabled: useNewDataLayer });
+  const { data: wiggsData, addWigg: addWiggLocal } = useNewDataLayer ? newWiggsData : legacyWiggsData;
   const pacingInsight = useMemo(() => classifyPeakFromSegments(progressData?.segments || []).label, [progressData?.segments]);
   const curveValues = useMemo(
     () => resampleSegments(progressData?.segments || [], 16),

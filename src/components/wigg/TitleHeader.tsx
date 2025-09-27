@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
+import { useUserWiggsDataLayer } from '@/data/hooks/useUserWiggsDataLayer';
+import { useFeatureFlag } from '@/lib/featureFlags';
 import { useMilestones } from '@/hooks/useMilestones';
 import { useUserPreferences } from '@/hooks/useUserPreferences';
 import { MilestonePath } from './MilestonePath';
@@ -45,7 +47,13 @@ export function TitleHeader({
   const [showOverlay, setShowOverlay] = useState(false);
   
   const { data: progressData, isLoading: progressLoading } = useTitleProgress(titleId);
-  const { data: wiggsData, isLoading: wiggsLoading } = useUserWiggs(titleId);
+
+  // Feature flag for data layer coexistence
+  const useNewDataLayer = useFeatureFlag('title-header-data-layer');
+  const legacyWiggsData = useUserWiggs(titleId, { enabled: !useNewDataLayer });
+  const newWiggsData = useUserWiggsDataLayer(titleId, { enabled: useNewDataLayer });
+  const { data: wiggsData, isLoading: wiggsLoading } = useNewDataLayer ? newWiggsData : legacyWiggsData;
+
   const { data: milestonesData, isLoading: milestonesLoading } = useMilestones(titleId);
   const { preferences } = useUserPreferences();
 

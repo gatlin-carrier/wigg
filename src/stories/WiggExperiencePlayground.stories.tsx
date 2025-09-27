@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React, { useMemo, useState } from 'react';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
+import { useUserWiggsDataLayer } from '@/data/hooks/useUserWiggsDataLayer';
+import { useFeatureFlag } from '@/lib/featureFlags';
 import { useMilestones } from '@/hooks/useMilestones';
 import { PacingBarcode } from '@/components/wigg/PacingBarcode';
 import { LollipopStrip } from '@/components/wigg/LollipopStrip';
@@ -46,7 +48,11 @@ export const ExperienceBuilder: Story = {
   render: function Story() {
     const titleId = 'playground-title';
     const { data: progress } = useTitleProgress(titleId);
-    const { data: wiggs } = useUserWiggs(titleId);
+    // Feature flag for data layer coexistence
+    const useNewDataLayer = useFeatureFlag('wigg-experience-playground-data-layer');
+    const legacyWiggsData = useUserWiggs(titleId, { enabled: !useNewDataLayer });
+    const newWiggsData = useUserWiggsDataLayer(titleId, { enabled: useNewDataLayer });
+    const { data: wiggs } = useNewDataLayer ? newWiggsData : legacyWiggsData;
     const { data: milestones } = useMilestones(titleId);
 
     const [viewport, setViewport] = useState<Viewport>('mobile');

@@ -1,34 +1,16 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/clients/__tests__/userPreferencesClient.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/social/__tests__/FollowButton.migration.test.tsx",
       "tests": [
         {
-          "name": "should get user preferences",
-          "fullName": "userPreferencesClient > should get user preferences",
-          "state": "skipped"
-        },
-        {
-          "name": "should update user preferences",
-          "fullName": "userPreferencesClient > should update user preferences",
-          "state": "skipped"
-        },
-        {
-          "name": "should follow DataLayerResponse pattern for getUserPreferences",
-          "fullName": "userPreferencesClient > should follow DataLayerResponse pattern for getUserPreferences",
-          "state": "failed",
-          "errors": [
-            {
-              "message": "expected undefined to be true // Object.is equality",
-              "stack": "AssertionError: expected undefined to be true // Object.is equality\n    at C:\\Users\\gatli\\Projects\\wigg\\src\\data\\clients\\__tests__\\userPreferencesClient.test.ts:71:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///C:/Users/gatli/Projects/wigg/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20",
-              "expected": "true",
-              "actual": "undefined"
-            }
-          ]
+          "name": "should have completed data layer migration with feature flag",
+          "fullName": "FollowButton Migration > should have completed data layer migration with feature flag",
+          "state": "passed"
         }
       ]
     }
   ],
   "unhandledErrors": [],
-  "reason": "failed"
+  "reason": "passed"
 }

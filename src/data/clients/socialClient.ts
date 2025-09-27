@@ -96,5 +96,37 @@ export const socialClient = {
       .eq('following_id', followingId);
 
     if (error) throw error;
+  },
+
+  addComment: async (params: { pointId: string; userId: string; content: string }): Promise<DataLayerResponse<null>> => {
+    try {
+      const { error } = await supabase
+        .from('wigg_point_comments')
+        .insert({
+          point_id: params.pointId,
+          user_id: params.userId,
+          content: params.content
+        });
+
+      if (error) return handleError(error);
+      return handleSuccess(null);
+    } catch (error) {
+      return handleError(error);
+    }
+  },
+
+  deleteComment: async (params: { commentId: string; userId: string }): Promise<DataLayerResponse<null>> => {
+    try {
+      const { error } = await supabase
+        .from('wigg_point_comments')
+        .delete()
+        .eq('id', params.commentId)
+        .eq('user_id', params.userId);
+
+      if (error) return handleError(error);
+      return handleSuccess(null);
+    } catch (error) {
+      return handleError(error);
+    }
   }
 };
