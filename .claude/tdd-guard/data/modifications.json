@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\data\\clients\\__tests__\\socialClient.integration.test.ts",
-    "old_string": "import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';\nimport { socialClient } from '../socialClient';\nimport { server } from '../../mocks/setup';\n\ndescribe('socialClient integration tests', () => {\n  beforeAll(() => {\n    server.listen();\n  });\n\n  afterEach(() => {\n    server.resetHandlers();\n  });\n\n  afterAll(() => {\n    server.close();\n  });",
-    "new_string": "import { describe, it, expect } from 'vitest';\nimport { socialClient } from '../socialClient';\n\ndescribe('socialClient integration tests', () => {"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\data\\hooks\\useSocialData.ts",
+    "old_string": "export const useSocialData = (pointId: string, userId: string) => {\n  return {\n    isLoading: true,\n    likeCount: undefined,\n    hasUserLiked: undefined\n  };\n};",
+    "new_string": "import { useQuery } from '@tanstack/react-query';\nimport { socialClient } from '../clients/socialClient';\n\nexport const useSocialData = (pointId: string, userId: string) => {\n  const likeCountQuery = useQuery({\n    queryKey: ['likeCount', pointId],\n    queryFn: () => socialClient.getLikeCount(pointId),\n    enabled: !!pointId\n  });\n\n  const hasUserLikedQuery = useQuery({\n    queryKey: ['hasUserLiked', pointId, userId],\n    queryFn: () => socialClient.hasUserLiked(pointId, userId),\n    enabled: !!pointId && !!userId\n  });\n\n  return {\n    isLoading: likeCountQuery.isLoading || hasUserLikedQuery.isLoading,\n    likeCount: likeCountQuery.data?.success ? likeCountQuery.data.data : undefined,\n    hasUserLiked: hasUserLikedQuery.data?.success ? hasUserLikedQuery.data.data : undefined,\n    error: likeCountQuery.error || hasUserLikedQuery.error\n  };\n};"
   }
 }

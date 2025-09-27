@@ -1,21 +1,21 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/clients/__tests__/socialClient.integration.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/hooks/__tests__/useSocialData.test.tsx",
       "tests": [
         {
-          "name": "should get like count from real API via MSW",
-          "fullName": "socialClient integration tests > should get like count from real API via MSW",
-          "state": "failed",
-          "errors": [
-            {
-              "message": "TypeError: fetch failed"
-            }
-          ]
+          "name": "should fetch like count and user like status",
+          "fullName": "useSocialData > should fetch like count and user like status",
+          "state": "passed"
+        },
+        {
+          "name": "should return data when queries complete successfully",
+          "fullName": "useSocialData > should return data when queries complete successfully",
+          "state": "passed"
         }
       ]
     }
   ],
   "unhandledErrors": [],
-  "reason": "failed"
+  "reason": "passed"
 }

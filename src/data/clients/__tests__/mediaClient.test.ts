@@ -40,6 +40,28 @@ vi.mock('@/integrations/tmdb/client', () => ({
     runtime: 120,
     genres: [{ id: 28, name: 'Action' }],
     poster_path: '/test.jpg'
+  })),
+  getTvDetails: vi.fn(() => Promise.resolve({
+    id: 456,
+    name: 'Test TV Show',
+    overview: 'A detailed test TV show description',
+    first_air_date: '2024-01-01',
+    number_of_seasons: 3,
+    number_of_episodes: 30,
+    genres: [{ id: 18, name: 'Drama' }],
+    poster_path: '/test-tv.jpg'
+  })),
+  getTrendingMovies: vi.fn(() => Promise.resolve({
+    results: [
+      {
+        id: 789,
+        title: 'Trending Movie',
+        overview: 'A popular trending movie',
+        release_date: '2024-02-01',
+        poster_path: '/trending.jpg'
+      }
+    ],
+    total_results: 1
   }))
 }));
 
@@ -78,5 +100,24 @@ describe('mediaClient', () => {
     expect(details.runtime).toBe(120);
     expect(details.genres).toHaveLength(1);
     expect(details.genres[0].name).toBe('Action');
+  });
+
+  it('should get detailed TV show information', async () => {
+    const details = await mediaClient.getTvDetails(456);
+
+    expect(details.id).toBe(456);
+    expect(details.name).toBe('Test TV Show');
+    expect(details.number_of_seasons).toBe(3);
+    expect(details.number_of_episodes).toBe(30);
+    expect(details.genres).toHaveLength(1);
+    expect(details.genres[0].name).toBe('Drama');
+  });
+
+  it('should get trending movies', async () => {
+    const results = await mediaClient.getTrendingMovies();
+
+    expect(results.results).toHaveLength(1);
+    expect(results.results[0].id).toBe(789);
+    expect(results.results[0].title).toBe('Trending Movie');
   });
 });

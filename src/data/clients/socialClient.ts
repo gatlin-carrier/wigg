@@ -1,11 +1,17 @@
 import { supabase } from '@/integrations/supabase/client';
+import { handleError, handleSuccess } from '../utils/errorHandler';
+import type { DataLayerResponse } from '../types/errors';
 
 export const socialClient = {
-  getLikeCount: async (pointId: string): Promise<number> => {
-    const { data, error } = await supabase.rpc('get_wigg_point_like_count', { point_id: pointId });
+  getLikeCount: async (pointId: string): Promise<DataLayerResponse<number>> => {
+    try {
+      const { data, error } = await supabase.rpc('get_wigg_point_like_count', { point_id: pointId });
 
-    if (error) throw error;
-    return data;
+      if (error) return handleError(error);
+      return handleSuccess(data);
+    } catch (error) {
+      return handleError(error);
+    }
   },
 
   hasUserLiked: async (pointId: string, userId: string): Promise<boolean> => {
@@ -54,5 +60,41 @@ export const socialClient = {
     }));
 
     return comments;
+  },
+
+  isFollowing: async (followerId: string, followingId: string): Promise<boolean> => {
+    const { data, error } = await supabase
+      .from('user_follows')
+      .select('*')
+      .eq('follower_id', followerId)
+      .eq('following_id', followingId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      throw error;
+    }
+
+    return data !== null;
+  },
+
+  followUser: async (followerId: string, followingId: string): Promise<void> => {
+    const { error } = await supabase
+      .from('user_follows')
+      .insert({
+        follower_id: followerId,
+        following_id: followingId
+      });
+
+    if (error) throw error;
+  },
+
+  unfollowUser: async (followerId: string, followingId: string): Promise<void> => {
+    const { error } = await supabase
+      .from('user_follows')
+      .delete()
+      .eq('follower_id', followerId)
+      .eq('following_id', followingId);
+
+    if (error) throw error;
   }
 };
