@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\lib\\api\\services\\wiggPersistence.ts",
-    "old_string": "  saveMediaToDatabase: async (params: SaveMediaToDatabaseParams) => {",
-    "new_string": "  saveMediaToDatabase: async (params: any) => {"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\data\\clients\\__tests__\\userPreferencesClient.test.ts",
+    "old_string": "  it('should update user preferences', async () => {\n    const updatedPreferences = await userPreferencesClient.updateUserPreferences('user-123', {\n      spoiler_sensitivity: 2,\n      trusted_users: ['user-456', 'user-789']\n    });\n\n    expect(updatedPreferences.user_id).toBe('user-123');\n    expect(updatedPreferences.spoiler_sensitivity).toBe(2);\n    expect(updatedPreferences.trusted_users).toEqual(['user-456', 'user-789']);\n  });\n});",
+    "new_string": "  it('should update user preferences', async () => {\n    const updatedPreferences = await userPreferencesClient.updateUserPreferences('user-123', {\n      spoiler_sensitivity: 2,\n      trusted_users: ['user-456', 'user-789']\n    });\n\n    expect(updatedPreferences.user_id).toBe('user-123');\n    expect(updatedPreferences.spoiler_sensitivity).toBe(2);\n    expect(updatedPreferences.trusted_users).toEqual(['user-456', 'user-789']);\n  });\n\n  it('should follow DataLayerResponse pattern for getUserPreferences', async () => {\n    const result = await userPreferencesClient.getUserPreferences('user-123');\n\n    // This test will fail until we implement DataLayerResponse pattern\n    expect(result.success).toBe(true);\n    expect(result.data.user_id).toBe('user-123');\n    expect(result.data.spoiler_sensitivity).toBe(1);\n  });\n});"
   }
 }

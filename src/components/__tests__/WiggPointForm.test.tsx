@@ -2,7 +2,13 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { WiggPointForm } from '../WiggPointForm';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { wiggPointFormSchema } from '@/data/schemas/wiggPoints';
 
 // Mock the dependencies
 vi.mock('@/integrations/supabase/client', () => ({
@@ -59,12 +65,55 @@ describe('WiggPointForm', () => {
   });
 
   it('should show validation errors for required fields', async () => {
+    // First, test Zod schema directly to verify it works
+    const testData = {
+      mediaTitle: "",
+      mediaType: "Game",
+      posValue: "",
+      posKind: "min",
+      reasonShort: "",
+      tags: "",
+      spoilerLevel: "0"
+    };
+
+    const result = wiggPointFormSchema.safeParse(testData);
+    console.log('Zod validation result:', result);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues).toContainEqual(
+        expect.objectContaining({
+          path: ['mediaTitle'],
+          message: 'Media title is required'
+        })
+      );
+      expect(result.error.issues).toContainEqual(
+        expect.objectContaining({
+          path: ['posValue'],
+          message: 'Position is required'
+        })
+      );
+    }
+
+    // Now test with react-hook-form
+    const user = userEvent.setup();
     render(<WiggPointForm />);
-    
+
+    // Debug what happens when clicking submit to trigger validation
     const submitButton = screen.getByRole('button', { name: 'Add WIGG Point' });
-    fireEvent.click(submitButton);
-    
+    await user.click(submitButton);
+
+    // Wait for validation to run and check for error display
     await waitFor(() => {
+      // Look for any element with the error message to help debug
+      const mediaInputs = screen.getAllByDisplayValue('');
+      const mediaInput = mediaInputs[0]; // First empty input should be media title
+      console.log('Media input aria-invalid:', mediaInput.getAttribute('aria-invalid'));
+
+      // Check if there are any error messages at all
+      const errorMessages = screen.queryAllByRole('paragraph');
+      console.log('Found paragraphs:', errorMessages.map(p => p.textContent));
+
       expect(screen.getByText('Media title is required')).toBeInTheDocument();
       expect(screen.getByText('Position is required')).toBeInTheDocument();
     });

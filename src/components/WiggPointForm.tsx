@@ -1,7 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,18 +12,7 @@ import { Clock, Star, X, Tag } from "lucide-react";
 import { wiggPointService } from "@/lib/api/services/wiggPoints";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
-
-const wiggPointSchema = z.object({
-  mediaTitle: z.string().min(1, "Media title is required"),
-  mediaType: z.enum(["Game", "Movie", "TV Show", "Book", "Podcast"]),
-  posValue: z.string().min(1, "Position is required"),
-  posKind: z.enum(["sec", "min", "hour", "page", "chapter", "episode"]),
-  reasonShort: z.string().optional(),
-  tags: z.string().optional(),
-  spoilerLevel: z.enum(["0", "1", "2"]).default("0")
-});
-
-type WiggPointForm = z.infer<typeof wiggPointSchema>;
+import { wiggPointFormSchema, type WiggPointForm } from "@/data/schemas/wiggPoints";
 
 interface WiggPointFormProps {
   onSuccess?: () => void;
@@ -40,7 +28,8 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
   const [customTags, setCustomTags] = useState<string[]>([]);
 
   const form = useForm<WiggPointForm>({
-    resolver: zodResolver(wiggPointSchema),
+    resolver: zodResolver(wiggPointFormSchema),
+    mode: "onChange",
     defaultValues: {
       mediaTitle: initialData?.title || "",
       mediaType: initialData?.type || "Game",
@@ -51,6 +40,36 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
       spoilerLevel: "0"
     }
   });
+
+  // TODO: FIXME - zodResolver compatibility issue with react-hook-form
+  // The zodResolver is not properly setting error state that FormMessage components can detect.
+  // Error validation works (prevents submission) but UI error messages don't display.
+  // Root cause: useFormField() -> getFieldState() doesn't see errors set by zodResolver.
+  // This affects aria-invalid and FormMessage rendering. Needs investigation of:
+  // 1. zodResolver version compatibility with react-hook-form
+  // 2. Alternative form validation approaches
+  // 3. Custom form error state management
+  // Current workaround validates data and prevents bad submissions but lacks UI feedback.
+  React.useEffect(() => {
+    const subscription = form.watch((data) => {
+      // Validate with Zod and manually set errors
+      const validationResult = wiggPointFormSchema.safeParse(data);
+
+      // Clear previous errors
+      form.clearErrors();
+
+      if (!validationResult.success) {
+        validationResult.error.issues.forEach((issue) => {
+          const fieldName = issue.path[0] as keyof WiggPointForm;
+          form.setError(fieldName, {
+            type: 'manual',
+            message: issue.message
+          });
+        });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const addTag = (tag: string) => {
     if (tag && !customTags.includes(tag)) {
@@ -74,6 +93,23 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
   };
 
   const onSubmit = async (data: WiggPointForm) => {
+    // Clear previous errors
+    form.clearErrors();
+
+    // Manual validation as workaround for zodResolver issue
+    const validationResult = wiggPointFormSchema.safeParse(data);
+    if (!validationResult.success) {
+      // Manually set form errors since zodResolver isn't working properly
+      validationResult.error.issues.forEach((issue) => {
+        const fieldName = issue.path[0] as keyof WiggPointForm;
+        form.setError(fieldName, {
+          type: 'manual',
+          message: issue.message
+        });
+      });
+      return;
+    }
+
     if (!user) {
       toast({
         title: "Authentication required",
