@@ -1,6 +1,46 @@
 {
   "testModules": [
     {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleProgress.test.ts",
+      "tests": [
+        {
+          "name": "should return loading state initially",
+          "fullName": "useTitleProgress > should return loading state initially",
+          "state": "passed"
+        },
+        {
+          "name": "should return progress data after loading completes",
+          "fullName": "useTitleProgress > should return progress data after loading completes",
+          "state": "passed"
+        },
+        {
+          "name": "should generate segments with realistic score distribution",
+          "fullName": "useTitleProgress > should generate segments with realistic score distribution",
+          "state": "passed"
+        },
+        {
+          "name": "should not load data for empty titleId",
+          "fullName": "useTitleProgress > should not load data for empty titleId",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useUserPreferences.test.ts",
+      "tests": [
+        {
+          "name": "should use shared optimistic update logic for both single and batch operations",
+          "fullName": "useUserPreferences > should use shared optimistic update logic for both single and batch operations",
+          "state": "passed"
+        },
+        {
+          "name": "should use User Profile Service instead of direct Supabase calls",
+          "fullName": "useUserPreferences > should use User Profile Service instead of direct Supabase calls",
+          "state": "passed"
+        }
+      ]
+    },
+    {
       "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useUserWiggs.test.ts",
       "tests": [
         {
@@ -71,71 +111,21 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleProgress.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/RatingButtons.test.tsx",
       "tests": [
         {
-          "name": "should return loading state initially",
-          "fullName": "useTitleProgress > should return loading state initially",
+          "name": "should render all four rating buttons with correct emojis",
+          "fullName": "RatingButtons > should render all four rating buttons with correct emojis",
           "state": "passed"
         },
         {
-          "name": "should return progress data after loading completes",
-          "fullName": "useTitleProgress > should return progress data after loading completes",
+          "name": "should call onChange when rating is clicked",
+          "fullName": "RatingButtons > should call onChange when rating is clicked",
           "state": "passed"
         },
         {
-          "name": "should generate segments with realistic score distribution",
-          "fullName": "useTitleProgress > should generate segments with realistic score distribution",
-          "state": "passed"
-        },
-        {
-          "name": "should not load data for empty titleId",
-          "fullName": "useTitleProgress > should not load data for empty titleId",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/WiggMap.test.tsx",
-      "tests": [
-        {
-          "name": "should render SVG with correct dimensions",
-          "fullName": "WiggMap > should render SVG with correct dimensions",
-          "state": "passed"
-        },
-        {
-          "name": "should render peak circles for high values",
-          "fullName": "WiggMap > should render peak circles for high values",
-          "state": "passed"
-        },
-        {
-          "name": "should handle mouse interactions for seeking and peeking",
-          "fullName": "WiggMap > should handle mouse interactions for seeking and peeking",
-          "state": "passed"
-        },
-        {
-          "name": "should apply sensitivity filtering to mute tagged points",
-          "fullName": "WiggMap > should apply sensitivity filtering to mute tagged points",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/onboarding/__tests__/OnboardingFlow.test.tsx",
-      "tests": [
-        {
-          "name": "renders the welcome step by default",
-          "fullName": "OnboardingFlow > renders the welcome step by default",
-          "state": "passed"
-        },
-        {
-          "name": "advances to the next step when Next is clicked",
-          "fullName": "OnboardingFlow > advances to the next step when Next is clicked",
-          "state": "passed"
-        },
-        {
-          "name": "closes when Skip is clicked",
-          "fullName": "OnboardingFlow > closes when Skip is clicked",
+          "name": "should apply correct size classes based on size prop",
+          "fullName": "RatingButtons > should apply correct size classes based on size prop",
           "state": "passed"
         }
       ]
@@ -156,6 +146,26 @@
         {
           "name": "closes when Escape is pressed",
           "fullName": "OnboardingFlow behaviour > closes when Escape is pressed",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/onboarding/__tests__/OnboardingFlow.test.tsx",
+      "tests": [
+        {
+          "name": "renders the welcome step by default",
+          "fullName": "OnboardingFlow > renders the welcome step by default",
+          "state": "passed"
+        },
+        {
+          "name": "advances to the next step when Next is clicked",
+          "fullName": "OnboardingFlow > advances to the next step when Next is clicked",
+          "state": "passed"
+        },
+        {
+          "name": "closes when Skip is clicked",
+          "fullName": "OnboardingFlow > closes when Skip is clicked",
           "state": "passed"
         }
       ]
@@ -226,6 +236,81 @@
       ]
     },
     {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/PacingBarcode.performance.test.tsx",
+      "tests": [
+        {
+          "name": "renders fallback messaging when no scores are present",
+          "fullName": "PacingBarcode Goodness Curve > renders fallback messaging when no scores are present",
+          "state": "passed"
+        },
+        {
+          "name": "stays visually stable when re-rendered with equivalent data",
+          "fullName": "PacingBarcode Goodness Curve > stays visually stable when re-rendered with equivalent data",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/integrations/supabase/__tests__/client.security.test.ts",
+      "tests": [
+        {
+          "name": "should create Supabase client without exposing service role keys",
+          "fullName": "Supabase Client Security > should create Supabase client without exposing service role keys",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/WiggMap.test.tsx",
+      "tests": [
+        {
+          "name": "should render SVG with correct dimensions",
+          "fullName": "WiggMap > should render SVG with correct dimensions",
+          "state": "passed"
+        },
+        {
+          "name": "should render peak circles for high values",
+          "fullName": "WiggMap > should render peak circles for high values",
+          "state": "passed"
+        },
+        {
+          "name": "should handle mouse interactions for seeking and peeking",
+          "fullName": "WiggMap > should handle mouse interactions for seeking and peeking",
+          "state": "passed"
+        },
+        {
+          "name": "should apply sensitivity filtering to mute tagged points",
+          "fullName": "WiggMap > should apply sensitivity filtering to mute tagged points",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/RealtimeWiggOverlay.test.tsx",
+      "tests": [
+        {
+          "name": "should always persist WIGGs to Supabase when marking",
+          "fullName": "RealtimeWiggOverlay > should always persist WIGGs to Supabase when marking",
+          "state": "passed"
+        },
+        {
+          "name": "should show visual indicators for test data entries",
+          "fullName": "RealtimeWiggOverlay > should show visual indicators for test data entries",
+          "state": "passed"
+        },
+        {
+          "name": "should show environment indicator when on non-production URL",
+          "fullName": "RealtimeWiggOverlay > should show environment indicator when on non-production URL",
+          "state": "passed"
+        },
+        {
+          "name": "should show test indicators when current user is a test user",
+          "fullName": "RealtimeWiggOverlay > should show test indicators when current user is a test user",
+          "state": "passed"
+        }
+      ]
+    },
+    {
       "moduleId": "C:/Users/gatli/Projects/wigg/src/components/social/__tests__/FollowButton.test.tsx",
       "tests": [
         {
@@ -246,31 +331,56 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/RatingButtons.test.tsx",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.auth.test.tsx",
       "tests": [
         {
-          "name": "should render all four rating buttons with correct emojis",
-          "fullName": "RatingButtons > should render all four rating buttons with correct emojis",
+          "name": "should redirect unauthenticated users to auth page when clicking add button",
+          "fullName": "MediaTile Authentication > should redirect unauthenticated users to auth page when clicking add button",
           "state": "passed"
         },
         {
-          "name": "should call onChange when rating is clicked",
-          "fullName": "RatingButtons > should call onChange when rating is clicked",
-          "state": "passed"
-        },
-        {
-          "name": "should apply correct size classes based on size prop",
-          "fullName": "RatingButtons > should apply correct size classes based on size prop",
+          "name": "should allow authenticated users to proceed with add wigg flow",
+          "fullName": "MediaTile Authentication > should allow authenticated users to proceed with add wigg flow",
           "state": "passed"
         }
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/integrations/supabase/__tests__/client.security.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.layout.test.tsx",
       "tests": [
         {
-          "name": "should create Supabase client without exposing service role keys",
-          "fullName": "Supabase Client Security > should create Supabase client without exposing service role keys",
+          "name": "should have explicit dimensions on images to prevent layout shifts",
+          "fullName": "MediaTile Layout Stability > should have explicit dimensions on images to prevent layout shifts",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.performance.test.tsx",
+      "tests": [
+        {
+          "name": "should memoize when props remain unchanged",
+          "fullName": "MediaTile Performance > should memoize when props remain unchanged",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.peak-icon.test.tsx",
+      "tests": [
+        {
+          "name": "renders trending-up icon for strong start",
+          "fullName": "MediaTile Peak Icon > renders trending-up icon for strong start",
+          "state": "passed"
+        },
+        {
+          "name": "renders activity icon for even pacing",
+          "fullName": "MediaTile Peak Icon > renders activity icon for even pacing",
+          "state": "passed"
+        },
+        {
+          "name": "renders minus icon for peak late pacing",
+          "fullName": "MediaTile Peak Icon > renders minus icon for peak late pacing",
           "state": "passed"
         }
       ]
@@ -286,21 +396,6 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useUserPreferences.test.ts",
-      "tests": [
-        {
-          "name": "should use shared optimistic update logic for both single and batch operations",
-          "fullName": "useUserPreferences > should use shared optimistic update logic for both single and batch operations",
-          "state": "passed"
-        },
-        {
-          "name": "should use User Profile Service instead of direct Supabase calls",
-          "fullName": "useUserPreferences > should use User Profile Service instead of direct Supabase calls",
-          "state": "passed"
-        }
-      ]
-    },
-    {
       "moduleId": "C:/Users/gatli/Projects/wigg/src/components/ui/__tests__/skeleton.performance.test.tsx",
       "tests": [
         {
@@ -311,26 +406,51 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTileSkeletonRow.test.tsx",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/pages/__tests__/Dashboard.loading.test.tsx",
       "tests": [
         {
-          "name": "renders the requested number of wrappers",
-          "fullName": "MediaTileSkeletonRow > renders the requested number of wrappers",
+          "name": "renders the browse tab without crashing",
+          "fullName": "Dashboard Loading > renders the browse tab without crashing",
           "state": "passed"
         }
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTileSkeleton.test.tsx",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/notifications/__tests__/NotificationBell.test.tsx",
       "tests": [
         {
-          "name": "renders structural skeleton placeholders",
-          "fullName": "MediaTileSkeleton > renders structural skeleton placeholders",
+          "name": "shows unread badge with count",
+          "fullName": "NotificationBell > shows unread badge with count",
           "state": "passed"
-        },
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/PacingBarcode.hover.performance.test.tsx",
+      "tests": [
         {
-          "name": "applies animation delay when provided",
-          "fullName": "MediaTileSkeleton > applies animation delay when provided",
+          "name": "ignores interactive handlers when rendered as a static sparkline",
+          "fullName": "PacingBarcode interactions > ignores interactive handlers when rendered as a static sparkline",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useAnalyticsWorker.minimal.test.ts",
+      "tests": [
+        {
+          "name": "should have a hook that can be imported",
+          "fullName": "useAnalyticsWorker minimal test > should have a hook that can be imported",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useFollowUser.test.ts",
+      "tests": [
+        {
+          "name": "should use social service instead of direct Supabase calls",
+          "fullName": "useFollowUser > should use social service instead of direct Supabase calls",
           "state": "passed"
         }
       ]
@@ -356,16 +476,66 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useWiggLikes.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTileSkeleton.test.tsx",
       "tests": [
         {
-          "name": "should handle Promise.all errors in useEffect without crashing",
-          "fullName": "useWiggLikes > should handle Promise.all errors in useEffect without crashing",
+          "name": "renders structural skeleton placeholders",
+          "fullName": "MediaTileSkeleton > renders structural skeleton placeholders",
           "state": "passed"
         },
         {
+          "name": "applies animation delay when provided",
+          "fullName": "MediaTileSkeleton > applies animation delay when provided",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/utils/__tests__/serviceWorkerRegistration.test.ts",
+      "tests": [
+        {
+          "name": "should detect service worker support and fail if registerServiceWorker is not defined",
+          "fullName": "Service Worker Registration > should detect service worker support and fail if registerServiceWorker is not defined",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTileSkeletonRow.test.tsx",
+      "tests": [
+        {
+          "name": "renders the requested number of wrappers",
+          "fullName": "MediaTileSkeletonRow > renders the requested number of wrappers",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useFollowerCounts.test.ts",
+      "tests": [
+        {
           "name": "should use social service instead of direct Supabase calls",
-          "fullName": "useWiggLikes > should use social service instead of direct Supabase calls",
+          "fullName": "useFollowerCounts > should use social service instead of direct Supabase calls",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useWiggComments.test.ts",
+      "tests": [
+        {
+          "name": "should use social service instead of direct Supabase calls",
+          "fullName": "useWiggComments > should use social service instead of direct Supabase calls",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useStaggeredLoading.test.ts",
+      "tests": [
+        {
+          "name": "should load items progressively with delay",
+          "fullName": "useStaggeredLoading > should load items progressively with delay",
           "state": "passed"
         }
       ]
@@ -501,131 +671,6 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/PacingBarcode.hover.performance.test.tsx",
-      "tests": [
-        {
-          "name": "ignores interactive handlers when rendered as a static sparkline",
-          "fullName": "PacingBarcode interactions > ignores interactive handlers when rendered as a static sparkline",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/RealtimeWiggOverlay.test.tsx",
-      "tests": [
-        {
-          "name": "should always persist WIGGs to Supabase when marking",
-          "fullName": "RealtimeWiggOverlay > should always persist WIGGs to Supabase when marking",
-          "state": "passed"
-        },
-        {
-          "name": "should show visual indicators for test data entries",
-          "fullName": "RealtimeWiggOverlay > should show visual indicators for test data entries",
-          "state": "passed"
-        },
-        {
-          "name": "should show environment indicator when on non-production URL",
-          "fullName": "RealtimeWiggOverlay > should show environment indicator when on non-production URL",
-          "state": "passed"
-        },
-        {
-          "name": "should show test indicators when current user is a test user",
-          "fullName": "RealtimeWiggOverlay > should show test indicators when current user is a test user",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/PacingBarcode.performance.test.tsx",
-      "tests": [
-        {
-          "name": "renders fallback messaging when no scores are present",
-          "fullName": "PacingBarcode Goodness Curve > renders fallback messaging when no scores are present",
-          "state": "passed"
-        },
-        {
-          "name": "stays visually stable when re-rendered with equivalent data",
-          "fullName": "PacingBarcode Goodness Curve > stays visually stable when re-rendered with equivalent data",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.performance.test.tsx",
-      "tests": [
-        {
-          "name": "should memoize when props remain unchanged",
-          "fullName": "MediaTile Performance > should memoize when props remain unchanged",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.peak-icon.test.tsx",
-      "tests": [
-        {
-          "name": "renders trending-up icon for strong start",
-          "fullName": "MediaTile Peak Icon > renders trending-up icon for strong start",
-          "state": "passed"
-        },
-        {
-          "name": "renders activity icon for even pacing",
-          "fullName": "MediaTile Peak Icon > renders activity icon for even pacing",
-          "state": "passed"
-        },
-        {
-          "name": "renders minus icon for peak late pacing",
-          "fullName": "MediaTile Peak Icon > renders minus icon for peak late pacing",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.layout.test.tsx",
-      "tests": [
-        {
-          "name": "should have explicit dimensions on images to prevent layout shifts",
-          "fullName": "MediaTile Layout Stability > should have explicit dimensions on images to prevent layout shifts",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.auth.test.tsx",
-      "tests": [
-        {
-          "name": "should redirect unauthenticated users to auth page when clicking add button",
-          "fullName": "MediaTile Authentication > should redirect unauthenticated users to auth page when clicking add button",
-          "state": "passed"
-        },
-        {
-          "name": "should allow authenticated users to proceed with add wigg flow",
-          "fullName": "MediaTile Authentication > should allow authenticated users to proceed with add wigg flow",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/pages/__tests__/Dashboard.loading.test.tsx",
-      "tests": [
-        {
-          "name": "renders the browse tab without crashing",
-          "fullName": "Dashboard Loading > renders the browse tab without crashing",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/notifications/__tests__/NotificationBell.test.tsx",
-      "tests": [
-        {
-          "name": "shows unread badge with count",
-          "fullName": "NotificationBell > shows unread badge with count",
-          "state": "passed"
-        }
-      ]
-    },
-    {
       "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useRecentWiggPoints.test.ts",
       "tests": [
         {
@@ -636,31 +681,26 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useFollowUser.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useWiggPersistence.test.ts",
       "tests": [
+        {
+          "name": "should use WIGG Persistence Service instead of direct Supabase calls",
+          "fullName": "useWiggPersistence > should use WIGG Persistence Service instead of direct Supabase calls",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useWiggLikes.test.ts",
+      "tests": [
+        {
+          "name": "should handle Promise.all errors in useEffect without crashing",
+          "fullName": "useWiggLikes > should handle Promise.all errors in useEffect without crashing",
+          "state": "passed"
+        },
         {
           "name": "should use social service instead of direct Supabase calls",
-          "fullName": "useFollowUser > should use social service instead of direct Supabase calls",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useAnalyticsWorker.minimal.test.ts",
-      "tests": [
-        {
-          "name": "should have a hook that can be imported",
-          "fullName": "useAnalyticsWorker minimal test > should have a hook that can be imported",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useStaggeredLoading.test.ts",
-      "tests": [
-        {
-          "name": "should load items progressively with delay",
-          "fullName": "useStaggeredLoading > should load items progressively with delay",
+          "fullName": "useWiggLikes > should use social service instead of direct Supabase calls",
           "state": "passed"
         }
       ]
@@ -671,6 +711,41 @@
         {
           "name": "should initialize with worker support detection",
           "fullName": "useAnalyticsWorker > should initialize with worker support detection",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/integrations/smart-search/__tests__/providers.anilist.test.ts",
+      "tests": [
+        {
+          "name": "throws for unsupported anime search endpoint until implemented",
+          "fullName": "AniList Provider Adapter > throws for unsupported anime search endpoint until implemented",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/integrations/podcast-search/__tests__/client.test.ts",
+      "tests": [
+        {
+          "name": "should detect podcast-related queries",
+          "fullName": "detectPodcastIntent > should detect podcast-related queries",
+          "state": "passed"
+        },
+        {
+          "name": "should detect iTunes/Apple Podcasts URLs",
+          "fullName": "detectPodcastIntent > should detect iTunes/Apple Podcasts URLs",
+          "state": "passed"
+        },
+        {
+          "name": "should detect RSS feeds and episode references",
+          "fullName": "detectPodcastIntent > should detect RSS feeds and episode references",
+          "state": "passed"
+        },
+        {
+          "name": "should return false for non-podcast queries",
+          "fullName": "detectPodcastIntent > should return false for non-podcast queries",
           "state": "passed"
         }
       ]
@@ -781,21 +856,81 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useWiggComments.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/services/__tests__/social.test.ts",
       "tests": [
         {
-          "name": "should use social service instead of direct Supabase calls",
-          "fullName": "useWiggComments > should use social service instead of direct Supabase calls",
+          "name": "should get follower counts successfully",
+          "fullName": "Social Service > should get follower counts successfully",
           "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/utils/__tests__/serviceWorkerRegistration.test.ts",
-      "tests": [
+        },
         {
-          "name": "should detect service worker support and fail if registerServiceWorker is not defined",
-          "fullName": "Service Worker Registration > should detect service worker support and fail if registerServiceWorker is not defined",
+          "name": "should toggle like on WIGG point",
+          "fullName": "Social Service > should toggle like on WIGG point",
+          "state": "passed"
+        },
+        {
+          "name": "should remove like when toggling off",
+          "fullName": "Social Service > should remove like when toggling off",
+          "state": "passed"
+        },
+        {
+          "name": "should get like count for WIGG point",
+          "fullName": "Social Service > should get like count for WIGG point",
+          "state": "passed"
+        },
+        {
+          "name": "should check if user has liked WIGG point",
+          "fullName": "Social Service > should check if user has liked WIGG point",
+          "state": "passed"
+        },
+        {
+          "name": "should handle errors in getFollowerCounts with standardized error response",
+          "fullName": "Social Service > should handle errors in getFollowerCounts with standardized error response",
+          "state": "passed"
+        },
+        {
+          "name": "should return error response instead of throwing for getLikeCount",
+          "fullName": "Social Service > should return error response instead of throwing for getLikeCount",
+          "state": "passed"
+        },
+        {
+          "name": "should return error response instead of throwing for hasUserLiked",
+          "fullName": "Social Service > should return error response instead of throwing for hasUserLiked",
+          "state": "passed"
+        },
+        {
+          "name": "should get comments for WIGG point",
+          "fullName": "Social Service > should get comments for WIGG point",
+          "state": "passed"
+        },
+        {
+          "name": "should add comment to WIGG point",
+          "fullName": "Social Service > should add comment to WIGG point",
+          "state": "passed"
+        },
+        {
+          "name": "should delete comment from WIGG point",
+          "fullName": "Social Service > should delete comment from WIGG point",
+          "state": "passed"
+        },
+        {
+          "name": "should check if user is following target user",
+          "fullName": "Social Service > should check if user is following target user",
+          "state": "passed"
+        },
+        {
+          "name": "should follow a user",
+          "fullName": "Social Service > should follow a user",
+          "state": "passed"
+        },
+        {
+          "name": "should unfollow a user",
+          "fullName": "Social Service > should unfollow a user",
+          "state": "passed"
+        },
+        {
+          "name": "should handle errors in addComment with standardized error response",
+          "fullName": "Social Service > should handle errors in addComment with standardized error response",
           "state": "passed"
         }
       ]
@@ -931,46 +1066,11 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useFollowerCounts.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/integrations/supabase/__tests__/client.environment.test.ts",
       "tests": [
         {
-          "name": "should use social service instead of direct Supabase calls",
-          "fullName": "useFollowerCounts > should use social service instead of direct Supabase calls",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/integrations/podcast-search/__tests__/client.test.ts",
-      "tests": [
-        {
-          "name": "should detect podcast-related queries",
-          "fullName": "detectPodcastIntent > should detect podcast-related queries",
-          "state": "passed"
-        },
-        {
-          "name": "should detect iTunes/Apple Podcasts URLs",
-          "fullName": "detectPodcastIntent > should detect iTunes/Apple Podcasts URLs",
-          "state": "passed"
-        },
-        {
-          "name": "should detect RSS feeds and episode references",
-          "fullName": "detectPodcastIntent > should detect RSS feeds and episode references",
-          "state": "passed"
-        },
-        {
-          "name": "should return false for non-podcast queries",
-          "fullName": "detectPodcastIntent > should return false for non-podcast queries",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useWiggPersistence.test.ts",
-      "tests": [
-        {
-          "name": "should use WIGG Persistence Service instead of direct Supabase calls",
-          "fullName": "useWiggPersistence > should use WIGG Persistence Service instead of direct Supabase calls",
+          "name": "should use preview environment for vercel.app domains",
+          "fullName": "Supabase Client Environment Detection > should use preview environment for vercel.app domains",
           "state": "passed"
         }
       ]
@@ -991,11 +1091,26 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/integrations/supabase/__tests__/client.environment.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/services/__tests__/userProfile.test.ts",
       "tests": [
         {
-          "name": "should use preview environment for vercel.app domains",
-          "fullName": "Supabase Client Environment Detection > should use preview environment for vercel.app domains",
+          "name": "should get user preferences successfully",
+          "fullName": "User Profile Service > should get user preferences successfully",
+          "state": "passed"
+        },
+        {
+          "name": "should update user preferences successfully",
+          "fullName": "User Profile Service > should update user preferences successfully",
+          "state": "passed"
+        },
+        {
+          "name": "should handle errors in getUserPreferences with standardized error response",
+          "fullName": "User Profile Service > should handle errors in getUserPreferences with standardized error response",
+          "state": "passed"
+        },
+        {
+          "name": "should handle errors in updateUserPreferences with standardized error response",
+          "fullName": "User Profile Service > should handle errors in updateUserPreferences with standardized error response",
           "state": "passed"
         }
       ]
@@ -1041,31 +1156,16 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/services/__tests__/wiggPersistence.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/services/__tests__/wiggPoints.test.ts",
       "tests": [
         {
-          "name": "should save WIGG rating successfully",
-          "fullName": "WIGG Persistence Service > should save WIGG rating successfully",
+          "name": "should create WIGG point successfully",
+          "fullName": "WIGG Point Service > should create WIGG point successfully",
           "state": "passed"
         },
         {
-          "name": "should save moment successfully",
-          "fullName": "WIGG Persistence Service > should save moment successfully",
-          "state": "passed"
-        },
-        {
-          "name": "should handle errors in saveWiggRating with standardized error response",
-          "fullName": "WIGG Persistence Service > should handle errors in saveWiggRating with standardized error response",
-          "state": "passed"
-        },
-        {
-          "name": "should handle errors in saveMoment with standardized error response",
-          "fullName": "WIGG Persistence Service > should handle errors in saveMoment with standardized error response",
-          "state": "passed"
-        },
-        {
-          "name": "should save media to database successfully",
-          "fullName": "WIGG Persistence Service > should save media to database successfully",
+          "name": "should handle errors in media creation with standardized error response",
+          "fullName": "WIGG Point Service > should handle errors in media creation with standardized error response",
           "state": "passed"
         }
       ]
@@ -1126,41 +1226,6 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/integrations/smart-search/__tests__/providers.anilist.test.ts",
-      "tests": [
-        {
-          "name": "throws for unsupported anime search endpoint until implemented",
-          "fullName": "AniList Provider Adapter > throws for unsupported anime search endpoint until implemented",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/services/__tests__/userProfile.test.ts",
-      "tests": [
-        {
-          "name": "should get user preferences successfully",
-          "fullName": "User Profile Service > should get user preferences successfully",
-          "state": "passed"
-        },
-        {
-          "name": "should update user preferences successfully",
-          "fullName": "User Profile Service > should update user preferences successfully",
-          "state": "passed"
-        },
-        {
-          "name": "should handle errors in getUserPreferences with standardized error response",
-          "fullName": "User Profile Service > should handle errors in getUserPreferences with standardized error response",
-          "state": "passed"
-        },
-        {
-          "name": "should handle errors in updateUserPreferences with standardized error response",
-          "fullName": "User Profile Service > should handle errors in updateUserPreferences with standardized error response",
-          "state": "passed"
-        }
-      ]
-    },
-    {
       "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/services/__tests__/media.test.ts",
       "tests": [
         {
@@ -1201,6 +1266,36 @@
         {
           "name": "clamps values to range",
           "fullName": "clamp > clamps values to range",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/services/__tests__/wiggPersistence.test.ts",
+      "tests": [
+        {
+          "name": "should save WIGG rating successfully",
+          "fullName": "WIGG Persistence Service > should save WIGG rating successfully",
+          "state": "passed"
+        },
+        {
+          "name": "should save moment successfully",
+          "fullName": "WIGG Persistence Service > should save moment successfully",
+          "state": "passed"
+        },
+        {
+          "name": "should handle errors in saveWiggRating with standardized error response",
+          "fullName": "WIGG Persistence Service > should handle errors in saveWiggRating with standardized error response",
+          "state": "passed"
+        },
+        {
+          "name": "should handle errors in saveMoment with standardized error response",
+          "fullName": "WIGG Persistence Service > should handle errors in saveMoment with standardized error response",
+          "state": "passed"
+        },
+        {
+          "name": "should save media to database successfully",
+          "fullName": "WIGG Persistence Service > should save media to database successfully",
           "state": "passed"
         }
       ]
@@ -1261,21 +1356,6 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/services/__tests__/wiggPoints.test.ts",
-      "tests": [
-        {
-          "name": "should create WIGG point successfully",
-          "fullName": "WIGG Point Service > should create WIGG point successfully",
-          "state": "passed"
-        },
-        {
-          "name": "should handle errors in media creation with standardized error response",
-          "fullName": "WIGG Point Service > should handle errors in media creation with standardized error response",
-          "state": "passed"
-        }
-      ]
-    },
-    {
       "moduleId": "C:/Users/gatli/Projects/wigg/src/security/__tests__/environment.security.test.ts",
       "tests": [
         {
@@ -1286,11 +1366,11 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/__tests__/indexedDBPersister.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/__tests__/serviceWorker.test.ts",
       "tests": [
         {
-          "name": "should detect IndexedDB support",
-          "fullName": "IndexedDB Async Storage Persister > should detect IndexedDB support",
+          "name": "should have service worker registration capability",
+          "fullName": "Service Worker Performance > should have service worker registration capability",
           "state": "passed"
         }
       ]
@@ -1311,36 +1391,6 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/__tests__/main.performance.test.ts",
-      "tests": [
-        {
-          "name": "should have performance-optimized configuration matching production requirements",
-          "fullName": "Main App QueryClient Configuration > should have performance-optimized configuration matching production requirements",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/__tests__/serviceWorker.test.ts",
-      "tests": [
-        {
-          "name": "should have service worker registration capability",
-          "fullName": "Service Worker Performance > should have service worker registration capability",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/__tests__/serviceWorkerFile.test.ts",
-      "tests": [
-        {
-          "name": "should have a service worker file in the public directory",
-          "fullName": "Service Worker File > should have a service worker file in the public directory",
-          "state": "passed"
-        }
-      ]
-    },
-    {
       "moduleId": "C:/Users/gatli/Projects/wigg/src/__tests__/queryClient.performance.test.ts",
       "tests": [
         {
@@ -1351,91 +1401,31 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/services/__tests__/social.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/__tests__/indexedDBPersister.test.ts",
       "tests": [
         {
-          "name": "should get follower counts successfully",
-          "fullName": "Social Service > should get follower counts successfully",
-          "state": "passed"
-        },
-        {
-          "name": "should toggle like on WIGG point",
-          "fullName": "Social Service > should toggle like on WIGG point",
-          "state": "passed"
-        },
-        {
-          "name": "should remove like when toggling off",
-          "fullName": "Social Service > should remove like when toggling off",
-          "state": "passed"
-        },
-        {
-          "name": "should get like count for WIGG point",
-          "fullName": "Social Service > should get like count for WIGG point",
-          "state": "passed"
-        },
-        {
-          "name": "should check if user has liked WIGG point",
-          "fullName": "Social Service > should check if user has liked WIGG point",
-          "state": "passed"
-        },
-        {
-          "name": "should handle errors in getFollowerCounts with standardized error response",
-          "fullName": "Social Service > should handle errors in getFollowerCounts with standardized error response",
-          "state": "passed"
-        },
-        {
-          "name": "should return error response instead of throwing for getLikeCount",
-          "fullName": "Social Service > should return error response instead of throwing for getLikeCount",
-          "state": "passed"
-        },
-        {
-          "name": "should return error response instead of throwing for hasUserLiked",
-          "fullName": "Social Service > should return error response instead of throwing for hasUserLiked",
-          "state": "passed"
-        },
-        {
-          "name": "should get comments for WIGG point",
-          "fullName": "Social Service > should get comments for WIGG point",
-          "state": "passed"
-        },
-        {
-          "name": "should add comment to WIGG point",
-          "fullName": "Social Service > should add comment to WIGG point",
-          "state": "passed"
-        },
-        {
-          "name": "should delete comment from WIGG point",
-          "fullName": "Social Service > should delete comment from WIGG point",
-          "state": "passed"
-        },
-        {
-          "name": "should check if user is following target user",
-          "fullName": "Social Service > should check if user is following target user",
-          "state": "passed"
-        },
-        {
-          "name": "should follow a user",
-          "fullName": "Social Service > should follow a user",
-          "state": "passed"
-        },
-        {
-          "name": "should unfollow a user",
-          "fullName": "Social Service > should unfollow a user",
-          "state": "passed"
-        },
-        {
-          "name": "should handle errors in addComment with standardized error response",
-          "fullName": "Social Service > should handle errors in addComment with standardized error response",
+          "name": "should detect IndexedDB support",
+          "fullName": "IndexedDB Async Storage Persister > should detect IndexedDB support",
           "state": "passed"
         }
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/__tests__/queryClient.performance.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/__tests__/main.performance.test.ts",
       "tests": [
         {
-          "name": "should disable window refetch and limit retries to 1",
-          "fullName": "QueryClient Performance Configuration > should disable window refetch and limit retries to 1",
+          "name": "should have performance-optimized configuration matching production requirements",
+          "fullName": "Main App QueryClient Configuration > should have performance-optimized configuration matching production requirements",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/__tests__/types.test.ts",
+      "tests": [
+        {
+          "name": "should provide proper TypeScript interfaces for API responses",
+          "fullName": "API Type Safety > should provide proper TypeScript interfaces for API responses",
           "state": "passed"
         }
       ]
@@ -1451,11 +1441,21 @@
       ]
     },
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/api/__tests__/types.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/__tests__/queryClient.performance.test.ts",
       "tests": [
         {
-          "name": "should provide proper TypeScript interfaces for API responses",
-          "fullName": "API Type Safety > should provide proper TypeScript interfaces for API responses",
+          "name": "should disable window refetch and limit retries to 1",
+          "fullName": "QueryClient Performance Configuration > should disable window refetch and limit retries to 1",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/__tests__/serviceWorkerFile.test.ts",
+      "tests": [
+        {
+          "name": "should have a service worker file in the public directory",
+          "fullName": "Service Worker File > should have a service worker file in the public directory",
           "state": "passed"
         }
       ]

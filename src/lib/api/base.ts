@@ -1,4 +1,4 @@
-export function createApiResponse(data: any) {
+export function createApiResponse<T>(data: T) {
   return {
     success: true,
     data: data,

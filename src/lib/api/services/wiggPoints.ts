@@ -1,8 +1,19 @@
 import { supabase } from '@/integrations/supabase/client';
 import { createApiResponse, createApiError } from '../base';
 
+interface CreateWiggPointParams {
+  mediaTitle: string;
+  mediaType: string;
+  userId: string;
+  posKind: string;
+  posValue: number;
+  tags: string[];
+  reasonShort: string;
+  spoilerLevel: number;
+}
+
 export const wiggPointService = {
-  createWiggPoint: async (params: any) => {
+  createWiggPoint: async (params: CreateWiggPointParams) => {
     // Create media first
     const { data: mediaId, error: mediaError } = await supabase.rpc('upsert_media', {
       p_title: params.mediaTitle,

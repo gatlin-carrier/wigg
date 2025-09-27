@@ -1,8 +1,16 @@
 import { supabase } from '@/integrations/supabase/client';
 import { createApiResponse, createApiError } from '../base';
 
+interface SaveWiggRatingParams {
+  mediaId: string;
+  userId: string;
+  value: number;
+  position: number;
+  positionType: string;
+}
+
 export const wiggPersistenceService = {
-  saveWiggRating: async (params: any) => {
+  saveWiggRating: async (params: SaveWiggRatingParams) => {
     const { error } = await supabase.from('wigg_points').insert({
       media_id: params.mediaId,
       episode_id: null,

@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\lib\\api\\services\\__tests__\\social.test.ts",
-    "old_string": "    expect(mockDeleteChain.eq).toHaveBeenCalledWith('follower_id', 'user-123');\n    expect(mockDeleteChain.eq).toHaveBeenCalledWith('following_id', 'user-456');\n  });\n});",
-    "new_string": "    expect(mockDeleteChain.eq).toHaveBeenCalledWith('follower_id', 'user-123');\n    expect(mockDeleteChain.eq).toHaveBeenCalledWith('following_id', 'user-456');\n  });\n\n  it('should handle errors in addComment with standardized error response', async () => {\n    const errorMessage = 'Comment insertion failed';\n    const mockFrom = {\n      insert: vi.fn().mockResolvedValue({ error: { message: errorMessage } })\n    };\n    (supabase.from as any).mockReturnValue(mockFrom);\n\n    const result = await socialService.addComment({\n      pointId: 'point-123',\n      userId: 'user-123',\n      content: 'Test comment'\n    });\n\n    expect(result.success).toBe(false);\n    expect(result.error.message).toBe(errorMessage);\n    expect(result.data).toBe(null);\n  });\n});"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\lib\\api\\services\\wiggPersistence.ts",
+    "old_string": "  saveMediaToDatabase: async (params: SaveMediaToDatabaseParams) => {",
+    "new_string": "  saveMediaToDatabase: async (params: any) => {"
   }
 }
