@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 describe('WiggPointCard Migration', () => {
-  it('should have completed data layer migration with feature flag', async () => {
+  it('should have completed data layer migration with feature flag for both likes and comments', async () => {
     const fs = await import('fs');
     const path = await import('path');
 
@@ -10,14 +10,22 @@ describe('WiggPointCard Migration', () => {
 
     // Verify all required imports are present
     expect(wiggPointCardContent).toContain('useWiggLikesDataLayer');
+    expect(wiggPointCardContent).toContain('useWiggCommentsDataLayer');
     expect(wiggPointCardContent).toContain('useFeatureFlag');
 
     // Verify feature flag usage
     expect(wiggPointCardContent).toContain('wigg-point-card-data-layer');
 
-    // Verify coexistence pattern implementation
-    expect(wiggPointCardContent).toContain('useNewDataLayer');
+    // Verify coexistence pattern implementation for likes
     expect(wiggPointCardContent).toContain('legacyLikesData');
     expect(wiggPointCardContent).toContain('newLikesData');
+
+    // Verify coexistence pattern implementation for comments
+    expect(wiggPointCardContent).toContain('legacyCommentsData');
+    expect(wiggPointCardContent).toContain('newCommentsData');
+
+    // Verify conditional usage for both
+    expect(wiggPointCardContent).toContain('useNewDataLayer ? newLikesData : legacyLikesData');
+    expect(wiggPointCardContent).toContain('useNewDataLayer ? newCommentsData : legacyCommentsData');
   });
 });
