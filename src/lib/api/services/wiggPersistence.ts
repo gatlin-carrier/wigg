@@ -49,5 +49,22 @@ export const wiggPersistenceService = {
     }
 
     return createApiResponse(null);
+  },
+
+  saveMediaToDatabase: async (params: any) => {
+    const { data: mediaId, error } = await supabase.rpc("upsert_media", {
+      p_type: params.type,
+      p_title: params.title,
+      p_year: params.year,
+      p_duration_sec: params.duration,
+      p_pages: params.chapterCount,
+      p_external_ids: params.externalIds
+    });
+
+    if (error) {
+      return createApiError(error.message);
+    }
+
+    return createApiResponse(mediaId);
   }
 };

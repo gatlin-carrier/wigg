@@ -288,4 +288,22 @@ describe('Social Service', () => {
     expect(mockDeleteChain.eq).toHaveBeenCalledWith('follower_id', 'user-123');
     expect(mockDeleteChain.eq).toHaveBeenCalledWith('following_id', 'user-456');
   });
+
+  it('should handle errors in addComment with standardized error response', async () => {
+    const errorMessage = 'Comment insertion failed';
+    const mockFrom = {
+      insert: vi.fn().mockResolvedValue({ error: { message: errorMessage } })
+    };
+    (supabase.from as any).mockReturnValue(mockFrom);
+
+    const result = await socialService.addComment({
+      pointId: 'point-123',
+      userId: 'user-123',
+      content: 'Test comment'
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.error.message).toBe(errorMessage);
+    expect(result.data).toBe(null);
+  });
 });

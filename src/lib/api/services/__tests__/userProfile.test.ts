@@ -60,4 +60,39 @@ describe('User Profile Service', () => {
       ...preferences
     });
   });
+
+  it('should handle errors in getUserPreferences with standardized error response', async () => {
+    const errorMessage = 'User not found';
+    const mockFrom = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: { message: errorMessage } })
+    };
+    (supabase.from as any).mockReturnValue(mockFrom);
+
+    const result = await userProfileService.getUserPreferences('user-123');
+
+    expect(result.success).toBe(false);
+    expect(result.error.message).toBe(errorMessage);
+    expect(result.data).toBe(null);
+  });
+
+  it('should handle errors in updateUserPreferences with standardized error response', async () => {
+    const errorMessage = 'Permission denied';
+    const mockFrom = {
+      upsert: vi.fn().mockResolvedValue({ error: { message: errorMessage } })
+    };
+    (supabase.from as any).mockReturnValue(mockFrom);
+
+    const preferences = {
+      graph_type: 'scatter',
+      rating_ui: 'slider'
+    };
+
+    const result = await userProfileService.updateUserPreferences('user-123', preferences);
+
+    expect(result.success).toBe(false);
+    expect(result.error.message).toBe(errorMessage);
+    expect(result.data).toBe(null);
+  });
 });
