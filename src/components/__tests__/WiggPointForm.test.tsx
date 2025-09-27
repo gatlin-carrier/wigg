@@ -99,10 +99,21 @@ describe('WiggPointForm', () => {
     const user = userEvent.setup();
     render(<WiggPointForm />);
 
+    // Debug what happens when clicking submit to trigger validation
     const submitButton = screen.getByRole('button', { name: 'Add WIGG Point' });
     await user.click(submitButton);
 
+    // Wait for validation to run and check for error display
     await waitFor(() => {
+      // Look for any element with the error message to help debug
+      const mediaInputs = screen.getAllByDisplayValue('');
+      const mediaInput = mediaInputs[0]; // First empty input should be media title
+      console.log('Media input aria-invalid:', mediaInput.getAttribute('aria-invalid'));
+
+      // Check if there are any error messages at all
+      const errorMessages = screen.queryAllByRole('paragraph');
+      console.log('Found paragraphs:', errorMessages.map(p => p.textContent));
+
       expect(screen.getByText('Media title is required')).toBeInTheDocument();
       expect(screen.getByText('Position is required')).toBeInTheDocument();
     });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -29,9 +29,7 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
 
   const form = useForm<WiggPointForm>({
     resolver: zodResolver(wiggPointFormSchema),
-    mode: 'onSubmit',
-    reValidateMode: 'onChange',
-    criteriaMode: 'all',
+    mode: "onChange",
     defaultValues: {
       mediaTitle: initialData?.title || "",
       mediaType: initialData?.type || "Game",
@@ -42,6 +40,36 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
       spoilerLevel: "0"
     }
   });
+
+  // TODO: FIXME - zodResolver compatibility issue with react-hook-form
+  // The zodResolver is not properly setting error state that FormMessage components can detect.
+  // Error validation works (prevents submission) but UI error messages don't display.
+  // Root cause: useFormField() -> getFieldState() doesn't see errors set by zodResolver.
+  // This affects aria-invalid and FormMessage rendering. Needs investigation of:
+  // 1. zodResolver version compatibility with react-hook-form
+  // 2. Alternative form validation approaches
+  // 3. Custom form error state management
+  // Current workaround validates data and prevents bad submissions but lacks UI feedback.
+  React.useEffect(() => {
+    const subscription = form.watch((data) => {
+      // Validate with Zod and manually set errors
+      const validationResult = wiggPointFormSchema.safeParse(data);
+
+      // Clear previous errors
+      form.clearErrors();
+
+      if (!validationResult.success) {
+        validationResult.error.issues.forEach((issue) => {
+          const fieldName = issue.path[0] as keyof WiggPointForm;
+          form.setError(fieldName, {
+            type: 'manual',
+            message: issue.message
+          });
+        });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const addTag = (tag: string) => {
     if (tag && !customTags.includes(tag)) {
@@ -65,6 +93,9 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
   };
 
   const onSubmit = async (data: WiggPointForm) => {
+    // Clear previous errors
+    form.clearErrors();
+
     // Manual validation as workaround for zodResolver issue
     const validationResult = wiggPointFormSchema.safeParse(data);
     if (!validationResult.success) {
