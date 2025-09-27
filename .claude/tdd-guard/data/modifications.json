@@ -2,10 +2,9 @@
   "session_id": "e91c461e-d935-40ca-9658-b10652d9eed9",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\e91c461e-d935-40ca-9658-b10652d9eed9.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Edit",
+  "tool_name": "Write",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\lib\\api\\services\\wiggPersistence.ts",
-    "old_string": "  saveMediaToDatabase: async (params: SaveMediaToDatabaseParams) => {",
-    "new_string": "  saveMediaToDatabase: async (params: any) => {"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\data\\index.ts",
+    "content": "// Data layer exports\n// This provides a centralized entry point for the new data architecture\n\n// Re-export from clients when they exist\n// export * from './clients';\n\n// Re-export from services when they exist\n// export * from './services';\n\n// Re-export from hooks when they exist\n// export * from './hooks';\n\n// Re-export from schemas when they exist\n// export * from './schemas';\n\n// Placeholder for future data layer exports\nexport const DATA_LAYER_VERSION = '1.0.0';"
   }
 }
