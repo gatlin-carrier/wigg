@@ -1,5 +1,5 @@
 ﻿import { useCallback, useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { socialService } from '@/lib/api/services/social';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
@@ -35,25 +35,14 @@ export function useWiggComments(pointId?: string, enabled: boolean = true) {
       return;
     }
     setLoading(true);
-    const { data, error } = await supabase
-      .from('wigg_point_comments')
-      .select('id, user_id, point_id, content, created_at, updated_at, profiles(username)')
-      .eq('point_id', pointId)
-      .order('created_at', { ascending: true });
+    const result = await socialService.getComments(pointId);
     setLoading(false);
-    if (error) {
-      console.error('[useWiggComments] load failed', error);
-      toast({ title: 'Could not load comments', description: error.message, variant: 'destructive' });
+    if (!result.success) {
+      console.error('[useWiggComments] load failed', result.error);
+      toast({ title: 'Could not load comments', description: result.error.message, variant: 'destructive' });
       return;
     }
-    const mapped = (data as CommentRow[]).map((row) => ({
-      id: row.id,
-      userId: row.user_id,
-      content: row.content,
-      createdAt: row.created_at,
-      username: row.profiles?.username ?? 'Anonymous',
-    }));
-    setComments(mapped);
+    setComments(result.data);
   }, [pointId, enabled, toast]);
 
   useEffect(() => {
@@ -67,13 +56,13 @@ export function useWiggComments(pointId?: string, enabled: boolean = true) {
     }
     const trimmed = content.trim();
     if (!trimmed) return;
-    const { error } = await supabase.from('wigg_point_comments').insert({
-      point_id: pointId,
-      user_id: user.id,
+    const result = await socialService.addComment({
+      pointId,
+      userId: user.id,
       content: trimmed,
     });
-    if (error) {
-      toast({ title: 'Could not post comment', description: error.message, variant: 'destructive' });
+    if (!result.success) {
+      toast({ title: 'Could not post comment', description: result.error.message, variant: 'destructive' });
       return;
     }
     await loadComments();
@@ -81,13 +70,12 @@ export function useWiggComments(pointId?: string, enabled: boolean = true) {
 
   const deleteComment = useCallback(async (commentId: string) => {
     if (!user?.id) return;
-    const { error } = await supabase
-      .from('wigg_point_comments')
-      .delete()
-      .eq('id', commentId)
-      .eq('user_id', user.id);
-    if (error) {
-      toast({ title: 'Could not delete comment', description: error.message, variant: 'destructive' });
+    const result = await socialService.deleteComment({
+      commentId,
+      userId: user.id,
+    });
+    if (!result.success) {
+      toast({ title: 'Could not delete comment', description: result.error.message, variant: 'destructive' });
       return;
     }
     setComments((prev) => prev.filter((c) => c.id !== commentId));

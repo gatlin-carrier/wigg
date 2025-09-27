@@ -1,6 +1,6 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { socialService } from '@/lib/api/services/social';
 import { useToast } from '@/hooks/use-toast';
 import { notifyUserFollowed } from '@/services/notificationTriggers';
 
@@ -16,20 +16,29 @@ export function useFollowUser(targetUserId?: string | null) {
       return;
     }
     let active = true;
-    (async () => {
-      const { data, error } = await supabase
-        .from('user_follows')
-        .select('id')
-        .eq('follower_id', user.id)
-        .eq('following_id', targetUserId)
-        .maybeSingle();
-      if (!active) return;
-      if (error) {
-        console.error('[useFollowUser] load failed', error);
-        return;
+
+    const checkFollowingStatus = async () => {
+      try {
+        const result = await socialService.checkFollowing({
+          followerId: user.id,
+          targetUserId
+        });
+        if (!active) return;
+
+        if (result.success) {
+          setIsFollowing(result.data);
+        } else {
+          console.error('[useFollowUser] load failed', result.error);
+        }
+      } catch (error) {
+        if (active) {
+          console.error('[useFollowUser] load failed', error);
+        }
       }
-      setIsFollowing(Boolean(data));
-    })();
+    };
+
+    checkFollowingStatus();
+
     return () => {
       active = false;
     };
@@ -38,33 +47,50 @@ export function useFollowUser(targetUserId?: string | null) {
   const follow = useCallback(async () => {
     if (!user?.id || !targetUserId || user.id === targetUserId) return;
     setLoading(true);
-    const { error } = await supabase.from('user_follows').insert({
-      follower_id: user.id,
-      following_id: targetUserId,
-    });
-    setLoading(false);
-    if (error) {
+
+    try {
+      const result = await socialService.followUser({
+        followerId: user.id,
+        targetUserId
+      });
+
+      if (result.success) {
+        setIsFollowing(true);
+        notifyUserFollowed({
+          followerId: user.id,
+          followerName: user.user_metadata?.username ?? user.email ?? 'Someone',
+          targetUserId
+        }).catch(() => undefined);
+      } else {
+        toast({ title: 'Could not follow', description: result.error.message, variant: 'destructive' });
+      }
+    } catch (error: any) {
       toast({ title: 'Could not follow', description: error.message, variant: 'destructive' });
-      return;
+    } finally {
+      setLoading(false);
     }
-    setIsFollowing(true);
-    notifyUserFollowed({ followerId: user.id, followerName: user.user_metadata?.username ?? user.email ?? 'Someone', targetUserId }).catch(() => undefined);
-  }, [user?.id, user?.email, targetUserId, toast]);
+  }, [user?.id, user?.email, user?.user_metadata?.username, targetUserId, toast]);
 
   const unfollow = useCallback(async () => {
     if (!user?.id || !targetUserId) return;
     setLoading(true);
-    const { error } = await supabase
-      .from('user_follows')
-      .delete()
-      .eq('follower_id', user.id)
-      .eq('following_id', targetUserId);
-    setLoading(false);
-    if (error) {
+
+    try {
+      const result = await socialService.unfollowUser({
+        followerId: user.id,
+        targetUserId
+      });
+
+      if (result.success) {
+        setIsFollowing(false);
+      } else {
+        toast({ title: 'Could not unfollow', description: result.error.message, variant: 'destructive' });
+      }
+    } catch (error: any) {
       toast({ title: 'Could not unfollow', description: error.message, variant: 'destructive' });
-      return;
+    } finally {
+      setLoading(false);
     }
-    setIsFollowing(false);
   }, [user?.id, targetUserId, toast]);
 
   const toggle = useCallback(async () => {

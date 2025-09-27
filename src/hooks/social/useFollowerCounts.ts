@@ -1,5 +1,5 @@
-﻿import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useEffect, useState } from 'react';
+import { socialService } from '@/lib/api/services/social';
 
 export function useFollowerCounts(userId?: string | null) {
   const [followers, setFollowers] = useState<number | null>(null);
@@ -14,16 +14,29 @@ export function useFollowerCounts(userId?: string | null) {
     }
     let active = true;
     setLoading(true);
-    Promise.all([
-      supabase.rpc('get_follower_count', { user_id: userId }),
-      supabase.rpc('get_following_count', { user_id: userId }),
-    ]).then(([followerRes, followingRes]) => {
-      if (!active) return;
-      if (!followerRes.error) setFollowers(followerRes.data as number);
-      if (!followingRes.error) setFollowing(followingRes.data as number);
-    }).finally(() => {
-      if (active) setLoading(false);
-    });
+
+    const fetchCounts = async () => {
+      try {
+        const result = await socialService.getFollowerCounts(userId);
+        if (!active) return;
+
+        if (result.success) {
+          setFollowers(result.data.followers);
+          setFollowing(result.data.following);
+        } else {
+          console.error('Error fetching follower counts:', result.error.message);
+        }
+      } catch (error) {
+        if (active) {
+          console.error('Error fetching follower counts:', error);
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    fetchCounts();
+
     return () => {
       active = false;
     };

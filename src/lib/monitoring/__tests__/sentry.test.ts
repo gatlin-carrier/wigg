@@ -11,6 +11,7 @@ describe('Sentry monitoring configuration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
+    vi.unstubAllEnvs();
   });
 
   it('should have initSentry function available for import', async () => {
@@ -20,15 +21,9 @@ describe('Sentry monitoring configuration', () => {
 
   it('should call Sentry.init when DSN is provided', async () => {
     // Arrange
-    vi.stubGlobal('import', {
-      meta: {
-        env: {
-          VITE_SENTRY_DSN: 'test-dsn-123',
-          VITE_SENTRY_ENVIRONMENT: 'production',
-          VITE_SENTRY_RELEASE: 'v1.0.0',
-        }
-      }
-    });
+    vi.stubEnv('VITE_SENTRY_DSN', 'test-dsn-123');
+    vi.stubEnv('VITE_SENTRY_ENVIRONMENT', 'production');
+    vi.stubEnv('VITE_SENTRY_RELEASE', 'v1.0.0');
 
     const { initSentry } = await import('../sentry');
 
@@ -49,8 +44,8 @@ describe('Sentry monitoring configuration', () => {
   });
 
   it('should not call Sentry.init when DSN is not provided', async () => {
-    // Arrange
-    (import.meta as any).env = {};
+    // Arrange - explicitly set DSN to undefined
+    vi.stubEnv('VITE_SENTRY_DSN', undefined);
 
     const { initSentry } = await import('../sentry');
 

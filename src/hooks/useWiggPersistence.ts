@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { wiggPersistenceService } from "@/lib/api/services/wiggPersistence";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { type Moment } from "@/components/wigg/MomentCapture";
@@ -30,20 +30,17 @@ export function useWiggPersistence() {
     try {
       setIsSaving(true);
 
-      // For retrospective ratings, we don't need to store episodes
-      // Just store the position (episode/chapter number) as pos_value
-      const { error } = await supabase.from("wigg_points").insert({
-        media_id: rating.mediaId,
-        episode_id: null, // Not using episodes for retrospective ratings
-        user_id: user.id,
-        pos_kind: rating.positionType === "episode" ? "sec" : rating.positionType as any,
-        pos_value: rating.position,
-        tags: [`rating_${rating.value}`],
-        reason_short: `Rated ${["zzz", "good", "better", "peak"][rating.value]}`,
-        spoiler: "0",
+      const result = await wiggPersistenceService.saveWiggRating({
+        mediaId: rating.mediaId,
+        userId: user.id,
+        value: rating.value,
+        position: rating.position,
+        positionType: rating.positionType
       });
 
-      if (error) throw error;
+      if (!result.success) {
+        throw new Error(result.error.message);
+      }
 
       toast({
         title: "Rating saved",
@@ -81,21 +78,20 @@ export function useWiggPersistence() {
     try {
       setIsSaving(true);
 
-      // Map spoiler level to database format
-      const spoilerMap = { none: "0", light: "1", heavy: "2" } as const;
-
-      const { error } = await supabase.from("wigg_points").insert({
-        media_id: media.id,
-        episode_id: episodeId || null,
-        user_id: user.id,
-        pos_kind: moment.anchorType === "timestamp" ? "sec" : "page",
-        pos_value: moment.anchorValue,
-        tags: moment.whyTags,
-        reason_short: moment.notes || undefined,
-        spoiler: spoilerMap[moment.spoilerLevel],
+      const result = await wiggPersistenceService.saveMoment({
+        mediaId: media.id,
+        episodeId,
+        userId: user.id,
+        anchorType: moment.anchorType,
+        anchorValue: moment.anchorValue,
+        whyTags: moment.whyTags,
+        notes: moment.notes,
+        spoilerLevel: moment.spoilerLevel
       });
 
-      if (error) throw error;
+      if (!result.success) {
+        throw new Error(result.error.message);
+      }
 
       toast({
         title: "Moment saved",
@@ -117,38 +113,20 @@ export function useWiggPersistence() {
   };
 
   const saveMediaToDatabase = async (media: MediaSearchResult): Promise<string> => {
-    try {
-      // Map MediaType to database format
-      let dbType: "movie" | "tv" | "anime" | "game" | "book" | "podcast";
-      
-      if (media.type === "manga") {
-        dbType = "book";
-      } else if (media.type === "tv") {
-        dbType = "tv";
-      } else {
-        dbType = media.type as "movie" | "tv" | "anime" | "game" | "book" | "podcast";
-      }
+    const result = await wiggPersistenceService.saveMediaToDatabase({
+      type: media.type,
+      title: media.title,
+      year: media.year,
+      duration: media.duration,
+      chapterCount: media.chapterCount,
+      externalIds: media.externalIds
+    });
 
-      // Ensure year is a valid integer or null
-      const validYear = typeof media.year === 'number' && !isNaN(media.year) && media.year > 0 ? media.year : null;
-      
-      // Use the upsert_media function which has proper permissions
-      const { data: mediaId, error } = await supabase
-        .rpc("upsert_media", {
-          p_type: dbType,
-          p_title: media.title,
-          p_year: validYear,
-          p_duration_sec: media.duration,
-          p_pages: media.chapterCount,
-          p_external_ids: media.externalIds || {}
-        });
-
-      if (error) throw error;
-      return mediaId;
-    } catch (error) {
-      console.error("Error saving media:", error);
-      throw error;
+    if (!result.success) {
+      throw new Error(result.error.message);
     }
+
+    return result.data;
   };
 
   return {

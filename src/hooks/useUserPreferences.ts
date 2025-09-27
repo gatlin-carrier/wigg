@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { userProfileService } from '@/lib/api/services/userProfile';
 import { type GraphType } from '@/components/ui/GraphTypeSelector';
 
 interface UserPreferences {
@@ -34,29 +34,27 @@ export function useUserPreferences() {
     setError(null);
 
     try {
-      const { data, error: dbError } = await supabase
-        .from('profiles')
-        .select('graph_type, preferred_media_types, hidden_media_types, rating_ui')
-        .eq('id', user.id)
-        .maybeSingle();
+      const result = await userProfileService.getUserPreferences(user.id);
 
-      // Handle the case where graph_type column doesn't exist yet
-      if (dbError && dbError.code === '42703') {
-        console.warn('graph_type column not found in profiles table. Using default preferences.');
-        setPreferences(defaultPreferences);
-        return;
+      if (!result.success) {
+        // Handle the case where graph_type column doesn't exist yet
+        if (result.error.message.includes('42703')) {
+          console.warn('graph_type column not found in profiles table. Using default preferences.');
+          setPreferences(defaultPreferences);
+          return;
+        }
+        throw new Error(result.error.message);
       }
 
-      if (dbError) throw dbError;
-
+      const data = result.data;
       if (data) {
         setPreferences({
           graph_type: (data as any).graph_type || defaultPreferences.graph_type,
-          preferred_media_types: Array.isArray((data as any).preferred_media_types) 
-            ? (data as any).preferred_media_types 
+          preferred_media_types: Array.isArray((data as any).preferred_media_types)
+            ? (data as any).preferred_media_types
             : defaultPreferences.preferred_media_types,
-          hidden_media_types: Array.isArray((data as any).hidden_media_types) 
-            ? (data as any).hidden_media_types 
+          hidden_media_types: Array.isArray((data as any).hidden_media_types)
+            ? (data as any).hidden_media_types
             : defaultPreferences.hidden_media_types,
           rating_ui: (data as any).rating_ui || defaultPreferences.rating_ui,
         });
@@ -72,81 +70,60 @@ export function useUserPreferences() {
     }
   }, [user]);
 
-  // Update a specific preference
-  const updatePreference = useCallback(async <K extends keyof UserPreferences>(
-    key: K, 
-    value: UserPreferences[K]
+  // Shared optimistic update helper to reduce duplication
+  const performOptimisticUpdate = useCallback(async (
+    updates: Partial<UserPreferences>,
+    operation: string
   ) => {
     if (!user) return;
 
-    const newPreferences = { ...preferences, [key]: value };
-    
+    const newPreferences = { ...preferences, ...updates };
+    const originalPreferences = preferences;
+
     // Optimistic update
     setPreferences(newPreferences);
 
     try {
-      const { error: dbError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user.id,
-          [key]: value,
-        });
+      const result = await userProfileService.updateUserPreferences(user.id, updates);
 
-      // If the column is missing in schema (e.g., rating_ui before migration), quietly ignore
-      if (dbError) {
-        const code = (dbError as any)?.code;
+      if (!result.success) {
+        const errorMessage = result.error.message;
+        const code = errorMessage.includes('42703') ? '42703' : errorMessage;
+
         if (code === '42703' || String(code || '').startsWith('PGRST')) {
-          console.warn(`Preference column missing (${String(code)}). Skipping server save for key:`, String(key));
+          console.warn(`Preference column missing (${String(code)}). Skipping server save for ${operation}`);
+
+          // For batch updates, try fallback without rating_ui
+          if (Object.keys(updates).length > 1) {
+            const sanitized = { ...updates } as any;
+            delete sanitized.rating_ui;
+            const fallbackResult = await userProfileService.updateUserPreferences(user.id, sanitized);
+            if (!fallbackResult.success) throw new Error(fallbackResult.error.message);
+          }
           return; // keep optimistic client state
         }
-        throw dbError;
+        throw new Error(result.error.message);
       }
     } catch (err) {
-      console.error(`Error updating ${key}:`, err);
+      console.error(`Error updating ${operation}:`, err);
       // Revert optimistic update
-      setPreferences(preferences);
+      setPreferences(originalPreferences);
       throw err;
     }
   }, [user, preferences]);
+
+  // Update a specific preference
+  const updatePreference = useCallback(async <K extends keyof UserPreferences>(
+    key: K,
+    value: UserPreferences[K]
+  ) => {
+    return performOptimisticUpdate({ [key]: value } as Partial<UserPreferences>, String(key));
+  }, [performOptimisticUpdate]);
 
   // Batch update multiple preferences
   const updatePreferences = useCallback(async (updates: Partial<UserPreferences>) => {
-    if (!user) return;
-
-    const newPreferences = { ...preferences, ...updates };
-    
-    // Optimistic update
-    setPreferences(newPreferences);
-
-    try {
-      const { error: dbError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user.id,
-          ...updates,
-        });
-
-      if (dbError) {
-        const code = (dbError as any)?.code;
-        if (code === '42703' || String(code || '').startsWith('PGRST')) {
-          // Retry without any unknown columns (e.g., rating_ui) to avoid hard failure
-          const sanitized = { ...updates } as any;
-          delete sanitized.rating_ui;
-          const { error: fallbackError } = await supabase
-            .from('profiles')
-            .upsert({ id: user.id, ...sanitized });
-          if (fallbackError) throw fallbackError;
-          return;
-        }
-        throw dbError;
-      }
-    } catch (err) {
-      console.error('Error updating preferences:', err);
-      // Revert optimistic update
-      setPreferences(preferences);
-      throw err;
-    }
-  }, [user, preferences]);
+    return performOptimisticUpdate(updates, 'preferences');
+  }, [performOptimisticUpdate]);
 
   // Load preferences when user changes
   useEffect(() => {
