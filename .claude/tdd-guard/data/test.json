@@ -1,16 +1,26 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/hooks/__tests__/useSocialData.test.tsx",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useWiggLikesDataLayer.test.tsx",
       "tests": [
         {
-          "name": "should fetch like count and user like status",
-          "fullName": "useSocialData > should fetch like count and user like status",
+          "name": "should provide same interface as legacy useWiggLikes hook",
+          "fullName": "Migration: useWiggLikesDataLayer > should provide same interface as legacy useWiggLikes hook",
           "state": "passed"
         },
         {
-          "name": "should return data when queries complete successfully",
-          "fullName": "useSocialData > should return data when queries complete successfully",
+          "name": "should use socialClient for data fetching and show loading state",
+          "fullName": "Migration: useWiggLikesDataLayer > should use socialClient for data fetching and show loading state",
+          "state": "passed"
+        },
+        {
+          "name": "should fetch user like status from socialClient",
+          "fullName": "Migration: useWiggLikesDataLayer > should fetch user like status from socialClient",
+          "state": "passed"
+        },
+        {
+          "name": "should show liked=true when user has liked the point",
+          "fullName": "Migration: useWiggLikesDataLayer > should show liked=true when user has liked the point",
           "state": "passed"
         }
       ]
