@@ -24,10 +24,10 @@ export function useWiggLikes(pointId?: string, ownerUserId?: string, mediaTitle?
           socialService.hasUserLiked(pointId, user.id),
         ]);
         if (!active) return;
-        if (likeRes.success && typeof likeRes.data === 'number') {
+        if (likeRes?.success && typeof likeRes.data === 'number') {
           setCount(likeRes.data);
         }
-        if (hasRes.success && typeof hasRes.data === 'boolean') {
+        if (hasRes?.success && typeof hasRes.data === 'boolean') {
           setLiked(hasRes.data);
         }
       } catch (error) {
@@ -43,7 +43,7 @@ export function useWiggLikes(pointId?: string, ownerUserId?: string, mediaTitle?
     if (!pointId) return;
     try {
       const result = await socialService.getLikeCount(pointId);
-      if (result.success && typeof result.data === 'number') setCount(result.data);
+      if (result?.success && typeof result.data === 'number') setCount(result.data);
     } catch (error) {
       console.error('Error refreshing like count:', error);
     }

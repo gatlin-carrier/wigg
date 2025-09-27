@@ -42,4 +42,35 @@ describe('WIGG Persistence Service', () => {
       spoiler: '0'
     });
   });
+
+  it('should save moment successfully', async () => {
+    const mockFrom = {
+      insert: vi.fn().mockResolvedValue({ error: null })
+    };
+    (supabase.from as any).mockReturnValue(mockFrom);
+
+    const result = await wiggPersistenceService.saveMoment({
+      mediaId: 'media-123',
+      episodeId: 'episode-456',
+      userId: 'user-789',
+      anchorType: 'timestamp',
+      anchorValue: 125,
+      whyTags: ['funny', 'character-development'],
+      notes: 'Great character moment',
+      spoilerLevel: 'light'
+    });
+
+    expect(result.success).toBe(true);
+    expect(supabase.from).toHaveBeenCalledWith('wigg_points');
+    expect(mockFrom.insert).toHaveBeenCalledWith({
+      media_id: 'media-123',
+      episode_id: 'episode-456',
+      user_id: 'user-789',
+      pos_kind: 'sec',
+      pos_value: 125,
+      tags: ['funny', 'character-development'],
+      reason_short: 'Great character moment',
+      spoiler: '1'
+    });
+  });
 });

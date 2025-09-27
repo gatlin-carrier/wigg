@@ -19,16 +19,29 @@ vi.mock('@/hooks/use-toast', () => ({
   toast: vi.fn()
 }));
 
+vi.mock('@/lib/api/services/wiggPoints', () => ({
+  wiggPointService: {
+    createWiggPoint: vi.fn()
+  }
+}));
+
 // Import the mocked modules for type safety
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
+import { wiggPointService } from '@/lib/api/services/wiggPoints';
 
 describe('WiggPointForm', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (useAuth as any).mockReturnValue({
       user: { id: 'test-user-id' }
+    });
+
+    // Set up default mock for wiggPointService to return success
+    (wiggPointService.createWiggPoint as any).mockResolvedValue({
+      success: true,
+      data: {}
     });
   });
 
@@ -60,46 +73,34 @@ describe('WiggPointForm', () => {
   it('should submit form successfully with valid data', async () => {
     const user = userEvent.setup();
     const mockOnSuccess = vi.fn();
-    
-    // Mock successful RPC calls
-    const mockRpc = vi.fn()
-      .mockResolvedValueOnce({ data: 'mock-media-id', error: null }) // upsert_media
-      .mockResolvedValueOnce({ data: null, error: null }); // add_wigg
-    (supabase.rpc as any).mockImplementation(mockRpc);
 
     render(<WiggPointForm onSuccess={mockOnSuccess} />);
-    
+
     // Fill in required fields
     await user.type(screen.getByLabelText('Media Title'), 'Test Movie');
     await user.type(screen.getByLabelText('When it gets good'), '30');
     await user.type(screen.getByLabelText('Why does it get good? (optional)'), 'Great action scene');
-    
+
     const submitButton = screen.getByRole('button', { name: 'Add WIGG Point' });
     await user.click(submitButton);
-    
+
     await waitFor(() => {
-      expect(mockRpc).toHaveBeenCalledWith('upsert_media', {
-        p_type: 'game',
-        p_title: 'Test Movie',
-        p_year: null
-      });
-      
-      expect(mockRpc).toHaveBeenCalledWith('add_wigg', {
-        p_media_id: 'mock-media-id',
-        p_episode_id: null,
-        p_user_id: 'test-user-id',
-        p_pos_kind: 'min',
-        p_pos_value: 30,
-        p_tags: [],
-        p_reason_short: 'Great action scene',
-        p_spoiler: 0
-      });
-      
+      expect(wiggPointService.createWiggPoint).toHaveBeenCalledWith(expect.objectContaining({
+        mediaTitle: 'Test Movie',
+        mediaType: 'game',
+        posKind: 'min',
+        posValue: 30,
+        tags: [],
+        reasonShort: 'Great action scene',
+        spoilerLevel: 0,
+        userId: 'test-user-id'
+      }));
+
       expect(toast).toHaveBeenCalledWith({
         title: 'WIGG point added!',
         description: 'Successfully recorded when Test Movie gets good'
       });
-      
+
       expect(mockOnSuccess).toHaveBeenCalled();
     });
   });
@@ -138,12 +139,6 @@ describe('WiggPointForm', () => {
   it('should pass spoiler level as proper numeric type not any', async () => {
     const user = userEvent.setup();
 
-    // Mock successful RPC calls
-    const mockRpc = vi.fn()
-      .mockResolvedValueOnce({ data: 'mock-media-id', error: null }) // upsert_media
-      .mockResolvedValueOnce({ data: null, error: null }); // add_wigg
-    (supabase.rpc as any).mockImplementation(mockRpc);
-
     render(<WiggPointForm />);
 
     // Fill in required fields
@@ -154,10 +149,8 @@ describe('WiggPointForm', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      // With current implementation using "as any", this will pass the string "0"
-      // After fix, it should pass the number 0
-      expect(mockRpc).toHaveBeenCalledWith('add_wigg', expect.objectContaining({
-        p_spoiler: 0, // Should be number 0, not string "0"
+      expect(wiggPointService.createWiggPoint).toHaveBeenCalledWith(expect.objectContaining({
+        spoilerLevel: 0, // Should be number 0, not string "0"
       }));
     });
   });
@@ -181,17 +174,11 @@ describe('WiggPointForm', () => {
   it('should use WIGG Point Service instead of direct Supabase calls', async () => {
     const user = userEvent.setup();
 
-    // Mock the WIGG Point Service
-    const mockCreateWiggPoint = vi.fn().mockResolvedValue({
+    // Mock the WIGG Point Service response
+    (wiggPointService.createWiggPoint as any).mockResolvedValue({
       success: true,
       data: { mediaId: 'media-789' }
     });
-
-    vi.doMock('@/lib/api/services/wiggPoints', () => ({
-      wiggPointService: {
-        createWiggPoint: mockCreateWiggPoint
-      }
-    }));
 
     render(<WiggPointForm />);
 
@@ -204,7 +191,7 @@ describe('WiggPointForm', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockCreateWiggPoint).toHaveBeenCalledWith(expect.objectContaining({
+      expect(wiggPointService.createWiggPoint).toHaveBeenCalledWith(expect.objectContaining({
         mediaTitle: 'API Service Test',
         mediaType: 'game',
         posKind: 'min',

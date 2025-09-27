@@ -122,7 +122,17 @@
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should delete comment from WIGG point\")",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should check if user is following target user\")",
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should follow a user\")",
-      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should unfollow a user\")"
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/social.test.ts --testNamePattern=\"should unfollow a user\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/social/__tests__/useWiggLikes.test.ts --testNamePattern=\"should handle Promise.all errors in useEffect without crashing\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- --reporter=verbose)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/__tests__/WiggPointForm.test.tsx --testNamePattern=\"should use WIGG Point Service instead of direct Supabase calls\" --reporter=verbose)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/__tests__/WiggPointForm.test.tsx)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/wiggPersistence.test.ts --reporter=verbose)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/wiggPersistence.test.ts)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/wiggPersistence.test.ts --testNamePattern=\"should save WIGG rating successfully\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/lib/api/services/__tests__/wiggPersistence.test.ts --testNamePattern=\"should save moment successfully\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/social/__tests__/useWiggComments.test.ts --testNamePattern=\"should use social service instead of direct Supabase calls\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/hooks/social/__tests__/useWiggComments.test.ts)"
     ],
     "deny": [],
     "ask": [],
