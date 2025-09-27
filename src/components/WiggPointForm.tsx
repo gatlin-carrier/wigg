@@ -29,6 +29,8 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
 
   const form = useForm<WiggPointForm>({
     resolver: zodResolver(wiggPointFormSchema),
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
     defaultValues: {
       mediaTitle: initialData?.title || "",
       mediaType: initialData?.type || "Game",

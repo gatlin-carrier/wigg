@@ -2,9 +2,10 @@
   "session_id": "e91c461e-d935-40ca-9658-b10652d9eed9",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\e91c461e-d935-40ca-9658-b10652d9eed9.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Write",
+  "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\data\\clients\\apiClient.ts",
-    "content": "import { supabase } from '@/integrations/supabase/client';\n\n// API client following existing patterns\n// This provides a consistent interface for data operations\nexport const apiClient = {\n  supabase\n};"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\__tests__\\WiggPointForm.test.tsx",
+    "old_string": "  it('should show validation errors for required fields', async () => {\n    const user = userEvent.setup();\n    render(<WiggPointForm />);\n\n    const submitButton = screen.getByRole('button', { name: 'Add WIGG Point' });\n    await user.click(submitButton);\n\n    // First, let's check if the service is being called (debugging)\n    await waitFor(() => {\n      expect(wiggPointService.createWiggPoint).not.toHaveBeenCalled();\n    });\n\n    await waitFor(() => {\n      expect(screen.getByText('Media title is required')).toBeInTheDocument();\n      expect(screen.getByText('Position is required')).toBeInTheDocument();\n    });\n  });",
+    "new_string": "  it('should show validation errors for required fields', async () => {\n    const user = userEvent.setup();\n    render(<WiggPointForm />);\n\n    const submitButton = screen.getByRole('button', { name: 'Add WIGG Point' });\n\n    // Clear the media title field to make it explicitly empty\n    const mediaTitleInput = screen.getByLabelText('Media Title');\n    await user.clear(mediaTitleInput);\n\n    // Clear the position field to make it explicitly empty\n    const positionInput = screen.getByLabelText('When it gets good');\n    await user.clear(positionInput);\n\n    await user.click(submitButton);\n\n    // Verify validation prevents submission\n    expect(wiggPointService.createWiggPoint).not.toHaveBeenCalled();\n\n    await waitFor(() => {\n      expect(screen.getByText('Media title is required')).toBeInTheDocument();\n      expect(screen.getByText('Position is required')).toBeInTheDocument();\n    });\n  });"
   }
 }

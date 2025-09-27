@@ -59,11 +59,24 @@ describe('WiggPointForm', () => {
   });
 
   it('should show validation errors for required fields', async () => {
+    const user = userEvent.setup();
     render(<WiggPointForm />);
-    
+
     const submitButton = screen.getByRole('button', { name: 'Add WIGG Point' });
-    fireEvent.click(submitButton);
-    
+
+    // Clear the media title field to make it explicitly empty
+    const mediaTitleInput = screen.getByLabelText('Media Title');
+    await user.clear(mediaTitleInput);
+
+    // Clear the position field to make it explicitly empty
+    const positionInput = screen.getByLabelText('When it gets good');
+    await user.clear(positionInput);
+
+    await user.click(submitButton);
+
+    // Verify validation prevents submission
+    expect(wiggPointService.createWiggPoint).not.toHaveBeenCalled();
+
     await waitFor(() => {
       expect(screen.getByText('Media title is required')).toBeInTheDocument();
       expect(screen.getByText('Position is required')).toBeInTheDocument();
