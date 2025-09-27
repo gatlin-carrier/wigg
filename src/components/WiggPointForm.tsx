@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,18 +12,7 @@ import { Clock, Star, X, Tag } from "lucide-react";
 import { wiggPointService } from "@/lib/api/services/wiggPoints";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
-
-const wiggPointSchema = z.object({
-  mediaTitle: z.string().min(1, "Media title is required"),
-  mediaType: z.enum(["Game", "Movie", "TV Show", "Book", "Podcast"]),
-  posValue: z.string().min(1, "Position is required"),
-  posKind: z.enum(["sec", "min", "hour", "page", "chapter", "episode"]),
-  reasonShort: z.string().optional(),
-  tags: z.string().optional(),
-  spoilerLevel: z.enum(["0", "1", "2"]).default("0")
-});
-
-type WiggPointForm = z.infer<typeof wiggPointSchema>;
+import { wiggPointFormSchema, type WiggPointForm } from "@/data/schemas/wiggPoints";
 
 interface WiggPointFormProps {
   onSuccess?: () => void;
@@ -40,7 +28,7 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
   const [customTags, setCustomTags] = useState<string[]>([]);
 
   const form = useForm<WiggPointForm>({
-    resolver: zodResolver(wiggPointSchema),
+    resolver: zodResolver(wiggPointFormSchema),
     defaultValues: {
       mediaTitle: initialData?.title || "",
       mediaType: initialData?.type || "Game",
