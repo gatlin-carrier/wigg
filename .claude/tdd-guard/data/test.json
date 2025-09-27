@@ -1,91 +1,21 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/types/__tests__/index.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/clients/__tests__/socialClient.integration.test.ts",
       "tests": [
         {
-          "name": "should export WiggPoint type with all required fields",
-          "fullName": "Data Layer Types > should export WiggPoint type with all required fields",
-          "state": "passed"
-        },
-        {
-          "name": "should export CreateWiggPointInput type without auto-generated fields",
-          "fullName": "Data Layer Types > should export CreateWiggPointInput type without auto-generated fields",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/clients/__tests__/wiggPointsClient.test.ts",
-      "tests": [
-        {
-          "name": "should fetch user wigg points for a media",
-          "fullName": "wiggPointsClient > should fetch user wigg points for a media",
-          "state": "passed"
-        },
-        {
-          "name": "should call Supabase with correct parameters",
-          "fullName": "wiggPointsClient > should call Supabase with correct parameters",
-          "state": "passed"
-        },
-        {
-          "name": "should use actual Supabase query result",
-          "fullName": "wiggPointsClient > should use actual Supabase query result",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/hooks/__tests__/useWiggPoints.test.ts",
-      "tests": [
-        {
-          "name": "should fetch user wigg points for a media",
-          "fullName": "useWiggPointsData > should fetch user wigg points for a media",
-          "state": "passed"
-        },
-        {
-          "name": "should call Supabase to fetch wigg points data",
-          "fullName": "useWiggPointsData > should call Supabase to fetch wigg points data",
-          "state": "passed"
-        },
-        {
-          "name": "should use wiggPointsClient instead of direct Supabase calls",
-          "fullName": "useWiggPointsData > should use wiggPointsClient instead of direct Supabase calls",
-          "state": "passed"
-        },
-        {
-          "name": "should return data from wiggPointsClient",
-          "fullName": "useWiggPointsData > should return data from wiggPointsClient",
-          "state": "passed"
-        },
-        {
-          "name": "should provide addWiggPoint mutation function",
-          "fullName": "useWiggPointsData > should provide addWiggPoint mutation function",
-          "state": "passed"
-        },
-        {
-          "name": "should call wiggPointsClient.createWiggPoint when addWiggPoint is called",
-          "fullName": "useWiggPointsData > should call wiggPointsClient.createWiggPoint when addWiggPoint is called",
-          "state": "passed"
-        },
-        {
-          "name": "should handle loading states correctly during mutation",
-          "fullName": "useWiggPointsData > should handle loading states correctly during mutation",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/hooks/__tests__/useUserWiggsDataLayer.test.ts",
-      "tests": [
-        {
-          "name": "should use data layer client instead of direct Supabase calls",
-          "fullName": "useUserWiggsDataLayer > should use data layer client instead of direct Supabase calls",
-          "state": "passed"
+          "name": "should get like count from real API via MSW",
+          "fullName": "socialClient integration tests > should get like count from real API via MSW",
+          "state": "failed",
+          "errors": [
+            {
+              "message": "TypeError: fetch failed"
+            }
+          ]
         }
       ]
     }
   ],
   "unhandledErrors": [],
-  "reason": "passed"
+  "reason": "failed"
 }

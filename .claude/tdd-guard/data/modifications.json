@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\data\\hooks\\useWiggPoints.ts",
-    "old_string": "import { useState, useEffect } from 'react';\nimport { useAuth } from '@/hooks/useAuth';\nimport { wiggPointsClient, WiggPoint } from '@/data/clients/wiggPointsClient';\nimport { supabase } from '@/integrations/supabase/client';",
-    "new_string": "import { useState, useEffect } from 'react';\nimport { useAuth } from '@/hooks/useAuth';\nimport { wiggPointsClient } from '@/data/clients/wiggPointsClient';\nimport type { WiggPoint } from '@/data/types';\nimport { supabase } from '@/integrations/supabase/client';"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\data\\clients\\__tests__\\socialClient.integration.test.ts",
+    "old_string": "import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';\nimport { socialClient } from '../socialClient';\nimport { server } from '../../mocks/setup';\n\ndescribe('socialClient integration tests', () => {\n  beforeAll(() => {\n    server.listen();\n  });\n\n  afterEach(() => {\n    server.resetHandlers();\n  });\n\n  afterAll(() => {\n    server.close();\n  });",
+    "new_string": "import { describe, it, expect } from 'vitest';\nimport { socialClient } from '../socialClient';\n\ndescribe('socialClient integration tests', () => {"
   }
 }
