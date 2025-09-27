@@ -63,4 +63,13 @@ describe('userPreferencesClient', () => {
     expect(updatedPreferences.spoiler_sensitivity).toBe(2);
     expect(updatedPreferences.trusted_users).toEqual(['user-456', 'user-789']);
   });
+
+  it('should follow DataLayerResponse pattern for getUserPreferences', async () => {
+    const result = await userPreferencesClient.getUserPreferences('user-123');
+
+    // This test will fail until we implement DataLayerResponse pattern
+    expect(result.success).toBe(true);
+    expect(result.data.user_id).toBe('user-123');
+    expect(result.data.spoiler_sensitivity).toBe(1);
+  });
 });

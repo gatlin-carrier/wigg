@@ -1,31 +1,34 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useWiggLikesDataLayer.test.tsx",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/clients/__tests__/userPreferencesClient.test.ts",
       "tests": [
         {
-          "name": "should provide same interface as legacy useWiggLikes hook",
-          "fullName": "Migration: useWiggLikesDataLayer > should provide same interface as legacy useWiggLikes hook",
-          "state": "passed"
+          "name": "should get user preferences",
+          "fullName": "userPreferencesClient > should get user preferences",
+          "state": "skipped"
         },
         {
-          "name": "should use socialClient for data fetching and show loading state",
-          "fullName": "Migration: useWiggLikesDataLayer > should use socialClient for data fetching and show loading state",
-          "state": "passed"
+          "name": "should update user preferences",
+          "fullName": "userPreferencesClient > should update user preferences",
+          "state": "skipped"
         },
         {
-          "name": "should fetch user like status from socialClient",
-          "fullName": "Migration: useWiggLikesDataLayer > should fetch user like status from socialClient",
-          "state": "passed"
-        },
-        {
-          "name": "should show liked=true when user has liked the point",
-          "fullName": "Migration: useWiggLikesDataLayer > should show liked=true when user has liked the point",
-          "state": "passed"
+          "name": "should follow DataLayerResponse pattern for getUserPreferences",
+          "fullName": "userPreferencesClient > should follow DataLayerResponse pattern for getUserPreferences",
+          "state": "failed",
+          "errors": [
+            {
+              "message": "expected undefined to be true // Object.is equality",
+              "stack": "AssertionError: expected undefined to be true // Object.is equality\n    at C:\\Users\\gatli\\Projects\\wigg\\src\\data\\clients\\__tests__\\userPreferencesClient.test.ts:71:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///C:/Users/gatli/Projects/wigg/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20",
+              "expected": "true",
+              "actual": "undefined"
+            }
+          ]
         }
       ]
     }
   ],
   "unhandledErrors": [],
-  "reason": "passed"
+  "reason": "failed"
 }

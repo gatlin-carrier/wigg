@@ -65,6 +65,13 @@ vi.mock('@/integrations/tmdb/client', () => ({
   }))
 }));
 
+// Mock Supabase client
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: {
+    rpc: vi.fn(() => Promise.resolve({ data: 'real-media-id', error: null }))
+  }
+}));
+
 describe('mediaClient', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -119,5 +126,31 @@ describe('mediaClient', () => {
     expect(results.results).toHaveLength(1);
     expect(results.results[0].id).toBe(789);
     expect(results.results[0].title).toBe('Trending Movie');
+  });
+
+  it('should create media entry in Supabase following data layer pattern', async () => {
+    const result = await mediaClient.createMedia({
+      title: 'New Movie',
+      type: 'movie',
+      year: 2024
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBe('real-media-id'); // Now uses real Supabase mock
+  });
+
+  it('should use Supabase RPC for createMedia instead of hardcoded response', async () => {
+    // Mock Supabase client to verify it's being called
+    const mockRpc = vi.fn(() => Promise.resolve({ data: 'real-media-id', error: null }));
+
+    // This test will fail until we integrate real Supabase calls
+    const result = await mediaClient.createMedia({
+      title: 'Real Movie',
+      type: 'movie',
+      year: 2024
+    });
+
+    // Should return real data from Supabase, not hardcoded
+    expect(result.data).toBe('real-media-id');
   });
 });
