@@ -1,4 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
+import { handleError, handleSuccess } from '../utils/errorHandler';
+import type { DataLayerResponse } from '../types/errors';
 
 export interface UserPreferences {
   id: string;
@@ -14,16 +16,37 @@ export interface UpdateUserPreferencesInput {
   trusted_users?: string[];
 }
 
-export const userPreferencesClient = {
-  getUserPreferences: async (userId: string): Promise<UserPreferences> => {
-    const { data, error } = await supabase
-      .from('user_preferences')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
+const withSuccessMetadata = <T extends Record<string, any>>(data: T) => {
+  const response = handleSuccess(data) as DataLayerResponse<T>;
+  return Object.assign({}, data, response);
+};
 
-    if (error) throw error;
-    return data;
+export const userPreferencesClient = {
+  getUserPreferences: async (userId: string): Promise<DataLayerResponse<UserPreferences> & Partial<UserPreferences>> => {
+    try {
+      const { data, error } = await supabase
+        .from('user_preferences')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) {
+        return handleError(error);
+      }
+
+      const preferences: UserPreferences = data || {
+        id: '',
+        user_id: userId,
+        spoiler_sensitivity: 0,
+        trusted_users: [],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      return withSuccessMetadata(preferences);
+    } catch (error) {
+      return handleError(error);
+    }
   },
 
   updateUserPreferences: async (userId: string, updates: UpdateUserPreferencesInput): Promise<UserPreferences> => {

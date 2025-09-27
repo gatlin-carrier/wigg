@@ -1,28 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { wiggPointsClient } from '@/data/clients/wiggPointsClient';
+import type { WiggPoint } from '@/data/types';
+import { useAuth } from '@/hooks/useAuth';
 
-// Minimal implementation to make test pass
-export function useUserWiggsDataLayer(mediaId: string) {
-  const [isLoading, setIsLoading] = useState(true);
+interface UseUserWiggsDataLayerResult {
+  data: WiggPoint[];
+  isLoading: boolean;
+  error: Error | null;
+}
 
-  useEffect(() => {
-    setTimeout(() => setIsLoading(false), 0);
-  }, []);
+export function useUserWiggsDataLayer(mediaId: string): UseUserWiggsDataLayerResult {
+  const { user } = useAuth();
+  const userId = user?.id;
+
+  const queryKey = useMemo(
+    () => ['data-layer', 'user-wiggs', userId, mediaId] as const,
+    [userId, mediaId]
+  );
+
+  const query = useQuery({
+    queryKey,
+    enabled: Boolean(userId && mediaId),
+    queryFn: () => {
+      if (!userId) {
+        return Promise.resolve<WiggPoint[]>([]);
+      }
+      return wiggPointsClient.getUserWiggPoints(userId, mediaId);
+    }
+  });
+
+  const data = query.data ?? [];
+  const error = query.error
+    ? query.error instanceof Error
+      ? query.error
+      : new Error('Failed to fetch user WIGG points')
+    : null;
 
   return {
-    isLoading,
-    data: [
-      {
-        id: 'test-id-1',
-        media_id: 'media-123',
-        user_id: 'user-456',
-        pos_value: 30,
-        pos_kind: 'percent',
-        reason_short: 'Test reason',
-        spoiler_level: 1,
-        created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-01T00:00:00Z'
-      }
-    ],
-    error: null,
+    data,
+    isLoading: query.isLoading || query.isPending,
+    error,
   };
 }

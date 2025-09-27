@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, type Resolver, type FieldError } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,6 +12,31 @@ import { wiggPointService } from "@/lib/api/services/wiggPoints";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { wiggPointFormSchema, type WiggPointForm } from "@/data/schemas/wiggPoints";
+
+const wiggPointFormResolver: Resolver<WiggPointForm> = async (values) => {
+  const result = wiggPointFormSchema.safeParse(values);
+
+  if (result.success) {
+    return {
+      values: result.data,
+      errors: {}
+    };
+  }
+
+  const fieldErrors = result.error.issues.reduce((acc, issue) => {
+    const fieldName = issue.path[0] as keyof WiggPointForm;
+    acc[fieldName] = {
+      type: issue.code,
+      message: issue.message
+    } as FieldError;
+    return acc;
+  }, {} as Partial<Record<keyof WiggPointForm, FieldError>>);
+
+  return {
+    values: {},
+    errors: fieldErrors
+  };
+};
 
 interface WiggPointFormProps {
   onSuccess?: () => void;
@@ -28,8 +52,7 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
   const [customTags, setCustomTags] = useState<string[]>([]);
 
   const form = useForm<WiggPointForm>({
-    resolver: zodResolver(wiggPointFormSchema),
-    mode: "onChange",
+    resolver: wiggPointFormResolver,
     defaultValues: {
       mediaTitle: initialData?.title || "",
       mediaType: initialData?.type || "Game",
@@ -40,36 +63,6 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
       spoilerLevel: "0"
     }
   });
-
-  // TODO: FIXME - zodResolver compatibility issue with react-hook-form
-  // The zodResolver is not properly setting error state that FormMessage components can detect.
-  // Error validation works (prevents submission) but UI error messages don't display.
-  // Root cause: useFormField() -> getFieldState() doesn't see errors set by zodResolver.
-  // This affects aria-invalid and FormMessage rendering. Needs investigation of:
-  // 1. zodResolver version compatibility with react-hook-form
-  // 2. Alternative form validation approaches
-  // 3. Custom form error state management
-  // Current workaround validates data and prevents bad submissions but lacks UI feedback.
-  React.useEffect(() => {
-    const subscription = form.watch((data) => {
-      // Validate with Zod and manually set errors
-      const validationResult = wiggPointFormSchema.safeParse(data);
-
-      // Clear previous errors
-      form.clearErrors();
-
-      if (!validationResult.success) {
-        validationResult.error.issues.forEach((issue) => {
-          const fieldName = issue.path[0] as keyof WiggPointForm;
-          form.setError(fieldName, {
-            type: 'manual',
-            message: issue.message
-          });
-        });
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
 
   const addTag = (tag: string) => {
     if (tag && !customTags.includes(tag)) {
@@ -93,23 +86,6 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
   };
 
   const onSubmit = async (data: WiggPointForm) => {
-    // Clear previous errors
-    form.clearErrors();
-
-    // Manual validation as workaround for zodResolver issue
-    const validationResult = wiggPointFormSchema.safeParse(data);
-    if (!validationResult.success) {
-      // Manually set form errors since zodResolver isn't working properly
-      validationResult.error.issues.forEach((issue) => {
-        const fieldName = issue.path[0] as keyof WiggPointForm;
-        form.setError(fieldName, {
-          type: 'manual',
-          message: issue.message
-        });
-      });
-      return;
-    }
-
     if (!user) {
       toast({
         title: "Authentication required",
@@ -123,9 +99,13 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
 
     try {
       // Convert position value to number
-      const posValue = parseFloat(data.posValue);
-      if (isNaN(posValue)) {
-        throw new Error("Position value must be a valid number");
+      const posValue = Number(data.posValue);
+      if (Number.isNaN(posValue)) {
+        form.setError('posValue', {
+          type: "validate",
+          message: "Position must be a number"
+        });
+        return;
       }
 
       // Use the WIGG Point Service
@@ -133,8 +113,10 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
         mediaTitle: data.mediaTitle,
         mediaType: data.mediaType.toLowerCase() as 'game' | 'movie' | 'tv show' | 'book' | 'podcast',
         posKind: data.posKind as 'sec' | 'min' | 'hour' | 'page' | 'chapter' | 'episode',
-        posValue: posValue,
-        tags: [...customTags, ...(data.tags ? [data.tags] : [])].filter(Boolean),
+        posValue,
+        tags: [...customTags, ...(data.tags ? [data.tags] : [])]
+          .map((tag) => tag.trim())
+          .filter(Boolean),
         reasonShort: data.reasonShort || null,
         spoilerLevel: parseInt(data.spoilerLevel, 10) as 0 | 1 | 2,
         userId: user.id
@@ -149,7 +131,15 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
         description: `Successfully recorded when ${data.mediaTitle} gets good`
       });
 
-      form.reset();
+      form.reset({
+        mediaTitle: initialData?.title || "",
+        mediaType: initialData?.type || "Game",
+        posValue: "",
+        posKind: "min",
+        reasonShort: "",
+        tags: "",
+        spoilerLevel: "0"
+      });
       setCustomTags([]);
       onSuccess?.();
 
@@ -211,7 +201,9 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                     <FormControl>
                       <Input placeholder="Enter media title" {...field} />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage>
+                      {form.formState.errors.mediaTitle?.message}
+                    </FormMessage>
                   </FormItem>
                 )}
               />
@@ -236,7 +228,9 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                         <SelectItem value="Podcast">Podcast</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    <FormMessage>
+                      {form.formState.errors.mediaType?.message}
+                    </FormMessage>
                   </FormItem>
                 )}
               />
@@ -261,7 +255,9 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                         {...field} 
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage>
+                      {form.formState.errors.posValue?.message}
+                    </FormMessage>
                   </FormItem>
                 )}
               />
@@ -287,7 +283,9 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                         <SelectItem value="episode">Episodes</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    <FormMessage>
+                      {form.formState.errors.posKind?.message}
+                    </FormMessage>
                   </FormItem>
                 )}
               />
@@ -308,7 +306,9 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                       {...field} 
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage>
+                    {form.formState.errors.reasonShort?.message}
+                  </FormMessage>
                 </FormItem>
               )}
             />
@@ -331,7 +331,9 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                         {...field} 
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage>
+                      {form.formState.errors.tags?.message}
+                    </FormMessage>
                   </FormItem>
                 )}
               />
@@ -373,7 +375,9 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
                   <p className="text-xs text-muted-foreground mt-1">
                     {getSpoilerDescription(form.watch("spoilerLevel"))}
                   </p>
-                  <FormMessage />
+                  <FormMessage>
+                    {form.formState.errors.spoilerLevel?.message}
+                  </FormMessage>
                 </FormItem>
               )}
             />

@@ -39,6 +39,38 @@ global.Worker = MockWorker;
 vi.stubGlobal('import.meta.env', {
   VITE_SUPABASE_URL: 'https://test.supabase.co',
   VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_test_key',
+  VITE_SUPABASE_URL_PREVIEW: 'https://preview.supabase.co',
+  VITE_SUPABASE_PUBLISHABLE_KEY_PREVIEW: 'sb_preview_key',
+  VITE_SUPABASE_ANON_KEY: 'sb_publishable_test_key',
+});
+
+vi.stubEnv('MODE', 'test');
+vi.stubEnv('NODE_ENV', 'test');
+vi.stubEnv('VITE_SUPABASE_URL', 'https://test.supabase.co');
+vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'sb_publishable_test_key');
+vi.stubEnv('VITE_SUPABASE_URL_PREVIEW', 'https://preview.supabase.co');
+vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY_PREVIEW', 'sb_preview_key');
+vi.stubEnv('VITE_SUPABASE_ANON_KEY', 'sb_publishable_test_key');
+
+const meta = (import.meta as unknown as { env?: Record<string, string> });
+meta.env = {
+  VITE_SUPABASE_URL: 'https://test.supabase.co',
+  VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_test_key',
+  VITE_SUPABASE_URL_PREVIEW: 'https://preview.supabase.co',
+  VITE_SUPABASE_PUBLISHABLE_KEY_PREVIEW: 'sb_preview_key',
+  VITE_SUPABASE_ANON_KEY: 'sb_publishable_test_key',
+};
+
+vi.stubGlobal('import', {
+  meta: {
+    env: {
+      VITE_SUPABASE_URL: 'https://test.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_test_key',
+      VITE_SUPABASE_URL_PREVIEW: 'https://preview.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY_PREVIEW: 'sb_preview_key',
+      VITE_SUPABASE_ANON_KEY: 'sb_publishable_test_key',
+    }
+  }
 });
 
 // Mock matchMedia for mobile hook
