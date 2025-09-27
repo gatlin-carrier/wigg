@@ -31,6 +31,7 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
     resolver: zodResolver(wiggPointFormSchema),
     mode: 'onSubmit',
     reValidateMode: 'onChange',
+    criteriaMode: 'all',
     defaultValues: {
       mediaTitle: initialData?.title || "",
       mediaType: initialData?.type || "Game",
@@ -64,6 +65,20 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
   };
 
   const onSubmit = async (data: WiggPointForm) => {
+    // Manual validation as workaround for zodResolver issue
+    const validationResult = wiggPointFormSchema.safeParse(data);
+    if (!validationResult.success) {
+      // Manually set form errors since zodResolver isn't working properly
+      validationResult.error.issues.forEach((issue) => {
+        const fieldName = issue.path[0] as keyof WiggPointForm;
+        form.setError(fieldName, {
+          type: 'manual',
+          message: issue.message
+        });
+      });
+      return;
+    }
+
     if (!user) {
       toast({
         title: "Authentication required",

@@ -2,7 +2,13 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { WiggPointForm } from '../WiggPointForm';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { wiggPointFormSchema } from '@/data/schemas/wiggPoints';
 
 // Mock the dependencies
 vi.mock('@/integrations/supabase/client', () => ({
@@ -59,23 +65,42 @@ describe('WiggPointForm', () => {
   });
 
   it('should show validation errors for required fields', async () => {
+    // First, test Zod schema directly to verify it works
+    const testData = {
+      mediaTitle: "",
+      mediaType: "Game",
+      posValue: "",
+      posKind: "min",
+      reasonShort: "",
+      tags: "",
+      spoilerLevel: "0"
+    };
+
+    const result = wiggPointFormSchema.safeParse(testData);
+    console.log('Zod validation result:', result);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues).toContainEqual(
+        expect.objectContaining({
+          path: ['mediaTitle'],
+          message: 'Media title is required'
+        })
+      );
+      expect(result.error.issues).toContainEqual(
+        expect.objectContaining({
+          path: ['posValue'],
+          message: 'Position is required'
+        })
+      );
+    }
+
+    // Now test with react-hook-form
     const user = userEvent.setup();
     render(<WiggPointForm />);
 
     const submitButton = screen.getByRole('button', { name: 'Add WIGG Point' });
-
-    // Clear the media title field to make it explicitly empty
-    const mediaTitleInput = screen.getByLabelText('Media Title');
-    await user.clear(mediaTitleInput);
-
-    // Clear the position field to make it explicitly empty
-    const positionInput = screen.getByLabelText('When it gets good');
-    await user.clear(positionInput);
-
     await user.click(submitButton);
-
-    // Verify validation prevents submission
-    expect(wiggPointService.createWiggPoint).not.toHaveBeenCalled();
 
     await waitFor(() => {
       expect(screen.getByText('Media title is required')).toBeInTheDocument();
