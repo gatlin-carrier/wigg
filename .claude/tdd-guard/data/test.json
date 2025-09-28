@@ -1,17 +1,37 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/__tests__/featureFlags.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useWiggLikesDataLayer.test.tsx",
       "tests": [
         {
-          "name": "should return false for disabled feature flag by default",
-          "fullName": "useFeatureFlag > should return false for disabled feature flag by default",
+          "name": "should provide same interface as legacy useWiggLikes hook",
+          "fullName": "Migration: useWiggLikesDataLayer > should provide same interface as legacy useWiggLikes hook",
+          "state": "skipped"
+        },
+        {
+          "name": "should use socialClient for data fetching and show loading state",
+          "fullName": "Migration: useWiggLikesDataLayer > should use socialClient for data fetching and show loading state",
+          "state": "skipped"
+        },
+        {
+          "name": "should fetch user like status from socialClient",
+          "fullName": "Migration: useWiggLikesDataLayer > should fetch user like status from socialClient",
+          "state": "skipped"
+        },
+        {
+          "name": "should show liked=true when user has liked the point",
+          "fullName": "Migration: useWiggLikesDataLayer > should show liked=true when user has liked the point",
+          "state": "skipped"
+        },
+        {
+          "name": "should implement toggleLike with useMutation",
+          "fullName": "Migration: useWiggLikesDataLayer > should implement toggleLike with useMutation",
           "state": "passed"
         },
         {
-          "name": "should return true when feature flag is enabled via defaultValue",
-          "fullName": "useFeatureFlag > should return true when feature flag is enabled via defaultValue",
-          "state": "passed"
+          "name": "should implement refreshCount function that refetches queries",
+          "fullName": "Migration: useWiggLikesDataLayer > should implement refreshCount function that refetches queries",
+          "state": "skipped"
         }
       ]
     }

@@ -5,7 +5,7 @@
   "tool_name": "Edit",
   "tool_input": {
     "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\WiggPointForm.tsx",
-    "old_string": "  const form = useForm<WiggPointForm>({\n    resolver: wiggPointFormResolver,",
-    "new_string": "  const form = useForm<WiggPointForm>({\n    resolver: zodResolver(wiggPointFormSchema),"
+    "old_string": "const wiggPointFormResolver: Resolver<WiggPointForm> = async (values) => {\n  const result = wiggPointFormSchema.safeParse(values);\n\n  if (result.success) {\n    return {\n      values: result.data,\n      errors: {}\n    };\n  }\n\n  const fieldErrors = result.error.issues.reduce((acc, issue) => {\n    const fieldName = issue.path[0] as keyof WiggPointForm;\n    acc[fieldName] = {\n      type: issue.code,\n      message: issue.message\n    } as FieldError;\n    return acc;\n  }, {} as Partial<Record<keyof WiggPointForm, FieldError>>);\n\n  return {\n    values: {},\n    errors: fieldErrors\n  };\n};",
+    "new_string": ""
   }
 }

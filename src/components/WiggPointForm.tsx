@@ -14,30 +14,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { wiggPointFormSchema, type WiggPointForm } from "@/data/schemas/wiggPoints";
 
-const wiggPointFormResolver: Resolver<WiggPointForm> = async (values) => {
-  const result = wiggPointFormSchema.safeParse(values);
-
-  if (result.success) {
-    return {
-      values: result.data,
-      errors: {}
-    };
-  }
-
-  const fieldErrors = result.error.issues.reduce((acc, issue) => {
-    const fieldName = issue.path[0] as keyof WiggPointForm;
-    acc[fieldName] = {
-      type: issue.code,
-      message: issue.message
-    } as FieldError;
-    return acc;
-  }, {} as Partial<Record<keyof WiggPointForm, FieldError>>);
-
-  return {
-    values: {},
-    errors: fieldErrors
-  };
-};
 
 interface WiggPointFormProps {
   onSuccess?: () => void;
