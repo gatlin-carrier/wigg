@@ -20,7 +20,7 @@ export function useTitleProgress(titleId: string): {
   isLoading: boolean;
   error: Error | null;
 } {
-  const useReactQuery = useFeatureFlag('title-progress-react-query');
+  const useReactQuery = useFeatureFlag('title-progress-react-query', { defaultValue: true });
 
   // React Query implementation
   if (useReactQuery) {

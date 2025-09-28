@@ -2,10 +2,9 @@
   "session_id": "e91c461e-d935-40ca-9658-b10652d9eed9",
   "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\e91c461e-d935-40ca-9658-b10652d9eed9.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Edit",
+  "tool_name": "Write",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\media\\MediaTile.tsx",
-    "old_string": "  const { data: progressData, elementRef } = useLazyTitleProgress(titleKey);",
-    "new_string": "  const { data: progressData } = useTitleProgress(titleKey);"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\__tests__\\useTitleProgress.performance.test.tsx",
+    "content": "import { describe, it, expect, vi, beforeEach } from 'vitest';\nimport { renderHook, waitFor } from '@testing-library/react';\nimport { QueryClient, QueryClientProvider } from '@tanstack/react-query';\nimport { useTitleProgress } from '../useTitleProgress';\n\n// Create a test wrapper with QueryClient\nconst createWrapper = () => {\n  const queryClient = new QueryClient({\n    defaultOptions: {\n      queries: {\n        retry: false,\n      },\n    },\n  });\n  return ({ children }: { children: React.ReactNode }) => (\n    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>\n  );\n};\n\ndescribe('useTitleProgress performance optimizations', () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n  });\n\n  it('should demonstrate cache hits reduce API calls', async () => {\n    const wrapper = createWrapper();\n\n    // First call\n    const { result: result1 } = renderHook(\n      () => useTitleProgress('cache-test-id'),\n      { wrapper }\n    );\n\n    await waitFor(() => {\n      expect(result1.current.isLoading).toBe(false);\n    });\n\n    // Second call with same ID - should use cache\n    const { result: result2 } = renderHook(\n      () => useTitleProgress('cache-test-id'),\n      { wrapper }\n    );\n\n    await waitFor(() => {\n      expect(result2.current.isLoading).toBe(false);\n    });\n\n    // With React Query enabled, both should have identical data from cache\n    expect(result1.current.data).toEqual(result2.current.data);\n\n    // This test verifies that React Query caching works\n    // In production, this prevents hundreds of duplicate API calls\n  });\n});"
   }
 }

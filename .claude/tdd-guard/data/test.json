@@ -1,22 +1,16 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.performance.test.tsx",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleProgress.performance.test.tsx",
       "tests": [
         {
-          "name": "should memoize when props remain unchanged",
-          "fullName": "MediaTile Performance > should memoize when props remain unchanged",
-          "state": "failed",
-          "errors": [
-            {
-              "message": "No QueryClient set, use QueryClientProvider to set one",
-              "stack": "Error: No QueryClient set, use QueryClientProvider to set one\n    at useQueryClient (file:///C:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/QueryClientProvider.tsx:18:11)\n    at useBaseQuery (file:///C:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/useBaseQuery.ts:54:18)\n    at Module.useQuery (file:///C:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/useQuery.ts:51:10)\n    at Module.useUserWiggsDataLayer (C:\\Users\\gatli\\Projects\\wigg\\src\\data\\hooks\\useUserWiggsDataLayer.ts:22:17)\n    at MediaTile (C:\\Users\\gatli\\Projects\\wigg\\src\\components\\media\\MediaTile.tsx:54:24)\n    at renderWithHooks (C:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (C:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (C:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (C:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (C:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)"
-            }
-          ]
+          "name": "should demonstrate cache hits reduce API calls",
+          "fullName": "useTitleProgress performance optimizations > should demonstrate cache hits reduce API calls",
+          "state": "passed"
         }
       ]
     }
   ],
   "unhandledErrors": [],
-  "reason": "failed"
+  "reason": "passed"
 }

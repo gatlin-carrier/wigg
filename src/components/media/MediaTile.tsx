@@ -5,6 +5,7 @@ import { Star, Plus, TrendingUp, Activity, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
+import { useLazyTitleProgress } from '@/hooks/useLazyTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
 import { useUserWiggsDataLayer } from '@/data/hooks/useUserWiggsDataLayer';
 import { useFeatureFlag } from '@/lib/featureFlags';
@@ -46,7 +47,12 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
   const navigate = useNavigate();
   const { user } = useAuth();
   const titleKey = useMemo(() => (mediaData ? `${mediaData.source}:${mediaData.id}` : title), [mediaData, title]);
-  const { data: progressData } = useTitleProgress(titleKey);
+  // Feature flag for lazy loading optimization
+  const useLazyLoading = useFeatureFlag('title-progress-lazy-loading');
+  const titleProgressData = useLazyLoading
+    ? useLazyTitleProgress(titleKey)
+    : useTitleProgress(titleKey);
+  const { data: progressData, elementRef } = titleProgressData;
 
   // Feature flag for data layer coexistence
   const useNewDataLayer = useFeatureFlag('media-tile-data-layer');
