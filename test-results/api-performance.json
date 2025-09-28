@@ -91,14 +91,14 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 8372,
+                      "duration": 8589,
                       "errors": [],
                       "stdout": [
                         {
                           "text": "=== API Performance Report ===\n"
                         },
                         {
-                          "text": "GET:https://anmadaditlpkedmaeibx.supabase.co/rest/v1/title_metrics: 119 calls\n"
+                          "text": "GET:https://anmadaditlpkedmaeibx.supabase.co/rest/v1/title_metrics: 118 calls\n"
                         },
                         {
                           "text": "GET:https://anmadaditlpkedmaeibx.supabase.co/functions/v1/tmdb/trending/movie/day: 2 calls\n"
@@ -119,16 +119,16 @@
                           "text": "POST:https://anmadaditlpkedmaeibx.supabase.co/functions/v1/podcast-trending: 2 calls\n"
                         },
                         {
-                          "text": "Total Supabase API calls: 131\n"
+                          "text": "Total Supabase API calls: 130\n"
                         }
                       ],
                       "stderr": [
                         {
-                          "text": "⚠️  Rapid calls detected: GET:https://anmadaditlpkedmaeibx.supabase.co/rest/v1/title_metrics - avg 36.38135593220339ms between calls\n"
+                          "text": "⚠️  Rapid calls detected: GET:https://anmadaditlpkedmaeibx.supabase.co/rest/v1/title_metrics - avg 5.52991452991453ms between calls\n"
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2025-09-28T14:51:11.644Z",
+                      "startTime": "2025-09-28T15:07:36.770Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -148,8 +148,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-09-28T14:51:09.598Z",
-    "duration": 10734.971,
+    "startTime": "2025-09-28T15:07:34.745Z",
+    "duration": 10859.039,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

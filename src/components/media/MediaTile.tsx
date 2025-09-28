@@ -55,6 +55,9 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
   const { data: progressData, elementRef } = titleProgressData;
 
   // Feature flag for data layer coexistence
+  // TODO CRITICAL: Both hooks execute unconditionally - options parameter ignored!
+  // This causes 118+ API calls to title_metrics instead of expected <20
+  // SOLUTION: Implement enabled option support in useUserWiggs and useUserWiggsDataLayer
   const useNewDataLayer = useFeatureFlag('media-tile-data-layer');
   const legacyWiggsData = useUserWiggs(titleKey, { enabled: !useNewDataLayer });
   const newWiggsData = useUserWiggsDataLayer(titleKey, { enabled: useNewDataLayer });

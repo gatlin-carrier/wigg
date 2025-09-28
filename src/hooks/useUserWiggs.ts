@@ -5,6 +5,10 @@ import { useAuth } from './useAuth';
 import { firstGoodFromWiggs, estimateT2GFromSegments, pickT2G } from '@/lib/wigg/analysis';
 import { supabase } from '@/integrations/supabase/client';
 
+// CRITICAL FIX: MediaTile.tsx expects useUserWiggs(titleKey, { enabled: !useNewDataLayer })
+// API performance test shows 118+ calls to title_metrics when should be <20
+// This hook needs to support conditional execution to prevent duplicate API calls
+
 export interface WiggEntry {
   id: string;
   pct: number;

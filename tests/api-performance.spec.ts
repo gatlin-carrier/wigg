@@ -74,8 +74,11 @@ test.describe('API Performance Monitoring', () => {
         expect(stats.count, `Too many WIGG calls: ${key}`).toBeLessThan(10);
       } else {
         // General API calls shouldn't exceed reasonable limits
-        // TEMPORARY: Increased limit due to data layer migration coexistence pattern
-        // TODO: Reduce back to 20 after implementing hooks with enabled options
+        // CRITICAL ISSUE: MediaTile.tsx lines 59-60 call BOTH hooks unconditionally
+        // useUserWiggs(titleKey, { enabled: !useNewDataLayer }) - options parameter ignored
+        // useUserWiggsDataLayer(titleKey, { enabled: useNewDataLayer }) - options parameter ignored
+        // Result: 118+ calls to title_metrics instead of expected <20
+        // SOLUTION: Implement enabled options in both hooks OR use conditional execution
         expect(stats.count, `Excessive API calls: ${key}`).toBeLessThan(150);
       }
     }
@@ -84,8 +87,9 @@ test.describe('API Performance Monitoring', () => {
     const totalCalls = Array.from(apiCalls.values())
       .reduce((sum, stats) => sum + stats.count, 0);
 
-    // TEMPORARY: Increased limit due to data layer migration coexistence pattern
-    // TODO: Reduce back to 50 after implementing hooks with enabled options
+    // TEMPORARY: Limit adjusted for data layer migration period
+    // Both hooks executing due to missing enabled parameter support
+    // TODO: Reduce back to 50 after fixing MediaTile hook execution
     expect(totalCalls, 'Total API calls exceeded reasonable limit').toBeLessThan(200);
 
     console.log(`Total Supabase API calls: ${totalCalls}`);
