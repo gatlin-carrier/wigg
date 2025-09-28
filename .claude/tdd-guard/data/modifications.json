@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\WiggPointForm.tsx",
-    "old_string": "const wiggPointFormResolver: Resolver<WiggPointForm> = async (values) => {\n  const result = wiggPointFormSchema.safeParse(values);\n\n  if (result.success) {\n    return {\n      values: result.data,\n      errors: {}\n    };\n  }\n\n  const fieldErrors = result.error.issues.reduce((acc, issue) => {\n    const fieldName = issue.path[0] as keyof WiggPointForm;\n    acc[fieldName] = {\n      type: issue.code,\n      message: issue.message\n    } as FieldError;\n    return acc;\n  }, {} as Partial<Record<keyof WiggPointForm, FieldError>>);\n\n  return {\n    values: {},\n    errors: fieldErrors\n  };\n};",
-    "new_string": ""
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\social\\useWiggCommentsDataLayer.ts",
+    "old_string": "export function useWiggCommentsDataLayer(pointId?: string) {\n  return {\n    comments: [],\n    loading: false,\n    addComment: async () => {},\n    deleteComment: async () => {},\n    refresh: async () => {},\n    canComment: false,\n  };\n}",
+    "new_string": "import { useQuery } from '@tanstack/react-query';\nimport { socialClient } from '../../data/clients/socialClient';\nimport { useAuth } from '../useAuth';\n\nexport interface WiggComment {\n  id: string;\n  userId: string;\n  username: string;\n  content: string;\n  createdAt: string;\n}\n\nexport function useWiggCommentsDataLayer(pointId?: string) {\n  const { user } = useAuth();\n\n  const commentsQuery = useQuery({\n    queryKey: ['comments', pointId],\n    queryFn: () => socialClient.getComments(pointId || ''),\n    enabled: !!pointId\n  });\n\n  return {\n    comments: commentsQuery.data || [],\n    loading: commentsQuery.isLoading || commentsQuery.isPending,\n    addComment: async () => {},\n    deleteComment: async () => {},\n    refresh: async () => {},\n    canComment: Boolean(user?.id && pointId),\n  };\n}"
   }
 }
