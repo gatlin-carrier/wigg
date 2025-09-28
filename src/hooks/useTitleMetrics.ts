@@ -29,8 +29,13 @@ export function useTitleMetrics(titleId: string | null | undefined, options: { e
       return rows?.[0] ?? null;
     },
     enabled: enabled && !!titleId,
-    staleTime: 5 * 60 * 1000, // 5 minutes - metrics don't change frequently
-    gcTime: 10 * 60 * 1000,   // 10 minutes - keep in cache longer
+    // Aggressive caching to fix API performance issue: 118 calls vs expected <20
+    // With ~120 MediaTile components, need strong deduplication
+    staleTime: 15 * 60 * 1000, // 15 minutes - metrics change very rarely
+    gcTime: 30 * 60 * 1000,    // 30 minutes - keep in cache much longer
+    refetchOnWindowFocus: false, // Don't refetch when window gains focus
+    refetchOnMount: false,       // Don't refetch on component mount if data exists
+    refetchOnReconnect: false,   // Don't refetch on network reconnect
   });
 
   return {

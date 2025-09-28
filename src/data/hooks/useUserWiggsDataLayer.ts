@@ -4,13 +4,17 @@ import { wiggPointsClient } from '@/data/clients/wiggPointsClient';
 import type { WiggPoint } from '@/data/types';
 import { useAuth } from '@/hooks/useAuth';
 
+// Fix for MediaTile.tsx line 63: useUserWiggsDataLayer(titleKey, { enabled: useNewDataLayer })
+
 interface UseUserWiggsDataLayerResult {
   data: WiggPoint[];
   isLoading: boolean;
   error: Error | null;
 }
 
-export function useUserWiggsDataLayer(mediaId: string): UseUserWiggsDataLayerResult {
+export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boolean }): UseUserWiggsDataLayerResult {
+  // Fix for API performance issue: MediaTile expects enabled option support
+  const { enabled = true } = options || {};
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -21,7 +25,7 @@ export function useUserWiggsDataLayer(mediaId: string): UseUserWiggsDataLayerRes
 
   const query = useQuery({
     queryKey,
-    enabled: Boolean(userId && mediaId),
+    enabled: enabled && Boolean(userId && mediaId),
     queryFn: () => {
       if (!userId) {
         return Promise.resolve<WiggPoint[]>([]);
