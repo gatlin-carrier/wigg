@@ -46,11 +46,11 @@ describe('userPreferencesClient', () => {
   });
 
   it('should get user preferences', async () => {
-    const preferences = await userPreferencesClient.getUserPreferences('user-123');
+    const result = await userPreferencesClient.getUserPreferences('user-123');
 
-    expect(preferences.user_id).toBe('user-123');
-    expect(preferences.spoiler_sensitivity).toBe(1);
-    expect(preferences.trusted_users).toEqual(['user-456']);
+    expect(result.data.user_id).toBe('user-123');
+    expect(result.data.spoiler_sensitivity).toBe(1);
+    expect(result.data.trusted_users).toEqual(['user-456']);
   });
 
   it('should update user preferences', async () => {

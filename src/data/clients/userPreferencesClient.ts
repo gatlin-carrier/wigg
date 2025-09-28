@@ -16,13 +16,12 @@ export interface UpdateUserPreferencesInput {
   trusted_users?: string[];
 }
 
-const withSuccessMetadata = <T extends Record<string, any>>(data: T) => {
-  const response = handleSuccess(data) as DataLayerResponse<T>;
-  return Object.assign({}, data, response);
+const withSuccessMetadata = <T extends Record<string, any>>(data: T): DataLayerResponse<T> => {
+  return handleSuccess(data) as DataLayerResponse<T>;
 };
 
 export const userPreferencesClient = {
-  getUserPreferences: async (userId: string): Promise<DataLayerResponse<UserPreferences> & Partial<UserPreferences>> => {
+  getUserPreferences: async (userId: string): Promise<DataLayerResponse<UserPreferences>> => {
     try {
       const { data, error } = await supabase
         .from('user_preferences')

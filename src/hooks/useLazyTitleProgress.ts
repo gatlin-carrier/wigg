@@ -7,10 +7,19 @@ export function useLazyTitleProgress(titleKey: string) {
   const progressData = useTitleProgress(titleKey, { enabled: false });
 
   useEffect(() => {
-    new IntersectionObserver(
-      () => {},
+    if (!elementRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          setIsVisible(entry.isIntersecting);
+        });
+      },
       { rootMargin: '50px', threshold: 0.1 }
     );
+    observer.observe(elementRef.current);
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   return {
