@@ -1,22 +1,16 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useUserWiggs.enabled.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleMetrics.real-data.test.ts",
       "tests": [
         {
-          "name": "should pass enabled option to underlying hooks",
-          "fullName": "useUserWiggs enabled option requirement > should pass enabled option to underlying hooks",
-          "state": "failed",
-          "errors": [
-            {
-              "message": "Cannot read properties of null (reading 'useState')",
-              "stack": "TypeError: Cannot read properties of null (reading 'useState')\n    at Proxy.useState (C:\\Users\\gatli\\Projects\\wigg\\node_modules\\react\\cjs\\react.development.js:1622:21)\n    at Module.useUserWiggs (C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\useUserWiggs.ts:32:27)\n    at C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\__tests__\\useUserWiggs.enabled.test.ts:38:5\n    at file:///C:/Users/gatli/Projects/wigg/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11\n    at file:///C:/Users/gatli/Projects/wigg/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26\n    at file:///C:/Users/gatli/Projects/wigg/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///C:/Users/gatli/Projects/wigg/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)\n    at runTest (file:///C:/Users/gatli/Projects/wigg/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
-            }
-          ]
+          "name": "should return real metrics data from title_metrics table",
+          "fullName": "useTitleMetrics with real data > should return real metrics data from title_metrics table",
+          "state": "passed"
         }
       ]
     }
   ],
   "unhandledErrors": [],
-  "reason": "failed"
+  "reason": "passed"
 }

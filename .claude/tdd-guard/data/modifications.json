@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\tests\\api-performance.spec.ts",
-    "old_string": "    expect(totalCalls, 'Total API calls exceeded reasonable limit').toBeLessThan(150);",
-    "new_string": "    expect(totalCalls, 'Total API calls exceeded reasonable limit').toBeLessThan(300);"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\hooks\\__tests__\\useTitleMetrics.real-data.test.ts",
+    "old_string": "    // Verify it queries the real title_metrics table\n    expect(mockSupabase.from).toHaveBeenCalledWith('title_metrics');",
+    "new_string": "    // Verify it queries the real title_metrics table\n    const { supabase } = await import('@/integrations/supabase/client');\n    expect(supabase.from).toHaveBeenCalledWith('title_metrics');"
   }
 }
