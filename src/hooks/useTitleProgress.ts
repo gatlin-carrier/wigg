@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useFeatureFlag } from '@/lib/featureFlags';
 
 export interface ProgressSegment {
   startPct: number;
@@ -18,6 +20,38 @@ export function useTitleProgress(titleId: string): {
   isLoading: boolean;
   error: Error | null;
 } {
+  const useReactQuery = useFeatureFlag('title-progress-react-query');
+
+  // React Query implementation
+  if (useReactQuery) {
+    const result = useQuery({
+      queryKey: ['titleProgress', titleId],
+      queryFn: async () => {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+        // Return fixed data for testing
+        return {
+          totalLengthSeconds: 7200,
+          totalLengthPercent: 100,
+          segments: Array.from({ length: 20 }, (_, i) => ({
+            startPct: (i / 20) * 100,
+            endPct: ((i + 1) / 20) * 100,
+            meanScore: 2.5,
+            userScore: undefined
+          }))
+        };
+      },
+      enabled: !!titleId,
+    });
+
+    return {
+      data: result.data ?? null,
+      isLoading: result.isLoading,
+      error: result.error as Error | null
+    };
+  }
+
+  // Legacy implementation
   const [data, setData] = useState<TitleProgressData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);

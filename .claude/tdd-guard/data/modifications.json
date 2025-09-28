@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\integrations\\supabase\\config.ts",
-    "old_string": "type EnvRecord = Record<string, string | boolean | undefined>;\n\nconst resolveEnv = (): EnvRecord => {\n  const globalEnv = (globalThis as any)['import.meta.env'] as EnvRecord | undefined;\n  if (globalEnv) return globalEnv;\n\n  const globalImportEnv = (globalThis as any).import?.meta?.env as EnvRecord | undefined;\n  if (globalImportEnv) return globalImportEnv;\n\n  const viteEnv = (import.meta as unknown as { env?: EnvRecord }).env;\n  if (viteEnv) return viteEnv;\n\n  const processEnv = (globalThis as any).process?.env as EnvRecord | undefined;\n  return processEnv ?? {};\n};\n\nconst env = resolveEnv();\nexport const resolvedSupabaseEnv = env;",
-    "new_string": "// Use import.meta.env directly as the environment source\nconst env = import.meta.env as Record<string, string | boolean | undefined>;\nexport const resolvedSupabaseEnv = env;"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\media\\MediaTile.tsx",
+    "old_string": "  const { data: progressData, elementRef } = useLazyTitleProgress(titleKey);",
+    "new_string": "  const { data: progressData } = useTitleProgress(titleKey);"
   }
 }
