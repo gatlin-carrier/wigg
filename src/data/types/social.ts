@@ -7,3 +7,8 @@ export interface Comment {
   content: string;
   createdAt: string;
 }
+
+export interface FollowerCounts {
+  followers: number;
+  following: number;
+}

@@ -1,21 +1,46 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleMetrics.performance.test.tsx",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/clients/__tests__/mediaClient.test.ts",
       "tests": [
         {
-          "name": "should cache results and make only one API call for same titleId",
-          "fullName": "useTitleMetrics Performance > should cache results and make only one API call for same titleId",
+          "name": "should search for movies",
+          "fullName": "mediaClient > should search for movies",
           "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleMetrics.test.tsx",
-      "tests": [
+        },
         {
-          "name": "should fetch title metrics for valid titleId",
-          "fullName": "useTitleMetrics > should fetch title metrics for valid titleId",
+          "name": "should search for movies with page parameter",
+          "fullName": "mediaClient > should search for movies with page parameter",
+          "state": "passed"
+        },
+        {
+          "name": "should perform multi-search across content types",
+          "fullName": "mediaClient > should perform multi-search across content types",
+          "state": "passed"
+        },
+        {
+          "name": "should get detailed movie information",
+          "fullName": "mediaClient > should get detailed movie information",
+          "state": "passed"
+        },
+        {
+          "name": "should get detailed TV show information",
+          "fullName": "mediaClient > should get detailed TV show information",
+          "state": "passed"
+        },
+        {
+          "name": "should get trending movies",
+          "fullName": "mediaClient > should get trending movies",
+          "state": "passed"
+        },
+        {
+          "name": "should create media entry in Supabase following data layer pattern",
+          "fullName": "mediaClient > should create media entry in Supabase following data layer pattern",
+          "state": "passed"
+        },
+        {
+          "name": "should use Supabase RPC for createMedia instead of hardcoded response",
+          "fullName": "mediaClient > should use Supabase RPC for createMedia instead of hardcoded response",
           "state": "passed"
         }
       ]

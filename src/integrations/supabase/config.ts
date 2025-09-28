@@ -8,23 +8,8 @@ interface SupabaseConfig {
 const DEFAULT_SUPABASE_URL = 'https://test.supabase.co';
 const DEFAULT_SUPABASE_ANON_KEY = 'sb_test_anon_key';
 
-type EnvRecord = Record<string, string | boolean | undefined>;
-
-const resolveEnv = (): EnvRecord => {
-  const globalEnv = (globalThis as any)['import.meta.env'] as EnvRecord | undefined;
-  if (globalEnv) return globalEnv;
-
-  const globalImportEnv = (globalThis as any).import?.meta?.env as EnvRecord | undefined;
-  if (globalImportEnv) return globalImportEnv;
-
-  const viteEnv = (import.meta as unknown as { env?: EnvRecord }).env;
-  if (viteEnv) return viteEnv;
-
-  const processEnv = (globalThis as any).process?.env as EnvRecord | undefined;
-  return processEnv ?? {};
-};
-
-const env = resolveEnv();
+// Use import.meta.env directly as the environment source
+const env = import.meta.env as Record<string, string | boolean | undefined>;
 export const resolvedSupabaseEnv = env;
 
 const normalizeFlag = (value: string | boolean | undefined) => {

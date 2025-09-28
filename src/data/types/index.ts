@@ -13,3 +13,6 @@ export interface WiggPoint {
 }
 
 export type CreateWiggPointInput = Omit<WiggPoint, 'id' | 'created_at' | 'updated_at'>;
+
+// Input for hook consumers - they don't need to provide user_id and media_id as those are injected
+export type WiggPointFormInput = Omit<CreateWiggPointInput, 'user_id' | 'media_id'>;

@@ -3,13 +3,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { wiggPointsClient } from '@/data/clients/wiggPointsClient';
 import { supabase } from '@/integrations/supabase/client';
-import type { WiggPoint } from '@/data/types';
+import type { WiggPoint, WiggPointFormInput } from '@/data/types';
 
 interface UseWiggPointsDataResult {
   data: WiggPoint[];
   isLoading: boolean;
   error: Error | null;
-  addWiggPoint: (wiggData: any) => Promise<WiggPoint>;
+  addWiggPoint: (wiggData: WiggPointFormInput) => Promise<WiggPoint>;
   isAdding: boolean;
   addError: Error | null;
 }
@@ -40,7 +40,15 @@ export function useWiggPointsData(mediaId: string): UseWiggPointsDataResult {
   });
 
   const mutation = useMutation({
-    mutationFn: (wiggData: any) => wiggPointsClient.createWiggPoint(wiggData),
+    mutationFn: (wiggData: WiggPointFormInput) => {
+      // Inject required context
+      const wiggDataWithContext = {
+        ...wiggData,
+        user_id: userId,
+        media_id: mediaId
+      };
+      return wiggPointsClient.createWiggPoint(wiggDataWithContext);
+    },
     onSuccess: (newPoint) => {
       queryClient.setQueryData<WiggPoint[]>(queryKey, (previous) => {
         const current = previous ?? [];
@@ -49,7 +57,7 @@ export function useWiggPointsData(mediaId: string): UseWiggPointsDataResult {
     }
   });
 
-  const addWiggPoint = async (wiggData: any) => {
+  const addWiggPoint = async (wiggData: WiggPointFormInput) => {
     const created = await mutation.mutateAsync(wiggData);
     return created;
   };
