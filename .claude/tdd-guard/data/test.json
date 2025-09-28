@@ -1,151 +1,16 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/social/__tests__/FollowButton.migration.test.tsx",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/lib/__tests__/featureFlags.test.ts",
       "tests": [
         {
-          "name": "should have completed data layer migration with feature flag",
-          "fullName": "FollowButton Migration > should have completed data layer migration with feature flag",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/__tests__/WiggPointCard.migration.test.tsx",
-      "tests": [
-        {
-          "name": "should have completed data layer migration with feature flag for both likes and comments",
-          "fullName": "WiggPointCard Migration > should have completed data layer migration with feature flag for both likes and comments",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/RealTimeVisualization.migration.test.tsx",
-      "tests": [
-        {
-          "name": "should have completed data layer migration with feature flag",
-          "fullName": "RealTimeVisualization Migration > should have completed data layer migration with feature flag",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/TitleCardCurve.migration.test.tsx",
-      "tests": [
-        {
-          "name": "should have completed data layer migration with feature flag",
-          "fullName": "TitleCardCurve Migration > should have completed data layer migration with feature flag",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/TitleCard.migration.test.tsx",
-      "tests": [
-        {
-          "name": "should import feature flag successfully",
-          "fullName": "TitleCard Migration > should import feature flag successfully",
+          "name": "should return false for disabled feature flag by default",
+          "fullName": "useFeatureFlag > should return false for disabled feature flag by default",
           "state": "passed"
         },
         {
-          "name": "should import useUserWiggsDataLayer for coexistence pattern",
-          "fullName": "TitleCard Migration > should import useUserWiggsDataLayer for coexistence pattern",
-          "state": "passed"
-        },
-        {
-          "name": "should use feature flag for data layer selection in TitleCard",
-          "fullName": "TitleCard Migration > should use feature flag for data layer selection in TitleCard",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/RealtimeWiggOverlay.migration.test.tsx",
-      "tests": [
-        {
-          "name": "should import feature flag successfully",
-          "fullName": "RealtimeWiggOverlay Migration > should import feature flag successfully",
-          "state": "passed"
-        },
-        {
-          "name": "should import useUserWiggsDataLayer for coexistence pattern",
-          "fullName": "RealtimeWiggOverlay Migration > should import useUserWiggsDataLayer for coexistence pattern",
-          "state": "passed"
-        },
-        {
-          "name": "should use feature flag for data layer selection in RealtimeWiggOverlay",
-          "fullName": "RealtimeWiggOverlay Migration > should use feature flag for data layer selection in RealtimeWiggOverlay",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/pages/__tests__/MediaDetails.migration.test.tsx",
-      "tests": [
-        {
-          "name": "should import feature flag successfully",
-          "fullName": "MediaDetails Migration > should import feature flag successfully",
-          "state": "passed"
-        },
-        {
-          "name": "should use feature flag for data layer selection in MediaDetails",
-          "fullName": "MediaDetails Migration > should use feature flag for data layer selection in MediaDetails",
-          "state": "passed"
-        },
-        {
-          "name": "should import useUserWiggsDataLayer for coexistence pattern",
-          "fullName": "MediaDetails Migration > should import useUserWiggsDataLayer for coexistence pattern",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/pages/__tests__/AddWigg.migration.test.tsx",
-      "tests": [
-        {
-          "name": "should import feature flag successfully",
-          "fullName": "AddWigg Migration > should import feature flag successfully",
-          "state": "passed"
-        },
-        {
-          "name": "should import useUserWiggsDataLayer for coexistence pattern",
-          "fullName": "AddWigg Migration > should import useUserWiggsDataLayer for coexistence pattern",
-          "state": "passed"
-        },
-        {
-          "name": "should use feature flag for data layer selection in AddWigg",
-          "fullName": "AddWigg Migration > should use feature flag for data layer selection in AddWigg",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/wigg/__tests__/TitleHeader.migration.test.tsx",
-      "tests": [
-        {
-          "name": "should import feature flag successfully",
-          "fullName": "TitleHeader Migration > should import feature flag successfully",
-          "state": "passed"
-        },
-        {
-          "name": "should import useUserWiggsDataLayer for coexistence pattern",
-          "fullName": "TitleHeader Migration > should import useUserWiggsDataLayer for coexistence pattern",
-          "state": "passed"
-        },
-        {
-          "name": "should use feature flag for data layer selection in TitleHeader",
-          "fullName": "TitleHeader Migration > should use feature flag for data layer selection in TitleHeader",
-          "state": "passed"
-        }
-      ]
-    },
-    {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.migration.test.tsx",
-      "tests": [
-        {
-          "name": "should have completed data layer migration with feature flag",
-          "fullName": "MediaTile Migration > should have completed data layer migration with feature flag",
+          "name": "should return true when feature flag is enabled via defaultValue",
+          "fullName": "useFeatureFlag > should return true when feature flag is enabled via defaultValue",
           "state": "passed"
         }
       ]

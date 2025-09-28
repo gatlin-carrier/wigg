@@ -65,9 +65,12 @@ describe('socialClient', () => {
       error: null
     });
 
-    const hasLiked = await socialClient.hasUserLiked('point-123', 'user-456');
+    const result = await socialClient.hasUserLiked('point-123', 'user-456');
 
-    expect(hasLiked).toBe(true);
+    expect(result).toEqual({
+      success: true,
+      data: true
+    });
     expect(supabase.rpc).toHaveBeenCalledWith('user_liked_wigg_point', { point_id: 'point-123', user_id: 'user-456' });
   });
 

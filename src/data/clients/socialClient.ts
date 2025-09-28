@@ -14,11 +14,15 @@ export const socialClient = {
     }
   },
 
-  hasUserLiked: async (pointId: string, userId: string): Promise<boolean> => {
-    const { data, error } = await supabase.rpc('user_liked_wigg_point', { point_id: pointId, user_id: userId });
+  hasUserLiked: async (pointId: string, userId: string): Promise<DataLayerResponse<boolean>> => {
+    try {
+      const { data, error } = await supabase.rpc('user_liked_wigg_point', { point_id: pointId, user_id: userId });
 
-    if (error) throw error;
-    return data;
+      if (error) return handleError(error);
+      return handleSuccess(data);
+    } catch (error) {
+      return handleError(error);
+    }
   },
 
   toggleLike: async (params: { pointId: string; userId: string; isLiked: boolean }): Promise<void> => {

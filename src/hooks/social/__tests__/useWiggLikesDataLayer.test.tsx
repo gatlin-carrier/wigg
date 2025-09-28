@@ -118,4 +118,51 @@ describe('Migration: useWiggLikesDataLayer', () => {
     // Should show liked=true when socialClient.hasUserLiked returns true
     expect(result.current.liked).toBe(true);
   });
+
+  it('should implement toggleLike with useMutation', async () => {
+    vi.mocked(socialClient.toggleLike).mockResolvedValueOnce();
+
+    const { result } = renderHook(
+      () => useWiggLikesDataLayer('point-123'),
+      { wrapper }
+    );
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    // Should be able to call toggleLike
+    await act(async () => {
+      await result.current.toggleLike();
+    });
+
+    // Should call socialClient.toggleLike with correct parameters
+    expect(socialClient.toggleLike).toHaveBeenCalledWith({
+      pointId: 'point-123',
+      userId: 'user-456',
+      isLiked: false
+    });
+  });
+
+  it('should implement refreshCount function that refetches queries', async () => {
+    const { result } = renderHook(
+      () => useWiggLikesDataLayer('point-123'),
+      { wrapper }
+    );
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    // Clear previous mock calls
+    vi.clearAllMocks();
+
+    // Call refreshCount
+    await act(async () => {
+      await result.current.refreshCount();
+    });
+
+    // Should refetch the like count
+    expect(socialClient.getLikeCount).toHaveBeenCalledWith('point-123');
+  });
 });

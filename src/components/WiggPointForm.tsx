@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useForm, type Resolver, type FieldError } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,7 +53,7 @@ export const WiggPointForm = ({ onSuccess, initialData }: WiggPointFormProps) =>
   const [customTags, setCustomTags] = useState<string[]>([]);
 
   const form = useForm<WiggPointForm>({
-    resolver: wiggPointFormResolver,
+    resolver: zodResolver(wiggPointFormSchema),
     defaultValues: {
       mediaTitle: initialData?.title || "",
       mediaType: initialData?.type || "Game",
