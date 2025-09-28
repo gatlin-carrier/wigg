@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface TitleMetricsRow {
@@ -12,36 +12,29 @@ export interface TitleMetricsRow {
 }
 
 export function useTitleMetrics(titleId: string | null | undefined) {
-  const [data, setData] = useState<TitleMetricsRow | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const query = useQuery({
+    queryKey: ['titleMetrics', titleId],
+    queryFn: async () => {
+      if (!titleId) return null;
 
-  useEffect(() => {
-    let cancelled = false;
-    async function run() {
-      if (!titleId) return;
-      setLoading(true);
-      setError(null);
-      try {
-        const { data: rows, error } = await supabase
-          .from('title_metrics')
-          .select('*')
-          .eq('title_id', titleId)
-          .limit(1);
-        if (error) throw error;
-        if (!cancelled) setData(rows?.[0] ?? null);
-      } catch (e) {
-        if (!cancelled) setError(e as Error);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    run();
-    return () => {
-      cancelled = true;
-    };
-  }, [titleId]);
+      const { data: rows, error } = await supabase
+        .from('title_metrics')
+        .select('*')
+        .eq('title_id', titleId)
+        .limit(1);
 
-  return { data, loading, error } as const;
+      if (error) throw error;
+      return rows?.[0] ?? null;
+    },
+    enabled: !!titleId,
+    staleTime: 5 * 60 * 1000, // 5 minutes - metrics don't change frequently
+    gcTime: 10 * 60 * 1000,   // 10 minutes - keep in cache longer
+  });
+
+  return {
+    data: query.data ?? null,
+    loading: query.isLoading || query.isPending,
+    error: query.error as Error | null
+  } as const;
 }
 

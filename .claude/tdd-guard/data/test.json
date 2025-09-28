@@ -1,11 +1,21 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/social/__tests__/useWiggCommentsDataLayer.test.tsx",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleMetrics.performance.test.tsx",
       "tests": [
         {
-          "name": "should fetch real comments instead of always returning empty list",
-          "fullName": "useWiggCommentsDataLayer > should fetch real comments instead of always returning empty list",
+          "name": "should cache results and make only one API call for same titleId",
+          "fullName": "useTitleMetrics Performance > should cache results and make only one API call for same titleId",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleMetrics.test.tsx",
+      "tests": [
+        {
+          "name": "should fetch title metrics for valid titleId",
+          "fullName": "useTitleMetrics > should fetch title metrics for valid titleId",
           "state": "passed"
         }
       ]
