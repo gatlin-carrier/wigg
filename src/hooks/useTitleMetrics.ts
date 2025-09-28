@@ -11,7 +11,9 @@ export interface TitleMetricsRow {
   updated_at: string | null;
 }
 
-export function useTitleMetrics(titleId: string | null | undefined) {
+export function useTitleMetrics(titleId: string | null | undefined, options: { enabled?: boolean } = {}) {
+  const { enabled = true } = options;
+
   const query = useQuery({
     queryKey: ['titleMetrics', titleId],
     queryFn: async () => {
@@ -26,7 +28,7 @@ export function useTitleMetrics(titleId: string | null | undefined) {
       if (error) throw error;
       return rows?.[0] ?? null;
     },
-    enabled: !!titleId,
+    enabled: enabled && !!titleId,
     staleTime: 5 * 60 * 1000, // 5 minutes - metrics don't change frequently
     gcTime: 10 * 60 * 1000,   // 10 minutes - keep in cache longer
   });
