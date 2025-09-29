@@ -91,7 +91,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 8450,
+                      "duration": 8386,
                       "errors": [],
                       "stdout": [
                         {
@@ -124,11 +124,11 @@
                       ],
                       "stderr": [
                         {
-                          "text": "⚠️  Rapid calls detected: GET:https://anmadaditlpkedmaeibx.supabase.co/rest/v1/title_metrics - avg 8.282051282051283ms between calls\n"
+                          "text": "⚠️  Rapid calls detected: GET:https://anmadaditlpkedmaeibx.supabase.co/rest/v1/title_metrics - avg 5.641025641025641ms between calls\n"
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2025-09-28T15:43:43.710Z",
+                      "startTime": "2025-09-29T00:15:49.198Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -148,8 +148,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-09-28T15:43:41.711Z",
-    "duration": 10714.054999999998,
+    "startTime": "2025-09-29T00:15:47.335Z",
+    "duration": 10526.015000000001,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,
