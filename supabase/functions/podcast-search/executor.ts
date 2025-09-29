@@ -75,8 +75,8 @@ export async function executePlans(
       }
 
       results[key] = { ok: true, t_ms: Math.round(performance.now() - start), data };
-    } catch (err: any) {
-      results[key] = { ok: false, t_ms: Math.round(performance.now() - start), error: err?.message || 'Unknown error' };
+    } catch (err: unknown) {
+      results[key] = { ok: false, t_ms: Math.round(performance.now() - start), error: err instanceof Error ? err.message : 'Unknown error' };
     }
   }
 

@@ -21,7 +21,9 @@ import { PacingBarcode } from '@/components/wigg/PacingBarcode';
 import { TitleHeader } from '@/components/wigg/TitleHeader';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
+import { useUserWiggsDataLayer } from '@/data/hooks/useUserWiggsDataLayer';
 import { useMediaUnits } from '@/hooks/useMediaUnits';
+import { useFeatureFlag } from '@/lib/featureFlags';
 
 export default function MediaDetails() {
   const { source, id } = useParams<{ source: string; id: string }>();
@@ -134,7 +136,12 @@ export default function MediaDetails() {
   // Community pacing data keyed by a stable local id (source:id)
   const titleKey = `${source ?? 'media'}:${id ?? ''}`;
   const { data: progressData } = useTitleProgress(titleKey);
-  const { data: wiggsData } = useUserWiggs(titleKey);
+
+  // Feature flag for data layer coexistence
+  const useNewDataLayer = useFeatureFlag('media-details-data-layer');
+  const legacyWiggsData = useUserWiggs(titleKey, { enabled: !useNewDataLayer });
+  const newWiggsData = useUserWiggsDataLayer(titleKey, { enabled: useNewDataLayer });
+  const { data: wiggsData } = useNewDataLayer ? newWiggsData : legacyWiggsData;
   const { units } = useMediaUnits(movie ? {
     id: id || '',
     title: (movie as any)?.title || (movie as any)?.name || 'Title',

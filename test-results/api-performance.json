@@ -1,0 +1,158 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\gatli\\Projects\\wigg\\playwright.config.ts",
+    "rootDir": "C:/Users/gatli/Projects/wigg/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/api-performance.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/gatli/Projects/wigg/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/gatli/Projects/wigg/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.55.0",
+    "workers": 8,
+    "webServer": {
+      "command": "npm run preview -- --port 4173 --host",
+      "url": "http://localhost:4173",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "api-performance.spec.ts",
+      "file": "api-performance.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "API Performance Monitoring",
+          "file": "api-performance.spec.ts",
+          "line": 10,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should not make excessive calls to Supabase endpoints",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8386,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "=== API Performance Report ===\n"
+                        },
+                        {
+                          "text": "GET:https://anmadaditlpkedmaeibx.supabase.co/rest/v1/title_metrics: 118 calls\n"
+                        },
+                        {
+                          "text": "GET:https://anmadaditlpkedmaeibx.supabase.co/functions/v1/tmdb/trending/movie/day: 2 calls\n"
+                        },
+                        {
+                          "text": "GET:https://anmadaditlpkedmaeibx.supabase.co/functions/v1/tmdb/genre/movie/list: 2 calls\n"
+                        },
+                        {
+                          "text": "GET:https://anmadaditlpkedmaeibx.supabase.co/functions/v1/tmdb/tv/popular: 2 calls\n"
+                        },
+                        {
+                          "text": "GET:https://anmadaditlpkedmaeibx.supabase.co/functions/v1/tmdb/genre/tv/list: 2 calls\n"
+                        },
+                        {
+                          "text": "POST:https://anmadaditlpkedmaeibx.supabase.co/functions/v1/fetch-popular-games: 2 calls\n"
+                        },
+                        {
+                          "text": "POST:https://anmadaditlpkedmaeibx.supabase.co/functions/v1/podcast-trending: 2 calls\n"
+                        },
+                        {
+                          "text": "Total Supabase API calls: 130\n"
+                        }
+                      ],
+                      "stderr": [
+                        {
+                          "text": "⚠️  Rapid calls detected: GET:https://anmadaditlpkedmaeibx.supabase.co/rest/v1/title_metrics - avg 5.641025641025641ms between calls\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-09-29T00:15:49.198Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "794326964db582f99963-0d8b27b5f435c2804305",
+              "file": "api-performance.spec.ts",
+              "line": 11,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-09-29T00:15:47.335Z",
+    "duration": 10526.015000000001,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

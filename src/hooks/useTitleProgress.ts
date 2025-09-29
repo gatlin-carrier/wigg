@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useFeatureFlag } from '@/lib/featureFlags';
 
 export interface ProgressSegment {
   startPct: number;
@@ -13,11 +15,44 @@ export interface TitleProgressData {
   segments: ProgressSegment[];
 }
 
-export function useTitleProgress(titleId: string): {
+export function useTitleProgress(titleId: string, options: { enabled?: boolean } = {}): {
   data: TitleProgressData | null;
   isLoading: boolean;
   error: Error | null;
 } {
+  const { enabled = true } = options;
+  const useReactQuery = useFeatureFlag('title-progress-react-query', { defaultValue: true });
+
+  // React Query implementation
+  if (useReactQuery) {
+    const result = useQuery({
+      queryKey: ['titleProgress', titleId],
+      queryFn: async () => {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+        // Return fixed data for testing
+        return {
+          totalLengthSeconds: 7200,
+          totalLengthPercent: 100,
+          segments: Array.from({ length: 20 }, (_, i) => ({
+            startPct: (i / 20) * 100,
+            endPct: ((i + 1) / 20) * 100,
+            meanScore: 2.5,
+            userScore: undefined
+          }))
+        };
+      },
+      enabled: enabled && !!titleId,
+    });
+
+    return {
+      data: result.data ?? null,
+      isLoading: result.isLoading,
+      error: result.error as Error | null
+    };
+  }
+
+  // Legacy implementation
   const [data, setData] = useState<TitleProgressData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -39,11 +74,11 @@ export function useTitleProgress(titleId: string): {
         for (let i = 0; i < segmentCount; i++) {
           const startPct = (i / segmentCount) * 100;
           const endPct = ((i + 1) / segmentCount) * 100;
-          
+
           // Create a curve that starts low, peaks in middle-late, then varies
           let mockScore: number | undefined;
           const position = i / (segmentCount - 1);
-          
+
           if (position < 0.2) {
             // Early segments: generally low scores
             mockScore = Math.random() * 2 + 0.5; // 0.5-2.5
@@ -77,10 +112,12 @@ export function useTitleProgress(titleId: string): {
       }
     };
 
-    if (titleId) {
+    if (titleId && enabled) {
       fetchTitleProgress();
+    } else if (!enabled) {
+      setIsLoading(false);
     }
-  }, [titleId]);
+  }, [titleId, enabled]);
 
   return { data, isLoading, error };
 }

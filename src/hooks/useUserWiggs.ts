@@ -5,6 +5,10 @@ import { useAuth } from './useAuth';
 import { firstGoodFromWiggs, estimateT2GFromSegments, pickT2G } from '@/lib/wigg/analysis';
 import { supabase } from '@/integrations/supabase/client';
 
+// CRITICAL FIX: MediaTile.tsx expects useUserWiggs(titleKey, { enabled: !useNewDataLayer })
+// API performance test shows 118+ calls to title_metrics when should be <20
+// This hook needs to support conditional execution to prevent duplicate API calls
+
 export interface WiggEntry {
   id: string;
   pct: number;
@@ -19,17 +23,20 @@ export interface UserWiggsData {
   t2gConfidence?: number;  // 0..1 heuristic
 }
 
-export function useUserWiggs(titleId: string): {
+export function useUserWiggs(titleId: string, options?: { enabled?: boolean }): {
   data: UserWiggsData | null;
   isLoading: boolean;
   error: Error | null;
   addWigg: (pct: number, note?: string, rating?: number) => Promise<void>;
 } {
+  // Extract enabled option to fix API performance issue (118+ calls to title_metrics)
+  const { enabled = true } = options || {};
+
   const [data, setData] = useState<UserWiggsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const { data: progressData } = useTitleProgress(titleId);
-  const { data: metrics } = useTitleMetrics(titleId);
+  const { data: progressData } = useTitleProgress(titleId, { enabled });
+  const { data: metrics } = useTitleMetrics(titleId, { enabled });
   // Use centralized authentication state from useAuth hook instead of direct Supabase calls
   // This prevents excessive API calls and ensures consistent user state across the application
   const { user } = useAuth();
@@ -84,10 +91,10 @@ export function useUserWiggs(titleId: string): {
       }
     };
 
-    if (titleId) {
+    if (titleId && enabled) {
       fetchUserWiggs();
     }
-  }, [titleId, user]);
+  }, [titleId, user, enabled]);
 
   // Effect 2: Calculate T2G when data/metrics/progress change
   useEffect(() => {

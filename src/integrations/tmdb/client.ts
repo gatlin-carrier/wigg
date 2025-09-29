@@ -1,27 +1,27 @@
 import type { TmdbSearchResponse, TmdbMovie } from './types';
-
-const TMDB_API_BASE = 'https://api.themoviedb.org/3';
+import { supabaseConfig } from '@/integrations/supabase/config';
 
 async function tmdbGet<T>(path: string, params: Record<string, any> = {}): Promise<T> {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-  const supabaseAnon = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
-  
-  // Always use Edge Function for security - never expose API keys to browser
-  const useProxy = true;
+  const { url: supabaseUrl, anonKey: supabaseAnon } = supabaseConfig;
 
   const u = new URLSearchParams();
   // No api_key needed - Edge Function handles authentication server-side
   for (const [k, v] of Object.entries(params)) if (v !== undefined && v !== null && v !== '') u.set(k, String(v));
   const qs = u.toString();
 
-  const url = `${supabaseUrl}/functions/v1/tmdb${path}?${qs}`;
-
   const headers: HeadersInit = supabaseAnon
     ? { apikey: supabaseAnon, Authorization: `Bearer ${supabaseAnon}` }
     : {};
 
+  const baseUrl = supabaseUrl.replace(/\/$/, '');
+  const querySuffix = qs.length > 0 ? `?${qs}` : '';
+  const url = `${baseUrl}/functions/v1/tmdb${path}${querySuffix}`;
+
   const res = await fetch(url, { headers });
-  if (!res.ok) throw new Error(`TMDB ${res.status}: ${await res.text()}`);
+  if (!res.ok) {
+    const errorBody = await res.text();
+    throw new Error(`TMDB ${res.status}: ${errorBody}`);
+  }
   return res.json() as Promise<T>;
 }
 

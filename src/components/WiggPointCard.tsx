@@ -11,7 +11,10 @@ import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import FollowButton from '@/components/social/FollowButton';
 import { useWiggLikes } from '@/hooks/social/useWiggLikes';
+import { useWiggLikesDataLayer } from '@/hooks/social/useWiggLikesDataLayer';
 import { useWiggComments } from '@/hooks/social/useWiggComments';
+import { useWiggCommentsDataLayer } from '@/hooks/social/useWiggCommentsDataLayer';
+import { useFeatureFlag } from '@/lib/featureFlags';
 
 interface WiggPoint {
   id: string;
@@ -37,7 +40,14 @@ export const WiggPointCard = ({ point }: WiggPointCardProps) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [commentText, setCommentText] = useState('');
 
-  const { liked, count: likeCount, loading: likeLoading, toggleLike } = useWiggLikes(point.id, point.user_id, point.media_title);
+  // Feature flag for data layer coexistence
+  const useNewDataLayer = useFeatureFlag('wigg-point-card-data-layer');
+  const legacyLikesData = useWiggLikes(point.id, point.user_id, point.media_title, { enabled: !useNewDataLayer });
+  const newLikesData = useWiggLikesDataLayer(point.id, { enabled: useNewDataLayer });
+  const { liked, count: likeCount, loading: likeLoading, toggleLike } = useNewDataLayer ? newLikesData : legacyLikesData;
+
+  const legacyCommentsData = useWiggComments(point.id);
+  const newCommentsData = useWiggCommentsDataLayer(point.id);
   const {
     comments,
     loading: commentsLoading,
@@ -45,7 +55,7 @@ export const WiggPointCard = ({ point }: WiggPointCardProps) => {
     deleteComment,
     refresh: refreshComments,
     canComment,
-  } = useWiggComments(point.id);
+  } = useNewDataLayer ? newCommentsData : legacyCommentsData;
 
   useEffect(() => {
     if (commentOpen) {

@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
+import { useUserWiggsDataLayer } from '@/data/hooks/useUserWiggsDataLayer';
+import { useFeatureFlag } from '@/lib/featureFlags';
 import { useLiveCapture } from '@/hooks/useLiveCapture';
 import { Star, Clock, TrendingUp, TestTube } from 'lucide-react';
 
@@ -35,7 +37,13 @@ export function RealtimeWiggOverlay({
   
   const { toast } = useToast();
   const { data: progressData } = useTitleProgress(titleId);
-  const { data: wiggsData, addWigg } = useUserWiggs(titleId);
+
+  // Feature flag for data layer coexistence
+  const useNewDataLayer = useFeatureFlag('realtime-wigg-overlay-data-layer');
+  const legacyWiggsData = useUserWiggs(titleId, { enabled: !useNewDataLayer });
+  const newWiggsData = useUserWiggsDataLayer(titleId, { enabled: useNewDataLayer });
+  const { data: wiggsData, addWigg } = useNewDataLayer ? newWiggsData : legacyWiggsData;
+
   const { data: liveData, markWigg, setCurrentPct } = useLiveCapture();
 
   // Determines if the given entry or titleId represents test data, based on specific string patterns.

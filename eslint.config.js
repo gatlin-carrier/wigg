@@ -29,5 +29,24 @@ export default tseslint.config({ ignores: ["dist"] }, {
     "@typescript-eslint/no-require-imports": "warn",
     "storybook/no-renderer-packages": "off",
     "react-hooks/exhaustive-deps": "warn",
+    // Data layer architecture enforcement (relaxed during migration period)
+    "no-restricted-imports": [
+      "warn", // Changed from "error" to "warn" to allow migration period usage
+      {
+        "patterns": [
+          {
+            "group": ["**/lib/api/services/*"],
+            "importNames": ["*"],
+            "message": "Direct service imports are deprecated. Use src/data/ layer instead. (Migration period - will become error)"
+          }
+        ],
+        "paths": [
+          {
+            "name": "axios",
+            "message": "Use the centralized API client in src/data/clients/ instead of direct axios."
+          }
+        ]
+      }
+    ],
   },
 }, storybook.configs["flat/recommended"]);

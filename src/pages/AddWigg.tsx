@@ -33,6 +33,8 @@ import { NoteComposer } from "@/components/wigg/NoteComposer";
 import { ContextChips } from "@/components/wigg/ContextChips";
 import { useTitleProgress } from "@/hooks/useTitleProgress";
 import { useUserWiggs } from "@/hooks/useUserWiggs";
+import { useUserWiggsDataLayer } from "@/data/hooks/useUserWiggsDataLayer";
+import { useFeatureFlag } from "@/lib/featureFlags";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useUserPreferences } from "@/hooks/useUserPreferences";
 
@@ -87,7 +89,13 @@ function AddWiggContent() {
   const { preferences } = useUserPreferences();
   const isMobile = useIsMobile();
   const { data: progressData } = useTitleProgress(selectedMedia?.id || 'mobile');
-  const { data: wiggsData } = useUserWiggs(selectedMedia?.id || 'mobile');
+
+  // Feature flag for data layer coexistence
+  const useNewDataLayer = useFeatureFlag('add-wigg-data-layer');
+  const titleKey = selectedMedia?.id || 'mobile';
+  const legacyWiggsData = useUserWiggs(titleKey, { enabled: !useNewDataLayer });
+  const newWiggsData = useUserWiggsDataLayer(titleKey, { enabled: useNewDataLayer });
+  const { data: wiggsData } = useNewDataLayer ? newWiggsData : legacyWiggsData;
   // Game-specific hooks (declared early for dependent memos)
   const { data: userGameData } = useUserGameData(selectedMedia?.id || '');
   const setGameCompletionTime = useSetGameCompletionTime();
