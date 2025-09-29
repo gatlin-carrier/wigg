@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "populate-metrics": "tsx src/scripts/populate-metrics.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
