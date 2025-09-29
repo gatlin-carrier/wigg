@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 import { MediaTile } from '../MediaTile';
 
 // Mock the useAuth hook
@@ -15,6 +17,14 @@ vi.mock('@/hooks/useTitleProgress', () => ({
 
 vi.mock('@/hooks/useUserWiggs', () => ({
   useUserWiggs: vi.fn(() => ({ data: null, addWigg: vi.fn() })),
+}));
+
+vi.mock('@/data/hooks/useUserWiggsDataLayer', () => ({
+  useUserWiggsDataLayer: vi.fn(() => ({ data: null, addWigg: vi.fn() })),
+}));
+
+vi.mock('@/lib/featureFlags', () => ({
+  useFeatureFlag: vi.fn(() => false),
 }));
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -54,6 +64,24 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
+// Helper to create test wrapper with QueryClient and Router
+const createTestWrapper = ({ children }: { children: React.ReactNode }) => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        {children}
+      </MemoryRouter>
+    </QueryClientProvider>
+  );
+};
+
 describe('MediaTile Authentication', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -73,21 +101,20 @@ describe('MediaTile Authentication', () => {
     });
 
     render(
-      <MemoryRouter>
-        <MediaTile
-          title="Test Movie"
-          imageUrl="https://example.com/poster.jpg"
-          year={2023}
-          mediaData={{
-            source: 'tmdb-movie',
-            id: '123',
-            title: 'Test Movie',
-            type: 'movie',
-            posterUrl: 'https://example.com/poster.jpg',
-            year: 2023,
-          }}
-        />
-      </MemoryRouter>
+      <MediaTile
+        title="Test Movie"
+        imageUrl="https://example.com/poster.jpg"
+        year={2023}
+        mediaData={{
+          source: 'tmdb-movie',
+          id: '123',
+          title: 'Test Movie',
+          type: 'movie',
+          posterUrl: 'https://example.com/poster.jpg',
+          year: 2023,
+        }}
+      />,
+      { wrapper: createTestWrapper }
     );
 
     // Find and click the add button
@@ -117,22 +144,21 @@ describe('MediaTile Authentication', () => {
     });
 
     render(
-      <MemoryRouter>
-        <MediaTile
-          title="Test Movie"
-          imageUrl="https://example.com/poster.jpg"
-          year={2023}
-          quickWiggEnabled={false} // Disable quick wigg to test legacy flow
-          mediaData={{
-            source: 'tmdb-movie',
-            id: '123',
-            title: 'Test Movie',
-            type: 'movie',
-            posterUrl: 'https://example.com/poster.jpg',
-            year: 2023,
-          }}
-        />
-      </MemoryRouter>
+      <MediaTile
+        title="Test Movie"
+        imageUrl="https://example.com/poster.jpg"
+        year={2023}
+        quickWiggEnabled={false} // Disable quick wigg to test legacy flow
+        mediaData={{
+          source: 'tmdb-movie',
+          id: '123',
+          title: 'Test Movie',
+          type: 'movie',
+          posterUrl: 'https://example.com/poster.jpg',
+          year: 2023,
+        }}
+      />,
+      { wrapper: createTestWrapper }
     );
 
     // Find and click the add button
@@ -143,5 +169,52 @@ describe('MediaTile Authentication', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/add-wigg', {
       state: { media: expect.any(Object) },
     });
+  });
+
+  it('should prevent form submission when add button is clicked', async () => {
+    // Mock authenticated state
+    const { useAuth } = await import('@/hooks/useAuth');
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user123', email: 'test@example.com' } as any,
+      session: { user: { id: 'user123' } } as any,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signOut: vi.fn(),
+      cleanupAuthState: vi.fn(),
+    });
+
+    // Create a form with submit handler to test prevention
+    const mockFormSubmit = vi.fn();
+
+    render(
+      <form onSubmit={mockFormSubmit}>
+        <MediaTile
+          title="Test Movie"
+          imageUrl="https://example.com/poster.jpg"
+          year={2023}
+          quickWiggEnabled={true} // Enable quick wigg modal
+          mediaData={{
+            source: 'tmdb-movie',
+            id: '123',
+            title: 'Test Movie',
+            type: 'movie',
+            posterUrl: 'https://example.com/poster.jpg',
+            year: 2023,
+          }}
+        />
+      </form>,
+      { wrapper: createTestWrapper }
+    );
+
+    // Find and click the add button
+    const addButton = screen.getByLabelText('Add WIGG point');
+    fireEvent.click(addButton);
+
+    // Form should NOT be submitted because button has type="button"
+    expect(mockFormSubmit).not.toHaveBeenCalled();
+
+    // Should not navigate to add-wigg page (quick modal should handle it)
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

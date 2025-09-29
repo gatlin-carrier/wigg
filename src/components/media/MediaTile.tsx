@@ -114,6 +114,7 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
     >
       {/* Add WIGG Button */}
       <Button
+        type="button"
         onClick={handleAddWigg}
         onPointerDownCapture={(e) => {
           e.stopPropagation();
