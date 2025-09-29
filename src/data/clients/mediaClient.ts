@@ -43,5 +43,51 @@ export const mediaClient = {
     } catch (error) {
       return handleError(error);
     }
+  },
+
+  getMediaById: async (id: string): Promise<DataLayerResponse<any>> => {
+    try {
+      const { data, error } = await supabase
+        .from('media')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) return handleError(error);
+      return handleSuccess(data);
+    } catch (error) {
+      return handleError(error);
+    }
+  },
+
+  updateMedia: async (id: string, updateData: Partial<CreateMediaParams>): Promise<DataLayerResponse<any>> => {
+    try {
+      const { data, error } = await supabase
+        .from('media')
+        .update(updateData)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) return handleError(error);
+      return handleSuccess(data);
+    } catch (error) {
+      return handleError(error);
+    }
+  },
+
+  deleteMedia: async (id: string): Promise<DataLayerResponse<any>> => {
+    try {
+      const { data, error } = await supabase
+        .from('media')
+        .delete()
+        .eq('id', id)
+        .single();
+
+      if (error) return handleError(error);
+      return handleSuccess(data);
+    } catch (error) {
+      return handleError(error);
+    }
   }
 };

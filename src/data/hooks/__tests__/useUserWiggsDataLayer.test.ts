@@ -3,6 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { useUserWiggsDataLayer } from '../useUserWiggsDataLayer';
+import { wiggPointsClient } from '@/data/clients/wiggPointsClient';
 
 // Mock the data layer client
 vi.mock('@/data/clients/wiggPointsClient', () => ({
@@ -10,16 +11,17 @@ vi.mock('@/data/clients/wiggPointsClient', () => ({
     getUserWiggPoints: vi.fn().mockResolvedValue([
       {
         id: 'test-id-1',
-        mediaId: 'media-123',
-        userId: 'user-456',
-        posValue: 30,
-        posKind: 'percent',
-        reasonShort: 'Test reason',
-        spoilerLevel: 1,
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z'
+        media_id: 'media-123',
+        user_id: 'user-456',
+        pos_value: 30,
+        pos_kind: 'percent',
+        reason_short: 'Test reason',
+        spoiler_level: 1,
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
       }
-    ])
+    ]),
+    createWiggPoint: vi.fn()
   }
 }));
 
@@ -76,5 +78,61 @@ describe('useUserWiggsDataLayer', () => {
     });
     expect(result.current.data).toHaveProperty('t2gEstimatePct');
     expect(result.current.error).toBe(null);
+  });
+
+  it('should calculate T2G estimate from wigg entries', async () => {
+    const wrapper = createWrapper();
+
+    const { result } = renderHook(
+      () => useUserWiggsDataLayer('media-123'),
+      { wrapper }
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Should calculate T2G using analysis functions
+    expect(result.current.data!.t2gEstimatePct).toBe(35); // Default value from pickT2G when no good ratings
+    expect(result.current.data!.t2gConfidence).toBe(0.3); // Default confidence
+  });
+
+  it('should implement addWigg using data layer client', async () => {
+    const mockCreateWiggPoint = vi.fn().mockResolvedValue({
+      id: 'new-wigg-id',
+      media_id: 'media-123',
+      user_id: 'user-456',
+      pos_value: 75,
+      pos_kind: 'percent',
+      reason_short: 'Test note',
+      spoiler_level: 1,
+      created_at: '2024-01-02T00:00:00Z',
+      updated_at: '2024-01-02T00:00:00Z'
+    });
+
+    vi.mocked(wiggPointsClient).createWiggPoint = mockCreateWiggPoint;
+
+    const wrapper = createWrapper();
+
+    const { result } = renderHook(
+      () => useUserWiggsDataLayer('media-123'),
+      { wrapper }
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Should call createWiggPoint with correct parameters
+    await result.current.addWigg(75, 'Test note', 4);
+
+    expect(mockCreateWiggPoint).toHaveBeenCalledWith({
+      media_id: 'media-123',
+      user_id: 'user-456',
+      pos_value: 75,
+      pos_kind: 'percent',
+      reason_short: 'Test note',
+      spoiler_level: 0, // Default spoiler level
+    });
   });
 });

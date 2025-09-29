@@ -1,16 +1,24 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/integrations/supabase/__tests__/config.validation.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/mocks/__tests__/mswInfrastructure.test.ts",
       "tests": [
         {
-          "name": "should throw when required environment variables are missing in production",
-          "fullName": "Supabase config validation > should throw when required environment variables are missing in production",
-          "state": "passed"
+          "name": "should mock user preferences operations",
+          "fullName": "MSW Testing Infrastructure > should mock user preferences operations",
+          "state": "failed",
+          "errors": [
+            {
+              "message": "expected false to be true // Object.is equality",
+              "stack": "AssertionError: expected false to be true // Object.is equality\n    at C:\\Users\\gatli\\Projects\\wigg\\src\\data\\mocks\\__tests__\\mswInfrastructure.test.ts:21:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///C:/Users/gatli/Projects/wigg/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20",
+              "expected": "true",
+              "actual": "false"
+            }
+          ]
         }
       ]
     }
   ],
   "unhandledErrors": [],
-  "reason": "passed"
+  "reason": "failed"
 }

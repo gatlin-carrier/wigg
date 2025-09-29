@@ -48,18 +48,25 @@ export const userPreferencesClient = {
     }
   },
 
-  updateUserPreferences: async (userId: string, updates: UpdateUserPreferencesInput): Promise<UserPreferences> => {
-    const { data, error } = await supabase
-      .from('user_preferences')
-      .upsert({
-        user_id: userId,
-        ...updates
-      })
-      .eq('user_id', userId)
-      .select()
-      .single();
+  updateUserPreferences: async (userId: string, updates: UpdateUserPreferencesInput): Promise<DataLayerResponse<UserPreferences>> => {
+    try {
+      const { data, error } = await supabase
+        .from('user_preferences')
+        .upsert({
+          user_id: userId,
+          ...updates
+        })
+        .eq('user_id', userId)
+        .select()
+        .single();
 
-    if (error) throw error;
-    return data;
+      if (error) {
+        return handleError(error);
+      }
+
+      return withSuccessMetadata(data);
+    } catch (error) {
+      return handleError(error);
+    }
   }
 };

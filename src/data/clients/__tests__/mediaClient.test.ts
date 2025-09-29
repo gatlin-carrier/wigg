@@ -68,7 +68,17 @@ vi.mock('@/integrations/tmdb/client', () => ({
 // Mock Supabase client
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
-    rpc: vi.fn(() => Promise.resolve({ data: 'real-media-id', error: null }))
+    rpc: vi.fn(() => Promise.resolve({ data: 'real-media-id', error: null })),
+    from: vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      single: vi.fn(() => Promise.resolve({
+        data: { id: 'media-123', title: 'Test Media', type: 'movie' },
+        error: null
+      }))
+    }))
   }
 }));
 
@@ -152,5 +162,26 @@ describe('mediaClient', () => {
 
     // Should return real data from Supabase, not hardcoded
     expect(result.data).toBe('real-media-id');
+  });
+
+  it('should get media by ID from database', async () => {
+    const result = await mediaClient.getMediaById('media-123');
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBeDefined();
+  });
+
+  it('should update media in database', async () => {
+    const updateData = { title: 'Updated Movie', year: 2025 };
+    const result = await mediaClient.updateMedia('media-123', updateData);
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBeDefined();
+  });
+
+  it('should delete media from database', async () => {
+    const result = await mediaClient.deleteMedia('media-123');
+
+    expect(result.success).toBe(true);
   });
 });
