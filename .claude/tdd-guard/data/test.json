@@ -22,6 +22,46 @@
           "name": "should allow configurable spoiler level in addWigg",
           "fullName": "useUserWiggsDataLayer > should allow configurable spoiler level in addWigg",
           "state": "passed"
+        },
+        {
+          "name": "should support tags parameter to match RPC add_wigg functionality",
+          "fullName": "useUserWiggsDataLayer > should support tags parameter to match RPC add_wigg functionality",
+          "state": "passed"
+        },
+        {
+          "name": "should invalidate query cache after adding wigg to refresh UI",
+          "fullName": "useUserWiggsDataLayer > should invalidate query cache after adding wigg to refresh UI",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.auth.test.tsx",
+      "tests": [
+        {
+          "name": "should redirect unauthenticated users to auth page when clicking add button",
+          "fullName": "MediaTile Authentication > should redirect unauthenticated users to auth page when clicking add button",
+          "state": "passed"
+        },
+        {
+          "name": "should allow authenticated users to proceed with add wigg flow",
+          "fullName": "MediaTile Authentication > should allow authenticated users to proceed with add wigg flow",
+          "state": "passed"
+        },
+        {
+          "name": "should prevent form submission when add button is clicked",
+          "fullName": "MediaTile Authentication > should prevent form submission when add button is clicked",
+          "state": "passed"
+        },
+        {
+          "name": "should prevent duplicate database calls when data layer is enabled",
+          "fullName": "MediaTile Authentication > should prevent duplicate database calls when data layer is enabled",
+          "state": "passed"
+        },
+        {
+          "name": "should pass tags consistently between legacy and data layer paths",
+          "fullName": "MediaTile Authentication > should pass tags consistently between legacy and data layer paths",
+          "state": "passed"
         }
       ]
     }

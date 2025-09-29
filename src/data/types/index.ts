@@ -8,6 +8,7 @@ export interface WiggPoint {
   pos_kind: string;
   reason_short?: string;
   spoiler_level: number;
+  tags?: string[]; // Optional tags array matching database schema
   created_at: string;
   updated_at: string;
 }

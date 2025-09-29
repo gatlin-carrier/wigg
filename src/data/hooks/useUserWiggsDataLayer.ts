@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { wiggPointsClient } from '@/data/clients/wiggPointsClient';
 import type { WiggPoint } from '@/data/types';
 import { useAuth } from '@/hooks/useAuth';
@@ -26,7 +26,7 @@ interface UseUserWiggsDataLayerResult {
   data: UserWiggsData | null;
   isLoading: boolean;
   error: Error | null;
-  addWigg: (pct: number, note?: string, rating?: number, spoilerLevel?: number) => Promise<void>;
+  addWigg: (pct: number, note?: string, rating?: number, spoilerLevel?: number, tags?: string[]) => Promise<void>;
 }
 
 export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boolean }): UseUserWiggsDataLayerResult {
@@ -53,7 +53,7 @@ export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boo
 
   // Transform WiggPoint[] to UserWiggsData to match useUserWiggs API
   const data = useMemo((): UserWiggsData | null => {
-    if (!query.data) return null;
+    if (query.data === undefined) return null; // Only return null if data is undefined, empty array is valid
 
     const entries: WiggEntry[] = query.data.map(point => ({
       id: point.id,
@@ -80,14 +80,16 @@ export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boo
       : new Error('Failed to fetch user WIGG points')
     : null;
 
-  const addWigg = async (pct: number, note?: string, rating?: number, spoilerLevel?: number): Promise<void> => {
+  const queryClient = useQueryClient();
+
+  const addWigg = async (pct: number, note?: string, rating?: number, spoilerLevel?: number, tags?: string[]): Promise<void> => {
     if (!userId || !mediaId) {
       throw new Error('User ID and media ID are required to add a wigg');
     }
 
     // Note: rating parameter is currently unused but preserved for API compatibility.
     // TODO: Integrate rating into wiggPointsClient.createWiggPoint when backend/API supports it.
-    //       Track progress in issue #1234 (replace with actual ticket/plan).
+    //       No tracking ticket exists yet—create an issue to track this work when ready.
     await wiggPointsClient.createWiggPoint({
       media_id: mediaId,
       user_id: userId,
@@ -95,7 +97,11 @@ export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boo
       pos_kind: 'percent',
       reason_short: note,
       spoiler_level: spoilerLevel ?? 0, // Default spoiler level if not provided
+      tags: tags || [], // Default to empty array if no tags provided
     });
+
+    // Invalidate the query cache to refresh UI with new wigg entry
+    await queryClient.invalidateQueries({ queryKey });
   };
 
   return {

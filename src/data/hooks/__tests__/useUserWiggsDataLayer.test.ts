@@ -137,6 +137,7 @@ describe('useUserWiggsDataLayer', () => {
       pos_kind: 'percent',
       reason_short: 'Test note',
       spoiler_level: 0, // Default spoiler level
+      tags: [], // Default empty tags array
     });
   });
 
@@ -176,6 +177,103 @@ describe('useUserWiggsDataLayer', () => {
       pos_kind: 'percent',
       reason_short: 'Spoiler note',
       spoiler_level: 2, // Custom spoiler level
+      tags: [], // Default empty tags array
+    });
+  });
+
+  it('should support tags parameter to match RPC add_wigg functionality', async () => {
+    const mockCreateWiggPoint = vi.fn().mockResolvedValue({
+      id: 'new-wigg-id',
+      media_id: 'media-123',
+      user_id: 'user-456',
+      pos_value: 75,
+      pos_kind: 'percent',
+      reason_short: 'Tagged note',
+      spoiler_level: 1,
+      tags: ['action', 'reveal', 'rating_4'],
+      created_at: '2024-01-02T00:00:00Z',
+      updated_at: '2024-01-02T00:00:00Z'
+    });
+
+    vi.mocked(wiggPointsClient).createWiggPoint = mockCreateWiggPoint;
+
+    const wrapper = createWrapper();
+
+    const { result } = renderHook(
+      () => useUserWiggsDataLayer('media-123'),
+      { wrapper }
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Should call createWiggPoint with tags to match RPC functionality
+    await result.current.addWigg(75, 'Tagged note', 4, 1, ['action', 'reveal', 'rating_4']);
+
+    expect(mockCreateWiggPoint).toHaveBeenCalledWith({
+      media_id: 'media-123',
+      user_id: 'user-456',
+      pos_value: 75,
+      pos_kind: 'percent',
+      reason_short: 'Tagged note',
+      spoiler_level: 1,
+      tags: ['action', 'reveal', 'rating_4'], // Tags should be passed through
+    });
+  });
+
+  it('should invalidate query cache after adding wigg to refresh UI', async () => {
+    const mockCreateWiggPoint = vi.fn().mockResolvedValue({
+      id: 'new-wigg-id',
+      media_id: 'media-123',
+      user_id: 'user-456',
+      pos_value: 50,
+      pos_kind: 'percent',
+      reason_short: 'Cache test',
+      spoiler_level: 0,
+      tags: [],
+      created_at: '2024-01-02T00:00:00Z',
+      updated_at: '2024-01-02T00:00:00Z'
+    });
+
+    vi.mocked(wiggPointsClient).createWiggPoint = mockCreateWiggPoint;
+
+    // Create wrapper with mock queryClient to verify invalidation is called
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+    const mockInvalidateQueries = vi.spyOn(queryClient, 'invalidateQueries');
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      React.createElement(QueryClientProvider, { client: queryClient }, children)
+    );
+
+    const { result } = renderHook(
+      () => useUserWiggsDataLayer('media-123'),
+      { wrapper }
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    await result.current.addWigg(50, 'Cache test');
+
+    // Verify that both database operation and cache invalidation occurred
+    expect(mockCreateWiggPoint).toHaveBeenCalledWith({
+      media_id: 'media-123',
+      user_id: 'user-456',
+      pos_value: 50,
+      pos_kind: 'percent',
+      reason_short: 'Cache test',
+      spoiler_level: 0,
+      tags: [],
+    });
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['data-layer', 'user-wiggs', 'user-456', 'media-123']
     });
   });
 });

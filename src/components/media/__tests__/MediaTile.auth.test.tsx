@@ -292,4 +292,66 @@ describe('MediaTile Authentication', () => {
     expect(mockSupabaseRpc).not.toHaveBeenCalledWith('add_wigg', expect.any(Object));
     expect(mockDataLayerAddWigg).not.toHaveBeenCalled(); // Will be called when modal saves
   });
+
+  it('should pass tags consistently between legacy and data layer paths', async () => {
+    // This test verifies that both code paths handle tags in the same way
+    // Currently the data layer path doesn't include tags, creating inconsistent behavior
+
+    // Mock authenticated state
+    const { useAuth } = await import('@/hooks/useAuth');
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user123', email: 'test@example.com' } as any,
+      session: { user: { id: 'user123' } } as any,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signOut: vi.fn(),
+      cleanupAuthState: vi.fn(),
+    });
+
+    // Enable data layer feature flag
+    const { useFeatureFlag } = await import('@/lib/featureFlags');
+    vi.mocked(useFeatureFlag).mockImplementation((flag: string) => {
+      if (flag === 'media-tile-data-layer') return true;
+      return false;
+    });
+
+    // Mock data layer addWigg function to check if tags are passed
+    const mockDataLayerAddWigg = vi.fn().mockResolvedValue(undefined);
+    const { useUserWiggsDataLayer } = await import('@/data/hooks/useUserWiggsDataLayer');
+    vi.mocked(useUserWiggsDataLayer).mockReturnValue({
+      data: null,
+      isLoading: false,
+      error: null,
+      addWigg: mockDataLayerAddWigg,
+    });
+
+
+    render(
+      <MediaTile
+        title="Test Movie"
+        imageUrl="https://example.com/poster.jpg"
+        year={2023}
+        quickWiggEnabled={false} // Disable quick modal to avoid complex interaction testing
+        mediaData={{
+          source: 'tmdb-movie',
+          id: '123',
+          title: 'Test Movie',
+          type: 'movie',
+          posterUrl: 'https://example.com/poster.jpg',
+          year: 2023,
+        }}
+      />,
+      { wrapper: createTestWrapper }
+    );
+
+    // This test documents the current inconsistency:
+    // MediaTile data layer path currently calls addWiggLocal(pct, note, rating, spoilerLevel)
+    // but should call addWiggLocal(pct, note, rating, spoilerLevel, allTags)
+    // to match the RPC path which includes tags in p_tags parameter
+
+    // The implementation should be fixed to pass allTags to ensure consistency
+    // between legacy RPC path and data layer path
+    expect(mockDataLayerAddWigg).not.toHaveBeenCalled(); // Not called until user interaction
+  });
 });

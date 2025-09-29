@@ -313,7 +313,7 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
             if (useNewDataLayer) {
               // Data layer handles everything including spoiler level and tags
               // This prevents duplicate insertions since addWiggLocal now uses wiggPointsClient.createWiggPoint
-              await addWiggLocal?.(pct, res.note, res.rating, parseInt(p_spoiler));
+              await addWiggLocal?.(pct, res.note, res.rating, parseInt(p_spoiler), allTags);
             } else {
               // Legacy path: RPC + local state update
               const { error: addErr } = await supabase.rpc('add_wigg', {
