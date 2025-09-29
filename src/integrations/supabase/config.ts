@@ -58,22 +58,38 @@ const computeConfig = (): SupabaseConfig => {
   const url = selectValue(
     usePreview ? previewUrl : standardUrl,
     usePreview ? standardUrl : previewUrl
-  ) ?? DEFAULT_SUPABASE_URL;
+  );
 
   const key = selectValue(
     usePreview ? previewKey : standardKey,
     usePreview ? standardKey : previewKey
-  ) ?? anonKey ?? DEFAULT_SUPABASE_ANON_KEY;
+  ) ?? anonKey;
 
-  const source: SupabaseConfig['source'] = url === DEFAULT_SUPABASE_URL || key === DEFAULT_SUPABASE_ANON_KEY
+  // Validation: Fail fast when required env vars are missing in production
+  const isProduction = env.NODE_ENV === 'production' || env.VITE_VERCEL_ENV === 'production';
+  const isTestEnv = env.NODE_ENV === 'test';
+
+  if (!url || !key) {
+    if (isProduction) {
+      throw new Error('Missing required Supabase environment variables: VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY must be set in production');
+    }
+    if (!isTestEnv) {
+      console.warn('Missing Supabase environment variables, falling back to test defaults. This should only happen in development.');
+    }
+  }
+
+  const finalUrl = url ?? DEFAULT_SUPABASE_URL;
+  const finalKey = key ?? DEFAULT_SUPABASE_ANON_KEY;
+
+  const source: SupabaseConfig['source'] = finalUrl === DEFAULT_SUPABASE_URL || finalKey === DEFAULT_SUPABASE_ANON_KEY
     ? 'fallback'
     : usePreview && previewUrl
       ? 'preview'
       : 'standard';
 
   return {
-    url,
-    anonKey: key,
+    url: finalUrl,
+    anonKey: finalKey,
     isPreview: source === 'preview',
     source,
   };
