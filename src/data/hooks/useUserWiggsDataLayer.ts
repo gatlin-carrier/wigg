@@ -85,6 +85,8 @@ export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boo
       throw new Error('User ID and media ID are required to add a wigg');
     }
 
+    // Note: rating parameter is currently unused but preserved for API compatibility
+    // and future enhancement when rating integration is implemented
     await wiggPointsClient.createWiggPoint({
       media_id: mediaId,
       user_id: userId,

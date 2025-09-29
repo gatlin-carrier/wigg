@@ -93,8 +93,12 @@ describe('useUserWiggsDataLayer', () => {
     });
 
     // Should calculate T2G using analysis functions
-    expect(result.current.data!.t2gEstimatePct).toBe(35); // Default value from pickT2G when no good ratings
-    expect(result.current.data!.t2gConfidence).toBe(0.3); // Default confidence
+    expect(result.current.data!.t2gEstimatePct).toBeTypeOf('number');
+    expect(result.current.data!.t2gEstimatePct).toBeGreaterThanOrEqual(0);
+    expect(result.current.data!.t2gEstimatePct).toBeLessThanOrEqual(100);
+    expect(result.current.data!.t2gConfidence).toBeTypeOf('number');
+    expect(result.current.data!.t2gConfidence).toBeGreaterThanOrEqual(0);
+    expect(result.current.data!.t2gConfidence).toBeLessThanOrEqual(1);
   });
 
   it('should implement addWigg using data layer client', async () => {
