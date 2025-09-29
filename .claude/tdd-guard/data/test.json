@@ -1,24 +1,71 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/mocks/__tests__/mswInfrastructure.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/clients/__tests__/mediaClient.test.ts",
       "tests": [
         {
-          "name": "should mock user preferences operations",
-          "fullName": "MSW Testing Infrastructure > should mock user preferences operations",
-          "state": "failed",
-          "errors": [
-            {
-              "message": "expected false to be true // Object.is equality",
-              "stack": "AssertionError: expected false to be true // Object.is equality\n    at C:\\Users\\gatli\\Projects\\wigg\\src\\data\\mocks\\__tests__\\mswInfrastructure.test.ts:21:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///C:/Users/gatli/Projects/wigg/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20",
-              "expected": "true",
-              "actual": "false"
-            }
-          ]
+          "name": "should search for movies",
+          "fullName": "mediaClient > should search for movies",
+          "state": "passed"
+        },
+        {
+          "name": "should search for movies with page parameter",
+          "fullName": "mediaClient > should search for movies with page parameter",
+          "state": "passed"
+        },
+        {
+          "name": "should perform multi-search across content types",
+          "fullName": "mediaClient > should perform multi-search across content types",
+          "state": "passed"
+        },
+        {
+          "name": "should get detailed movie information",
+          "fullName": "mediaClient > should get detailed movie information",
+          "state": "passed"
+        },
+        {
+          "name": "should get detailed TV show information",
+          "fullName": "mediaClient > should get detailed TV show information",
+          "state": "passed"
+        },
+        {
+          "name": "should get trending movies",
+          "fullName": "mediaClient > should get trending movies",
+          "state": "passed"
+        },
+        {
+          "name": "should create media entry in Supabase following data layer pattern",
+          "fullName": "mediaClient > should create media entry in Supabase following data layer pattern",
+          "state": "passed"
+        },
+        {
+          "name": "should use Supabase RPC for createMedia instead of hardcoded response",
+          "fullName": "mediaClient > should use Supabase RPC for createMedia instead of hardcoded response",
+          "state": "passed"
+        },
+        {
+          "name": "should get media by ID from database",
+          "fullName": "mediaClient > should get media by ID from database",
+          "state": "passed"
+        },
+        {
+          "name": "should update media in database",
+          "fullName": "mediaClient > should update media in database",
+          "state": "passed"
+        },
+        {
+          "name": "should delete media from database",
+          "fullName": "mediaClient > should delete media from database",
+          "state": "passed"
+        },
+        {
+          "name": "should succeed with DELETE operations without requiring .single()",
+          "fullName": "mediaClient > should succeed with DELETE operations without requiring .single()",
+          "state": "passed"
         }
       ]
     }
   ],
   "unhandledErrors": [],
-  "reason": "failed"
+  "reason": "passed"
 }

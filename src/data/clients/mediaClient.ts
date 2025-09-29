@@ -81,8 +81,7 @@ export const mediaClient = {
       const { data, error } = await supabase
         .from('media')
         .delete()
-        .eq('id', id)
-        .single();
+        .eq('id', id);
 
       if (error) return handleError(error);
       return handleSuccess(data);

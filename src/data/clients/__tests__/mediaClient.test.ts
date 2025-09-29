@@ -184,4 +184,30 @@ describe('mediaClient', () => {
 
     expect(result.success).toBe(true);
   });
+
+  it('should succeed with DELETE operations without requiring .single()', async () => {
+    // Mock Supabase to simulate what DELETE operations actually return
+    const { supabase } = await import('@/integrations/supabase/client');
+
+    const mockDelete = vi.fn().mockReturnThis();
+    const mockEq = vi.fn(() => Promise.resolve({
+      data: null, // DELETE without .single() returns null/undefined data, which is fine
+      error: null
+    }));
+
+    vi.mocked(supabase.from).mockReturnValue({
+      delete: mockDelete,
+      eq: mockEq,
+      single: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis()
+    } as any);
+
+    const result = await mediaClient.deleteMedia('media-123');
+
+    // This should succeed even without .single() because DELETE operations
+    // don't need to return specific data - success is not throwing an error
+    expect(result.success).toBe(true);
+    expect(mockDelete).toHaveBeenCalled();
+  });
 });
