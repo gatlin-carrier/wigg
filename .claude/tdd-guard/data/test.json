@@ -1,11 +1,11 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useTitleMetrics.real-data.test.ts",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useLazyTitleProgress.visibility.test.tsx",
       "tests": [
         {
-          "name": "should return real metrics data from title_metrics table",
-          "fullName": "useTitleMetrics with real data > should return real metrics data from title_metrics table",
+          "name": "should pass enabled: isVisible to useTitleProgress instead of hard-coded false",
+          "fullName": "useLazyTitleProgress visibility integration > should pass enabled: isVisible to useTitleProgress instead of hard-coded false",
           "state": "passed"
         }
       ]

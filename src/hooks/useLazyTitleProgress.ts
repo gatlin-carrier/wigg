@@ -4,7 +4,7 @@ import { useTitleProgress } from './useTitleProgress';
 export function useLazyTitleProgress(titleKey: string) {
   const [isVisible, setIsVisible] = useState(false);
   const elementRef = useRef<HTMLElement | null>(null);
-  const progressData = useTitleProgress(titleKey, { enabled: false });
+  const progressData = useTitleProgress(titleKey, { enabled: isVisible });
 
   useEffect(() => {
     if (!elementRef.current) return;
