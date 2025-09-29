@@ -5,11 +5,27 @@ import type { WiggPoint } from '@/data/types';
 import { useAuth } from '@/hooks/useAuth';
 
 // Fix for MediaTile.tsx line 63: useUserWiggsDataLayer(titleKey, { enabled: useNewDataLayer })
+// CRITICAL: Must match useUserWiggs API shape to prevent coexistence pattern failures
+
+export interface WiggEntry {
+  id: string;
+  pct: number;
+  note?: string;
+  createdAt: string;
+  rating?: number;
+}
+
+export interface UserWiggsData {
+  entries: WiggEntry[];
+  t2gEstimatePct?: number;
+  t2gConfidence?: number;
+}
 
 interface UseUserWiggsDataLayerResult {
-  data: WiggPoint[];
+  data: UserWiggsData | null;
   isLoading: boolean;
   error: Error | null;
+  addWigg: (pct: number, note?: string, rating?: number) => Promise<void>;
 }
 
 export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boolean }): UseUserWiggsDataLayerResult {
@@ -34,16 +50,40 @@ export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boo
     }
   });
 
-  const data = query.data ?? [];
+  // Transform WiggPoint[] to UserWiggsData to match useUserWiggs API
+  const data = useMemo((): UserWiggsData | null => {
+    if (!query.data) return null;
+
+    const entries: WiggEntry[] = query.data.map(point => ({
+      id: point.id,
+      pct: point.posValue,
+      note: point.reasonShort || undefined,
+      rating: undefined, // TODO: Map from point data if available
+      createdAt: point.createdAt
+    }));
+
+    return {
+      entries,
+      t2gEstimatePct: undefined, // TODO: Calculate T2G estimate
+      t2gConfidence: undefined,
+    };
+  }, [query.data]);
+
   const error = query.error
     ? query.error instanceof Error
       ? query.error
       : new Error('Failed to fetch user WIGG points')
     : null;
 
+  const addWigg = async (pct: number, note?: string, rating?: number): Promise<void> => {
+    // TODO: Implement using data layer services
+    throw new Error('addWigg not implemented in data layer yet');
+  };
+
   return {
     data,
     isLoading: query.isLoading || query.isPending,
     error,
+    addWigg,
   };
 }

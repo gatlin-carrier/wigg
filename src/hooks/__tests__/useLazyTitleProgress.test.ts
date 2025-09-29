@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useLazyTitleProgress } from '../useLazyTitleProgress';
 
 // Mock useTitleProgress
@@ -38,11 +38,20 @@ describe('useLazyTitleProgress', () => {
     const { result } = renderHook(() => useLazyTitleProgress('test-title-id'));
 
     expect(result.current).toHaveProperty('elementRef');
-    expect(typeof result.current.elementRef).toBe('object');
+    expect(typeof result.current.elementRef).toBe('function');
   });
 
-  it('should set up intersection observer in useEffect', () => {
-    renderHook(() => useLazyTitleProgress('test-title-id'));
+  it('should set up intersection observer when element is provided', () => {
+    const { result } = renderHook(() => useLazyTitleProgress('test-title-id'));
+
+    // Initially no observer should be set up
+    expect(mockIntersectionObserver).not.toHaveBeenCalled();
+
+    // Provide an element
+    const mockElement = document.createElement('div');
+    act(() => {
+      result.current.elementRef(mockElement);
+    });
 
     expect(mockIntersectionObserver).toHaveBeenCalledWith(
       expect.any(Function),

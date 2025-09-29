@@ -10,14 +10,14 @@ vi.mock('@/data/clients/wiggPointsClient', () => ({
     getUserWiggPoints: vi.fn().mockResolvedValue([
       {
         id: 'test-id-1',
-        media_id: 'media-123',
-        user_id: 'user-456',
-        pos_value: 30,
-        pos_kind: 'percent',
-        reason_short: 'Test reason',
-        spoiler_level: 1,
-        created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-01T00:00:00Z'
+        mediaId: 'media-123',
+        userId: 'user-456',
+        posValue: 30,
+        posKind: 'percent',
+        reasonShort: 'Test reason',
+        spoilerLevel: 1,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z'
       }
     ])
   }
@@ -64,19 +64,17 @@ describe('useUserWiggsDataLayer', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    // Should have fetched data using the client
-    expect(result.current.data).toHaveLength(1);
-    expect(result.current.data[0]).toEqual({
+    // Should have fetched data using the client and transformed to useUserWiggs-compatible format
+    expect(result.current.data).toBeDefined();
+    expect(result.current.data!.entries).toHaveLength(1);
+    expect(result.current.data!.entries[0]).toEqual({
       id: 'test-id-1',
-      media_id: 'media-123',
-      user_id: 'user-456',
-      pos_value: 30,
-      pos_kind: 'percent',
-      reason_short: 'Test reason',
-      spoiler_level: 1,
-      created_at: '2024-01-01T00:00:00Z',
-      updated_at: '2024-01-01T00:00:00Z'
+      pct: 30,
+      note: 'Test reason',
+      rating: undefined,
+      createdAt: '2024-01-01T00:00:00Z'
     });
+    expect(result.current.data).toHaveProperty('t2gEstimatePct');
     expect(result.current.error).toBe(null);
   });
 });

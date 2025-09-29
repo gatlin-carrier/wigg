@@ -14,28 +14,39 @@ vi.mock('../useTitleProgress', () => ({
 // Mock IntersectionObserver
 const mockObserve = vi.fn();
 const mockDisconnect = vi.fn();
-const mockIntersectionObserver = vi.fn().mockReturnValue({
+const mockIntersectionObserver = vi.fn();
+mockIntersectionObserver.mockReturnValue({
   observe: mockObserve,
   unobserve: vi.fn(),
   disconnect: mockDisconnect,
 });
 (window as any).IntersectionObserver = mockIntersectionObserver;
 
-describe('useLazyTitleProgress functional behavior', () => {
+describe('useLazyTitleProgress dependencies', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should observe element when elementRef is set', () => {
+  it('should set up intersection observer when elementRef is assigned', () => {
     const { result } = renderHook(() => useLazyTitleProgress('test-title-id'));
 
-    // Simulate setting the ref to an element using the callback
+    // Initially, observer should not be called because element is null
+    expect(mockIntersectionObserver).not.toHaveBeenCalled();
+
+    // Simulate assigning a DOM element to elementRef
     const mockElement = document.createElement('div');
     act(() => {
       result.current.elementRef(mockElement);
     });
 
-    // Should have called observe on the element
+    // Now the observer should be set up
+    expect(mockIntersectionObserver).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({
+        rootMargin: '50px',
+        threshold: 0.1
+      })
+    );
     expect(mockObserve).toHaveBeenCalledWith(mockElement);
   });
 });

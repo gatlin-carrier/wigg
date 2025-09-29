@@ -1,11 +1,86 @@
 {
   "testModules": [
     {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/hooks/__tests__/useWiggLikesDataLayer.test.ts",
+      "tests": [
+        {
+          "name": "should accept enabled options parameter to prevent duplicate API calls",
+          "fullName": "useWiggLikesDataLayer > should accept enabled options parameter to prevent duplicate API calls",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useLazyTitleProgress.test.ts",
+      "tests": [
+        {
+          "name": "should not fetch title progress data until component is visible",
+          "fullName": "useLazyTitleProgress > should not fetch title progress data until component is visible",
+          "state": "passed"
+        },
+        {
+          "name": "should return elementRef for intersection observer setup",
+          "fullName": "useLazyTitleProgress > should return elementRef for intersection observer setup",
+          "state": "passed"
+        },
+        {
+          "name": "should set up intersection observer when element is provided",
+          "fullName": "useLazyTitleProgress > should set up intersection observer when element is provided",
+          "state": "passed"
+        },
+        {
+          "name": "should return isVisible state",
+          "fullName": "useLazyTitleProgress > should return isVisible state",
+          "state": "passed"
+        }
+      ]
+    },
+    {
       "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useLazyTitleProgress.visibility.test.tsx",
       "tests": [
         {
           "name": "should pass enabled: isVisible to useTitleProgress instead of hard-coded false",
           "fullName": "useLazyTitleProgress visibility integration > should pass enabled: isVisible to useTitleProgress instead of hard-coded false",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useLazyTitleProgress.functional.test.ts",
+      "tests": [
+        {
+          "name": "should observe element when elementRef is set",
+          "fullName": "useLazyTitleProgress functional behavior > should observe element when elementRef is set",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/hooks/__tests__/useLazyTitleProgress.dependencies.test.ts",
+      "tests": [
+        {
+          "name": "should set up intersection observer when elementRef is assigned",
+          "fullName": "useLazyTitleProgress dependencies > should set up intersection observer when elementRef is assigned",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/hooks/__tests__/useUserWiggsDataLayer.test.ts",
+      "tests": [
+        {
+          "name": "should use data layer client instead of direct Supabase calls",
+          "fullName": "useUserWiggsDataLayer > should use data layer client instead of direct Supabase calls",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/hooks/__tests__/useUserWiggsDataLayer.api.test.tsx",
+      "tests": [
+        {
+          "name": "should have same API shape as useUserWiggs for MediaTile coexistence",
+          "fullName": "useUserWiggsDataLayer API compatibility > should have same API shape as useUserWiggs for MediaTile coexistence",
           "state": "passed"
         }
       ]
