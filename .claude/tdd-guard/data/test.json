@@ -1,26 +1,26 @@
 {
   "testModules": [
     {
-      "moduleId": "C:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.auth.test.tsx",
+      "moduleId": "C:/Users/gatli/Projects/wigg/src/data/hooks/__tests__/useUserWiggsDataLayer.test.ts",
       "tests": [
         {
-          "name": "should redirect unauthenticated users to auth page when clicking add button",
-          "fullName": "MediaTile Authentication > should redirect unauthenticated users to auth page when clicking add button",
+          "name": "should use data layer client instead of direct Supabase calls",
+          "fullName": "useUserWiggsDataLayer > should use data layer client instead of direct Supabase calls",
           "state": "passed"
         },
         {
-          "name": "should allow authenticated users to proceed with add wigg flow",
-          "fullName": "MediaTile Authentication > should allow authenticated users to proceed with add wigg flow",
+          "name": "should calculate T2G estimate from wigg entries",
+          "fullName": "useUserWiggsDataLayer > should calculate T2G estimate from wigg entries",
           "state": "passed"
         },
         {
-          "name": "should prevent form submission when add button is clicked",
-          "fullName": "MediaTile Authentication > should prevent form submission when add button is clicked",
+          "name": "should implement addWigg using data layer client",
+          "fullName": "useUserWiggsDataLayer > should implement addWigg using data layer client",
           "state": "passed"
         },
         {
-          "name": "should prevent duplicate database calls when data layer is enabled",
-          "fullName": "MediaTile Authentication > should prevent duplicate database calls when data layer is enabled",
+          "name": "should allow configurable spoiler level in addWigg",
+          "fullName": "useUserWiggsDataLayer > should allow configurable spoiler level in addWigg",
           "state": "passed"
         }
       ]
