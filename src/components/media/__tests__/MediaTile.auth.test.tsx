@@ -144,4 +144,50 @@ describe('MediaTile Authentication', () => {
       state: { media: expect.any(Object) },
     });
   });
+
+  it('should open quick wigg modal without submitting surrounding forms', async () => {
+    const { useAuth } = await import('@/hooks/useAuth');
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user123', email: 'test@example.com' } as any,
+      session: { user: { id: 'user123' } } as any,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signOut: vi.fn(),
+      cleanupAuthState: vi.fn(),
+    });
+
+    const handleSubmit = vi.fn();
+
+    render(
+      <MemoryRouter>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleSubmit();
+          }}
+        >
+          <MediaTile
+            title="Test Movie"
+            imageUrl="https://example.com/poster.jpg"
+            year={2023}
+            mediaData={{
+              source: 'tmdb-movie',
+              id: '123',
+              title: 'Test Movie',
+              type: 'movie',
+              posterUrl: 'https://example.com/poster.jpg',
+              year: 2023,
+            }}
+          />
+        </form>
+      </MemoryRouter>
+    );
+
+    const addButton = screen.getByLabelText('Add WIGG point');
+    fireEvent.click(addButton);
+
+    await screen.findByText('Quick Wigg — Test Movie');
+    expect(handleSubmit).not.toHaveBeenCalled();
+  });
 });
