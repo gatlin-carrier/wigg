@@ -135,4 +135,43 @@ describe('useUserWiggsDataLayer', () => {
       spoiler_level: 0, // Default spoiler level
     });
   });
+
+  it('should allow configurable spoiler level in addWigg', async () => {
+    const mockCreateWiggPoint = vi.fn().mockResolvedValue({
+      id: 'new-wigg-id',
+      media_id: 'media-123',
+      user_id: 'user-456',
+      pos_value: 60,
+      pos_kind: 'percent',
+      reason_short: 'Spoiler note',
+      spoiler_level: 2,
+      created_at: '2024-01-02T00:00:00Z',
+      updated_at: '2024-01-02T00:00:00Z'
+    });
+
+    vi.mocked(wiggPointsClient).createWiggPoint = mockCreateWiggPoint;
+
+    const wrapper = createWrapper();
+
+    const { result } = renderHook(
+      () => useUserWiggsDataLayer('media-123'),
+      { wrapper }
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Should call createWiggPoint with custom spoiler level
+    await result.current.addWigg(60, 'Spoiler note', 4, 2);
+
+    expect(mockCreateWiggPoint).toHaveBeenCalledWith({
+      media_id: 'media-123',
+      user_id: 'user-456',
+      pos_value: 60,
+      pos_kind: 'percent',
+      reason_short: 'Spoiler note',
+      spoiler_level: 2, // Custom spoiler level
+    });
+  });
 });

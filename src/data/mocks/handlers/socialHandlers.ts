@@ -11,8 +11,7 @@ export const socialHandlers = [
   }),
 
   // Catch-all handler for debugging
-  http.all('https://test.supabase.co/*', ({ request }) => {
-    console.log('MSW intercepted request:', request.method, request.url);
+  http.all('https://test.supabase.co/*', () => {
     return HttpResponse.json({ error: 'No handler found' }, { status: 404 });
   }),
 ];

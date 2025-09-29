@@ -26,7 +26,7 @@ interface UseUserWiggsDataLayerResult {
   data: UserWiggsData | null;
   isLoading: boolean;
   error: Error | null;
-  addWigg: (pct: number, note?: string, rating?: number) => Promise<void>;
+  addWigg: (pct: number, note?: string, rating?: number, spoilerLevel?: number) => Promise<void>;
 }
 
 export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boolean }): UseUserWiggsDataLayerResult {
@@ -80,7 +80,7 @@ export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boo
       : new Error('Failed to fetch user WIGG points')
     : null;
 
-  const addWigg = async (pct: number, note?: string, rating?: number): Promise<void> => {
+  const addWigg = async (pct: number, note?: string, rating?: number, spoilerLevel?: number): Promise<void> => {
     if (!userId || !mediaId) {
       throw new Error('User ID and media ID are required to add a wigg');
     }
@@ -91,7 +91,7 @@ export function useUserWiggsDataLayer(mediaId: string, options?: { enabled?: boo
       pos_value: pct,
       pos_kind: 'percent',
       reason_short: note,
-      spoiler_level: 0, // Default spoiler level
+      spoiler_level: spoilerLevel ?? 0, // Default spoiler level if not provided
     });
   };
 

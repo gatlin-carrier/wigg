@@ -4,7 +4,6 @@ export const userPreferencesHandlers = [
   // Get user preferences (.single() returns single object)
   http.get('https://test.supabase.co/rest/v1/user_preferences', ({ request }) => {
     const url = new URL(request.url);
-    console.log('MSW intercepted user_preferences request:', request.url);
 
     // Supabase uses eq filter format: ?user_id=eq.value
     const userIdFilter = url.searchParams.get('user_id');
