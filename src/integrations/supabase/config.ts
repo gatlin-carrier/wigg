@@ -41,8 +41,8 @@ const isPreviewHostname = () => {
 };
 
 const selectValue = (primary?: string, fallback?: string) => {
-  if (primary && String(primary).length > 0) return primary;
-  if (fallback && String(fallback).length > 0) return fallback;
+  if (primary?.length > 0) return primary;
+  if (fallback?.length > 0) return fallback;
   return undefined;
 };
 
