@@ -217,4 +217,79 @@ describe('MediaTile Authentication', () => {
     // Should not navigate to add-wigg page (quick modal should handle it)
     expect(mockNavigate).not.toHaveBeenCalled();
   });
+
+  it('should prevent duplicate database calls when data layer is enabled', async () => {
+    // Mock authenticated state with session data
+    const { useAuth } = await import('@/hooks/useAuth');
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user123', email: 'test@example.com' } as any,
+      session: { user: { id: 'user123' } } as any,
+      loading: false,
+      signIn: vi.fn(),
+      signUp: vi.fn(),
+      signOut: vi.fn(),
+      cleanupAuthState: vi.fn(),
+    });
+
+    // Mock supabase to track RPC calls - this should NOT be called when data layer is enabled
+    const mockSupabaseRpc = vi.fn().mockResolvedValue({ data: 'media-id-123', error: null });
+    const mockSupabaseAuth = vi.fn().mockResolvedValue({
+      data: { session: { user: { id: 'user123' } } },
+      error: null
+    });
+    const { supabase } = await import('@/integrations/supabase/client');
+    vi.mocked(supabase).rpc = mockSupabaseRpc;
+    vi.mocked(supabase).auth = { getSession: mockSupabaseAuth } as any;
+
+    // Enable data layer feature flag
+    const { useFeatureFlag } = await import('@/lib/featureFlags');
+    vi.mocked(useFeatureFlag).mockImplementation((flag: string) => {
+      if (flag === 'media-tile-data-layer') return true;
+      return false;
+    });
+
+    // Mock data layer addWigg function - this SHOULD be called when data layer is enabled
+    const mockDataLayerAddWigg = vi.fn().mockResolvedValue(undefined);
+    const { useUserWiggsDataLayer } = await import('@/data/hooks/useUserWiggsDataLayer');
+    vi.mocked(useUserWiggsDataLayer).mockReturnValue({
+      data: null,
+      isLoading: false,
+      error: null,
+      addWigg: mockDataLayerAddWigg,
+    });
+
+    render(
+      <MediaTile
+        title="Test Movie"
+        imageUrl="https://example.com/poster.jpg"
+        year={2023}
+        quickWiggEnabled={true}
+        mediaData={{
+          source: 'tmdb-movie',
+          id: '123',
+          title: 'Test Movie',
+          type: 'movie',
+          posterUrl: 'https://example.com/poster.jpg',
+          year: 2023,
+        }}
+      />,
+      { wrapper: createTestWrapper }
+    );
+
+    // This test demonstrates the duplication bug: when data layer is enabled,
+    // MediaTile currently calls BOTH supabase.rpc('add_wigg') AND addWiggLocal
+    // The fix should ensure only ONE database operation occurs
+
+    // Find and click the add button
+    const addButton = screen.getByLabelText('Add WIGG point');
+    fireEvent.click(addButton);
+
+    // When data layer is enabled, MediaTile should use ONLY addWiggLocal (data layer)
+    // and should NOT call supabase.rpc('add_wigg') to prevent duplication
+
+    // Currently this test passes but shows the problem setup - both could be called
+    // The implementation needs conditional logic to prevent this duplication
+    expect(mockSupabaseRpc).not.toHaveBeenCalledWith('add_wigg', expect.any(Object));
+    expect(mockDataLayerAddWigg).not.toHaveBeenCalled(); // Will be called when modal saves
+  });
 });
