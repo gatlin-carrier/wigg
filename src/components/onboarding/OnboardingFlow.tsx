@@ -147,7 +147,7 @@ export function OnboardingFlow() {
   const overlay = (
     <div className="fixed inset-0 z-[220] pointer-events-none">
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
-      <div className="absolute inset-0 flex items-end md:items-center justify-center md:justify-end lg:justify-center p-4 md:p-8 pointer-events-none">
+      <div className="absolute inset-0 flex items-center justify-center md:justify-end lg:justify-center p-4 md:p-8 pointer-events-none">
         <div className="pointer-events-auto w-full max-w-lg rounded-3xl border border-border/60 bg-card/95 shadow-2xl shadow-primary/10 backdrop-blur px-6 py-6 md:px-8 md:py-7 space-y-6 animate-in fade-in slide-in-from-bottom-6 md:slide-in-from-right-6" role="dialog" aria-modal="true" aria-labelledby={headingId}>
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">

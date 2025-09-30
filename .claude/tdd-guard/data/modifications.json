@@ -1,0 +1,11 @@
+{
+  "session_id": "02364f40-8f08-4b72-b4dc-1a455176e935",
+  "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\c--Users-gatli-Projects-wigg\\02364f40-8f08-4b72-b4dc-1a455176e935.jsonl",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\main.tsx",
+    "old_string": "      <ThemeProvider attribute=\"class\" defaultTheme=\"system\" enableSystem storageKey=\"wigg-theme\">\n        <AuthProvider>\n          <Sentry.ErrorBoundary fallback={<div>Something went wrong</div>}>\n            {isDevelopment && <ErrorButton />}\n            <App />\n          </Sentry.ErrorBoundary>\n          <Toaster />\n        </AuthProvider>\n      </ThemeProvider>",
+    "new_string": "      <ThemeProvider attribute=\"class\" defaultTheme=\"system\" enableSystem storageKey=\"wigg-theme\">\n        <AuthProvider>\n          <Sentry.ErrorBoundary fallback={<div>Something went wrong</div>}>\n            <App />\n          </Sentry.ErrorBoundary>\n          <Toaster />\n        </AuthProvider>\n      </ThemeProvider>"
+  }
+}
