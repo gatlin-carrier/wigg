@@ -271,6 +271,17 @@ function AddWiggContent() {
     } satisfies MediaSearchResult;
   }, [location.state]);
 
+  // Define handleMediaSelect before useEffects that depend on it (prevents ReferenceError)
+  const handleMediaSelect = React.useCallback(async (media: MediaSearchResult) => {
+    try {
+      const mediaId = await saveMediaToDatabase(media);
+      const updatedMedia = { ...media, id: mediaId };
+      setSelectedMedia(updatedMedia);
+      resetSession();
+    } catch (error) {
+      console.error("Failed to save media:", error);
+    }
+  }, [resetSession, saveMediaToDatabase, setSelectedMedia]);
 
   useEffect(() => {
     // Check if media was passed from MediaDetails or other entry points
@@ -294,17 +305,6 @@ function AddWiggContent() {
       setProgress(focusOrdinal);
     }
   }, [location, units, setProgress]);
-
-  const handleMediaSelect = React.useCallback(async (media: MediaSearchResult) => {
-    try {
-      const mediaId = await saveMediaToDatabase(media);
-      const updatedMedia = { ...media, id: mediaId };
-      setSelectedMedia(updatedMedia);
-      resetSession();
-    } catch (error) {
-      console.error("Failed to save media:", error);
-    }
-  }, [resetSession, saveMediaToDatabase, setSelectedMedia]);
 
   const handleSeasonVolumeSelect = (seasonNumber?: number, volumeNumber?: number, episodeData?: { id: string, title: string, number: number }) => {
     setSelectedSeason(seasonNumber);
