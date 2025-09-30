@@ -135,6 +135,8 @@ export default function GlobalHeader() {
                     src="/favicon.png"
                     alt="WIGG Logo"
                     className="w-full h-full rounded-full object-cover"
+                    width="32"
+                    height="32"
                   />
                 </button>
               )}
