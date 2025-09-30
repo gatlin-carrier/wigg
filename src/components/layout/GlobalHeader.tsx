@@ -137,6 +137,7 @@ export default function GlobalHeader() {
                     className="w-full h-full rounded-full object-cover"
                     width="32"
                     height="32"
+                    decoding="async"
                   />
                 </button>
               )}

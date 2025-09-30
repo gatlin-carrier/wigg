@@ -191,8 +191,8 @@ export function OnboardingFlow() {
   const overlay = (
     <div className="fixed inset-0 z-[220] pointer-events-none">
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" aria-hidden="true" />
-      {/* Modal positioning: vertical center on all sizes, horizontal: center on mobile/desktop, right on tablets for optimal UX across devices */}
-      <div className="absolute inset-0 flex items-center justify-center md:justify-end lg:justify-center p-4 md:p-8 pointer-events-none">
+      {/* Modal positioning: vertical and horizontal center on all device sizes for consistent UX */}
+      <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8 pointer-events-none">
         <div
           ref={dialogRef}
           className="pointer-events-auto w-full max-w-lg rounded-3xl border border-border/60 bg-card/95 shadow-2xl shadow-primary/10 backdrop-blur px-6 py-6 md:px-8 md:py-7 space-y-6 animate-in fade-in slide-in-from-bottom-6 md:slide-in-from-right-6"

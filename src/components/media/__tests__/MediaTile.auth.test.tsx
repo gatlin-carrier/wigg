@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MediaTile } from '../MediaTile';
 
 // Mock the useAuth hook
@@ -15,6 +16,10 @@ vi.mock('@/hooks/useTitleProgress', () => ({
 
 vi.mock('@/hooks/useUserWiggs', () => ({
   useUserWiggs: vi.fn(() => ({ data: null, addWigg: vi.fn() })),
+}));
+
+vi.mock('@/data/hooks/useUserWiggsDataLayer', () => ({
+  useUserWiggsDataLayer: vi.fn(() => ({ data: null, addWigg: vi.fn() })),
 }));
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -55,8 +60,16 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 describe('MediaTile Authentication', () => {
+  let queryClient: QueryClient;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
   });
 
   it('should redirect unauthenticated users to auth page when clicking add button', async () => {
@@ -73,21 +86,23 @@ describe('MediaTile Authentication', () => {
     });
 
     render(
-      <MemoryRouter>
-        <MediaTile
-          title="Test Movie"
-          imageUrl="https://example.com/poster.jpg"
-          year={2023}
-          mediaData={{
-            source: 'tmdb-movie',
-            id: '123',
-            title: 'Test Movie',
-            type: 'movie',
-            posterUrl: 'https://example.com/poster.jpg',
-            year: 2023,
-          }}
-        />
-      </MemoryRouter>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <MediaTile
+            title="Test Movie"
+            imageUrl="https://example.com/poster.jpg"
+            year={2023}
+            mediaData={{
+              source: 'tmdb-movie',
+              id: '123',
+              title: 'Test Movie',
+              type: 'movie',
+              posterUrl: 'https://example.com/poster.jpg',
+              year: 2023,
+            }}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>
     );
 
     // Find and click the add button
@@ -117,22 +132,24 @@ describe('MediaTile Authentication', () => {
     });
 
     render(
-      <MemoryRouter>
-        <MediaTile
-          title="Test Movie"
-          imageUrl="https://example.com/poster.jpg"
-          year={2023}
-          quickWiggEnabled={false} // Disable quick wigg to test legacy flow
-          mediaData={{
-            source: 'tmdb-movie',
-            id: '123',
-            title: 'Test Movie',
-            type: 'movie',
-            posterUrl: 'https://example.com/poster.jpg',
-            year: 2023,
-          }}
-        />
-      </MemoryRouter>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <MediaTile
+            title="Test Movie"
+            imageUrl="https://example.com/poster.jpg"
+            year={2023}
+            quickWiggEnabled={false} // Disable quick wigg to test legacy flow
+            mediaData={{
+              source: 'tmdb-movie',
+              id: '123',
+              title: 'Test Movie',
+              type: 'movie',
+              posterUrl: 'https://example.com/poster.jpg',
+              year: 2023,
+            }}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>
     );
 
     // Find and click the add button
@@ -160,28 +177,30 @@ describe('MediaTile Authentication', () => {
     const handleSubmit = vi.fn();
 
     render(
-      <MemoryRouter>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            handleSubmit();
-          }}
-        >
-          <MediaTile
-            title="Test Movie"
-            imageUrl="https://example.com/poster.jpg"
-            year={2023}
-            mediaData={{
-              source: 'tmdb-movie',
-              id: '123',
-              title: 'Test Movie',
-              type: 'movie',
-              posterUrl: 'https://example.com/poster.jpg',
-              year: 2023,
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              handleSubmit();
             }}
-          />
-        </form>
-      </MemoryRouter>
+          >
+            <MediaTile
+              title="Test Movie"
+              imageUrl="https://example.com/poster.jpg"
+              year={2023}
+              mediaData={{
+                source: 'tmdb-movie',
+                id: '123',
+                title: 'Test Movie',
+                type: 'movie',
+                posterUrl: 'https://example.com/poster.jpg',
+                year: 2023,
+              }}
+            />
+          </form>
+        </MemoryRouter>
+      </QueryClientProvider>
     );
 
     const addButton = screen.getByLabelText('Add WIGG point');
