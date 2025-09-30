@@ -111,6 +111,7 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
         className
       )}
       onClick={onClick}
+      style={{ contain: 'layout' }}
     >
       {/* Add WIGG Button */}
       <Button

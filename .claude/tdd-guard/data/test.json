@@ -1,0 +1,84 @@
+{
+  "testModules": [
+    {
+      "moduleId": "c:/Users/gatli/Projects/wigg/src/components/onboarding/__tests__/OnboardingFlow.test.tsx",
+      "tests": [
+        {
+          "name": "renders the welcome step by default",
+          "fullName": "OnboardingFlow > renders the welcome step by default",
+          "state": "passed"
+        },
+        {
+          "name": "advances to the next step when Next is clicked",
+          "fullName": "OnboardingFlow > advances to the next step when Next is clicked",
+          "state": "passed"
+        },
+        {
+          "name": "closes when Skip is clicked",
+          "fullName": "OnboardingFlow > closes when Skip is clicked",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "c:/Users/gatli/Projects/wigg/src/components/onboarding/__tests__/OnboardingFlow.behavior.test.tsx",
+      "tests": [
+        {
+          "name": "shows the welcome step by default",
+          "fullName": "OnboardingFlow behaviour > shows the welcome step by default",
+          "state": "passed"
+        },
+        {
+          "name": "advances to the next step when Next is clicked",
+          "fullName": "OnboardingFlow behaviour > advances to the next step when Next is clicked",
+          "state": "passed"
+        },
+        {
+          "name": "closes when Escape is pressed",
+          "fullName": "OnboardingFlow behaviour > closes when Escape is pressed",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "c:/Users/gatli/Projects/wigg/src/components/media/__tests__/MediaTile.auth.test.tsx",
+      "tests": [
+        {
+          "name": "should redirect unauthenticated users to auth page when clicking add button",
+          "fullName": "MediaTile Authentication > should redirect unauthenticated users to auth page when clicking add button",
+          "state": "failed",
+          "errors": [
+            {
+              "message": "No QueryClient set, use QueryClientProvider to set one",
+              "stack": "Error: No QueryClient set, use QueryClientProvider to set one\n    at useQueryClient (file:///c:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/QueryClientProvider.tsx:18:11)\n    at useBaseQuery (file:///c:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/useBaseQuery.ts:54:18)\n    at Module.useQuery (file:///c:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/useQuery.ts:51:10)\n    at Module.useUserWiggsDataLayer (c:\\Users\\gatli\\Projects\\wigg\\src\\data\\hooks\\useUserWiggsDataLayer.ts:43:17)\n    at MediaTile (c:\\Users\\gatli\\Projects\\wigg\\src\\components\\media\\MediaTile.tsx:61:24)\n    at renderWithHooks (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)"
+            }
+          ]
+        },
+        {
+          "name": "should allow authenticated users to proceed with add wigg flow",
+          "fullName": "MediaTile Authentication > should allow authenticated users to proceed with add wigg flow",
+          "state": "failed",
+          "errors": [
+            {
+              "message": "No QueryClient set, use QueryClientProvider to set one",
+              "stack": "Error: No QueryClient set, use QueryClientProvider to set one\n    at useQueryClient (file:///c:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/QueryClientProvider.tsx:18:11)\n    at useBaseQuery (file:///c:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/useBaseQuery.ts:54:18)\n    at Module.useQuery (file:///c:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/useQuery.ts:51:10)\n    at Module.useUserWiggsDataLayer (c:\\Users\\gatli\\Projects\\wigg\\src\\data\\hooks\\useUserWiggsDataLayer.ts:43:17)\n    at MediaTile (c:\\Users\\gatli\\Projects\\wigg\\src\\components\\media\\MediaTile.tsx:61:24)\n    at renderWithHooks (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)"
+            }
+          ]
+        },
+        {
+          "name": "should open quick wigg modal without submitting surrounding forms",
+          "fullName": "MediaTile Authentication > should open quick wigg modal without submitting surrounding forms",
+          "state": "failed",
+          "errors": [
+            {
+              "message": "No QueryClient set, use QueryClientProvider to set one",
+              "stack": "Error: No QueryClient set, use QueryClientProvider to set one\n    at useQueryClient (file:///c:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/QueryClientProvider.tsx:18:11)\n    at useBaseQuery (file:///c:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/useBaseQuery.ts:54:18)\n    at Module.useQuery (file:///c:/Users/gatli/Projects/wigg/node_modules/@tanstack/react-query/src/useQuery.ts:51:10)\n    at Module.useUserWiggsDataLayer (c:\\Users\\gatli\\Projects\\wigg\\src\\data\\hooks\\useUserWiggsDataLayer.ts:43:17)\n    at MediaTile (c:\\Users\\gatli\\Projects\\wigg\\src\\components\\media\\MediaTile.tsx:61:24)\n    at renderWithHooks (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (c:\\Users\\gatli\\Projects\\wigg\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unhandledErrors": [],
+  "reason": "failed"
+}

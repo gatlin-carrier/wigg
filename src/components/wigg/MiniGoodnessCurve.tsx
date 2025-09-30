@@ -41,20 +41,24 @@ export function MiniGoodnessCurve({
   gridLineDash = '3 3',
 }: MiniGoodnessCurveProps) {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
-  const [width, setWidth] = React.useState<number>(0);
+  const [width, setWidth] = React.useState<number>(300); // Start with default to prevent CLS
   const chartMargin = minimal ? 0 : 4;
 
   React.useEffect(() => {
     if (!containerRef.current || typeof ResizeObserver === 'undefined') {
       return;
     }
+    // Set initial width immediately to prevent layout shift
+    setWidth(containerRef.current.clientWidth);
+
     const observer = new ResizeObserver((entries) => {
       if (!entries.length) return;
       const entry = entries[0];
-      setWidth(entry.contentRect.width);
+      const newWidth = entry.contentRect.width;
+      // Only update if width changed to prevent unnecessary re-renders
+      setWidth(prev => Math.abs(prev - newWidth) > 1 ? newWidth : prev);
     });
     observer.observe(containerRef.current);
-    setWidth(containerRef.current.clientWidth);
     return () => observer.disconnect();
   }, []);
 

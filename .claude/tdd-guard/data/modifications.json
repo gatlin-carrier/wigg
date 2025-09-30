@@ -4,8 +4,8 @@
   "hook_event_name": "PreToolUse",
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\main.tsx",
-    "old_string": "      <ThemeProvider attribute=\"class\" defaultTheme=\"system\" enableSystem storageKey=\"wigg-theme\">\n        <AuthProvider>\n          <Sentry.ErrorBoundary fallback={<div>Something went wrong</div>}>\n            {isDevelopment && <ErrorButton />}\n            <App />\n          </Sentry.ErrorBoundary>\n          <Toaster />\n        </AuthProvider>\n      </ThemeProvider>",
-    "new_string": "      <ThemeProvider attribute=\"class\" defaultTheme=\"system\" enableSystem storageKey=\"wigg-theme\">\n        <AuthProvider>\n          <Sentry.ErrorBoundary fallback={<div>Something went wrong</div>}>\n            <App />\n          </Sentry.ErrorBoundary>\n          <Toaster />\n        </AuthProvider>\n      </ThemeProvider>"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\onboarding\\OnboardingFlow.tsx",
+    "old_string": "  const overlay = (\n    <div className=\"fixed inset-0 z-[220] pointer-events-none\">\n      <div className=\"absolute inset-0 bg-background/80 backdrop-blur-sm\" aria-hidden=\"true\" />\n      <div className=\"absolute inset-0 flex items-center justify-center md:justify-end lg:justify-center p-4 md:p-8 pointer-events-none\">",
+    "new_string": "  const overlay = (\n    <div className=\"fixed inset-0 z-[220] pointer-events-none\">\n      <div className=\"absolute inset-0 bg-background/80 backdrop-blur-sm\" aria-hidden=\"true\" />\n      {/* Modal positioning: vertical center on all sizes, horizontal: center on mobile/desktop, right on tablets for optimal UX across devices */}\n      <div className=\"absolute inset-0 flex items-center justify-center md:justify-end lg:justify-center p-4 md:p-8 pointer-events-none\">"
   }
 }
