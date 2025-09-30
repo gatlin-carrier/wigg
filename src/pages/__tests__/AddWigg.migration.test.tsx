@@ -30,4 +30,29 @@ describe('AddWigg Migration', () => {
     expect(addWiggContent).toContain('useFeatureFlag');
     expect(addWiggContent).toContain('add-wigg-data-layer');
   });
+
+  it('should define handleMediaSelect before useEffect that depends on it (prevents ReferenceError)', async () => {
+    // Regression test for P0 issue: handleMediaSelect must be defined before any useEffect that references it
+    const fs = await import('fs');
+    const path = await import('path');
+
+    const addWiggPath = path.resolve(__dirname, '../AddWigg.tsx');
+    const addWiggContent = fs.readFileSync(addWiggPath, 'utf-8');
+
+    // Find the position of handleMediaSelect definition
+    const handleMediaSelectMatch = addWiggContent.match(/const handleMediaSelect = React\.useCallback/);
+    expect(handleMediaSelectMatch, 'handleMediaSelect should be defined with React.useCallback').toBeTruthy();
+
+    const handleMediaSelectPos = handleMediaSelectMatch!.index!;
+
+    // Find the position of useEffect that uses handleMediaSelect
+    const useEffectPattern = /useEffect\(\(\) => \{[^}]*handleMediaSelect\(passedMedia\)/;
+    const useEffectMatch = addWiggContent.match(useEffectPattern);
+    expect(useEffectMatch, 'useEffect that calls handleMediaSelect should exist').toBeTruthy();
+
+    const useEffectPos = useEffectMatch!.index!;
+
+    // handleMediaSelect must be defined BEFORE the useEffect that uses it
+    expect(handleMediaSelectPos).toBeLessThan(useEffectPos);
+  });
 });
