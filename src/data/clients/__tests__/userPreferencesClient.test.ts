@@ -54,14 +54,15 @@ describe('userPreferencesClient', () => {
   });
 
   it('should update user preferences', async () => {
-    const updatedPreferences = await userPreferencesClient.updateUserPreferences('user-123', {
+    const result = await userPreferencesClient.updateUserPreferences('user-123', {
       spoiler_sensitivity: 2,
       trusted_users: ['user-456', 'user-789']
     });
 
-    expect(updatedPreferences.user_id).toBe('user-123');
-    expect(updatedPreferences.spoiler_sensitivity).toBe(2);
-    expect(updatedPreferences.trusted_users).toEqual(['user-456', 'user-789']);
+    expect(result.success).toBe(true);
+    expect(result.data.user_id).toBe('user-123');
+    expect(result.data.spoiler_sensitivity).toBe(2);
+    expect(result.data.trusted_users).toEqual(['user-456', 'user-789']);
   });
 
   it('should follow DataLayerResponse pattern for getUserPreferences', async () => {
@@ -71,5 +72,15 @@ describe('userPreferencesClient', () => {
     expect(result.success).toBe(true);
     expect(result.data.user_id).toBe('user-123');
     expect(result.data.spoiler_sensitivity).toBe(1);
+  });
+
+  it('should follow DataLayerResponse pattern for updateUserPreferences', async () => {
+    const result = await userPreferencesClient.updateUserPreferences('user-123', {
+      spoiler_sensitivity: 2
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.data.user_id).toBe('user-123');
+    expect(result.data.spoiler_sensitivity).toBe(2);
   });
 });

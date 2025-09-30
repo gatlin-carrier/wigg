@@ -114,6 +114,7 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
     >
       {/* Add WIGG Button */}
       <Button
+        type="button"
         onClick={handleAddWigg}
         onPointerDownCapture={(e) => {
           e.stopPropagation();
@@ -309,22 +310,29 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
               ].filter(Boolean) as string[])
             );
 
-            const { error: addErr } = await supabase.rpc('add_wigg', {
-              p_media_id: mediaId as string,
-              p_episode_id: null as any,
-              p_user_id: userId,
-              p_pos_kind: 'percent',
-              p_pos_value: pct,
-              p_span_start: null,
-              p_span_end: null,
-              p_tags: allTags,
-              p_reason_short: (res.note || '').slice(0, 140) || null,
-              p_spoiler,
-            } as any);
+            if (useNewDataLayer) {
+              // Data layer handles everything including spoiler level and tags
+              // This prevents duplicate insertions since addWiggLocal now uses wiggPointsClient.createWiggPoint
+              await addWiggLocal?.(pct, res.note, res.rating, parseInt(p_spoiler), allTags);
+            } else {
+              // Legacy path: RPC + local state update
+              const { error: addErr } = await supabase.rpc('add_wigg', {
+                p_media_id: mediaId as string,
+                p_episode_id: null as any,
+                p_user_id: userId,
+                p_pos_kind: 'percent',
+                p_pos_value: pct,
+                p_span_start: null,
+                p_span_end: null,
+                p_tags: allTags,
+                p_reason_short: (res.note || '').slice(0, 140) || null,
+                p_spoiler,
+              } as any);
 
-            if (addErr) throw addErr;
-            // Update local UI approximation
-            try { await addWiggLocal?.(pct, res.note, res.rating); } catch {}
+              if (addErr) throw addErr;
+              // Update local UI approximation
+              try { await addWiggLocal?.(pct, res.note, res.rating); } catch {}
+            }
             toast({ title: 'Saved', description: 'Your Wigg has been added.' });
           } catch (err) {
             console.error('Quick add failed', err);
