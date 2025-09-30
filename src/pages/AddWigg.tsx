@@ -260,13 +260,13 @@ function AddWiggContent() {
       year: parseYear(candidate.year),
       coverImage: typeof candidate.coverImage === 'string'
         ? candidate.coverImage
-        : typeof (candidate as any).posterUrl === 'string'
-          ? (candidate as any).posterUrl
+        : typeof candidate.posterUrl === 'string'
+          ? candidate.posterUrl
           : undefined,
       description: typeof candidate.description === 'string' ? candidate.description : undefined,
       episodeCount: typeof candidate.episodeCount === 'number' ? candidate.episodeCount : undefined,
       chapterCount: typeof candidate.chapterCount === 'number' ? candidate.chapterCount : undefined,
-      duration: ensureDurationSeconds(candidate.duration, (candidate as any).runtime),
+      duration: ensureDurationSeconds(candidate.duration, typeof candidate.runtime === 'number' ? candidate.runtime : undefined),
       externalIds: sanitizeExternalIds(candidate.externalIds, source, idRaw, candidate.title),
     } satisfies MediaSearchResult;
   }, [location.state]);
