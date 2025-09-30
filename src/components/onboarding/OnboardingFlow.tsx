@@ -235,9 +235,9 @@ export function OnboardingFlow() {
                 className="h-full bg-primary transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
                 role="progressbar"
-                aria-valuemin={1}
+                aria-valuemin={0}
                 aria-valuemax={STEPS.length}
-                aria-valuenow={clampedIndex + 1}
+                aria-valuenow={clampedIndex}
                 aria-valuetext={`Step ${clampedIndex + 1} of ${STEPS.length}`}
               />
             </div>
