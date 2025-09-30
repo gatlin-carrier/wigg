@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { useOnboarding } from '@/contexts/OnboardingContext';
@@ -70,7 +70,7 @@ const STEPS: OnboardingStep[] = [
 ];
 
 export function OnboardingFlow() {
-  const { isActive, step, setStep, skip, complete} = useOnboarding();
+  const { isActive, step, setStep, skip, complete } = useOnboarding();
 
   const clampedIndex = useMemo(() => {
     if (Number.isNaN(step)) return 0;
@@ -78,6 +78,8 @@ export function OnboardingFlow() {
   }, [step]);
 
   const activeStep = STEPS[clampedIndex];
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const previouslyFocusedElement = useRef<HTMLElement | null>(null);
 
   const handleNext = useCallback(() => {
     if (clampedIndex >= STEPS.length - 1 || activeStep?.final) {
@@ -99,6 +101,9 @@ export function OnboardingFlow() {
     if (!isActive) return;
     if (typeof window === 'undefined') return;
     const keyHandler = (event: KeyboardEvent) => {
+      if (!dialogRef.current) {
+        return;
+      }
       if (event.key === 'Escape') {
         skip();
       }
@@ -107,6 +112,25 @@ export function OnboardingFlow() {
       }
       if (event.key === 'ArrowLeft') {
         handleBack();
+      }
+      if (event.key === 'Tab') {
+        const focusableElements = dialogRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length === 0) {
+          return;
+        }
+        const first = focusableElements[0];
+        const last = focusableElements[focusableElements.length - 1];
+        if (event.shiftKey) {
+          if (document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          }
+        } else if (document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
     window.addEventListener('keydown', keyHandler);
@@ -136,6 +160,24 @@ export function OnboardingFlow() {
     };
   }, [isActive]);
 
+  useEffect(() => {
+    if (typeof document === 'undefined' || typeof window === 'undefined') return;
+    if (!isActive) {
+      if (previouslyFocusedElement.current && previouslyFocusedElement.current.isConnected) {
+        previouslyFocusedElement.current.focus();
+      }
+      previouslyFocusedElement.current = null;
+      return;
+    }
+    previouslyFocusedElement.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const frame = window.requestAnimationFrame(() => {
+      dialogRef.current?.focus();
+    });
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, [isActive]);
+
   if (!isActive || !activeStep) {
     return null;
   }
@@ -143,15 +185,29 @@ export function OnboardingFlow() {
   const progressPercent = ((clampedIndex + 1) / STEPS.length) * 100;
   const Icon = activeStep.icon;
   const headingId = `onboarding-step-${activeStep.id}`;
+  const descriptionId = `${headingId}-description`;
+  const liveRegionId = `${headingId}-live`;
 
   const overlay = (
     <div className="fixed inset-0 z-[220] pointer-events-none">
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
-      <div className="absolute inset-0 flex items-end md:items-center justify-center md:justify-end lg:justify-center p-4 md:p-8 pointer-events-none">
-        <div className="pointer-events-auto w-full max-w-lg rounded-3xl border border-border/60 bg-card/95 shadow-2xl shadow-primary/10 backdrop-blur px-6 py-6 md:px-8 md:py-7 space-y-6 animate-in fade-in slide-in-from-bottom-6 md:slide-in-from-right-6" role="dialog" aria-modal="true" aria-labelledby={headingId}>
+      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" aria-hidden="true" />
+      {/* Modal positioning: vertical and horizontal center on all device sizes for consistent UX */}
+      <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8 pointer-events-none">
+        <div
+          ref={dialogRef}
+          className="pointer-events-auto w-full max-w-lg rounded-3xl border border-border/60 bg-card/95 shadow-2xl shadow-primary/10 backdrop-blur px-6 py-6 md:px-8 md:py-7 space-y-6 animate-in fade-in slide-in-from-bottom-6 md:slide-in-from-right-6"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={headingId}
+          aria-describedby={`${descriptionId} ${liveRegionId}`.trim()}
+          tabIndex={-1}
+        >
+          <p id={liveRegionId} className="sr-only" aria-live="polite">
+            Step {clampedIndex + 1} of {STEPS.length}: {activeStep.title}
+          </p>
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <Icon className="h-6 w-6" />
+              <Icon className="h-6 w-6" aria-hidden />
             </span>
             <div>
               <p className="text-xs uppercase tracking-wide text-muted-foreground">Step {clampedIndex + 1} of {STEPS.length}</p>
@@ -159,7 +215,7 @@ export function OnboardingFlow() {
             </div>
           </div>
 
-          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+          <p id={descriptionId} className="text-sm md:text-base text-muted-foreground leading-relaxed">
             {activeStep.description}
           </p>
 
@@ -175,17 +231,22 @@ export function OnboardingFlow() {
           )}
 
           <div className="space-y-3">
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-hidden="true">
               <div
                 className="h-full bg-primary transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={STEPS.length}
+                aria-valuenow={clampedIndex}
+                aria-valuetext={`Step ${clampedIndex + 1} of ${STEPS.length}`}
               />
             </div>
             <div className="flex items-center justify-between gap-3">
               <Button variant="ghost" size="sm" onClick={skip} className="text-muted-foreground" data-testid="onboarding-skip">
                 Skip tour
               </Button>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2" aria-hidden="true">
                 {STEPS.map((stepDef, idx) => (
                   <span
                     key={stepDef.id}
@@ -214,6 +275,3 @@ export function OnboardingFlow() {
 }
 
 export default OnboardingFlow;
-
-
-
