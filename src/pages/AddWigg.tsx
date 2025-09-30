@@ -245,13 +245,18 @@ function AddWiggContent() {
     const idRaw = candidate.id;
     const source = candidate.source;
     const title = typeof candidate.title === 'string' && candidate.title.trim() ? candidate.title : 'Untitled';
+    // Helper to generate a structured fallback media ID
+    function generateFallbackMediaId(src: unknown): string {
+      let sanitized = typeof src === 'string' && src.trim()
+        ? src.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '')
+        : 'unknown';
+      return `media-fallback:${sanitized}`;
+    }
     const normalizedId = typeof idRaw === 'string'
       ? idRaw
       : typeof idRaw === 'number'
         ? String(idRaw)
-        : source
-          ? `${source}:unknown`
-          : 'media:unknown';
+        : generateFallbackMediaId(source);
 
     return {
       id: normalizedId,
