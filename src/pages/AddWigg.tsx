@@ -223,20 +223,48 @@ function AddWiggContent() {
 
       const sourceStr = typeof source === 'string' ? source : undefined;
       const numericId = typeof idValue === 'number' ? idValue : Number(idValue);
-      if (sourceStr?.startsWith('tmdb') && result.tmdb_id === undefined && !Number.isNaN(numericId)) {
-        result.tmdb_id = numericId;
-      }
-      if (sourceStr && sourceStr.startsWith('anilist') && result.anilist_id === undefined && !Number.isNaN(numericId)) {
-        result.anilist_id = numericId;
-      }
-      if (sourceStr === 'openlibrary' && result.openlibrary_id === undefined && idValue) {
-        result.openlibrary_id = String(idValue);
-      }
-      if (sourceStr === 'podcastindex' && result.podcast_guid === undefined && idValue) {
-        result.podcast_guid = String(idValue);
-      }
-      if (sourceStr === 'game' && result.search_title === undefined && typeof titleValue === 'string' && titleValue.trim()) {
-        result.search_title = titleValue;
+      // Configuration object mapping source string/prefix to external ID key and assignment logic
+      const sourceMappings: {
+        match: (src: string | undefined) => boolean,
+        key: keyof NonNullable<MediaSearchResult['externalIds']>,
+        assign: () => unknown
+      }[] = [
+        {
+          match: src => src?.startsWith('tmdb') ?? false,
+          key: 'tmdb_id',
+          assign: () => !Number.isNaN(numericId) ? numericId : undefined
+        },
+        {
+          match: src => src?.startsWith('anilist') ?? false,
+          key: 'anilist_id',
+          assign: () => !Number.isNaN(numericId) ? numericId : undefined
+        },
+        {
+          match: src => src === 'openlibrary',
+          key: 'openlibrary_id',
+          assign: () => idValue ? String(idValue) : undefined
+        },
+        {
+          match: src => src === 'podcastindex',
+          key: 'podcast_guid',
+          assign: () => idValue ? String(idValue) : undefined
+        },
+        {
+          match: src => src === 'game',
+          key: 'search_title',
+          assign: () => typeof titleValue === 'string' && titleValue.trim() ? titleValue : undefined
+        }
+      ];
+      for (const mapping of sourceMappings) {
+        if (
+          mapping.match(sourceStr) &&
+          result[mapping.key] === undefined
+        ) {
+          const val = mapping.assign();
+          if (val !== undefined) {
+            result[mapping.key] = val;
+          }
+        }
       }
 
       return Object.keys(result).length ? result : undefined;
