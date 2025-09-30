@@ -152,24 +152,132 @@ function AddWiggContent() {
     const idx = Math.round(pos * segCount - 0.5);
     return Math.max(0, Math.min(segCount - 1, idx));
   }, [units, computedSegmentCount, progress]);
-  
+
+  const passedMedia = React.useMemo(() => {
+    const state = location.state as { media?: unknown } | null | undefined;
+    const candidate = state?.media as Record<string, unknown> | undefined;
+    if (!candidate) return undefined;
+
+    const normalizeType = (rawType?: unknown, source?: unknown): MediaType => {
+      const value = String(rawType ?? source ?? '').toLowerCase();
+      if (value.includes('anime')) return 'anime';
+      if (value.includes('manga')) return 'manga';
+      if (value.includes('webtoon')) return 'webtoon';
+      if (value.includes('tv')) return 'tv';
+      if (value.includes('podcast')) return 'podcast';
+      if (value.includes('book')) return 'book';
+      if (value.includes('game')) return 'game';
+      return 'movie';
+    };
+
+    const parseYear = (value: unknown): number | undefined => {
+      if (typeof value === 'number' && Number.isFinite(value)) return value;
+      if (typeof value === 'string') {
+        const parsed = Number.parseInt(value, 10);
+        return Number.isNaN(parsed) ? undefined : parsed;
+      }
+      return undefined;
+    };
+
+    const ensureDurationSeconds = (duration: unknown, runtime: unknown): number | undefined => {
+      if (typeof duration === 'number' && Number.isFinite(duration)) return duration;
+      if (typeof duration === 'string') {
+        const parsed = Number(duration);
+        if (!Number.isNaN(parsed)) return parsed;
+      }
+      if (typeof runtime === 'number' && Number.isFinite(runtime)) {
+        return Math.round(runtime * 60);
+      }
+      return undefined;
+    };
+
+    const sanitizeExternalIds = (rawExternalIds: unknown, source: unknown, idValue: unknown, titleValue: unknown) => {
+      const result: NonNullable<MediaSearchResult['externalIds']> = {};
+
+      if (rawExternalIds && typeof rawExternalIds === 'object') {
+        for (const [key, value] of Object.entries(rawExternalIds as Record<string, unknown>)) {
+          if (value === null || value === undefined) continue;
+          switch (key) {
+            case 'tmdb_id':
+            case 'anilist_id': {
+              const numeric = typeof value === 'number' ? value : Number(value);
+              if (!Number.isNaN(numeric)) {
+                result[key] = numeric;
+              }
+              break;
+            }
+            case 'openlibrary_id':
+            case 'podcast_guid':
+            case 'mangadx_id':
+            case 'search_title': {
+              if (typeof value === 'string' && value.trim()) {
+                result[key] = value;
+              }
+              break;
+            }
+            default:
+              break;
+          }
+        }
+      }
+
+      const sourceStr = typeof source === 'string' ? source : undefined;
+      const numericId = typeof idValue === 'number' ? idValue : Number(idValue);
+      if (sourceStr?.startsWith('tmdb') && result.tmdb_id === undefined && !Number.isNaN(numericId)) {
+        result.tmdb_id = numericId;
+      }
+      if (sourceStr && sourceStr.startsWith('anilist') && result.anilist_id === undefined && !Number.isNaN(numericId)) {
+        result.anilist_id = numericId;
+      }
+      if (sourceStr === 'openlibrary' && result.openlibrary_id === undefined && idValue) {
+        result.openlibrary_id = String(idValue);
+      }
+      if (sourceStr === 'podcastindex' && result.podcast_guid === undefined && idValue) {
+        result.podcast_guid = String(idValue);
+      }
+      if (sourceStr === 'game' && result.search_title === undefined && typeof titleValue === 'string' && titleValue.trim()) {
+        result.search_title = titleValue;
+      }
+
+      return Object.keys(result).length ? result : undefined;
+    };
+
+    const idRaw = candidate.id;
+    const source = candidate.source;
+    const title = typeof candidate.title === 'string' && candidate.title.trim() ? candidate.title : 'Untitled';
+    const normalizedId = typeof idRaw === 'string'
+      ? idRaw
+      : typeof idRaw === 'number'
+        ? String(idRaw)
+        : source
+          ? `${source}:unknown`
+          : 'media:unknown';
+
+    return {
+      id: normalizedId,
+      title,
+      type: normalizeType(candidate.type, source),
+      year: parseYear(candidate.year),
+      coverImage: typeof candidate.coverImage === 'string'
+        ? candidate.coverImage
+        : typeof (candidate as any).posterUrl === 'string'
+          ? (candidate as any).posterUrl
+          : undefined,
+      description: typeof candidate.description === 'string' ? candidate.description : undefined,
+      episodeCount: typeof candidate.episodeCount === 'number' ? candidate.episodeCount : undefined,
+      chapterCount: typeof candidate.chapterCount === 'number' ? candidate.chapterCount : undefined,
+      duration: ensureDurationSeconds(candidate.duration, (candidate as any).runtime),
+      externalIds: sanitizeExternalIds(candidate.externalIds, source, idRaw, candidate.title),
+    } satisfies MediaSearchResult;
+  }, [location.state]);
+
 
   useEffect(() => {
-    // Check if media was passed from MediaDetails page
-    const passedMedia = location.state?.media;
+    // Check if media was passed from MediaDetails or other entry points
     if (passedMedia && !selectedMedia) {
-      const mediaSearchResult: MediaSearchResult = {
-        id: passedMedia.id,
-        title: passedMedia.title,
-        type: passedMedia.type as MediaType,
-        year: passedMedia.year,
-        coverImage: passedMedia.posterUrl,
-        externalIds: { tmdb_id: passedMedia.id }
-      };
-      // Save media to database to get the proper UUID
-      handleMediaSelect(mediaSearchResult);
+      handleMediaSelect(passedMedia);
     }
-  }, [location.state, selectedMedia, setSelectedMedia]);
+  }, [handleMediaSelect, passedMedia, selectedMedia]);
 
   useEffect(() => {
     if (selectedMedia && apiUnits.length > 0) {
@@ -187,7 +295,7 @@ function AddWiggContent() {
     }
   }, [location, units, setProgress]);
 
-  const handleMediaSelect = async (media: MediaSearchResult) => {
+  const handleMediaSelect = React.useCallback(async (media: MediaSearchResult) => {
     try {
       const mediaId = await saveMediaToDatabase(media);
       const updatedMedia = { ...media, id: mediaId };
@@ -196,7 +304,7 @@ function AddWiggContent() {
     } catch (error) {
       console.error("Failed to save media:", error);
     }
-  };
+  }, [resetSession, saveMediaToDatabase, setSelectedMedia]);
 
   const handleSeasonVolumeSelect = (seasonNumber?: number, volumeNumber?: number, episodeData?: { id: string, title: string, number: number }) => {
     setSelectedSeason(seasonNumber);
