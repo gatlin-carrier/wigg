@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 import { searchPodcasts, detectPodcastIntent, fetchTrendingPodcasts } from './client';
 
 function toMarket(locale: string): string {
@@ -6,12 +6,15 @@ function toMarket(locale: string): string {
   return (parts[1] || 'US').toUpperCase();
 }
 
-export function useTrendingPodcasts(max = 24) {
+type QueryOptions<TData> = Omit<UseQueryOptions<TData, unknown, TData>, 'queryKey' | 'queryFn'>;
+
+export function useTrendingPodcasts(max = 24, options?: QueryOptions<any>) {
   return useQuery({
     queryKey: ['podcasts', 'trending', max],
     queryFn: async () => fetchTrendingPodcasts(max),
     staleTime: 1000 * 60 * 10,
     retry: false,
+    ...options,
   });
 }
 

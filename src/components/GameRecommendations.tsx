@@ -13,7 +13,7 @@ interface GameRecommendationsProps {
 }
 
 export const GameRecommendations = ({ onAddGame }: GameRecommendationsProps) => {
-  const { data: games = [], isFetching, isError, error, refetch } = usePopularGames();
+  const { data: games = [], isFetching, isError, error, refetch } = usePopularGames({ suspense: true });
   const navigate = useNavigate();
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,

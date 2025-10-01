@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function PodcastTrending({ onAdd }: Props) {
-  const { data, isFetching, isError, error } = useTrendingPodcasts(24);
+  const { data, isFetching, isError, error } = useTrendingPodcasts(24, { suspense: true });
   const items = (data?.feeds || []) as Array<{ id: number; title: string; author?: string; image?: string }>;
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start', slidesToScroll: 1, dragFree: true });
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
