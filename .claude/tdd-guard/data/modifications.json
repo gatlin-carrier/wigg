@@ -1,11 +1,10 @@
 {
-  "session_id": "02364f40-8f08-4b72-b4dc-1a455176e935",
-  "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\c--Users-gatli-Projects-wigg\\02364f40-8f08-4b72-b4dc-1a455176e935.jsonl",
+  "session_id": "9abd0f08-bbd1-49d6-b5b8-a57395d14d84",
+  "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\c--Users-gatli-Projects-wigg\\9abd0f08-bbd1-49d6-b5b8-a57395d14d84.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Edit",
+  "tool_name": "Write",
   "tool_input": {
-    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\components\\onboarding\\OnboardingFlow.tsx",
-    "old_string": "  const overlay = (\n    <div className=\"fixed inset-0 z-[220] pointer-events-none\">\n      <div className=\"absolute inset-0 bg-background/80 backdrop-blur-sm\" aria-hidden=\"true\" />\n      <div className=\"absolute inset-0 flex items-center justify-center md:justify-end lg:justify-center p-4 md:p-8 pointer-events-none\">",
-    "new_string": "  const overlay = (\n    <div className=\"fixed inset-0 z-[220] pointer-events-none\">\n      <div className=\"absolute inset-0 bg-background/80 backdrop-blur-sm\" aria-hidden=\"true\" />\n      {/* Modal positioning: vertical center on all sizes, horizontal: center on mobile/desktop, right on tablets for optimal UX across devices */}\n      <div className=\"absolute inset-0 flex items-center justify-center md:justify-end lg:justify-center p-4 md:p-8 pointer-events-none\">"
+    "file_path": "c:\\Users\\gatli\\Projects\\wigg\\src\\integrations\\games\\hooks.ts",
+    "content": "import { useQuery } from '@tanstack/react-query';\nimport { useEffect, useState } from 'react';\nimport { supabase } from '@/integrations/supabase/client';\n\nexport function usePopularGames() {\n  return useQuery({\n    queryKey: ['games', 'popular'],\n    queryFn: async () => {\n      const { data, error } = await supabase.functions.invoke('fetch-popular-games');\n      if (error) throw error;\n      return data?.games ?? [];\n    },\n    staleTime: 1000 * 60 * 10,\n    retry: false,\n  });\n}\n\nfunction useDebounced<T>(value: T, delay = 350): T {\n  const [v, setV] = useState(value);\n  useEffect(() => {\n    const t = setTimeout(() => setV(value), delay);\n    return () => clearTimeout(t);\n  }, [value, delay]);\n  return v;\n}\n\nexport function useGameSearch(q: string) {\n  const query = useDebounced((q || '').trim(), 350);\n  return useQuery({\n    queryKey: ['games', 'search', query],\n    enabled: query.length > 0,\n    queryFn: async () => {\n      const { data, error } = await supabase.functions.invoke('search-games', { body: { q: query, limit: 20 } });\n      if (error) throw error;\n      return data?.games ?? [];\n    },\n    staleTime: 1000 * 60 * 5,\n    retry: false,\n  });\n}\n"
   }
 }

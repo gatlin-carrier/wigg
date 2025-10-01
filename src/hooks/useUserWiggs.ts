@@ -32,11 +32,16 @@ export function useUserWiggs(titleId: string, options?: { enabled?: boolean }): 
   // Extract enabled option to fix API performance issue (118+ calls to title_metrics)
   const { enabled = true } = options || {};
 
+  const UUID_REGEX = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+  const normalizedTitleId = (titleId || '').trim();
+  const isDatabaseMediaId = UUID_REGEX.test(normalizedTitleId);
+  const shouldLoadFromSupabase = enabled && isDatabaseMediaId;
+
   const [data, setData] = useState<UserWiggsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const { data: progressData } = useTitleProgress(titleId, { enabled });
-  const { data: metrics } = useTitleMetrics(titleId, { enabled });
+  const { data: progressData } = useTitleProgress(normalizedTitleId, { enabled: shouldLoadFromSupabase });
+  const { data: metrics } = useTitleMetrics(normalizedTitleId, { enabled: shouldLoadFromSupabase });
   // Use centralized authentication state from useAuth hook instead of direct Supabase calls
   // This prevents excessive API calls and ensures consistent user state across the application
   const { user } = useAuth();
@@ -48,9 +53,17 @@ export function useUserWiggs(titleId: string, options?: { enabled?: boolean }): 
       setError(null);
 
       try {
-        
+        if (!shouldLoadFromSupabase) {
+          setData({
+            entries: [],
+            t2gEstimatePct: undefined,
+            t2gConfidence: undefined,
+          });
+          return;
+        }
+
         if (!user) {
-          // If no user, return empty data instead of error (user might not be logged in)     
+          // If no user, return empty data instead of error (user might not be logged in)
           setData({
             entries: [],
             t2gEstimatePct: undefined,
@@ -63,7 +76,7 @@ export function useUserWiggs(titleId: string, options?: { enabled?: boolean }): 
         const { data: wiggPoints, error: wiggError } = await supabase
           .from('wigg_points')
           .select('*')
-          .eq('media_id', titleId)
+          .eq('media_id', normalizedTitleId)
           .eq('user_id', user.id)
           .order('pos_value', { ascending: true });
 
@@ -72,7 +85,7 @@ export function useUserWiggs(titleId: string, options?: { enabled?: boolean }): 
         }
         const entries: WiggEntry[] = (wiggPoints || []).map(point => ({
           id: point.id,
-          pct: point.pos_value, // Fix redundant ternary
+          pct: point.pos_value,
           note: point.reason_short || undefined,
           rating: undefined,
           createdAt: point.created_at
@@ -91,10 +104,19 @@ export function useUserWiggs(titleId: string, options?: { enabled?: boolean }): 
       }
     };
 
-    if (titleId && enabled) {
+    if (normalizedTitleId && enabled) {
       fetchUserWiggs();
+    } else if (!enabled) {
+      setIsLoading(false);
+    } else if (!normalizedTitleId) {
+      setData({
+        entries: [],
+        t2gEstimatePct: undefined,
+        t2gConfidence: undefined,
+      });
+      setIsLoading(false);
     }
-  }, [titleId, user, enabled]);
+  }, [normalizedTitleId, user, enabled, shouldLoadFromSupabase]);
 
   // Effect 2: Calculate T2G when data/metrics/progress change
   useEffect(() => {
@@ -124,12 +146,15 @@ export function useUserWiggs(titleId: string, options?: { enabled?: boolean }): 
       if (!user) {
         throw new Error('User not authenticated');
       }
+      if (!shouldLoadFromSupabase) {
+        throw new Error('Media must exist in the library before adding a WIGG point');
+      }
 
       // Insert wigg point to Supabase (test expects insert call with specific parameters)
       const { error } = await supabase
         .from('wigg_points')
         .insert({
-          media_id: titleId,
+          media_id: normalizedTitleId,
           user_id: user.id,
           pos_value: pct,
           pos_kind: 'percent',
