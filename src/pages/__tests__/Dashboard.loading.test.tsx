@@ -28,6 +28,10 @@ vi.mock('@/hooks/use-mobile', () => ({
   useIsMobile: () => false,
 }));
 
+vi.mock('@/contexts/OnboardingContext', () => ({
+  useOnboarding: () => ({ isActive: false }),
+}));
+
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: () => ({

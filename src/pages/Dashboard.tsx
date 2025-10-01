@@ -1,4 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -166,6 +167,8 @@ function DashboardTabs({
   onWiggPointSuccess,
   placeholderSections,
 }: DashboardTabsProps) {
+  const navigate = useNavigate();
+
   return (
     <div className="max-w-6xl mx-auto">
       <Tabs value={tab} onValueChange={(value) => onTabChange(value as DashboardTab)} className="space-y-8">
@@ -215,7 +218,7 @@ function DashboardTabs({
                   </p>
                 </div>
                 <Button
-                  onClick={() => (window.location.href = '/add-wigg/live')}
+                  onClick={() => navigate('/add-wigg/live')}
                   className="w-full"
                   size="lg"
                 >
@@ -233,7 +236,7 @@ function DashboardTabs({
                   </p>
                 </div>
                 <Button
-                  onClick={() => (window.location.href = '/add-wigg/retro')}
+                  onClick={() => navigate('/add-wigg/retro')}
                   className="w-full"
                   size="lg"
                   variant="outline"

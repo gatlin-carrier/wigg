@@ -3,7 +3,7 @@ import { fetchTrendingBooks, normalizeWork, OLTrendingPeriod } from './client';
 
 type QueryOptions<TData> = Omit<UseQueryOptions<TData, unknown, TData>, 'queryKey' | 'queryFn'>;
 
-type TrendingBooksResult = ReturnType<typeof normalizeWork>;
+type TrendingBooksResult = ReturnType<typeof normalizeWork>[];
 
 export function useOpenLibraryTrending(period: OLTrendingPeriod = 'weekly', options?: QueryOptions<TrendingBooksResult[]>) {
   return useQuery({
