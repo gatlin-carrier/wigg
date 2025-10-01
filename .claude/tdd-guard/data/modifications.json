@@ -1,10 +1,11 @@
 {
-  "session_id": "9abd0f08-bbd1-49d6-b5b8-a57395d14d84",
-  "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\c--Users-gatli-Projects-wigg\\9abd0f08-bbd1-49d6-b5b8-a57395d14d84.jsonl",
+  "session_id": "c1033b02-a0dc-4976-bc8b-56ce2bf0034b",
+  "transcript_path": "C:\\Users\\gatli\\.claude\\projects\\C--Users-gatli-Projects-wigg\\c1033b02-a0dc-4976-bc8b-56ce2bf0034b.jsonl",
   "hook_event_name": "PreToolUse",
-  "tool_name": "Write",
+  "tool_name": "Edit",
   "tool_input": {
-    "file_path": "c:\\Users\\gatli\\Projects\\wigg\\src\\integrations\\games\\hooks.ts",
-    "content": "import { useQuery } from '@tanstack/react-query';\nimport { useEffect, useState } from 'react';\nimport { supabase } from '@/integrations/supabase/client';\n\nexport function usePopularGames() {\n  return useQuery({\n    queryKey: ['games', 'popular'],\n    queryFn: async () => {\n      const { data, error } = await supabase.functions.invoke('fetch-popular-games');\n      if (error) throw error;\n      return data?.games ?? [];\n    },\n    staleTime: 1000 * 60 * 10,\n    retry: false,\n  });\n}\n\nfunction useDebounced<T>(value: T, delay = 350): T {\n  const [v, setV] = useState(value);\n  useEffect(() => {\n    const t = setTimeout(() => setV(value), delay);\n    return () => clearTimeout(t);\n  }, [value, delay]);\n  return v;\n}\n\nexport function useGameSearch(q: string) {\n  const query = useDebounced((q || '').trim(), 350);\n  return useQuery({\n    queryKey: ['games', 'search', query],\n    enabled: query.length > 0,\n    queryFn: async () => {\n      const { data, error } = await supabase.functions.invoke('search-games', { body: { q: query, limit: 20 } });\n      if (error) throw error;\n      return data?.games ?? [];\n    },\n    staleTime: 1000 * 60 * 5,\n    retry: false,\n  });\n}\n"
+    "file_path": "C:\\Users\\gatli\\Projects\\wigg\\src\\pages\\__tests__\\Dashboard.loading.test.tsx",
+    "old_string": "vi.mock('@/hooks/use-mobile', () => ({\n  useIsMobile: () => false,\n}));",
+    "new_string": "vi.mock('@/hooks/use-mobile', () => ({\n  useIsMobile: () => false,\n}));\n\nvi.mock('@/contexts/OnboardingContext', () => ({\n  useOnboarding: () => ({ isActive: false }),\n}));"
   }
 }

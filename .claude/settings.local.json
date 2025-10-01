@@ -152,7 +152,12 @@
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/onboarding/__tests__/)",
       "Bash(timeout 5 bash -c \"until curl -s http://localhost:8080 > /dev/null; do sleep 1; done && echo ''Server is ready''\")",
       "Bash(pkill:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/integrations/openlibrary/)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/pages/__tests__/Dashboard.navigation.test.tsx --reporter=verbose)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/pages/__tests__/Dashboard.navigation.test.tsx --testNamePattern=\"should use navigate\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/pages/__tests__/Dashboard.navigation.test.tsx)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/pages/__tests__/)"
     ],
     "deny": [],
     "ask": [],
