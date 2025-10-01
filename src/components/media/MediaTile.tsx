@@ -92,12 +92,7 @@ export function MediaTile({ title, imageUrl, year, ratingLabel, tags, onAdd, onC
       return;
     }
 
-    // Prototype: prefer quick modal when enabled
-    if (quickWiggEnabled) {
-      setQuickOpen(true);
-      return;
-    }
-    // Legacy fallback
+    // Navigate to add-wigg screen
     if (mediaData) {
       navigate('/add-wigg', { state: { media: mediaData } });
     } else if (onAdd) onAdd();

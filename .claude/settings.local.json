@@ -154,7 +154,11 @@
       "Bash(pkill:*)",
       "Bash(timeout:*)",
       "Bash(gh pr create:*)",
-      "Bash(gh pr edit:*)"
+      "Bash(gh pr edit:*)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/media/__tests__/MediaTile.auth.test.tsx --testNamePattern=\"should navigate to add-wigg page without submitting surrounding forms\" --reporter=verbose)",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm test -- src/components/media/__tests__/MediaTile.auth.test.tsx --testNamePattern=\"should navigate to add-wigg page without submitting surrounding forms\")",
+      "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/media/__tests__/MediaTile)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": [],
