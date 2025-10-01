@@ -152,7 +152,9 @@
       "Bash(VITE_SUPABASE_URL=https://test.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=test_key npm run test -- src/components/onboarding/__tests__/)",
       "Bash(timeout 5 bash -c \"until curl -s http://localhost:8080 > /dev/null; do sleep 1; done && echo ''Server is ready''\")",
       "Bash(pkill:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr edit:*)"
     ],
     "deny": [],
     "ask": [],
