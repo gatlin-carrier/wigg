@@ -1,12 +1,19 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 import { fetchTrendingAnime, fetchPopularAnime, fetchAnimeDetails, fetchPopularManga, fetchMangaDetails, fetchPopularWebtoons, fetchPopularWebtoonsAll, searchManga } from './client';
 import { useEffect, useState } from 'react';
 
-export function useAnilistAnime(kind: 'trending' | 'popular' = 'trending') {
+type QueryOptions<TData> = Omit<UseQueryOptions<TData, unknown, TData>, 'queryKey' | 'queryFn'>;
+
+type AnimeListResult = Awaited<ReturnType<typeof fetchTrendingAnime>>;
+type MangaListResult = Awaited<ReturnType<typeof fetchPopularManga>>;
+type WebtoonListResult = Awaited<ReturnType<typeof fetchPopularWebtoons>>;
+
+export function useAnilistAnime(kind: 'trending' | 'popular' = 'trending', options?: QueryOptions<AnimeListResult>) {
   return useQuery({
     queryKey: ['anilist', 'anime', kind, 1],
     queryFn: async () => kind === 'trending' ? fetchTrendingAnime(1, 24) : fetchPopularAnime(1, 24),
     staleTime: 1000 * 60 * 10,
+    ...options,
   });
 }
 
@@ -22,11 +29,12 @@ export function useAnilistDetails(id?: number) {
   });
 }
 
-export function useAnilistManga(kind: 'popular' = 'popular') {
+export function useAnilistManga(kind: 'popular' = 'popular', options?: QueryOptions<MangaListResult>) {
   return useQuery({
     queryKey: ['anilist', 'manga', kind, 1],
     queryFn: async () => fetchPopularManga(1, 24),
     staleTime: 1000 * 60 * 10,
+    ...options,
   });
 }
 
@@ -61,15 +69,16 @@ export function useAnilistMangaDetails(id?: number) {
   });
 }
 
-export function useAnilistWebtoons(country?: 'KR' | 'CN' | 'TW' | 'JP') {
+export function useAnilistWebtoons(country?: 'KR' | 'CN' | 'TW' | 'JP', options?: QueryOptions<WebtoonListResult>) {
   return useQuery({
     queryKey: ['anilist', 'webtoons', country ?? 'ALL', 1],
     queryFn: async () => country ? fetchPopularWebtoons(1, 24, country) : fetchPopularWebtoonsAll(1, 24),
     staleTime: 1000 * 60 * 10,
+    ...options,
   });
 }
 
-export function useAnilistWebtoonsMerged() {
+export function useAnilistWebtoonsMerged(options?: QueryOptions<any[]>) {
   return useQuery({
     queryKey: ['anilist', 'webtoons', 'merged', 1],
     queryFn: async () => {
@@ -86,5 +95,6 @@ export function useAnilistWebtoonsMerged() {
       return merged;
     },
     staleTime: 1000 * 60 * 10,
+    ...options,
   });
 }

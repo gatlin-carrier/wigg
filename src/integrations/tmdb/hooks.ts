@@ -1,6 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 import { searchMovies, searchMulti, getTrendingMovies, getPopularMovies, getPopularTv, getTrendingTv, getMovieGenres, getTvGenres, discoverAnimeMovies, discoverAnimeTv } from './client';
+
+type QueryOptions<TData> = Omit<UseQueryOptions<TData, unknown, TData>, 'queryKey' | 'queryFn'>;
+
+type TrendingMoviesResult = Awaited<ReturnType<typeof getTrendingMovies>>;
+type PopularMoviesResult = Awaited<ReturnType<typeof getPopularMovies>>;
+type TrendingTvResult = Awaited<ReturnType<typeof getTrendingTv>>;
+type PopularTvResult = Awaited<ReturnType<typeof getPopularTv>>;
+type MovieGenresResult = Awaited<ReturnType<typeof getMovieGenres>>;
+type TvGenresResult = Awaited<ReturnType<typeof getTvGenres>>;
 
 function useDebounced<T>(value: T, delay = 300) {
   const [v, setV] = useState(value);
@@ -22,39 +31,43 @@ export function useTmdbSearch(query: string, mode: 'movie' | 'multi' = 'movie') 
   });
 }
 
-export function useTmdbTrending(period: 'day' | 'week' = 'day') {
+export function useTmdbTrending(period: 'day' | 'week' = 'day', options?: QueryOptions<TrendingMoviesResult>) {
   return useQuery({
     queryKey: ['tmdb', 'trending', 'movie', period],
     queryFn: () => getTrendingMovies(period),
     staleTime: 1000 * 60 * 10,
+    ...options,
   });
 }
 
-export function useTmdbPopular() {
+export function useTmdbPopular(options?: QueryOptions<PopularMoviesResult>) {
   return useQuery({
     queryKey: ['tmdb', 'popular', 'movie'],
     queryFn: () => getPopularMovies(1),
     staleTime: 1000 * 60 * 10,
+    ...options,
   });
 }
 
-export function useTmdbPopularTv() {
+export function useTmdbPopularTv(options?: QueryOptions<PopularTvResult>) {
   return useQuery({
     queryKey: ['tmdb', 'popular', 'tv'],
     queryFn: () => getPopularTv(1),
     staleTime: 1000 * 60 * 10,
+    ...options,
   });
 }
 
-export function useTmdbTrendingTv(period: 'day' | 'week' = 'day') {
+export function useTmdbTrendingTv(period: 'day' | 'week' = 'day', options?: QueryOptions<TrendingTvResult>) {
   return useQuery({
     queryKey: ['tmdb', 'trending', 'tv', period],
     queryFn: () => getTrendingTv(period),
     staleTime: 1000 * 60 * 10,
+    ...options,
   });
 }
 
-export function useTmdbMovieGenres() {
+export function useTmdbMovieGenres(options?: QueryOptions<Record<number, string>>) {
   return useQuery({
     queryKey: ['tmdb', 'genres', 'movie'],
     queryFn: async () => {
@@ -64,10 +77,11 @@ export function useTmdbMovieGenres() {
       return map;
     },
     staleTime: 1000 * 60 * 60 * 24, // 24h
+    ...options,
   });
 }
 
-export function useTmdbTvGenres() {
+export function useTmdbTvGenres(options?: QueryOptions<Record<number, string>>) {
   return useQuery({
     queryKey: ['tmdb', 'genres', 'tv'],
     queryFn: async () => {
@@ -77,10 +91,11 @@ export function useTmdbTvGenres() {
       return map;
     },
     staleTime: 1000 * 60 * 60 * 24,
+    ...options,
   });
 }
 
-export function useTmdbAnime() {
+export function useTmdbAnime(options?: QueryOptions<{ results: any[] }>) {
   return useQuery({
     queryKey: ['tmdb', 'discover', 'anime', 'ja+en', 1],
     queryFn: async () => {
@@ -116,5 +131,6 @@ export function useTmdbAnime() {
       return { results: merged };
     },
     staleTime: 1000 * 60 * 10,
+    ...options,
   });
 }

@@ -13,7 +13,7 @@ type Props = {
 
 export default function AnilistManga({ onAdd }: Props) {
   const navigate = useNavigate();
-  const { data: items = [], isFetching, isError, error } = useAnilistManga('popular');
+  const { data: items = [], isFetching, isError, error } = useAnilistManga('popular', { suspense: true });
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start', slidesToScroll: 1, dragFree: true });
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);

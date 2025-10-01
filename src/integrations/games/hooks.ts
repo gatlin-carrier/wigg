@@ -1,8 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-export function usePopularGames() {
+type QueryOptions<TData> = Omit<UseQueryOptions<TData, unknown, TData>, 'queryKey' | 'queryFn'>;
+
+export function usePopularGames(options?: QueryOptions<any[]>) {
   return useQuery({
     queryKey: ['games', 'popular'],
     queryFn: async () => {
@@ -12,6 +14,7 @@ export function usePopularGames() {
     },
     staleTime: 1000 * 60 * 10,
     retry: false,
+    ...options,
   });
 }
 

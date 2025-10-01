@@ -13,7 +13,7 @@ interface BookRecommendationsProps {
 }
 
 export const BookRecommendations = ({ onAddBook }: BookRecommendationsProps) => {
-  const { data: books = [], isFetching, isError, error } = useOpenLibraryTrending('weekly');
+  const { data: books = [], isFetching, isError, error } = useOpenLibraryTrending('weekly', { suspense: true });
   const navigate = useNavigate();
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,

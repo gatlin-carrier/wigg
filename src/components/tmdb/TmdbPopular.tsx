@@ -16,10 +16,13 @@ type Props = {
 
 export function TmdbPopular({ kind = 'trending', period = 'day', onAdd }: Props) {
   const navigate = useNavigate();
-  const { data, isFetching, isError, error } = kind === 'trending' ? useTmdbTrending(period) : useTmdbPopular();
+  const { data, isFetching, isError, error } =
+    kind === 'trending'
+      ? useTmdbTrending(period, { suspense: true })
+      : useTmdbPopular({ suspense: true });
   const items = data?.results ?? [];
   const showSkeleton = isFetching && !items.length;
-  const { data: genreMap = {} } = useTmdbMovieGenres();
+  const { data: genreMap = {} } = useTmdbMovieGenres({ suspense: true });
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start', slidesToScroll: 1, dragFree: true });
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);

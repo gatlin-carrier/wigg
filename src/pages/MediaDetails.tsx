@@ -1,27 +1,26 @@
 ﻿import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Star, Calendar, Clock, ExternalLink, Plus, Play, RotateCcw } from 'lucide-react';
+import { Star, Calendar, Clock, ExternalLink, Plus, TrendingUp, Activity, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { getMovieDetails, getTvDetails, getImageUrl } from '@/integrations/tmdb/client';
 import { fetchAnimeDetails, fetchMangaDetails } from '@/integrations/anilist/client';
 import { fetchWorkDetails } from '@/integrations/openlibrary/client';
 import { useTmdbMovieGenres } from '@/integrations/tmdb/hooks';
 import { normalizeRatingTo10, formatRating10 } from '@/lib/ratings';
-import { cn } from '@/lib/utils';
+import { formatT2G } from '@/lib/wigg/format';
+import { classifyPeakFromSegments, resampleSegments } from '@/lib/wigg/analysis';
 import { supabase } from '@/integrations/supabase/client';
 import { usePageHeader } from '@/contexts/HeaderContext';
-import { PacingBarcode } from '@/components/wigg/PacingBarcode';
-import { TitleHeader } from '@/components/wigg/TitleHeader';
 import { useTitleProgress } from '@/hooks/useTitleProgress';
 import { useUserWiggs } from '@/hooks/useUserWiggs';
 import { useUserWiggsDataLayer } from '@/data/hooks/useUserWiggsDataLayer';
+import { MiniGoodnessCurve } from '@/components/wigg/MiniGoodnessCurve';
 import { useMediaUnits } from '@/hooks/useMediaUnits';
 import { useFeatureFlag } from '@/lib/featureFlags';
 import type { MediaSearchResult } from '@/components/media/MediaSearch';
@@ -152,35 +151,123 @@ export default function MediaDetails() {
     externalIds: { tmdb_id: (isTmdbMovie || isTmdbTv) ? Number(id) : undefined }
   } as any : null);
 
-  // Compute segments count heuristics for details page
-  const detailSegmentCount = React.useMemo(() => {
-    // Unified policy with AddWigg: prefer units when episodic/chapter-based
-    if (units && units.length > 1) {
-      return Math.max(2, Math.min(100, units.length));
-    }
-    // Fallback to runtime-based
-    const minutes = (isTmdbMovie || isTmdbTv) ? (movie as any)?.runtime ?? 120
-      : isGame ? (((movie as any)?.completionTimeHours ?? 30) * 60)
-      : 120;
-    if (minutes <= 45) return 12;
-    if (minutes <= 120) return 20;
-    if (minutes <= 240) return 24;
-    if (minutes <= 600) return 30;
-    return 40;
-  }, [units, isTmdbTv, isTmdbMovie, isGame, movie]);
+  const segments = progressData?.segments ?? [];
+  const segmentCount = progressData?.segmentCount ?? segments.length;
+  const curveValues = React.useMemo(() => {
+    if (!segments.length) return [];
+    const bins = segmentCount > 0 ? segmentCount : segments.length || 1;
+    return resampleSegments(segments, bins);
+  }, [segments, segmentCount]);
 
-  // Build per-segment labels for episodic/chapter media
-  const segmentLabels = React.useMemo(() => {
-    const segCount = detailSegmentCount;
-    if (!units || units.length <= 1) return undefined as string[] | undefined;
-    // Map each segment index to closest unit ordinal
-    return Array.from({ length: segCount }, (_, i) => {
-      const ord = Math.max(1, Math.min(units.length, Math.round(((i + 0.5) / segCount) * units.length)));
-      const u = units[ord - 1];
-      const kind = u?.subtype === 'chapter' ? 'Chapter' : 'Episode';
-      return `${kind} ${ord}`;
-    });
-  }, [units, detailSegmentCount]);
+  const peakInfo = React.useMemo(() => classifyPeakFromSegments(segments), [segments]);
+  const peakLabel = peakInfo.label;
+  const PeakIcon = peakLabel === 'Even pacing' ? Activity : peakLabel === 'Peak late' ? Minus : TrendingUp;
+  const totalSegments = segmentCount;
+  const userWiggCount = wiggsData?.entries?.length ?? 0;
+  const t2gEstimatePct = typeof wiggsData?.t2gEstimatePct === 'number' ? wiggsData.t2gEstimatePct : null;
+
+  // Compute addWiggMedia early (before returns) to maintain hook order
+  // This useMemo must be called unconditionally, but can return null when movie isn't loaded
+  const addWiggMedia = React.useMemo<MediaSearchResult | null>(() => {
+    if (!movie) return null;
+
+    // Compute display fields
+    const title = isTmdbMovie
+      ? (movie as any).title
+      : isTmdbTv
+        ? ((movie as any)?.name ?? 'Untitled')
+      : isAnilist
+        ? (((movie as any)?.title?.english ?? (movie as any)?.title?.romaji) ?? 'Untitled')
+      : isBook
+        ? ((movie as any)?.title ?? 'Untitled')
+        : ((movie as any)?.name ?? (movie as any)?.title ?? 'Untitled');
+
+    const year = isTmdbMovie
+      ? (movie as any).release_date?.slice(0, 4)
+      : isTmdbTv
+        ? ((movie as any)?.first_air_date || '').slice(0, 4)
+      : isAnilist
+        ? (String((movie as any)?.seasonYear ?? (movie as any)?.startDate?.year ?? '')).slice(0, 4)
+      : isBook
+        ? String((movie as any)?.first_publish_date ?? '').slice(0, 4)
+        : String((movie as any)?.releaseDate ?? '').slice(0, 4);
+
+    const runtime = isTmdbMovie
+      ? (movie as any).runtime
+      : isTmdbTv
+        ? (Array.isArray((movie as any)?.episode_run_time) && (movie as any).episode_run_time[0]) || (movie as any)?.last_episode_to_air?.runtime || undefined
+        : isAnilist
+          ? (movie as any)?.duration || undefined
+          : undefined;
+    const runtimeMinutes = typeof runtime === 'number' ? runtime : undefined;
+
+    const overview = (isTmdbMovie || isTmdbTv)
+      ? (movie as any).overview
+      : isBook
+        ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
+        : isAnilist
+          ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
+          : ((movie as any)?.summary ?? 'No overview available.');
+
+    const mediaSearchType: MediaSearchResult['type'] = isTmdbMovie
+      ? 'movie'
+      : isTmdbTv
+        ? 'tv'
+        : isGame
+          ? 'game'
+          : isBook
+            ? 'book'
+            : isAnilist
+              ? (source === 'anilist-manga' ? 'manga' : 'anime')
+              : 'movie';
+
+    const parsedYear = year ? Number.parseInt(year, 10) : undefined;
+    const durationSeconds = runtimeMinutes != null ? Math.round(runtimeMinutes * 60) : undefined;
+
+    const externalIds: NonNullable<MediaSearchResult['externalIds']> = {};
+    if (id) {
+      if (isTmdbMovie || isTmdbTv) {
+        const tmdbId = Number(id);
+        if (!Number.isNaN(tmdbId)) {
+          externalIds.tmdb_id = tmdbId;
+        }
+      }
+
+      if (isAnilist) {
+        const anilistId = Number(id);
+        if (!Number.isNaN(anilistId)) {
+          externalIds.anilist_id = anilistId;
+        }
+      }
+
+      if (isBook) {
+        externalIds.openlibrary_id = id;
+      }
+
+      if (isGame && title) {
+        externalIds.search_title = title;
+      }
+    }
+
+    const episodicUnits = units && units.length > 1 ? units : undefined;
+    const episodeCount = episodicUnits?.[0]?.subtype === 'episode' ? episodicUnits.length : undefined;
+    const chapterCount = episodicUnits?.[0]?.subtype === 'chapter' ? episodicUnits.length : undefined;
+
+    const result: MediaSearchResult = {
+      id: titleKey,
+      title,
+      type: mediaSearchType,
+      year: parsedYear,
+      coverImage: posterUrl,
+      description: overview ?? undefined,
+      duration: durationSeconds,
+      episodeCount,
+      chapterCount,
+      externalIds: Object.keys(externalIds).length ? externalIds : undefined,
+    };
+
+    return result;
+  }, [movie, id, isTmdbMovie, isTmdbTv, isGame, isBook, isAnilist, source, units, titleKey, posterUrl]);
 
   const typedMovie = movie as any;
 
@@ -238,6 +325,7 @@ export default function MediaDetails() {
       : isAnilist
         ? typedMovie?.duration || undefined
         : undefined;
+  const runtimeMinutes = typeof runtime === 'number' ? runtime : undefined;
 
   const externalUrl = isTmdbMovie
     ? (typedMovie?.id !== undefined ? `https://www.themoviedb.org/movie/${typedMovie.id}` : undefined)
@@ -255,81 +343,27 @@ export default function MediaDetails() {
     genres?.slice(0, 2).join(', ')
   ].filter(Boolean).join(' • ');
 
-  const addWiggMedia = React.useMemo<MediaSearchResult>(() => {
-    const mediaType: MediaSearchResult['type'] = isTmdbMovie
-      ? 'movie'
-      : isTmdbTv
-        ? 'tv'
-        : isGame
-          ? 'game'
-          : isBook
-            ? 'book'
-            : isAnilist
-              ? (source === 'anilist-manga' ? 'manga' : 'anime')
-              : 'movie';
+  const mediaSearchType: MediaSearchResult['type'] = isTmdbMovie
+    ? 'movie'
+    : isTmdbTv
+      ? 'tv'
+      : isGame
+        ? 'game'
+        : isBook
+          ? 'book'
+          : isAnilist
+            ? (source === 'anilist-manga' ? 'manga' : 'anime')
+            : 'movie';
 
-    const parsedYear = year ? Number.parseInt(year, 10) : undefined;
-    const durationSeconds = typeof runtime === 'number' ? Math.round(runtime * 60) : undefined;
+  const getsGoodPercent = t2gEstimatePct != null ? `${t2gEstimatePct.toFixed(0)}%` : null;
+  const t2gDetail = t2gEstimatePct != null ? formatT2G(t2gEstimatePct, runtimeMinutes, mediaSearchType) : null;
+  const getsGoodText = t2gDetail ?? getsGoodPercent;
+  const sampleSize = progressData?.sampleSize ?? null;
+  const formattedSampleSize = sampleSize != null ? sampleSize.toLocaleString() : null;
+  const communitySummary = totalSegments > 0
+    ? `Based on ${totalSegments} segment${totalSegments === 1 ? '' : 's'}${userWiggCount > 0 ? ` and ${userWiggCount} logged moment${userWiggCount === 1 ? '' : 's'}` : ''}${formattedSampleSize ? ` across ${formattedSampleSize} community entries` : ''}.`
+    : 'No community pacing data yet for this title.';
 
-    const externalIds: NonNullable<MediaSearchResult['externalIds']> = {};
-    if (id) {
-      if (isTmdbMovie || isTmdbTv) {
-        const tmdbId = Number(id);
-        if (!Number.isNaN(tmdbId)) {
-          externalIds.tmdb_id = tmdbId;
-        }
-      }
-
-      if (isAnilist) {
-        const anilistId = Number(id);
-        if (!Number.isNaN(anilistId)) {
-          externalIds.anilist_id = anilistId;
-        }
-      }
-
-      if (isBook) {
-        externalIds.openlibrary_id = id;
-      }
-
-      if (isGame && title) {
-        externalIds.search_title = title;
-      }
-    }
-
-    const episodicUnits = units && units.length > 1 ? units : undefined;
-    const episodeCount = episodicUnits?.[0]?.subtype === 'episode' ? episodicUnits.length : undefined;
-    const chapterCount = episodicUnits?.[0]?.subtype === 'chapter' ? episodicUnits.length : undefined;
-
-    const result: MediaSearchResult = {
-      id: titleKey,
-      title,
-      type: mediaType,
-      year: parsedYear,
-      coverImage: posterUrl,
-      description: overview ?? undefined,
-      duration: durationSeconds,
-      episodeCount,
-      chapterCount,
-      externalIds: Object.keys(externalIds).length ? externalIds : undefined,
-    };
-
-    return result;
-  }, [
-    id,
-    isTmdbMovie,
-    isTmdbTv,
-    isGame,
-    isBook,
-    isAnilist,
-    source,
-    year,
-    runtime,
-    units,
-    title,
-    posterUrl,
-    overview,
-    titleKey,
-  ]);
 
   if (isLoading) {
     return (
@@ -535,17 +569,40 @@ export default function MediaDetails() {
 
             <Separator />
 
-            {/* Enhanced WIGG Interface with Edit Functionality */}
-            <TitleHeader
-              titleId={titleKey}
-              title={title}
-              subtitle={subtitle}
-              coverArt={posterUrl}
-              mediaType={isTmdbMovie ? 'movie' : isTmdbTv ? 'tv' : isGame ? 'game' : isBook ? 'book' : isAnilist ? (source === 'anilist-manga' ? 'manga' : 'anime') : 'movie'}
-              runtime={runtime}
-              genre={genres}
-              year={year ? parseInt(year) : undefined}
-            />
+            <section className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-semibold">Community WIGG Curve</h2>
+                  <p className="text-sm text-muted-foreground">
+                    {communitySummary}
+                  </p>
+                </div>
+                {getsGoodText && (
+                  <div className="inline-flex items-center gap-2 rounded-full bg-secondary/60 px-3 py-1 text-sm text-secondary-foreground">
+                    <Star className="h-3.5 w-3.5 text-primary" fill="currentColor" />
+                    <span>Gets good {getsGoodText}</span>
+                  </div>
+                )}
+              </div>
+
+              <Card className="p-4">
+                <MiniGoodnessCurve
+                  values={curveValues}
+                  height={120}
+                  threshold={2}
+                  badThreshold={1.5}
+                  className="rounded"
+                />
+                <div className="mt-4 grid gap-3 text-sm text-muted-foreground sm:grid-cols-3">
+                  <div className="inline-flex items-center gap-2">
+                    <PeakIcon className="h-4 w-4 text-primary" />
+                    <span>{peakLabel}</span>
+                  </div>
+                  <div>{totalSegments} segment{totalSegments === 1 ? '' : 's'} analyzed</div>
+                  <div>{userWiggCount} moment{userWiggCount === 1 ? '' : 's'} logged</div>
+                </div>
+              </Card>
+            </section>
 
             <Separator />
 

@@ -15,7 +15,7 @@ type Props = {
 export default function AnilistWebtoons({ onAdd }: Props) {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<'ALL' | 'KR' | 'CN' | 'TW'>('ALL');
-  const { data: items = [], isFetching, isError, error } = useAnilistWebtoonsMerged();
+  const { data: items = [], isFetching, isError, error } = useAnilistWebtoonsMerged({ suspense: true });
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start', slidesToScroll: 1, dragFree: true });
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
