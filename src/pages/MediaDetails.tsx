@@ -166,6 +166,109 @@ export default function MediaDetails() {
   const userWiggCount = wiggsData?.entries?.length ?? 0;
   const t2gEstimatePct = typeof wiggsData?.t2gEstimatePct === 'number' ? wiggsData.t2gEstimatePct : null;
 
+  // Compute addWiggMedia early (before returns) to maintain hook order
+  // This useMemo must be called unconditionally, but can return null when movie isn't loaded
+  const addWiggMedia = React.useMemo<MediaSearchResult | null>(() => {
+    if (!movie) return null;
+
+    // Compute display fields
+    const title = isTmdbMovie
+      ? (movie as any).title
+      : isTmdbTv
+        ? ((movie as any)?.name ?? 'Untitled')
+      : isAnilist
+        ? (((movie as any)?.title?.english ?? (movie as any)?.title?.romaji) ?? 'Untitled')
+      : isBook
+        ? ((movie as any)?.title ?? 'Untitled')
+        : ((movie as any)?.name ?? (movie as any)?.title ?? 'Untitled');
+
+    const year = isTmdbMovie
+      ? (movie as any).release_date?.slice(0, 4)
+      : isTmdbTv
+        ? ((movie as any)?.first_air_date || '').slice(0, 4)
+      : isAnilist
+        ? (String((movie as any)?.seasonYear ?? (movie as any)?.startDate?.year ?? '')).slice(0, 4)
+      : isBook
+        ? String((movie as any)?.first_publish_date ?? '').slice(0, 4)
+        : String((movie as any)?.releaseDate ?? '').slice(0, 4);
+
+    const runtime = isTmdbMovie
+      ? (movie as any).runtime
+      : isTmdbTv
+        ? (Array.isArray((movie as any)?.episode_run_time) && (movie as any).episode_run_time[0]) || (movie as any)?.last_episode_to_air?.runtime || undefined
+        : isAnilist
+          ? (movie as any)?.duration || undefined
+          : undefined;
+    const runtimeMinutes = typeof runtime === 'number' ? runtime : undefined;
+
+    const overview = (isTmdbMovie || isTmdbTv)
+      ? (movie as any).overview
+      : isBook
+        ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
+        : isAnilist
+          ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
+          : ((movie as any)?.summary ?? 'No overview available.');
+
+    const mediaSearchType: MediaSearchResult['type'] = isTmdbMovie
+      ? 'movie'
+      : isTmdbTv
+        ? 'tv'
+        : isGame
+          ? 'game'
+          : isBook
+            ? 'book'
+            : isAnilist
+              ? (source === 'anilist-manga' ? 'manga' : 'anime')
+              : 'movie';
+
+    const parsedYear = year ? Number.parseInt(year, 10) : undefined;
+    const durationSeconds = runtimeMinutes != null ? Math.round(runtimeMinutes * 60) : undefined;
+
+    const externalIds: NonNullable<MediaSearchResult['externalIds']> = {};
+    if (id) {
+      if (isTmdbMovie || isTmdbTv) {
+        const tmdbId = Number(id);
+        if (!Number.isNaN(tmdbId)) {
+          externalIds.tmdb_id = tmdbId;
+        }
+      }
+
+      if (isAnilist) {
+        const anilistId = Number(id);
+        if (!Number.isNaN(anilistId)) {
+          externalIds.anilist_id = anilistId;
+        }
+      }
+
+      if (isBook) {
+        externalIds.openlibrary_id = id;
+      }
+
+      if (isGame && title) {
+        externalIds.search_title = title;
+      }
+    }
+
+    const episodicUnits = units && units.length > 1 ? units : undefined;
+    const episodeCount = episodicUnits?.[0]?.subtype === 'episode' ? episodicUnits.length : undefined;
+    const chapterCount = episodicUnits?.[0]?.subtype === 'chapter' ? episodicUnits.length : undefined;
+
+    const result: MediaSearchResult = {
+      id: titleKey,
+      title,
+      type: mediaSearchType,
+      year: parsedYear,
+      coverImage: posterUrl,
+      description: overview ?? undefined,
+      duration: durationSeconds,
+      episodeCount,
+      chapterCount,
+      externalIds: Object.keys(externalIds).length ? externalIds : undefined,
+    };
+
+    return result;
+  }, [movie, id, isTmdbMovie, isTmdbTv, isGame, isBook, isAnilist, source, units, titleKey, posterUrl]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -294,69 +397,6 @@ export default function MediaDetails() {
     ? `Based on ${totalSegments} segment${totalSegments === 1 ? '' : 's'}${userWiggCount > 0 ? ` and ${userWiggCount} logged moment${userWiggCount === 1 ? '' : 's'}` : ''}${formattedSampleSize ? ` across ${formattedSampleSize} community entries` : ''}.`
     : 'No community pacing data yet for this title.';
 
-  const addWiggMedia = React.useMemo<MediaSearchResult>(() => {
-    const parsedYear = year ? Number.parseInt(year, 10) : undefined;
-    const durationSeconds = runtimeMinutes != null ? Math.round(runtimeMinutes * 60) : undefined;
-
-    const externalIds: NonNullable<MediaSearchResult['externalIds']> = {};
-    if (id) {
-      if (isTmdbMovie || isTmdbTv) {
-        const tmdbId = Number(id);
-        if (!Number.isNaN(tmdbId)) {
-          externalIds.tmdb_id = tmdbId;
-        }
-      }
-
-      if (isAnilist) {
-        const anilistId = Number(id);
-        if (!Number.isNaN(anilistId)) {
-          externalIds.anilist_id = anilistId;
-        }
-      }
-
-      if (isBook) {
-        externalIds.openlibrary_id = id;
-      }
-
-      if (isGame && title) {
-        externalIds.search_title = title;
-      }
-    }
-
-    const episodicUnits = units && units.length > 1 ? units : undefined;
-    const episodeCount = episodicUnits?.[0]?.subtype === 'episode' ? episodicUnits.length : undefined;
-    const chapterCount = episodicUnits?.[0]?.subtype === 'chapter' ? episodicUnits.length : undefined;
-
-    const result: MediaSearchResult = {
-      id: titleKey,
-      title,
-      type: mediaSearchType,
-      year: parsedYear,
-      coverImage: posterUrl,
-      description: overview ?? undefined,
-      duration: durationSeconds,
-      episodeCount,
-      chapterCount,
-      externalIds: Object.keys(externalIds).length ? externalIds : undefined,
-    };
-
-    return result;
-  }, [
-    id,
-    isTmdbMovie,
-    isTmdbTv,
-    isGame,
-    isBook,
-    isAnilist,
-    source,
-    year,
-    runtime,
-    units,
-    title,
-    posterUrl,
-    overview,
-    titleKey,
-  ]);
 
   return (
     <div className="min-h-screen bg-background">
