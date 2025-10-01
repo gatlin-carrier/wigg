@@ -9,7 +9,7 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
-import { Film, Tv, Gamepad2, Book, Mic, User, Save, ChevronUp, ChevronDown, BookOpen, Sparkles, Newspaper, Settings, BarChart2 } from "lucide-react";
+import { Film, Tv, Gamepad2, Book, Mic, User, Save, ChevronUp, ChevronDown, BookOpen, Sparkles, Newspaper, Settings, BarChart2, LogOut } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { GraphTypeSelector, type GraphType } from "@/components/ui/GraphTypeSelector";
 import { RatingSystemSelector, type RatingSystem } from "@/components/ui/RatingSystemSelector";
@@ -18,7 +18,7 @@ const Profile = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuthRedirect({
     message: "Please sign in to access your profile and customize your preferences."
   });
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState({
@@ -445,6 +445,25 @@ const Profile = () => {
                 Save Changes
               </>
             )}
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="text-base">Account Actions</CardTitle>
+          <CardDescription>
+            Manage your account session
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            onClick={signOut}
+            variant="destructive"
+            className="w-full"
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
           </Button>
         </CardContent>
       </Card>

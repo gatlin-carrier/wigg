@@ -182,109 +182,76 @@ export default function MediaDetails() {
     });
   }, [units, detailSegmentCount]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="space-y-6">
-            <Skeleton className="h-8 w-48 rounded-md" style={{ animationDelay: '0s' }} />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-1">
-                <Skeleton className="aspect-[2/3] w-full rounded-xl" style={{ animationDelay: '0.08s' }} />
-              </div>
-              <div className="lg:col-span-2 space-y-4">
-                <Skeleton className="h-8 w-3/4 rounded-md" style={{ animationDelay: '0.12s' }} />
-                <Skeleton className="h-4 w-1/2 rounded-md" style={{ animationDelay: '0.18s' }} />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-full rounded-md" style={{ animationDelay: '0.24s' }} />
-                  <Skeleton className="h-4 w-full rounded-md" style={{ animationDelay: '0.28s' }} />
-                  <Skeleton className="h-4 w-3/4 rounded-md" style={{ animationDelay: '0.32s' }} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const typedMovie = movie as any;
 
-  if (error || !movie) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <Card className="p-8 text-center">
-            <h2 className="text-xl font-semibold mb-2">Media Not Found</h2>
-            <p className="text-muted-foreground">Unable to load media details. Please try again.</p>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  // Now that data is loaded, compute display fields
+  // Precompute display fields with null-safe access
   const title = isTmdbMovie
-    ? (movie as any).title
+    ? typedMovie?.title ?? 'Untitled'
     : isTmdbTv
-      ? ((movie as any)?.name ?? 'Untitled')
-    : isAnilist
-      ? (((movie as any)?.title?.english ?? (movie as any)?.title?.romaji) ?? 'Untitled')
-    : isBook
-      ? ((movie as any)?.title ?? 'Untitled')
-      : ((movie as any)?.name ?? (movie as any)?.title ?? 'Untitled');
-  const genres = (isTmdbMovie || isTmdbTv)
-    ? ((movie as any).genres?.map((g: any) => g.name) || [])
-    : isBook
-      ? ((movie as any)?.subjects ?? [])
+      ? typedMovie?.name ?? 'Untitled'
       : isAnilist
-        ? (((movie as any)?.genres as string[] | undefined) ?? [])
-        : (((movie as any)?.genres as string[] | undefined) ?? []);
-  const year = isTmdbMovie
-    ? (movie as any).release_date?.slice(0, 4)
-    : isTmdbTv
-      ? ((movie as any)?.first_air_date || '').slice(0, 4)
-    : isAnilist
-      ? (String((movie as any)?.seasonYear ?? (movie as any)?.startDate?.year ?? '')).slice(0, 4)
+        ? ((typedMovie?.title?.english ?? typedMovie?.title?.romaji) ?? 'Untitled')
+        : isBook
+          ? typedMovie?.title ?? 'Untitled'
+          : (typedMovie?.name ?? typedMovie?.title ?? 'Untitled');
+
+  const genres = (isTmdbMovie || isTmdbTv)
+    ? (typedMovie?.genres?.map((g: any) => g.name) ?? [])
     : isBook
-      ? String((movie as any)?.first_publish_date ?? '').slice(0, 4)
-      : String((movie as any)?.releaseDate ?? '').slice(0, 4);
+      ? (typedMovie?.subjects ?? [])
+      : isAnilist
+        ? ((typedMovie?.genres as string[] | undefined) ?? [])
+        : ((typedMovie?.genres as string[] | undefined) ?? []);
+
+  const year = isTmdbMovie
+    ? typedMovie?.release_date?.slice(0, 4)
+    : isTmdbTv
+      ? (typedMovie?.first_air_date || '').slice(0, 4)
+      : isAnilist
+        ? (String(typedMovie?.seasonYear ?? typedMovie?.startDate?.year ?? '')).slice(0, 4)
+        : isBook
+          ? String(typedMovie?.first_publish_date ?? '').slice(0, 4)
+          : String(typedMovie?.releaseDate ?? '').slice(0, 4);
 
   const rating = normalizeRatingTo10(
     (isTmdbMovie || isTmdbTv)
-      ? (movie as any).vote_average
+      ? typedMovie?.vote_average
       : isAnilist
-        ? (movie as any)?.averageScore
-        : (movie as any)?.rating,
-    { source: (source as any) }
+        ? typedMovie?.averageScore
+        : typedMovie?.rating,
+    { source: source as any }
   );
   const ratingLabel = rating !== undefined ? formatRating10(rating) : undefined;
-  const overview = (isTmdbMovie || isTmdbTv)
-    ? (movie as any).overview
-    : isBook
-      ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
-      : isAnilist
-        ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
-        : ((movie as any)?.summary ?? 'No overview available.');
-  const runtime = isTmdbMovie
-    ? (movie as any).runtime
-    : isTmdbTv
-      ? (Array.isArray((movie as any)?.episode_run_time) && (movie as any).episode_run_time[0]) || (movie as any)?.last_episode_to_air?.runtime || undefined
-      : isAnilist
-        ? (movie as any)?.duration || undefined
-        : undefined;
-  const externalUrl = isTmdbMovie
-    ? `https://www.themoviedb.org/movie/${(movie as any).id}`
-    : isTmdbTv
-      ? `https://www.themoviedb.org/tv/${(movie as any).id}`
-    : isBook
-      ? (`https://openlibrary.org${(movie as any)?.key ?? ''}`)
-      : isAnilist
-        ? ((movie as any)?.siteUrl ?? `https://anilist.co/anime/${id}`)
-        : (movie as any)?.url;
 
-  // Create subtitle from available metadata (after all dependencies are defined)
+  const overview = (isTmdbMovie || isTmdbTv)
+    ? typedMovie?.overview
+    : isBook
+      ? ((typedMovie?.description as string | undefined) ?? 'No description available.')
+      : isAnilist
+        ? ((typedMovie?.description as string | undefined) ?? 'No description available.')
+        : (typedMovie?.summary ?? 'No overview available.');
+
+  const runtime = isTmdbMovie
+    ? typedMovie?.runtime
+    : isTmdbTv
+      ? (Array.isArray(typedMovie?.episode_run_time) && typedMovie?.episode_run_time?.[0]) || typedMovie?.last_episode_to_air?.runtime || undefined
+      : isAnilist
+        ? typedMovie?.duration || undefined
+        : undefined;
+
+  const externalUrl = isTmdbMovie
+    ? (typedMovie?.id !== undefined ? `https://www.themoviedb.org/movie/${typedMovie.id}` : undefined)
+    : isTmdbTv
+      ? (typedMovie?.id !== undefined ? `https://www.themoviedb.org/tv/${typedMovie.id}` : undefined)
+      : isBook
+        ? (typedMovie?.key ? `https://openlibrary.org${typedMovie.key}` : undefined)
+        : isAnilist
+          ? (typedMovie?.siteUrl ?? (id ? `https://anilist.co/anime/${id}` : undefined))
+          : typedMovie?.url;
+
   const subtitle = [
-    year && `${year}`,
-    runtime && (runtime > 60 ? `${Math.floor(runtime / 60)}h ${runtime % 60}m` : `${runtime}m`),
+    year ? `${year}` : undefined,
+    runtime ? (runtime > 60 ? `${Math.floor(runtime / 60)}h ${runtime % 60}m` : `${runtime}m`) : undefined,
     genres?.slice(0, 2).join(', ')
   ].filter(Boolean).join(' • ');
 
@@ -363,6 +330,45 @@ export default function MediaDetails() {
     overview,
     titleKey,
   ]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-48 rounded-md" style={{ animationDelay: '0s' }} />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-1">
+                <Skeleton className="aspect-[2/3] w-full rounded-xl" style={{ animationDelay: '0.08s' }} />
+              </div>
+              <div className="lg:col-span-2 space-y-4">
+                <Skeleton className="h-8 w-3/4 rounded-md" style={{ animationDelay: '0.12s' }} />
+                <Skeleton className="h-4 w-1/2 rounded-md" style={{ animationDelay: '0.18s' }} />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full rounded-md" style={{ animationDelay: '0.24s' }} />
+                  <Skeleton className="h-4 w-full rounded-md" style={{ animationDelay: '0.28s' }} />
+                  <Skeleton className="h-4 w-3/4 rounded-md" style={{ animationDelay: '0.32s' }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !movie) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <Card className="p-8 text-center">
+            <h2 className="text-xl font-semibold mb-2">Media Not Found</h2>
+            <p className="text-muted-foreground">Unable to load media details. Please try again.</p>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

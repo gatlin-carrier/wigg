@@ -162,7 +162,7 @@ describe('MediaTile Authentication', () => {
     });
   });
 
-  it('should open quick wigg modal without submitting surrounding forms', async () => {
+  it('should navigate to add-wigg page without submitting surrounding forms', async () => {
     const { useAuth } = await import('@/hooks/useAuth');
     vi.mocked(useAuth).mockReturnValue({
       user: { id: 'user123', email: 'test@example.com' } as any,
@@ -206,7 +206,10 @@ describe('MediaTile Authentication', () => {
     const addButton = screen.getByLabelText('Add WIGG point');
     fireEvent.click(addButton);
 
-    await screen.findByText('Quick Wigg — Test Movie');
+    // Should navigate to add-wigg page and not submit the form
+    expect(mockNavigate).toHaveBeenCalledWith('/add-wigg', {
+      state: { media: expect.any(Object) },
+    });
     expect(handleSubmit).not.toHaveBeenCalled();
   });
 });
