@@ -370,7 +370,7 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground pt-16 sm:pt-0;
+    @apply bg-background text-foreground;
   }
 }
 

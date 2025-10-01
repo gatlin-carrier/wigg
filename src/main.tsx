@@ -24,8 +24,6 @@ const queryClient = new QueryClient({
 const persister = createSyncStoragePersister({ storage: window.localStorage, key: 'wigg-rq' });
 
 createRoot(document.getElementById('root')!).render(
-
-  <StrictMode>
     <PersistQueryClientProvider client={queryClient} persistOptions={{ persister, buster: 'v1', maxAge: 1000 * 60 * 60 * 24 }}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="wigg-theme">
         <AuthProvider>
@@ -36,6 +34,5 @@ createRoot(document.getElementById('root')!).render(
         </AuthProvider>
       </ThemeProvider>
     </PersistQueryClientProvider>
-  </StrictMode>,
 )
 

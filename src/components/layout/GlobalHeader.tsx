@@ -1,7 +1,7 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, User } from 'lucide-react';
+import { ArrowLeft, User, LogIn } from 'lucide-react';
 import HeaderSearch from '@/components/search/HeaderSearch';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -191,6 +191,18 @@ export default function GlobalHeader() {
             {rightContent}
 
             {user && <NotificationBell />}
+            {/* Log In button - only show when not logged in */}
+            {!user && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/auth')}
+                className="flex items-center gap-1"
+              >
+                <LogIn className="h-4 w-4" aria-hidden />
+                <span className="hidden sm:inline">Log In</span>
+              </Button>
+            )}
             {/* Profile button - only show when logged in */}
             {user && (
               <Button

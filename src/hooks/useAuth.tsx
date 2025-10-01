@@ -8,6 +8,7 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, username?: string, metadata?: any) => Promise<{ error: any }>;
+  signInWithOAuth: (provider: 'google' | 'github' | 'facebook' | 'twitter' | 'discord') => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   cleanupAuthState: () => void;
 }
@@ -92,6 +93,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+
+  const signInWithOAuth = async (provider: 'google' | 'github' | 'facebook' | 'twitter' | 'discord') => {
+    try {
+      cleanupAuthState();
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        }
+      });
+      if (error) return { error };
+      // OAuth will redirect automatically, no need to manually navigate
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
+  };
+
   const signOut = async () => {
     try {
       cleanupAuthState();
@@ -140,6 +159,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loading,
     signIn,
     signUp,
+    signInWithOAuth,
     signOut,
     cleanupAuthState,
   };

@@ -269,6 +269,102 @@ export default function MediaDetails() {
     return result;
   }, [movie, id, isTmdbMovie, isTmdbTv, isGame, isBook, isAnilist, source, units, titleKey, posterUrl]);
 
+  const typedMovie = movie as any;
+
+  // Precompute display fields with null-safe access
+  const title = isTmdbMovie
+    ? typedMovie?.title ?? 'Untitled'
+    : isTmdbTv
+      ? typedMovie?.name ?? 'Untitled'
+      : isAnilist
+        ? ((typedMovie?.title?.english ?? typedMovie?.title?.romaji) ?? 'Untitled')
+        : isBook
+          ? typedMovie?.title ?? 'Untitled'
+          : (typedMovie?.name ?? typedMovie?.title ?? 'Untitled');
+
+  const genres = (isTmdbMovie || isTmdbTv)
+    ? (typedMovie?.genres?.map((g: any) => g.name) ?? [])
+    : isBook
+      ? (typedMovie?.subjects ?? [])
+      : isAnilist
+        ? ((typedMovie?.genres as string[] | undefined) ?? [])
+        : ((typedMovie?.genres as string[] | undefined) ?? []);
+
+  const year = isTmdbMovie
+    ? typedMovie?.release_date?.slice(0, 4)
+    : isTmdbTv
+      ? (typedMovie?.first_air_date || '').slice(0, 4)
+      : isAnilist
+        ? (String(typedMovie?.seasonYear ?? typedMovie?.startDate?.year ?? '')).slice(0, 4)
+        : isBook
+          ? String(typedMovie?.first_publish_date ?? '').slice(0, 4)
+          : String(typedMovie?.releaseDate ?? '').slice(0, 4);
+
+  const rating = normalizeRatingTo10(
+    (isTmdbMovie || isTmdbTv)
+      ? typedMovie?.vote_average
+      : isAnilist
+        ? typedMovie?.averageScore
+        : typedMovie?.rating,
+    { source: source as any }
+  );
+  const ratingLabel = rating !== undefined ? formatRating10(rating) : undefined;
+
+  const overview = (isTmdbMovie || isTmdbTv)
+    ? typedMovie?.overview
+    : isBook
+      ? ((typedMovie?.description as string | undefined) ?? 'No description available.')
+      : isAnilist
+        ? ((typedMovie?.description as string | undefined) ?? 'No description available.')
+        : (typedMovie?.summary ?? 'No overview available.');
+
+  const runtime = isTmdbMovie
+    ? typedMovie?.runtime
+    : isTmdbTv
+      ? (Array.isArray(typedMovie?.episode_run_time) && typedMovie?.episode_run_time?.[0]) || typedMovie?.last_episode_to_air?.runtime || undefined
+      : isAnilist
+        ? typedMovie?.duration || undefined
+        : undefined;
+  const runtimeMinutes = typeof runtime === 'number' ? runtime : undefined;
+
+  const externalUrl = isTmdbMovie
+    ? (typedMovie?.id !== undefined ? `https://www.themoviedb.org/movie/${typedMovie.id}` : undefined)
+    : isTmdbTv
+      ? (typedMovie?.id !== undefined ? `https://www.themoviedb.org/tv/${typedMovie.id}` : undefined)
+      : isBook
+        ? (typedMovie?.key ? `https://openlibrary.org${typedMovie.key}` : undefined)
+        : isAnilist
+          ? (typedMovie?.siteUrl ?? (id ? `https://anilist.co/anime/${id}` : undefined))
+          : typedMovie?.url;
+
+  const subtitle = [
+    year ? `${year}` : undefined,
+    runtime ? (runtime > 60 ? `${Math.floor(runtime / 60)}h ${runtime % 60}m` : `${runtime}m`) : undefined,
+    genres?.slice(0, 2).join(', ')
+  ].filter(Boolean).join(' • ');
+
+  const mediaSearchType: MediaSearchResult['type'] = isTmdbMovie
+    ? 'movie'
+    : isTmdbTv
+      ? 'tv'
+      : isGame
+        ? 'game'
+        : isBook
+          ? 'book'
+          : isAnilist
+            ? (source === 'anilist-manga' ? 'manga' : 'anime')
+            : 'movie';
+
+  const getsGoodPercent = t2gEstimatePct != null ? `${t2gEstimatePct.toFixed(0)}%` : null;
+  const t2gDetail = t2gEstimatePct != null ? formatT2G(t2gEstimatePct, runtimeMinutes, mediaSearchType) : null;
+  const getsGoodText = t2gDetail ?? getsGoodPercent;
+  const sampleSize = progressData?.sampleSize ?? null;
+  const formattedSampleSize = sampleSize != null ? sampleSize.toLocaleString() : null;
+  const communitySummary = totalSegments > 0
+    ? `Based on ${totalSegments} segment${totalSegments === 1 ? '' : 's'}${userWiggCount > 0 ? ` and ${userWiggCount} logged moment${userWiggCount === 1 ? '' : 's'}` : ''}${formattedSampleSize ? ` across ${formattedSampleSize} community entries` : ''}.`
+    : 'No community pacing data yet for this title.';
+
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -307,96 +403,6 @@ export default function MediaDetails() {
       </div>
     );
   }
-
-  // Now that data is loaded, compute display fields
-  const title = isTmdbMovie
-    ? (movie as any).title
-    : isTmdbTv
-      ? ((movie as any)?.name ?? 'Untitled')
-    : isAnilist
-      ? (((movie as any)?.title?.english ?? (movie as any)?.title?.romaji) ?? 'Untitled')
-    : isBook
-      ? ((movie as any)?.title ?? 'Untitled')
-      : ((movie as any)?.name ?? (movie as any)?.title ?? 'Untitled');
-  const genres = (isTmdbMovie || isTmdbTv)
-    ? ((movie as any).genres?.map((g: any) => g.name) || [])
-    : isBook
-      ? ((movie as any)?.subjects ?? [])
-      : isAnilist
-        ? (((movie as any)?.genres as string[] | undefined) ?? [])
-        : (((movie as any)?.genres as string[] | undefined) ?? []);
-  const year = isTmdbMovie
-    ? (movie as any).release_date?.slice(0, 4)
-    : isTmdbTv
-      ? ((movie as any)?.first_air_date || '').slice(0, 4)
-    : isAnilist
-      ? (String((movie as any)?.seasonYear ?? (movie as any)?.startDate?.year ?? '')).slice(0, 4)
-    : isBook
-      ? String((movie as any)?.first_publish_date ?? '').slice(0, 4)
-      : String((movie as any)?.releaseDate ?? '').slice(0, 4);
-
-  const rating = normalizeRatingTo10(
-    (isTmdbMovie || isTmdbTv)
-      ? (movie as any).vote_average
-      : isAnilist
-        ? (movie as any)?.averageScore
-        : (movie as any)?.rating,
-    { source: (source as any) }
-  );
-  const ratingLabel = rating !== undefined ? formatRating10(rating) : undefined;
-  const overview = (isTmdbMovie || isTmdbTv)
-    ? (movie as any).overview
-    : isBook
-      ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
-      : isAnilist
-        ? (((movie as any)?.description as string | undefined) ?? 'No description available.')
-        : ((movie as any)?.summary ?? 'No overview available.');
-  const runtime = isTmdbMovie
-    ? (movie as any).runtime
-    : isTmdbTv
-      ? (Array.isArray((movie as any)?.episode_run_time) && (movie as any).episode_run_time[0]) || (movie as any)?.last_episode_to_air?.runtime || undefined
-      : isAnilist
-        ? (movie as any)?.duration || undefined
-        : undefined;
-  const runtimeMinutes = typeof runtime === 'number' ? runtime : undefined;
-  const externalUrl = isTmdbMovie
-    ? `https://www.themoviedb.org/movie/${(movie as any).id}`
-    : isTmdbTv
-      ? `https://www.themoviedb.org/tv/${(movie as any).id}`
-    : isBook
-      ? (`https://openlibrary.org${(movie as any)?.key ?? ''}`)
-      : isAnilist
-        ? ((movie as any)?.siteUrl ?? `https://anilist.co/anime/${id}`)
-        : (movie as any)?.url;
-
-  // Create subtitle from available metadata (after all dependencies are defined)
-  const subtitle = [
-    year && `${year}`,
-    runtime && (runtime > 60 ? `${Math.floor(runtime / 60)}h ${runtime % 60}m` : `${runtime}m`),
-    genres?.slice(0, 2).join(', ')
-  ].filter(Boolean).join(' • ');
-
-  const mediaSearchType: MediaSearchResult['type'] = isTmdbMovie
-    ? 'movie'
-    : isTmdbTv
-      ? 'tv'
-      : isGame
-        ? 'game'
-        : isBook
-          ? 'book'
-          : isAnilist
-            ? (source === 'anilist-manga' ? 'manga' : 'anime')
-            : 'movie';
-
-  const getsGoodPercent = t2gEstimatePct != null ? `${t2gEstimatePct.toFixed(0)}%` : null;
-  const t2gDetail = t2gEstimatePct != null ? formatT2G(t2gEstimatePct, runtimeMinutes, mediaSearchType) : null;
-  const getsGoodText = t2gDetail ?? getsGoodPercent;
-  const sampleSize = progressData?.sampleSize ?? null;
-  const formattedSampleSize = sampleSize != null ? sampleSize.toLocaleString() : null;
-  const communitySummary = totalSegments > 0
-    ? `Based on ${totalSegments} segment${totalSegments === 1 ? '' : 's'}${userWiggCount > 0 ? ` and ${userWiggCount} logged moment${userWiggCount === 1 ? '' : 's'}` : ''}${formattedSampleSize ? ` across ${formattedSampleSize} community entries` : ''}.`
-    : 'No community pacing data yet for this title.';
-
 
   return (
     <div className="min-h-screen bg-background">

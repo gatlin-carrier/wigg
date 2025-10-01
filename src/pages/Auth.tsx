@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Film, Tv, Gamepad2, Book, Mic, ChevronUp, ChevronDown } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,7 +15,7 @@ import { usePageHeader } from "@/contexts/HeaderContext";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { signIn, signUp, loading } = useAuth();
+  const { signIn, signUp, signInWithOAuth, loading } = useAuth();
   const { toast } = useToast();
   
   // Check for redirect message from URL params
@@ -93,6 +95,23 @@ const Auth = () => {
     setIsLoading(false);
   };
 
+
+  const handleOAuthSignIn = async (provider: 'google' | 'github' | 'facebook' | 'twitter' | 'discord') => {
+    setIsLoading(true);
+    
+    const { error } = await signInWithOAuth(provider);
+    
+    if (error) {
+      toast({
+        title: "Sign in failed",
+        description: error.message || "Please try again.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
+    // Note: if successful, OAuth will redirect automatically
+  };
+
   const mediaTypes = [
     { id: "Movie", label: "Movies", icon: Film },
     { id: "TV Show", label: "TV Shows", icon: Tv },
@@ -170,6 +189,46 @@ const Auth = () => {
             </CardContent>
           </Card>
         )}
+        {/* Social Login Section */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-center">Continue with</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                variant="outline"
+                onClick={() => handleOAuthSignIn('google')}
+                disabled={isLoading}
+                className="w-full"
+              >
+                <FcGoogle className="mr-2 h-5 w-5" />
+                Google
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => handleOAuthSignIn('github')}
+                disabled={isLoading}
+                className="w-full"
+              >
+                <FaGithub className="mr-2 h-5 w-5" />
+                GitHub
+              </Button>
+            </div>
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Or continue with email
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+
         <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
