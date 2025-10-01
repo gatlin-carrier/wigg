@@ -43,7 +43,7 @@ export function useSmartSearch(input: SmartSearchInput, enabled = true) {
     },
     enabled: enabled && debouncedQuery.trim().length > 0,
     staleTime: 1000 * 60 * 5, // 5 minutes
-    retry: 2,
+    retry: false,
   });
 }
 

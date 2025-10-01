@@ -24,6 +24,7 @@ import { useUserWiggs } from '@/hooks/useUserWiggs';
 import { useUserWiggsDataLayer } from '@/data/hooks/useUserWiggsDataLayer';
 import { useMediaUnits } from '@/hooks/useMediaUnits';
 import { useFeatureFlag } from '@/lib/featureFlags';
+import type { MediaSearchResult } from '@/components/media/MediaSearch';
 
 export default function MediaDetails() {
   const { source, id } = useParams<{ source: string; id: string }>();
@@ -285,7 +286,83 @@ export default function MediaDetails() {
     year && `${year}`,
     runtime && (runtime > 60 ? `${Math.floor(runtime / 60)}h ${runtime % 60}m` : `${runtime}m`),
     genres?.slice(0, 2).join(', ')
-  ].filter(Boolean).join(' â€¢ ');
+  ].filter(Boolean).join(' • ');
+
+  const addWiggMedia = React.useMemo<MediaSearchResult>(() => {
+    const mediaType: MediaSearchResult['type'] = isTmdbMovie
+      ? 'movie'
+      : isTmdbTv
+        ? 'tv'
+        : isGame
+          ? 'game'
+          : isBook
+            ? 'book'
+            : isAnilist
+              ? (source === 'anilist-manga' ? 'manga' : 'anime')
+              : 'movie';
+
+    const parsedYear = year ? Number.parseInt(year, 10) : undefined;
+    const durationSeconds = typeof runtime === 'number' ? Math.round(runtime * 60) : undefined;
+
+    const externalIds: NonNullable<MediaSearchResult['externalIds']> = {};
+    if (id) {
+      if (isTmdbMovie || isTmdbTv) {
+        const tmdbId = Number(id);
+        if (!Number.isNaN(tmdbId)) {
+          externalIds.tmdb_id = tmdbId;
+        }
+      }
+
+      if (isAnilist) {
+        const anilistId = Number(id);
+        if (!Number.isNaN(anilistId)) {
+          externalIds.anilist_id = anilistId;
+        }
+      }
+
+      if (isBook) {
+        externalIds.openlibrary_id = id;
+      }
+
+      if (isGame && title) {
+        externalIds.search_title = title;
+      }
+    }
+
+    const episodicUnits = units && units.length > 1 ? units : undefined;
+    const episodeCount = episodicUnits?.[0]?.subtype === 'episode' ? episodicUnits.length : undefined;
+    const chapterCount = episodicUnits?.[0]?.subtype === 'chapter' ? episodicUnits.length : undefined;
+
+    const result: MediaSearchResult = {
+      id: titleKey,
+      title,
+      type: mediaType,
+      year: parsedYear,
+      coverImage: posterUrl,
+      description: overview ?? undefined,
+      duration: durationSeconds,
+      episodeCount,
+      chapterCount,
+      externalIds: Object.keys(externalIds).length ? externalIds : undefined,
+    };
+
+    return result;
+  }, [
+    id,
+    isTmdbMovie,
+    isTmdbTv,
+    isGame,
+    isBook,
+    isAnilist,
+    source,
+    year,
+    runtime,
+    units,
+    title,
+    posterUrl,
+    overview,
+    titleKey,
+  ]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -428,23 +505,15 @@ export default function MediaDetails() {
 
             {/* Action Buttons */}
             <div className="space-y-2">
-              <Button 
-                className="w-full" 
-                size="lg"
-                onClick={() => navigate('/add-wigg', { 
-                  state: { 
-                    media: {
-                      source,
-                      id,
-                      title,
-                      type: isTmdbMovie ? 'movie' : isTmdbTv ? 'tv' : isGame ? 'game' : isBook ? 'book' : isAnilist ? (source === 'anilist-manga' ? 'manga' : 'anime') : 'movie',
-                      posterUrl,
-                      year,
-                      runtime
+                <Button
+                  className="w-full"
+                  size="lg"
+                  onClick={() => navigate('/add-wigg', {
+                    state: {
+                      media: addWiggMedia,
                     }
-                  }
-                })}
-              >
+                  })}
+                >
                 <Plus className="h-4 w-4 mr-2" />
                 WIGG it
               </Button>

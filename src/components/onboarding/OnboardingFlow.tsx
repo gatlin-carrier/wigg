@@ -155,6 +155,9 @@ export function OnboardingFlow() {
     if (typeof document === 'undefined') return;
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
     return () => {
       document.body.style.overflow = originalOverflow;
     };
@@ -189,7 +192,51 @@ export function OnboardingFlow() {
   const liveRegionId = `${headingId}-live`;
 
   const overlay = (
-    <div className="fixed inset-0 z-[220] pointer-events-none">
+    <div
+      className="fixed inset-0 z-[220]"
+      role="presentation"
+      onClick={(event) => {
+        if (dialogRef.current && dialogRef.current.contains(event.target as Node)) {
+          return;
+        }
+        skip();
+      }}
+      onKeyDown={(event) => {
+        const key = event.key;
+        const target = event.target as HTMLElement | null;
+        if (key === 'Escape') {
+          event.preventDefault();
+          event.stopPropagation();
+          skip();
+          return;
+        }
+        if (key === 'ArrowRight') {
+          event.preventDefault();
+          event.stopPropagation();
+          handleNext();
+          return;
+        }
+        if (key === 'ArrowLeft') {
+          event.preventDefault();
+          event.stopPropagation();
+          handleBack();
+          return;
+        }
+        if ((key === 'Enter' || key === ' ') && target?.tagName !== 'BUTTON') {
+          event.preventDefault();
+          event.stopPropagation();
+          handleNext();
+          return;
+        }
+        if (key.toLowerCase() === 's') {
+          event.preventDefault();
+          event.stopPropagation();
+          skip();
+        }
+      }}
+      tabIndex={-1}
+      data-testid="onboarding-overlay"
+    >
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" aria-hidden="true" />
       {/* Modal positioning: vertical and horizontal center on all device sizes for consistent UX */}
       <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8 pointer-events-none">

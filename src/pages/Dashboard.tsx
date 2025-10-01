@@ -6,6 +6,8 @@ import { WiggPointForm } from "@/components/WiggPointForm";
 import { WiggPointsList } from "@/components/WiggPointsList";
 import { GameRecommendations } from "@/components/GameRecommendations";
 import { BookRecommendations } from "@/components/BookRecommendations";
+import { MediaTileSkeletonRow } from "@/components/media/MediaTileSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, List } from "lucide-react";
 import Feed from "./Feed";
 import TmdbPopular from "@/components/tmdb/TmdbPopular";
@@ -17,7 +19,9 @@ import PodcastTrending from "@/components/podcast/PodcastTrending";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageHeader } from "@/contexts/HeaderContext";
+import { useOnboarding } from "@/contexts/OnboardingContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import OnboardingFlow from "@/components/onboarding/OnboardingFlow";
 
 interface MediaEntry {
   id: string;
@@ -77,6 +81,8 @@ const Dashboard = () => {
   };
   const [selectedMedia, setSelectedMedia] = useState<{ title: string; type: string } | null>(null);
   const isMobile = useIsMobile();
+  const { isActive: isOnboardingActive } = useOnboarding();
+  const shouldDeferDashboardContent = isOnboardingActive;
   
   // Configure global header for this page
   usePageHeader({
@@ -95,12 +101,68 @@ const Dashboard = () => {
   };
 
   const [tab, setTab] = useState<'feed'|'browse'|'add'>('browse');
+  const footer = (
+    <footer className="border-t border-border/50 py-8 mt-16">
+      <div className="container mx-auto px-4 text-center">
+        <h3 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
+          WIGG
+        </h3>
+        <p className="text-muted-foreground text-sm">
+          When It Gets Good - Track media worth your time
+        </p>
+      </div>
+    </footer>
+  );
+
+  const placeholderSections = isMobile ? 2 : 3;
+
+  const deferredContent = (
+    <div
+      className="max-w-6xl mx-auto space-y-10 sm:space-y-12 h-[55vh] sm:h-auto overflow-hidden sm:overflow-visible"
+      data-testid="dashboard-loading-state"
+    >
+      <div className="max-w-md mx-auto w-full">
+        <div className="grid w-full grid-cols-3 gap-3">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton
+              key={`dashboard-tab-skeleton-${index}`}
+              className="h-10 rounded-full"
+              style={{ animationDelay: `${(0.06 * index).toFixed(2)}s` }}
+            />
+          ))}
+        </div>
+      </div>
+      <div className="space-y-8 sm:space-y-12">
+        {Array.from({ length: placeholderSections }).map((_, idx) => {
+          const baseDelay = 0.2 * idx;
+          return (
+            <div key={`dashboard-section-skeleton-${idx}`} className="space-y-6">
+              <div className="space-y-2 text-center">
+                <Skeleton
+                  className="h-8 w-56 mx-auto"
+                  style={{ animationDelay: `${baseDelay.toFixed(2)}s` }}
+                />
+                <Skeleton
+                  className="h-4 w-72 mx-auto"
+                  style={{ animationDelay: `${(baseDelay + 0.05).toFixed(2)}s` }}
+                />
+              </div>
+              <MediaTileSkeletonRow baseDelay={baseDelay + 0.1} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 
   return (
     <>
       <div className="container mx-auto px-4 py-6 space-y-8">
-        <div className="max-w-6xl mx-auto">
-          <Tabs value={tab} onValueChange={(v:any)=>setTab(v)} className="space-y-8">
+        {shouldDeferDashboardContent ? (
+          deferredContent
+        ) : (
+          <div className="max-w-6xl mx-auto">
+            <Tabs value={tab} onValueChange={(v:any)=>setTab(v)} className="space-y-8">
             <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
               <TabsTrigger value="feed">Feed</TabsTrigger>
               <TabsTrigger value="browse" className="flex items-center gap-2">
@@ -246,19 +308,12 @@ const Dashboard = () => {
             </TabsContent>
           </Tabs>
         </div>
+        )}
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 py-8 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
-            WIGG
-          </h3>
-          <p className="text-muted-foreground text-sm">
-            When It Gets Good - Track media worth your time
-          </p>
-        </div>
-      </footer>
+      {footer}
+
+      <OnboardingFlow />
     </>
   );
 };

@@ -11,6 +11,7 @@ export function useTrendingPodcasts(max = 24) {
     queryKey: ['podcasts', 'trending', max],
     queryFn: async () => fetchTrendingPodcasts(max),
     staleTime: 1000 * 60 * 10,
+    retry: false,
   });
 }
 
@@ -28,6 +29,7 @@ export function usePodcastSearch(q: string, opts?: { enabled?: boolean; spotifyA
         user_profile: { spotify_connected: !!opts?.spotifyConnected },
         cost_budget: { max_providers: 3, allow_fallbacks: true },
       }, { spotifyAccessToken: opts?.spotifyAccessToken });
-    }
+    },
+    retry: false,
   });
 }

@@ -11,6 +11,7 @@ export function usePopularGames() {
       return data?.games ?? [];
     },
     staleTime: 1000 * 60 * 10,
+    retry: false,
   });
 }
 
@@ -34,5 +35,6 @@ export function useGameSearch(q: string) {
       return data?.games ?? [];
     },
     staleTime: 1000 * 60 * 5,
+    retry: false,
   });
 }
